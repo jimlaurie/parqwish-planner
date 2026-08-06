@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "parqwish-planner",
   "version": "6.0.1",
   "private": true,
   "scripts": {
@@ -7,6 +7,7 @@
     "build": "next build --turbopack && node -e \"const fs=require('fs');fs.writeFileSync('out/version.json',JSON.stringify({version:require('./package.json').version}))\"",
     "start": "next start",
     "serve": "serve out -l 3000 --cors",
+    "deploy": "npm run build && firebase deploy --only hosting:pwa",
     "lint": "eslint"
   },
   "dependencies": {

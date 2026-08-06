@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "my-tour-guide-backend"
+  },
+  "targets": {
+    "my-tour-guide-backend": {
+      "hosting": {
+        "pwa": [
+          "parqwish-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

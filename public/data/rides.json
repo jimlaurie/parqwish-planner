@@ -1,0 +1,746 @@
+{
+  "disneyland": {
+    "sailing-ship-columbia": {
+      "land": "Frontierland",
+      "name": "Sailing Ship Columbia",
+      "latitude": 33.8122151823364,
+      "status": "seasonal",
+      "longitude": -117.920496542357,
+      "hasLL": false,
+      "type": "boat_ride"
+    },
+    "big-thunder-mountain": {
+      "hasLL": true,
+      "type": "thrill",
+      "longitude": -117.920494408557,
+      "status": "operating",
+      "heightRequirement": 40,
+      "latitude": 33.8125307575434,
+      "name": "Big Thunder Mountain Railroad",
+      "land": "Frontierland"
+    },
+    "mark-twain-riverboat": {
+      "longitude": -117.92048800717,
+      "type": "boat_ride",
+      "hasLL": false,
+      "latitude": 33.8122488673887,
+      "status": "operating",
+      "name": "Mark Twain Riverboat",
+      "land": "Frontierland"
+    },
+    "millennium-falcon": {
+      "name": "Millennium Falcon: Smugglers Run",
+      "land": "Star Wars: Galaxy's Edge",
+      "longitude": -117.921368217706,
+      "hasLL": true,
+      "type": "simulator",
+      "latitude": 33.8148776074849,
+      "heightRequirement": 38,
+      "status": "operating"
+    },
+    "star-tours": {
+      "status": "operating",
+      "heightRequirement": 40,
+      "latitude": 33.8120409844383,
+      "hasLL": false,
+      "type": "simulator",
+      "longitude": -117.918050330865,
+      "land": "Tomorrowland",
+      "name": "Star Tours - The Adventures Continue"
+    },
+    "pirates-of-the-caribbean": {
+      "name": "Pirates of the Caribbean",
+      "land": "New Orleans Square",
+      "longitude": -117.920829925823,
+      "type": "dark_ride",
+      "hasLL": false,
+      "latitude": 33.8114850341524,
+      "status": "operating"
+    },
+    "storybook-canal-boats": {
+      "name": "Storybook Land Canal Boats",
+      "land": "Fantasyland",
+      "longitude": -117.918134811934,
+      "hasLL": false,
+      "type": "boat_ride",
+      "latitude": 33.8137850679436,
+      "status": "operating"
+    },
+    "indiana-jones": {
+      "name": "Indiana Jones™ Adventure",
+      "longitude": -117.9205432,
+      "status": "operating",
+      "latitude": 33.8111678,
+      "warnings": {
+        "loudness": false,
+        "photosensitive": false,
+        "accessibility": false,
+        "pregnancy": false
+      },
+      "closureReason": "",
+      "land": "Adventureland",
+      "heightCm": 0,
+      "type": "dark_ride",
+      "hasLL": true,
+      "heightRequirement": 46
+    },
+    "minnies-house": {
+      "land": "Mickey's Toontown",
+      "name": "Minnie's House",
+      "latitude": 33.8155970676908,
+      "status": "operating",
+      "longitude": -117.919024848608,
+      "type": "walkthrough",
+      "hasLL": false
+    },
+    "finding-nemo-submarine": {
+      "longitude": -117.916926125212,
+      "hasLL": false,
+      "type": "dark_ride",
+      "latitude": 33.8126832934678,
+      "status": "operating",
+      "name": "Finding Nemo Submarine Voyage",
+      "land": "Tomorrowland"
+    },
+    "winnie-the-pooh": {
+      "name": "The Many Adventures of Winnie the Pooh",
+      "latitude": 33.8123781702697,
+      "status": "operating",
+      "longitude": -117.922616440222,
+      "land": "Bayou Country",
+      "heightCm": 0,
+      "closureReason": "",
+      "warnings": {
+        "photosensitive": false,
+        "accessibility": false,
+        "pregnancy": false,
+        "loudness": false
+      },
+      "heightRequirement": 0,
+      "hasLL": false,
+      "type": "dark_ride"
+    },
+    "its-a-small-world": {
+      "hasLL": false,
+      "type": "dark_ride",
+      "longitude": -117.917745459061,
+      "status": "operating",
+      "latitude": 33.8143827082154,
+      "name": "It's a Small World",
+      "land": "Fantasyland"
+    },
+    "sleeping-beauty-castle-walkthrough": {
+      "name": "Sleeping Beauty Castle Walkthrough",
+      "land": "Fantasyland",
+      "hasLL": false,
+      "type": "walkthrough",
+      "longitude": -117.9189,
+      "status": "operating",
+      "latitude": 33.8128,
+      "heightRequirement": 0
+    },
+    "pirate-lair": {
+      "longitude": -117.921360729461,
+      "hasLL": false,
+      "type": "walkthrough",
+      "latitude": 33.8119864782354,
+      "status": "operating",
+      "name": "Pirate's Lair on Tom Sawyer Island",
+      "land": "Frontierland"
+    },
+    "tianas-bayou-adventure": {
+      "status": "operating",
+      "latitude": 33.8122750996942,
+      "longitude": -117.922897401616,
+      "name": "Tiana's Bayou Adventure",
+      "heightRequirement": 40,
+      "type": "thrill",
+      "hasLL": true,
+      "land": "Bayou Country",
+      "heightCm": 0,
+      "closureReason": "",
+      "warnings": {
+        "loudness": false,
+        "accessibility": false,
+        "photosensitive": false,
+        "pregnancy": false
+      }
+    },
+    "dumbo": {
+      "name": "Dumbo the Flying Elephant",
+      "land": "Fantasyland",
+      "type": "spinner",
+      "hasLL": false,
+      "longitude": -117.918896348668,
+      "status": "operating",
+      "latitude": 33.8136546201859
+    },
+    "disneyland-railroad": {
+      "heightCm": 0,
+      "land": "Main Street U.S.A.",
+      "warnings": {
+        "loudness": false,
+        "pregnancy": false,
+        "photosensitive": false,
+        "accessibility": false
+      },
+      "closureReason": "",
+      "heightRequirement": 0,
+      "hasLL": false,
+      "type": "transportation",
+      "name": "Disneyland Railroad",
+      "status": "operating",
+      "latitude": 33.8099699,
+      "stops": [
+        {
+          "longitude": -117.9221509,
+          "name": "New Orleans Square Station",
+          "land": "New Orleans Square",
+          "latitude": 33.8113177
+        },
+        {
+          "longitude": -117.9186803,
+          "name": "Michkey's ToonTown Station",
+          "land": "Mickey's Toontown",
+          "latitude": 33.8148226
+        },
+        {
+          "land": "Tomorrowland",
+          "latitude": 33.8124303,
+          "longitude": -117.9158536,
+          "name": "Tomorrowland Station"
+        },
+        {
+          "longitude": -117.9189638,
+          "name": "Main Street Station",
+          "land": "Main Street U.S.A.",
+          "latitude": 33.8099699
+        }
+      ],
+      "longitude": -117.9189638
+    },
+    "alice-in-wonderland": {
+      "heightCm": 0,
+      "land": "Fantasyland",
+      "warnings": {
+        "accessibility": false,
+        "photosensitive": false,
+        "pregnancy": false,
+        "loudness": false
+      },
+      "closureReason": "",
+      "heightRequirement": 0,
+      "type": "dark_ride",
+      "hasLL": false,
+      "name": "Alice in Wonderland",
+      "latitude": 33.813304221700506,
+      "status": "operating",
+      "longitude": -117.91828577534345
+    },
+    "monorail": {
+      "type": "transportation",
+      "hasLL": false,
+      "heightRequirement": 0,
+      "warnings": {
+        "loudness": false,
+        "accessibility": false,
+        "photosensitive": false,
+        "pregnancy": false
+      },
+      "closureReason": "",
+      "heightCm": 0,
+      "land": "Tomorrowland",
+      "longitude": -117.916793,
+      "stops": [
+        {
+          "longitude": -117.924588,
+          "name": "Disneyland Monorail - Downtown Disney",
+          "land": "Tomorrowland",
+          "latitude": 33.8092713
+        },
+        {
+          "land": "Tomorrowland",
+          "latitude": 33.8127112,
+          "longitude": -117.916793,
+          "name": "Disneyland Monorail - Tomorrowland"
+        }
+      ],
+      "latitude": 33.8127112,
+      "status": "operating",
+      "name": "Disneyland Monorail"
+    },
+    "king-arthur-carrousel": {
+      "land": "Fantasyland",
+      "name": "King Arthur Carrousel",
+      "status": "operating",
+      "latitude": 33.8134876107577,
+      "hasLL": false,
+      "type": "carousel",
+      "longitude": -117.918928345082
+    },
+    "haunted-mansion": {
+      "type": "dark_ride",
+      "hasLL": true,
+      "longitude": -117.921820917363,
+      "status": "operating",
+      "latitude": 33.8116454993812,
+      "name": "Haunted Mansion",
+      "land": "New Orleans Square"
+    },
+    "buzz-lightyear": {
+      "status": "operating",
+      "latitude": 33.8121867237431,
+      "hasLL": false,
+      "type": "dark_ride",
+      "longitude": -117.917913097469,
+      "land": "Tomorrowland",
+      "name": "Buzz Lightyear Astro Blasters"
+    },
+    "autopia": {
+      "heightRequirement": 32,
+      "latitude": 33.8124017877431,
+      "status": "operating",
+      "longitude": -117.916381080832,
+      "type": "ride",
+      "hasLL": false,
+      "land": "Tomorrowland",
+      "name": "Autopia"
+    },
+    "enchanted-tiki-room": {
+      "hasLL": false,
+      "type": "show",
+      "longitude": -117.919566198976,
+      "status": "operating",
+      "latitude": 33.8116566553978,
+      "name": "Walt Disney's Enchanted Tiki Room",
+      "land": "Adventureland"
+    },
+    "casey-jr": {
+      "name": "Casey Jr. Circus Train",
+      "land": "Fantasyland",
+      "longitude": -117.919208015639,
+      "hasLL": false,
+      "type": "ride",
+      "latitude": 33.8137654204425,
+      "status": "operating"
+    },
+    "mad-tea-party": {
+      "longitude": -117.91845616206,
+      "hasLL": false,
+      "type": "spinner",
+      "latitude": 33.8135359632817,
+      "status": "operating",
+      "name": "Mad Tea Party",
+      "land": "Fantasyland"
+    },
+    "snow-white": {
+      "name": "Snow White's Enchanted Wish",
+      "land": "Fantasyland",
+      "longitude": -117.919056215047,
+      "hasLL": false,
+      "type": "dark_ride",
+      "latitude": 33.81317277692,
+      "status": "operating"
+    },
+    "davy-crockett-canoes": {
+      "type": "boat_ride",
+      "hasLL": false,
+      "heightRequirement": 0,
+      "closureReason": "",
+      "warnings": {
+        "photosensitive": false,
+        "accessibility": false,
+        "pregnancy": false,
+        "loudness": false
+      },
+      "heightCm": 0,
+      "land": "Bayou Country",
+      "longitude": -117.922116878793,
+      "status": "seasonal",
+      "latitude": 33.8125113261269,
+      "name": "Davy Crockett's Explorer Canoes"
+    },
+    "mickeys-house": {
+      "name": "Mickey's House",
+      "land": "Mickey's Toontown",
+      "hasLL": false,
+      "type": "walkthrough",
+      "longitude": -117.919188463357,
+      "status": "operating",
+      "latitude": 33.8155302136328
+    },
+    "mickeys-runaway-railway": {
+      "status": "operating",
+      "latitude": 33.8154644737576,
+      "type": "dark_ride",
+      "openedDate": "2023-01-27",
+      "hasLL": true,
+      "longitude": -117.918385141759,
+      "land": "Mickey's Toontown",
+      "name": "Mickey & Minnie's Runaway Railway"
+    },
+    "gadgets-go-coaster": {
+      "land": "Mickey's Toontown",
+      "name": "Chip 'n' Dale's GADGETcoaster",
+      "heightRequirement": 35,
+      "latitude": 33.8153073874624,
+      "status": "operating",
+      "longitude": -117.919134130379,
+      "hasLL": false,
+      "type": "coaster"
+    },
+    "matterhorn": {
+      "name": "Matterhorn Bobsleds",
+      "land": "Fantasyland",
+      "hasLL": true,
+      "type": "thrill",
+      "longitude": -117.917804099787,
+      "status": "operating",
+      "latitude": 33.81351288594,
+      "heightRequirement": 42
+    },
+    "rise-of-the-resistance": {
+      "name": "Star Wars: Rise of the Resistance",
+      "land": "Star Wars: Galaxy's Edge",
+      "type": "dark_ride",
+      "hasLL": true,
+      "longitude": -117.923103879201,
+      "status": "operating",
+      "latitude": 33.8138366376163,
+      "heightRequirement": 40
+    },
+    "astro-orbitor": {
+      "land": "Tomorrowland",
+      "name": "Astro Orbitor",
+      "latitude": 33.8121080416584,
+      "status": "operating",
+      "longitude": -117.918207716057,
+      "hasLL": false,
+      "type": "spinner"
+    },
+    "space-mountain": {
+      "name": "Space Mountain",
+      "land": "Tomorrowland",
+      "longitude": -117.917060807995,
+      "hasLL": true,
+      "type": "thrill",
+      "heightRequirement": 40,
+      "latitude": 33.8115520195116,
+      "status": "operating"
+    },
+    "roger-rabbit": {
+      "name": "Roger Rabbit's Car Toon Spin",
+      "land": "Mickey's Toontown",
+      "longitude": -117.918104850917,
+      "type": "dark_ride",
+      "hasLL": false,
+      "latitude": 33.8152226842898,
+      "status": "operating"
+    },
+    "main-street-vehicles": {
+      "closureReason": "",
+      "warnings": {
+        "loudness": false,
+        "accessibility": false,
+        "photosensitive": false,
+        "pregnancy": false
+      },
+      "land": "Main Street U.S.A.",
+      "heightCm": 0,
+      "type": "transportation",
+      "hasLL": false,
+      "heightRequirement": 0,
+      "name": "Main Street Vehicles",
+      "longitude": -117.918976,
+      "stops": [
+        {
+          "land": "Hub",
+          "latitude": 33.8122913,
+          "longitude": -117.9190944,
+          "name": "Main Street Vehicles - Hub"
+        },
+        {
+          "land": "Main Street U.S.A.",
+          "latitude": 33.8101778,
+          "longitude": -117.918976,
+          "name": "Main Street Vehicles - Town Square"
+        }
+      ],
+      "latitude": 33.8101778,
+      "status": "operating"
+    },
+    "peter-pans-flight": {
+      "land": "Fantasyland",
+      "name": "Peter Pan's Flight",
+      "latitude": 33.8131348562827,
+      "status": "operating",
+      "longitude": -117.918913796026,
+      "type": "dark_ride",
+      "hasLL": false
+    },
+    "mr-toads-wild-ride": {
+      "hasLL": false,
+      "type": "dark_ride",
+      "longitude": -117.91876301489,
+      "status": "operating",
+      "latitude": 33.8133733228603,
+      "name": "Mr. Toad's Wild Ride",
+      "land": "Fantasyland"
+    },
+    "jungle-cruise": {
+      "name": "Jungle Cruise",
+      "land": "Adventureland",
+      "hasLL": false,
+      "type": "boat_ride",
+      "longitude": -117.920101208984,
+      "status": "operating",
+      "latitude": 33.8114543618054
+    },
+    "pinocchio": {
+      "latitude": 33.8133095853153,
+      "status": "operating",
+      "longitude": -117.919128063953,
+      "hasLL": false,
+      "type": "dark_ride",
+      "land": "Fantasyland",
+      "name": "Pinocchio's Daring Journey"
+    },
+    "pixar-short-film-spotlight": {
+      "name": "Pixar Short Film Spotlight",
+      "land": "Tomorrowland",
+      "status": "closed",
+      "type": "walkthrough",
+      "heightRequirement": 0,
+      "heightCm": 0,
+      "hasLL": false,
+      "closureReason": "",
+      "latitude": 33.811604,
+      "longitude": -117.917208,
+      "warnings": {
+        "pregnancy": false,
+        "accessibility": false,
+        "photosensitive": false,
+        "loudness": false
+      }
+    }
+  },
+  "lastUpdated": "2026-07-03T09:00:08.088Z",
+  "version": "1.2.0",
+  "californiaadventure": {
+    "jumpin-jellyfish": {
+      "land": "Paradise Gardens Park",
+      "name": "Jumpin' Jellyfish",
+      "status": "operating",
+      "heightRequirement": 40,
+      "latitude": 33.8060608482619,
+      "hasLL": false,
+      "type": "ride",
+      "longitude": -117.922753264026
+    },
+    "games-of-pixar-pier": {
+      "name": "Games of Pixar Pier",
+      "land": "Pixar Pier",
+      "longitude": -117.922339432511,
+      "hasLL": false,
+      "type": "games",
+      "latitude": 33.8048788124919,
+      "status": "operating"
+    },
+    "redwood-creek-challenge": {
+      "name": "Redwood Creek Challenge Trail",
+      "land": "Grizzly Peak",
+      "longitude": -117.921409649916,
+      "type": "walkthrough",
+      "hasLL": false,
+      "latitude": 33.806925351485,
+      "status": "operating"
+    },
+    "incredicoaster": {
+      "name": "Incredicoaster",
+      "land": "Pixar Pier",
+      "longitude": -117.920825786657,
+      "type": "coaster",
+      "hasLL": true,
+      "latitude": 33.8046760285627,
+      "heightRequirement": 48,
+      "status": "operating"
+    },
+    "maters-junkyard-jamboree": {
+      "land": "Cars Land",
+      "name": "Mater's Junkyard Jamboree",
+      "latitude": 33.8062993837329,
+      "status": "operating",
+      "longitude": -117.91926893029,
+      "type": "spinner",
+      "hasLL": false
+    },
+    "guardians-of-the-galaxy": {
+      "longitude": -117.917138268357,
+      "hasLL": true,
+      "type": "thrill",
+      "heightRequirement": 40,
+      "latitude": 33.8069512397027,
+      "status": "operating",
+      "name": "Guardians of the Galaxy - Mission: BREAKOUT!",
+      "land": "Hollywood Land"
+    },
+    "toy-story-mania": {
+      "status": "operating",
+      "latitude": 33.804649070112,
+      "hasLL": true,
+      "type": "dark_ride",
+      "longitude": -117.921757497488,
+      "land": "Pixar Pier",
+      "name": "Toy Story Midway Mania!"
+    },
+    "radiator-springs-racers": {
+      "longitude": -117.918643540319,
+      "type": "thrill",
+      "hasLL": true,
+      "heightRequirement": 40,
+      "latitude": 33.8052189605506,
+      "status": "operating",
+      "name": "Radiator Springs Racers",
+      "land": "Cars Land"
+    },
+    "inside-out-emotional-whirlwind": {
+      "land": "Pixar Pier",
+      "name": "Inside Out Emotional Whirlwind",
+      "latitude": 33.8052373799608,
+      "status": "operating",
+      "longitude": -117.922806179118,
+      "hasLL": false,
+      "type": "spinner"
+    },
+    "silly-symphony-swings": {
+      "name": "Silly Symphony Swings",
+      "land": "Paradise Gardens Park",
+      "type": "swing_ride",
+      "hasLL": false,
+      "longitude": -117.922886543356,
+      "status": "operating",
+      "latitude": 33.8056732391499,
+      "heightRequirement": 40
+    },
+    "animation-academy": {
+      "status": "operating",
+      "latitude": 33.8076014232569,
+      "hasLL": false,
+      "type": "interactive",
+      "longitude": -117.917603906954,
+      "land": "Hollywood Land",
+      "name": "Animation Academy"
+    },
+    "golden-zephyr": {
+      "name": "Golden Zephyr",
+      "land": "Paradise Gardens Park",
+      "type": "spinner",
+      "hasLL": false,
+      "longitude": -117.922315207666,
+      "status": "operating",
+      "latitude": 33.8060476224225
+    },
+    "pixar-pal-a-round": {
+      "land": "Pixar Pier",
+      "name": "Pixar Pal-A-Round",
+      "status": "operating",
+      "latitude": 33.8050712259162,
+      "hasLL": false,
+      "type": "ferris_wheel",
+      "longitude": -117.922307018513
+    },
+    "jessies-critter-carousel": {
+      "longitude": -117.92109091944,
+      "type": "carousel",
+      "hasLL": false,
+      "latitude": 33.8046009510983,
+      "status": "operating",
+      "name": "Jessie's Critter Carousel",
+      "land": "Pixar Pier"
+    },
+    "little-mermaid": {
+      "name": "The Little Mermaid - Ariel's Undersea Adventure",
+      "land": "Paradise Gardens Park",
+      "hasLL": false,
+      "type": "dark_ride",
+      "longitude": -117.921096801551,
+      "status": "operating",
+      "latitude": 33.8061996810022
+    },
+    "luigis-rollickin-roadsters": {
+      "land": "Cars Land",
+      "name": "Luigi's Rollickin' Roadsters",
+      "latitude": 33.8054274986432,
+      "status": "operating",
+      "longitude": -117.918416542979,
+      "type": "thrill",
+      "hasLL": false
+    },
+    "grizzly-river-run": {
+      "land": "Grizzly Peak",
+      "name": "Grizzly River Run",
+      "latitude": 33.8074819864074,
+      "heightRequirement": 42,
+      "status": "operating",
+      "longitude": -117.920968120721,
+      "type": "water_ride",
+      "hasLL": true
+    },
+    "monsters-inc": {
+      "land": "Hollywood Land",
+      "name": "Monsters, Inc. Mike & Sulley to the Rescue!",
+      "status": "operating",
+      "latitude": 33.8081764197467,
+      "hasLL": false,
+      "type": "dark_ride",
+      "longitude": -117.917279359665
+    },
+    "soarin": {
+      "name": "Soarin' Over California",
+      "status": "operating",
+      "latitude": 33.8082009,
+      "longitude": -117.920011,
+      "land": "Grizzly Peak",
+      "heightCm": 0,
+      "closureReason": "",
+      "warnings": {
+        "loudness": false,
+        "accessibility": false,
+        "photosensitive": false,
+        "pregnancy": false
+      },
+      "heightRequirement": 40,
+      "type": "simulator",
+      "hasLL": true
+    },
+    "turtle-talk": {
+      "type": "show",
+      "hasLL": false,
+      "longitude": -117.917603906954,
+      "status": "operating",
+      "latitude": 33.8076014232569,
+      "name": "Turtle Talk with Crush",
+      "land": "Hollywood Land"
+    },
+    "goofy-sky-school": {
+      "name": "Goofy's Sky School",
+      "land": "Paradise Gardens Park",
+      "type": "coaster",
+      "hasLL": false,
+      "longitude": -117.922763136569,
+      "status": "operating",
+      "heightRequirement": 42,
+      "latitude": 33.8063418124958
+    },
+    "web-slingers": {
+      "land": "Avengers Campus",
+      "name": "WEB SLINGERS: A Spider-Man Adventure",
+      "latitude": 33.8066634898478,
+      "heightRequirement": 0,
+      "status": "operating",
+      "longitude": -117.918283413156,
+      "type": "dark_ride",
+      "hasLL": true
+    }
+  }
+}

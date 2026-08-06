@@ -1,0 +1,301 @@
+{
+  "disneyland_resort": {
+    "esplanade": {
+      "land": "Esplanade",
+      "category": "landmark",
+      "status": "operating",
+      "name": "Esplanade",
+      "latitude": 33.80907,
+      "description": "The outdoor plaza between Disneyland Park and Disney California Adventure, featuring ticketing and guest services.",
+      "longitude": -117.91901
+    },
+    "lockers-dca-esplanade": {
+      "status": "operating",
+      "land": "Esplanade",
+      "category": "guest services",
+      "latitude": 33.80862,
+      "longitude": -117.91858,
+      "description": "Locker rental location at the DCA Esplanade.",
+      "name": "Lockers - DCA Esplanade"
+    },
+    "strollers-ecvs-and-wheelchairs": {
+      "category": "guest services",
+      "land": "Esplanade",
+      "status": "operating",
+      "name": "Strollers, ECVs and Wheelchairs",
+      "longitude": -117.91825,
+      "description": "Stroller, ECV and wheelchair rental location at the Disneyland Resort Esplanade.",
+      "latitude": 33.80969
+    },
+    "dca-entrance": {
+      "name": "DCA Entrance",
+      "longitude": -117.91896,
+      "description": "Main entrance gates to Disney California Adventure.",
+      "latitude": 33.80882,
+      "category": "meeting point",
+      "land": "Esplanade",
+      "status": "operating"
+    },
+    "lockers-disneyland-esplanade": {
+      "land": "Esplanade",
+      "category": "guest services",
+      "status": "operating",
+      "name": "Lockers - Disneyland Esplanade",
+      "latitude": 33.80976,
+      "description": "Locker rental location at the Disneyland Esplanade.",
+      "longitude": -117.91988
+    },
+    "pixar-pals-parking": {
+      "name": "Pixar Pals Parking",
+      "land": "Parking",
+      "category": "guest services",
+      "status": "operating",
+      "description": "Pixar Pals parking structure at the Disneyland Resort.",
+      "latitude": 33.81359,
+      "longitude": -117.9266
+    },
+    "mickey-and-friends-parking": {
+      "name": "Mickey and Friends Parking",
+      "land": "Parking",
+      "category": "guest services",
+      "status": "operating",
+      "description": "Mickey and Friends parking structure at the Disneyland Resort.",
+      "latitude": 33.81505,
+      "longitude": -117.92609
+    },
+    "accessibility-services": {
+      "status": "operating",
+      "land": "Esplanade",
+      "category": "guest services",
+      "latitude": 33.80889,
+      "longitude": -117.91844,
+      "description": "Disneyland Resort Accessibility Services center for guests requiring disability assistance.",
+      "name": "Accessibility Services"
+    },
+    "disneyland-entrance": {
+      "name": "Disneyland Entrance",
+      "description": "Main entrance gates to Disneyland Park.",
+      "longitude": -117.91897,
+      "latitude": 33.80955,
+      "category": "meeting point",
+      "land": "Esplanade",
+      "status": "operating"
+    },
+    "toy-story-parking": {
+      "name": "Toy Story Parking",
+      "land": "Parking",
+      "category": "guest services",
+      "status": "operating",
+      "description": "Toy Story themed parking structure at the Disneyland Resort.",
+      "latitude": 33.80909,
+      "longitude": -117.91677
+    }
+  },
+  "disneyland": {
+    "galaxy-edge-entrance": {
+      "latitude": 33.8137,
+      "longitude": -117.922,
+      "description": "The immersive tunnel entrance into Batuu from Frontierland/Fantasyland.",
+      "name": "Star Wars: Galaxy's Edge Entrance",
+      "status": "operating",
+      "land": "Star Wars: Galaxy's Edge",
+      "category": "photo spot"
+    },
+    "walt-disney-star": {
+      "name": "Walt Disney Window (Main Street)",
+      "latitude": 33.8106,
+      "longitude": -117.91935,
+      "description": "The window above the Fire Department that reads 'Walter E. Disney — Founder & Director' and his apartment above the firehouse.",
+      "land": "Main Street U.S.A.",
+      "category": "landmark",
+      "status": "operating"
+    },
+    "wishing-well": {
+      "category": "photo spot",
+      "land": "Fantasyland",
+      "status": "operating",
+      "name": "Snow White's Wishing Well",
+      "longitude": -117.9187,
+      "description": "A wishing well tucked beside the Castle with Snow White's voice echoing from within.",
+      "latitude": 33.8128
+    },
+    "main-street-train-station": {
+      "status": "operating",
+      "land": "Main Street U.S.A.",
+      "category": "landmark",
+      "latitude": 33.81005,
+      "description": "The Victorian-era train station at the park entrance, offering views down Main Street to the Castle.",
+      "longitude": -117.91897,
+      "name": "Main Street Train Station"
+    },
+    "sleeping-beauty-castle": {
+      "land": "Fantasyland",
+      "category": "landmark",
+      "status": "operating",
+      "name": "Sleeping Beauty Castle",
+      "latitude": 33.81258,
+      "description": "The iconic centerpiece of Disneyland Park, featuring a walkthrough diorama of the Sleeping Beauty story.",
+      "longitude": -117.91899
+    },
+    "tarzan-treehouse": {
+      "name": "Tarzan's Treehouse",
+      "description": "Walk-through treehouse with views of Adventureland and the Rivers of America.",
+      "longitude": -117.91985,
+      "latitude": 33.81146,
+      "category": "landmark",
+      "land": "Adventureland",
+      "status": "operating"
+    },
+    "matterhorn-from-the-hub": {
+      "status": "operating",
+      "category": "photo spot",
+      "land": "Hub",
+      "longitude": -117.918796,
+      "description": "Great spot to capture the Matterhorn at sunset.",
+      "latitude": 33.812316,
+      "name": "Matterhorn from the Hub"
+    },
+    "lockers-disneyland-main-street": {
+      "name": "Lockers - Disneyland Main Street",
+      "longitude": -117.91862,
+      "description": "Locker rental location on Main Street, U.S.A. inside Disneyland Park.",
+      "latitude": 33.811,
+      "category": "guest services",
+      "land": "Main Street U.S.A.",
+      "status": "operating"
+    },
+    "frontierland-entrance": {
+      "status": "operating",
+      "category": "photo spot",
+      "land": "Frontierland",
+      "longitude": -117.91955,
+      "description": "The rustic log stockade entrance to Frontierland.",
+      "latitude": 33.81178,
+      "name": "Frontierland Stockade Entrance"
+    },
+    "partners-statue": {
+      "longitude": -117.919178,
+      "description": "Bronze statue of Walt Disney and Mickey Mouse holding hands, located in front of Sleeping Beauty Castle.",
+      "latitude": 33.812163,
+      "name": "Partners Statue",
+      "status": "operating",
+      "category": "statue",
+      "land": "Hub"
+    }
+  },
+  "californiaadventure": {
+    "carthay-circle": {
+      "latitude": 33.80825,
+      "longitude": -117.91912,
+      "description": "Replica of the theatre where Snow White premiered in 1937, now a fine dining restaurant.",
+      "name": "Carthay Circle Theatre",
+      "status": "operating",
+      "land": "Buena Vista Street",
+      "category": "landmark"
+    },
+    "lockers-dca-buena-vista-street": {
+      "description": "Locker rental location on Buena Vista Street inside Disney California Adventure.",
+      "longitude": -117.91921,
+      "latitude": 33.80844,
+      "name": "Lockers - DCA Buena Vista Street",
+      "status": "operating",
+      "category": "guest services",
+      "land": "Buena Vista Street"
+    },
+    "pixar-pal-a-round-viewpoint": {
+      "name": "Pixar Pal-A-Round Viewpoint",
+      "longitude": -117.9211,
+      "description": "Views of the iconic Mickey-faced Ferris wheel from Pixar Pier boardwalk.",
+      "latitude": 33.8048,
+      "category": "viewpoint",
+      "land": "Pixar Pier",
+      "status": "operating"
+    },
+    "storytellers-statue": {
+      "name": "Storytellers Statue",
+      "latitude": 33.8089,
+      "longitude": -117.91898,
+      "description": "Bronze statue of a young Walt Disney and Mickey Mouse arriving in California.",
+      "land": "Buena Vista Street",
+      "category": "statue",
+      "status": "operating"
+    },
+    "buena-vista-street-entrance": {
+      "name": "Buena Vista Street Entrance",
+      "longitude": -117.91898,
+      "description": "The 1920s-themed entrance to Disney California Adventure with the Storytellers Statue.",
+      "latitude": 33.80874,
+      "category": "photo spot",
+      "land": "Buena Vista Street",
+      "status": "operating"
+    },
+    "cars-land-entrance": {
+      "land": "Cars Land",
+      "category": "photo spot",
+      "status": "operating",
+      "name": "Cars Land Entrance",
+      "latitude": 33.8059,
+      "longitude": -117.9185,
+      "description": "The Route 66 entrance to Radiator Springs with the Cadillac Range mountains as a backdrop."
+    }
+  },
+  "downtown": {
+    "lego-sculpture": {
+      "land": "West Downtown Disney",
+      "name": "Lego sculpture",
+      "latitude": 33.80883,
+      "status": "operating",
+      "longitude": -117.924396,
+      "category": "photo spot",
+      "description": ""
+    },
+    "world-of-disney": {
+      "land": "East Downtown Disney",
+      "name": "World of Disney Store",
+      "status": "operating",
+      "latitude": 33.80867,
+      "category": "landmark",
+      "longitude": -117.92106,
+      "description": "The largest Disney merchandise store in the Downtown Disney District."
+    }
+  },
+  "lastUpdated": "2026-06-17T00:00:00.000Z",
+  "hotels": {
+    "lobby-at-grand-californian": {
+      "name": "Lobby at Grand Californian",
+      "land": "Disney's Grand Californian Hotel",
+      "category": "photo spot",
+      "status": "operating",
+      "description": "Fireplace. Seasonal Displays",
+      "latitude": 33.80775,
+      "longitude": -117.92253
+    },
+    "pool-at-gch": {
+      "name": "Pool at GCH",
+      "land": "Disney's Grand Californian Hotel",
+      "category": "meeting point",
+      "status": "operating",
+      "description": "The pool at Grand Californian Hotel",
+      "latitude": 33.80746,
+      "longitude": -117.92197
+    },
+    "pool-at-disneyland-hotel": {
+      "name": "Pool at Disneyland Hotel",
+      "land": "Disneyland Hotel",
+      "category": "photo spot",
+      "status": "operating",
+      "description": "",
+      "latitude": 33.80847,
+      "longitude": -117.92688
+    },
+    "lobby-at-pixar-place": {
+      "name": "Lobby at Pixar Place",
+      "land": "Pixar Place Hotel",
+      "category": "meeting point",
+      "status": "operating",
+      "description": "Pixar themed displays",
+      "latitude": 33.8062,
+      "longitude": -117.92452
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "disneyland_resort": {
+    "lands": [
+      "Esplanade",
+      "Parking"
+    ],
+    "displayName": "Disneyland Resort"
+  },
+  "hotels": {
+    "lands": [
+      "Disney's Grand Californian Hotel",
+      "Disneyland Hotel",
+      "Pixar Place Hotel"
+    ],
+    "displayName": "Hotels"
+  },
+  "downtown": {
+    "lands": [
+      "West Downtown Disney",
+      "East Downtown Disney"
+    ],
+    "displayName": "Downtown Disney"
+  },
+  "disneyland": {
+    "lands": [
+      "Main Street U.S.A.",
+      "Hub",
+      "Tomorrowland",
+      "Fantasyland",
+      "Frontierland",
+      "Adventureland",
+      "New Orleans Square",
+      "Bayou Country",
+      "Mickey's Toontown",
+      "Star Wars: Galaxy's Edge",
+      "Parade Route"
+    ],
+    "displayName": "Disneyland Park"
+  },
+  "californiaadventure": {
+    "lands": [
+      "Buena Vista Street",
+      "Hollywood Land",
+      "Avengers Campus",
+      "San Fransokyo Square",
+      "Cars Land",
+      "Pixar Pier",
+      "Paradise Gardens Park",
+      "Grizzly Peak",
+      "Performance Corridor"
+    ],
+    "displayName": "Disney California Adventure"
+  }
+}

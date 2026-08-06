@@ -1,0 +1,1832 @@
+{
+  "californiaadventure": {
+    "seaside-souvenirs": {
+      "merchandiseCategories": [
+        "apparel",
+        "pins",
+        "accessories",
+        "souvenirs",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Pixar Pier",
+      "notableItems": "Specialty hats, collectible pins, 25th Anniversary collection",
+      "description": "Open-air souvenir stand inspired by 1930s classic boardwalk kiosks where Pixar Pier meets Paradise Gardens Park.",
+      "longitude": -117.922168377581,
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "latitude": 33.8063079841165,
+      "hours": "Park open to park close",
+      "name": "Seaside Souvenirs"
+    },
+    "web-suppliers": {
+      "name": "WEB Suppliers",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.806583694847,
+      "type": "Gift Shop",
+      "longitude": -117.91847561931,
+      "notableItems": "Spider-Bots with Tactical Upgrade shells, WEB Power Bands, Spider-Man goggles, Web Shooters",
+      "description": "Gift shop for WEB SLINGERS: A Spider-Man Adventure, themed as a Worldwide Engineering Brigade retail outlet.",
+      "land": "Avengers Campus",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "toys",
+        "collectibles",
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ]
+    },
+    "julius-katz-and-sons": {
+      "merchandiseCategories": [
+        "home",
+        "pins",
+        "collectibles",
+        "accessories"
+      ],
+      "land": "Buena Vista Street",
+      "acceptsAPDiscount": true,
+      "longitude": -117.919155937669,
+      "type": "Boutique",
+      "notableItems": "Disney-themed kitchen gadgets, dinnerware, aprons, home decor, pin collections",
+      "description": "A home goods and collectibles shop named as a play on Julius the Cat from Disney's 1920s Alice Comedies.",
+      "name": "Julius Katz & Sons",
+      "hours": "Park open to park close",
+      "latitude": 33.8081340782035,
+      "status": "operating"
+    },
+    "embarcadero-gifts": {
+      "merchandiseCategories": [
+        "accessories",
+        "apparel",
+        "collectibles",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Paradise Gardens Park",
+      "description": "Boutique near The Little Mermaid ride, known for its Pandora jewelry collection and calligraphy events.",
+      "notableItems": "Pandora Disney Parks Collection, ladies' apparel, pins",
+      "longitude": -117.920784357792,
+      "type": "Boutique",
+      "latitude": 33.8062990685672,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Embarcadero Gifts"
+    },
+    "collectors-warehouse": {
+      "merchandiseCategories": [
+        "apparel",
+        "toys",
+        "collectibles",
+        "souvenirs",
+        "park-exclusive"
+      ],
+      "land": "Avengers Campus",
+      "acceptsAPDiscount": true,
+      "type": "Gift Shop",
+      "longitude": -117.91683536507,
+      "description": "Ride exit shop at Guardians of the Galaxy -- Mission: BREAKOUT!, themed to the Collector's personal warehouse.",
+      "notableItems": "Guardians of the Galaxy merchandise, Marvel superhero apparel, comics, broad Marvel character items",
+      "name": "The Collector's Warehouse",
+      "hours": "Park open to park close",
+      "latitude": 33.8068851386952,
+      "status": "operating"
+    },
+    "san-fransokyo-makers-market": {
+      "merchandiseCategories": [
+        "apparel",
+        "plush",
+        "home",
+        "toys",
+        "accessories",
+        "souvenirs",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "San Fransokyo Square",
+      "description": "Open-air shop themed as a salvage yard for defeated battle bots from Big Hero 6. Opened August 2023.",
+      "notableItems": "Baymax plush, Big Hero 6 character merchandise, Tadashi hat, collectible golden medallions",
+      "type": "Gift Shop",
+      "longitude": -117.92009346375,
+      "status": "operating",
+      "latitude": 33.8054553229135,
+      "hours": "Park open to park close",
+      "name": "San Fransokyo Maker's Market"
+    },
+    "knicks-knacks": {
+      "acceptsAPDiscount": true,
+      "land": "Pixar Pier",
+      "merchandiseCategories": [
+        "apparel",
+        "pins",
+        "accessories",
+        "art/prints",
+        "park-exclusive"
+      ],
+      "status": "operating",
+      "latitude": 33.8052503222213,
+      "name": "Knick's Knacks",
+      "hours": "Park open to park close",
+      "notableItems": "Pixar character t-shirts, hats, socks, exclusive artwork, pins",
+      "description": "Located at the entrance of Pixar Pier, features Pixar-themed apparel and collectibles with some location-exclusive items.",
+      "longitude": -117.920603011059,
+      "type": "Gift Shop"
+    },
+    "midway-mercantile": {
+      "status": "operating",
+      "latitude": 33.8045453304296,
+      "name": "Midway Mercantile",
+      "hours": "Park open to park close",
+      "description": "Exit shop for Toy Story Midway Mania! in the Toy Story Boardwalk neighborhood.",
+      "notableItems": "Toy Story character merchandise, Pixar plush, ride-related souvenirs",
+      "longitude": -117.921531837243,
+      "type": "Gift Shop",
+      "acceptsAPDiscount": true,
+      "land": "Pixar Pier",
+      "merchandiseCategories": [
+        "toys",
+        "plush",
+        "apparel",
+        "souvenirs"
+      ]
+    },
+    "ramones-house-of-body-art": {
+      "acceptsAPDiscount": true,
+      "land": "Cars Land",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "art/prints",
+        "park-exclusive"
+      ],
+      "latitude": 33.805378777444,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Ramone's House of Body Art",
+      "notableItems": "Car-culture apparel, Radiator Springs Racers merchandise, some items exclusive to this location",
+      "description": "Themed to Ramone's custom body paint shop from Cars. Designed by real car customizer Chip Foose.",
+      "longitude": -117.918699133038,
+      "type": "Boutique"
+    },
+    "rushin-river-outfitters": {
+      "latitude": 33.8073450520221,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Rushin' River Outfitters",
+      "notableItems": "Grizzly River Run branded hoodies, ponchos (essential for post-ride), exclusive pins",
+      "description": "Cabin-style shop near Grizzly River Run selling outdoor and adventure-themed merchandise.",
+      "longitude": -117.920987367452,
+      "type": "Gift Shop",
+      "acceptsAPDiscount": true,
+      "land": "Grizzly Peak",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "pins",
+        "souvenirs",
+        "park-exclusive"
+      ]
+    },
+    "point-mugu-tattoo": {
+      "land": "Paradise Gardens Park",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "souvenirs",
+        "accessories"
+      ],
+      "hours": "Park open to park close",
+      "name": "Point Mugu Tattoo",
+      "status": "operating",
+      "type": "Cart/Kiosk",
+      "description": "Kiosk offering temporary tattoos and small boardwalk-style souvenirs.",
+      "notableItems": "Temporary tattoos (Disney characters, park icons), small impulse-buy souvenirs"
+    },
+    "off-the-page": {
+      "merchandiseCategories": [
+        "art/prints",
+        "collectibles",
+        "pins",
+        "home"
+      ],
+      "land": "Hollywood Land",
+      "acceptsAPDiscount": true,
+      "type": "Boutique",
+      "longitude": -117.917872556634,
+      "notableItems": "Original Disney artwork, animation cels, limited-edition prints, figurines",
+      "description": "Art gallery and collectibles shop inside the Animation Building with sketch artist demonstrations.",
+      "hours": "Park open to park close",
+      "name": "Off the Page",
+      "latitude": 33.8075387211976,
+      "status": "operating"
+    },
+    "los-feliz-five-and-dime": {
+      "name": "Los Feliz Five and Dime",
+      "hours": "Park open to park close",
+      "latitude": 33.8083970596624,
+      "status": "operating",
+      "type": "Gift Shop",
+      "longitude": -117.91877238164,
+      "description": "A vintage five-and-dime variety store themed to the Los Feliz neighborhood of 1920s Los Angeles.",
+      "notableItems": "Personalized embroidered hats, Mickey and friends retro merchandise",
+      "land": "Buena Vista Street",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "accessories",
+        "plush"
+      ]
+    },
+    "bing-bongs-sweet-stuff": {
+      "land": "Pixar Pier",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "candy/snacks",
+        "apparel",
+        "home",
+        "toys",
+        "souvenirs"
+      ],
+      "hours": "Park open to park close",
+      "name": "Bing Bong's Sweet Stuff",
+      "latitude": 33.8050640286978,
+      "status": "operating",
+      "longitude": -117.92251924221,
+      "type": "Boutique",
+      "notableItems": "Bing Bong's Candy Tears, Rainbow Unicorn Cotton Candy, cake pops, Inside Out merchandise",
+      "description": "Candy and sweets shop themed to Bing Bong from Inside Out, in the Inside Out Headquarters neighborhood."
+    },
+    "sarges-surplus-hut": {
+      "merchandiseCategories": [
+        "toys",
+        "plush",
+        "apparel",
+        "souvenirs",
+        "candy/snacks",
+        "accessories"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Cars Land",
+      "notableItems": "Lightning McQueen and Mater toys, kids' costumes, Cars die-cast vehicles",
+      "description": "Quonset hut-style shop targeting children and families with Cars character toys and park essentials.",
+      "type": "Gift Shop",
+      "longitude": -117.919290766797,
+      "latitude": 33.8059647414095,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Sarge's Surplus Hut"
+    },
+    "humphreys-service-supplies": {
+      "latitude": 33.8079155920761,
+      "status": "operating",
+      "name": "Humphrey's Service & Supplies",
+      "hours": "Park open to park close",
+      "description": "Overlooks the Grizzly Peak Airfield plaza near Soarin', themed to Humphrey the Bear's service station.",
+      "notableItems": "Soarin' merchandise, Grizzly Peak-themed items, park essentials",
+      "type": "Gift Shop",
+      "longitude": -117.920149177232,
+      "acceptsAPDiscount": true,
+      "land": "Grizzly Peak",
+      "merchandiseCategories": [
+        "souvenirs",
+        "apparel",
+        "accessories"
+      ]
+    },
+    "studio-store": {
+      "land": "Hollywood Land",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "souvenirs"
+      ],
+      "name": "Studio Store",
+      "hours": "Park open to park close",
+      "latitude": 33.8080500288917,
+      "status": "operating",
+      "type": "Gift Shop",
+      "longitude": -117.917657144111,
+      "description": "A small impulse-buy shop in the backlot near Mickey's PhilharMagic for quick purchases.",
+      "notableItems": "Hats, sunglasses, basic park souvenirs"
+    },
+    "elias-and-co": {
+      "latitude": 33.8080256952836,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Elias & Co.",
+      "description": "The park's flagship department store, themed to a 1920s Los Angeles emporium. Named after Walt Disney's father.",
+      "notableItems": "25th Anniversary collection, seasonal merchandise, major hub for new merchandise launches",
+      "type": "Gift Shop",
+      "longitude": -117.91875685777,
+      "acceptsAPDiscount": true,
+      "land": "Buena Vista Street",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "pins",
+        "souvenirs",
+        "plush",
+        "home",
+        "toys",
+        "collectibles",
+        "park-exclusive"
+      ]
+    },
+    "trolley-treats": {
+      "status": "operating",
+      "latitude": 33.8080007341535,
+      "name": "Trolley Treats",
+      "hours": "Park open to park close",
+      "notableItems": "Hand-pulled taffy, caramel apples, dipped strawberries, fudge, toffee, seasonal treats",
+      "description": "A candy kitchen and confectionery shop with an open kitchen where guests can watch sweets being made.",
+      "longitude": -117.91907306825,
+      "type": "Boutique",
+      "acceptsAPDiscount": false,
+      "land": "Buena Vista Street",
+      "merchandiseCategories": [
+        "candy/snacks"
+      ]
+    },
+    "avengers-vault": {
+      "name": "Avengers Vault",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8064233509953,
+      "type": "Boutique",
+      "longitude": -117.917640698489,
+      "notableItems": "Infinity Gauntlet replica, Tesseract, character-specific merchandise, premium Marvel apparel",
+      "description": "Premium retail location in the Quinjet building featuring Infinity Saga relics and high-end Marvel collectibles.",
+      "land": "Avengers Campus",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "collectibles",
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ]
+    },
+    "gone-hollywood": {
+      "land": "Hollywood Land",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "pins",
+        "accessories",
+        "park-exclusive"
+      ],
+      "name": "Gone Hollywood",
+      "hours": "Park open to park close",
+      "latitude": 33.8077224625005,
+      "status": "operating",
+      "type": "Gift Shop",
+      "longitude": -117.9182788711,
+      "description": "Located outside the Animation Building, carries Disney-themed souvenirs with a Golden Age of Hollywood aesthetic.",
+      "notableItems": "25th Anniversary collection, seasonal/holiday merchandise"
+    },
+    "big-top-toys": {
+      "description": "A circus-themed toy store on Buena Vista Street offering Disney plush, toys, and games for children.",
+      "notableItems": "Disney character plush, children's toys and games",
+      "type": "Gift Shop",
+      "longitude": -117.918804568866,
+      "latitude": 33.8081441070029,
+      "status": "operating",
+      "name": "Big Top Toys",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "toys",
+        "plush",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Buena Vista Street"
+    },
+    "oswalds": {
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "accessories",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Buena Vista Street",
+      "description": "Classic gas-station-themed shop featuring retro merchandise inspired by Oswald the Lucky Rabbit.",
+      "notableItems": "Oswald the Lucky Rabbit merchandise, retro Disney memorabilia, sundries and park essentials",
+      "longitude": -117.918581592025,
+      "type": "Gift Shop",
+      "latitude": 33.8085708911204,
+      "status": "operating",
+      "name": "Oswald's",
+      "hours": "Park open to park close"
+    },
+    "kingswell-camera-shop": {
+      "type": "Boutique",
+      "longitude": -117.919170884832,
+      "description": "A small corner shop doubling as a PhotoPass printing location. Named after the avenue of Walt Disney's first LA studio.",
+      "notableItems": "PhotoPass photo printing and pickup, camera accessories, select Disney merchandise",
+      "hours": "Park open to park close",
+      "name": "Kingswell Camera Shop",
+      "status": "operating",
+      "latitude": 33.808370181773,
+      "merchandiseCategories": [
+        "accessories",
+        "souvenirs",
+        "park-exclusive"
+      ],
+      "land": "Buena Vista Street",
+      "acceptsAPDiscount": true
+    },
+    "atwater-ink-and-paint": {
+      "merchandiseCategories": [
+        "home",
+        "pins",
+        "souvenirs",
+        "accessories"
+      ],
+      "land": "Buena Vista Street",
+      "acceptsAPDiscount": true,
+      "type": "Boutique",
+      "longitude": -117.919289755804,
+      "notableItems": "Ceramic and glass souvenirs, Disney mugs, trading pins, coffee/tea, kitchen items",
+      "description": "A small market house themed to a 1920s art supply store. Sign lists the Nine Old Men animators as instructors.",
+      "name": "Atwater Ink & Paint",
+      "hours": "Park open to park close",
+      "latitude": 33.8079523630885,
+      "status": "operating"
+    },
+    "radiator-springs-curios": {
+      "acceptsAPDiscount": true,
+      "land": "Cars Land",
+      "merchandiseCategories": [
+        "pins",
+        "collectibles",
+        "souvenirs",
+        "accessories",
+        "toys"
+      ],
+      "latitude": 33.8057439436728,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Radiator Springs Curios",
+      "description": "Rustic Route 66 gift shop themed to Lizzie's curio shop, offering the broadest range of Cars collectibles.",
+      "notableItems": "Cars-themed pins, antenna toppers, window clings, license plate frames, die-cast cars",
+      "type": "Gift Shop",
+      "longitude": -117.918613963837
+    },
+    "campus-supply-pod": {
+      "latitude": 33.8066542460901,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Campus Supply Pod",
+      "notableItems": "Avengers Campus logo apparel, drinkware, Web Shooters, Repulsors",
+      "description": "Small outdoor merchandise stand themed as a campus recruit supply station.",
+      "longitude": -117.917993192078,
+      "type": "Cart/Kiosk",
+      "acceptsAPDiscount": true,
+      "land": "Avengers Campus",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ]
+    }
+  },
+  "disneyland": {
+    "bonanza-outfitters": {
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Frontierland",
+      "description": "Frontierland's primary apparel shop with sub-sections including Silver Spur Supplies.",
+      "notableItems": "Spirit jerseys, hats, ear hat collections, western-themed apparel",
+      "type": "Gift Shop",
+      "longitude": -117.919934418505,
+      "latitude": 33.8120425811533,
+      "status": "operating",
+      "name": "Bonanza Outfitters",
+      "hours": "Park open to park close"
+    },
+    "crystal-arts": {
+      "hours": "Park open to park close",
+      "name": "Crystal Arts",
+      "status": "operating",
+      "latitude": 33.811183597456,
+      "type": "Boutique",
+      "longitude": -117.918872557173,
+      "notableItems": "Engraved crystal figurines, glass tiaras, Arribas Brothers crystal art",
+      "description": "Offers crystal and glass mementos, with personalized engraving done while guests wait.",
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "collectibles",
+        "home",
+        "accessories"
+      ]
+    },
+    "star-trader": {
+      "notableItems": "Star Wars merchandise, build-your-own lightsaber parts, limited-edition collectibles",
+      "description": "The largest store in Tomorrowland at the exit of Star Tours. A major destination for Star Wars fans.",
+      "longitude": -117.917300992786,
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.8118350749409,
+      "name": "The Star Trader",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "apparel",
+        "toys",
+        "collectibles",
+        "art/prints",
+        "souvenirs",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Tomorrowland"
+    },
+    "royal-reception": {
+      "hours": "Park open to park close",
+      "name": "Royal Reception",
+      "status": "operating",
+      "latitude": 33.8134970969368,
+      "longitude": -117.919295592466,
+      "type": "Boutique",
+      "notableItems": "Belle costumes, Beauty and the Beast themed items, glittering accessories",
+      "description": "A quaint Fantasyland boutique with Beauty and the Beast-inspired merchandise.",
+      "land": "Fantasyland",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "toys",
+        "plush"
+      ]
+    },
+    "creature-stall": {
+      "notableItems": "Animatronic shoulder pets (porgs, Loth-cats), kowakian monkey-lizards, tauntauns",
+      "description": "Marketplace stall selling exotic alien creatures and critters from across the Star Wars galaxy.",
+      "longitude": -117.921891599928,
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.8142863334643,
+      "hours": "Park open to park close",
+      "name": "Creature Stall",
+      "merchandiseCategories": [
+        "plush",
+        "toys",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge"
+    },
+    "fantasy-faire-gifts": {
+      "merchandiseCategories": [
+        "candy/snacks",
+        "plush",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Fantasyland",
+      "description": "An outdoor kiosk near it's a small world selling candy, small plush, and impulse souvenirs.",
+      "notableItems": "Bagged caramel corn, bubble wands, small plush toys",
+      "type": "Cart/Kiosk",
+      "longitude": -117.918145116919,
+      "latitude": 33.8142490361336,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Fantasy Faire Gifts"
+    },
+    "pioneer-mercantile": {
+      "type": "Gift Shop",
+      "longitude": -117.919815154943,
+      "description": "A larger-than-it-looks shop carrying western-themed souvenirs and trending Disney items.",
+      "notableItems": "Western-themed gifts, trending Disney items, mobile checkout via app",
+      "name": "Pioneer Mercantile",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8120032335635,
+      "merchandiseCategories": [
+        "souvenirs",
+        "apparel",
+        "home",
+        "toys",
+        "accessories"
+      ],
+      "land": "Frontierland",
+      "acceptsAPDiscount": true
+    },
+    "louis-critter-club": {
+      "merchandiseCategories": [
+        "candy/snacks",
+        "plush",
+        "toys",
+        "souvenirs"
+      ],
+      "land": "Bayou Country",
+      "acceptsAPDiscount": true,
+      "type": "Gift Shop",
+      "longitude": -117.923254533982,
+      "notableItems": "Candy, caramel apples, character plush, Bayou Country souvenirs",
+      "description": "Located at the far end of Bayou Country, rebranded with a Princess and the Frog theme. Candy and character plush.",
+      "name": "Louis' Critter Club",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8121610966717
+    },
+    "mad-hatter-main-street": {
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A.",
+      "merchandiseCategories": [
+        "accessories",
+        "park-exclusive",
+        "apparel"
+      ],
+      "latitude": 33.8104451304484,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "The Mad Hatter (Main Street)",
+      "notableItems": "Custom embroidered Mickey Mouse ears, character hats, themed headbands",
+      "description": "The go-to stop for all headwear, located in Town Square. Hats can be personalized and embroidered on site.",
+      "longitude": -117.91851738352,
+      "type": "Gift Shop"
+    },
+    "eudoras-chic-boutique": {
+      "longitude": -117.921358354516,
+      "type": "Boutique",
+      "notableItems": "Tiana themed apparel, kitchen accessories, cookware, New Orleans-themed items",
+      "description": "Inspired by Tiana's dressmaker mother Eudora, blending fashion accessories with cookware and Princess and the Frog merchandise.",
+      "hours": "Park open to park close",
+      "name": "Eudora's Chic Boutique Featuring Tiana's Gourmet Secrets",
+      "status": "operating",
+      "latitude": 33.8110014205125,
+      "merchandiseCategories": [
+        "accessories",
+        "home",
+        "apparel"
+      ],
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": true
+    },
+    "pieces-of-eight": {
+      "merchandiseCategories": [
+        "toys",
+        "souvenirs",
+        "apparel",
+        "accessories",
+        "collectibles"
+      ],
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": true,
+      "longitude": -117.92107488995,
+      "type": "Gift Shop",
+      "description": "Located at the exit of Pirates of the Caribbean, this pirate-themed shop is full of swashbuckling merchandise.",
+      "notableItems": "Pirates of the Caribbean merchandise, pirate hats, swords, costume accessories",
+      "hours": "Park open to park close",
+      "name": "Pieces of Eight",
+      "status": "operating",
+      "latitude": 33.8111643042114
+    },
+    "la-mascarade": {
+      "status": "operating",
+      "latitude": 33.8110786076497,
+      "name": "La Mascarade d'Orleans",
+      "hours": "Park open to park close",
+      "notableItems": "Pandora charms and bracelets, Mardi Gras-themed masks, jewelry",
+      "description": "The first dedicated Pandora jewelry location at the Disneyland Resort, featuring the largest in-park Pandora assortment.",
+      "longitude": -117.92153178448,
+      "type": "Boutique",
+      "acceptsAPDiscount": true,
+      "land": "New Orleans Square",
+      "merchandiseCategories": [
+        "accessories",
+        "collectibles"
+      ]
+    },
+    "frontierland-shootin-exposition": {
+      "description": "An infrared shooting gallery that also functions as a small retail spot for prizes and souvenirs.",
+      "notableItems": "Coin-operated attraction ($1 per play), small prizes",
+      "longitude": -117.919715728046,
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "latitude": 33.8121508731746,
+      "name": "Frontierland Shootin' Exposition",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "souvenirs",
+        "toys"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Frontierland"
+    },
+    "bibbidi-bobbidi-boutique": {
+      "acceptsAPDiscount": false,
+      "land": "Fantasyland",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "toys"
+      ],
+      "latitude": 33.8129538505035,
+      "status": "operating",
+      "name": "Bibbidi Bobbidi Boutique",
+      "hours": "Park open to park close",
+      "notableItems": "Princess makeover packages, costumes, tiaras, wands, knight armor sets",
+      "description": "Appointment-based salon where children ages 3-12 receive princess or knight transformations in the Sleeping Beauty Castle courtyard.",
+      "type": "Boutique",
+      "longitude": -117.919176252056
+    },
+    "merlins-marvelous-miscellany": {
+      "status": "operating",
+      "latitude": 33.812940326509,
+      "hours": "Park open to park close",
+      "name": "Merlin's Marvelous Miscellany",
+      "notableItems": "Sleeping Beauty and castle-themed merchandise, whimsical wizard-themed decor",
+      "description": "Opened 2022 in the shadow of Sleeping Beauty Castle, themed to Merlin from The Sword in the Stone.",
+      "longitude": -117.918908069362,
+      "type": "Gift Shop",
+      "acceptsAPDiscount": true,
+      "land": "Fantasyland",
+      "merchandiseCategories": [
+        "souvenirs",
+        "collectibles",
+        "home",
+        "toys"
+      ]
+    },
+    "madame-leotas": {
+      "merchandiseCategories": [
+        "apparel",
+        "home",
+        "collectibles",
+        "souvenirs",
+        "accessories",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "New Orleans Square",
+      "notableItems": "Haunted Mansion exclusive merchandise, Nightmare Before Christmas items, Madame Leota collectibles, original Haunted Mansion props",
+      "description": "Opened December 2024 as part of the Haunted Mansion expansion. Set in the mansion's carriage house with seance-themed decor.",
+      "longitude": -117.922224333552,
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.811872573906,
+      "hours": "Park open to park close",
+      "name": "Madame Leota's Somewhere Beyond"
+    },
+    "silhouette-studio": {
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "art/prints",
+        "park-exclusive"
+      ],
+      "name": "Silhouette Studio",
+      "hours": "Park open to park close",
+      "latitude": 33.8112188869936,
+      "status": "operating",
+      "type": "Boutique",
+      "longitude": -117.918882699309,
+      "notableItems": "Hand-cut silhouette portraits of individuals or groups",
+      "description": "Disney artists hand-cut paper silhouette portraits of guests, a tradition dating back to the park's early years."
+    },
+    "adventureland-bazaar": {
+      "hours": "Park open to park close",
+      "name": "Adventureland Bazaar",
+      "latitude": 33.8116797259584,
+      "status": "operating",
+      "type": "Gift Shop",
+      "longitude": -117.919927900608,
+      "description": "The primary shop in Adventureland, carrying both Disney and tropical merchandise themed to Indiana Jones, Moana, and more.",
+      "notableItems": "Indiana Jones, Moana, Lilo & Stitch, Lion King themed merchandise; tropical clothing",
+      "land": "Adventureland",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "plush",
+        "toys",
+        "souvenirs",
+        "accessories"
+      ]
+    },
+    "parasol-cart": {
+      "merchandiseCategories": [
+        "accessories",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "New Orleans Square",
+      "notableItems": "Custom decorated parasols",
+      "description": "A small cart where guests can purchase and have custom-decorated parasols made.",
+      "type": "Cart/Kiosk",
+      "longitude": -117.921267427983,
+      "status": "operating",
+      "latitude": 33.8110731525332,
+      "name": "Parasol Cart",
+      "hours": "Park open to park close"
+    },
+    "first-order-cargo": {
+      "latitude": 33.8145604434534,
+      "status": "operating",
+      "name": "First Order Cargo",
+      "hours": "Park open to park close",
+      "description": "First Order-themed shop selling Dark Side gear and merchandise.",
+      "notableItems": "First Order merchandise, stormtrooper gear, Dark Side accessories",
+      "type": "Gift Shop",
+      "longitude": -117.920478173844,
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge",
+      "merchandiseCategories": [
+        "apparel",
+        "toys",
+        "accessories",
+        "collectibles"
+      ]
+    },
+    "new-century-jewelry": {
+      "merchandiseCategories": [
+        "accessories",
+        "collectibles"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A.",
+      "notableItems": "Pandora charms (Disney collection), fine jewelry, charm bracelets",
+      "description": "Offers fine jewelry including necklaces, bracelets, earrings, and rings with Disney themes.",
+      "longitude": -117.919076384968,
+      "type": "Boutique",
+      "latitude": 33.8108621681124,
+      "status": "operating",
+      "name": "New Century Jewelry",
+      "hours": "Park open to park close"
+    },
+    "portrait-artists": {
+      "hours": "Park open to park close",
+      "name": "Portrait Artists",
+      "status": "operating",
+      "latitude": 33.8110731525332,
+      "type": "Cart/Kiosk",
+      "longitude": -117.921267427983,
+      "notableItems": "Hand-drawn character portraits, custom guest portraits",
+      "description": "Disney artists create custom portrait sketches of guests in watercolors or pastels along the streets.",
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "art/prints",
+        "park-exclusive"
+      ]
+    },
+    "rays-berets": {
+      "land": "Bayou Country",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "toys",
+        "plush"
+      ],
+      "hours": "Park open to park close",
+      "name": "Ray's Berets",
+      "latitude": 33.8123334728024,
+      "status": "operating",
+      "longitude": -117.92223167971,
+      "type": "Gift Shop",
+      "notableItems": "Hats, berets, Tiana's Bayou Adventure merchandise, Princess and the Frog items",
+      "description": "Primary retail location in Bayou Country, specializing in headwear and Princess and the Frog themed merchandise."
+    },
+    "dok-ondars": {
+      "merchandiseCategories": [
+        "collectibles",
+        "toys",
+        "park-exclusive",
+        "art/prints"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge",
+      "description": "A richly themed shop run by an animatronic Ithorian, selling rare Star Wars artifacts and legacy lightsabers.",
+      "notableItems": "Legacy lightsabers (character replicas), holocrons, kyber crystals, Jedi and Sith artifacts",
+      "type": "Boutique",
+      "longitude": -117.921317648413,
+      "latitude": 33.8145987620277,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Dok-Ondar's Den of Antiquities"
+    },
+    "cristal-dorleans": {
+      "type": "Boutique",
+      "longitude": -117.9213625211,
+      "description": "Crystal and glass gift shop offering handmade and customizable crystal items in an elegant setting.",
+      "notableItems": "Handmade crystal items, personalized glassware, Arribas Brothers pieces",
+      "hours": "Park open to park close",
+      "name": "Cristal d'Orleans",
+      "latitude": 33.8111101250011,
+      "status": "operating",
+      "merchandiseCategories": [
+        "collectibles",
+        "home",
+        "accessories"
+      ],
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": true
+    },
+    "penny-arcade": {
+      "merchandiseCategories": [
+        "candy/snacks",
+        "souvenirs"
+      ],
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": false,
+      "type": "Gift Shop",
+      "longitude": -117.919096601372,
+      "notableItems": "Vintage penny-press machines, collectible pressed pennies, old-fashioned candies, caramel apples",
+      "description": "Opening-day attraction combining vintage arcade games with a candy counter in the back.",
+      "hours": "Park open to park close",
+      "name": "Penny Arcade",
+      "latitude": 33.8112556158726,
+      "status": "operating"
+    },
+    "market-house": {
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "souvenirs",
+        "candy/snacks"
+      ],
+      "hours": "Park open to park close",
+      "name": "Market House",
+      "status": "operating",
+      "latitude": 33.8109060743132,
+      "type": "Gift Shop",
+      "longitude": -117.918876953576,
+      "notableItems": "Starbucks beverages, Disney-themed Starbucks mugs and tumblers",
+      "description": "Themed as a turn-of-the-century general store, operates as the park's Starbucks location with select Disney merchandise."
+    },
+    "fortuosity-shop": {
+      "merchandiseCategories": [
+        "accessories",
+        "pins",
+        "apparel"
+      ],
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": true,
+      "longitude": -117.919092667299,
+      "type": "Gift Shop",
+      "description": "Fashionable clothing accessories, purses, watches, and a large pin collection.",
+      "notableItems": "Pin collections, lanyards, fashionable accessories",
+      "hours": "Park open to park close",
+      "name": "Fortuosity Shop",
+      "latitude": 33.8109304580656,
+      "status": "operating"
+    },
+    "savis-workshop": {
+      "merchandiseCategories": [
+        "collectibles",
+        "park-exclusive",
+        "toys"
+      ],
+      "land": "Star Wars: Galaxy's Edge",
+      "acceptsAPDiscount": false,
+      "type": "Boutique",
+      "longitude": -117.921078947246,
+      "description": "A premium interactive experience where guests build custom lightsabers in an immersive ceremony. Reservation required.",
+      "notableItems": "Custom-built lightsabers (4 themes), kyber crystals. $249.99+",
+      "hours": "Park open to park close",
+      "name": "Savi's Workshop -- Handbuilt Lightsabers",
+      "status": "operating",
+      "latitude": 33.814408533534
+    },
+    "little-green-men": {
+      "land": "Tomorrowland",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "pins",
+        "toys",
+        "plush",
+        "souvenirs"
+      ],
+      "hours": "Park open to park close",
+      "name": "Little Green Men Store Command",
+      "latitude": 33.812278452412,
+      "status": "operating",
+      "longitude": -117.917466143086,
+      "type": "Gift Shop",
+      "notableItems": "Toy Story themed merchandise, extensive pin selection, Buzz Lightyear items, alien plush",
+      "description": "Located at the exit of Buzz Lightyear Astro Blasters, this Toy Story-themed shop is packed with pins and Pixar merchandise."
+    },
+    "mad-hatter-fantasyland": {
+      "description": "A second Mad Hatter location within Fantasyland, offering character hats and personalized Mickey ears.",
+      "notableItems": "Character hats, personalized mouse ears, Peter Pan hats",
+      "longitude": -117.91860774401,
+      "type": "Gift Shop",
+      "latitude": 33.8134448537143,
+      "status": "operating",
+      "name": "The Mad Hatter (Fantasyland)",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "accessories",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Fantasyland"
+    },
+    "emporium": {
+      "notableItems": "Mobile checkout via Disneyland app; one-stop shop for virtually every type of Disney merchandise",
+      "description": "The largest shop in Disneyland Park, offering the widest selection of merchandise across all categories. Stays open one hour after park closing.",
+      "longitude": -117.919125246926,
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.8106109759686,
+      "hours": "Park open to park close + 1 hour",
+      "name": "Emporium",
+      "merchandiseCategories": [
+        "apparel",
+        "pins",
+        "souvenirs",
+        "plush",
+        "home",
+        "toys",
+        "accessories",
+        "collectibles",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A."
+    },
+    "droid-depot": {
+      "description": "Interactive workshop where guests build custom astromech droids from parts on a conveyor belt. Reservation recommended.",
+      "notableItems": "Custom-built R-series and BB-series droids, personality chips, droid accessories",
+      "longitude": -117.920953295041,
+      "type": "Boutique",
+      "status": "operating",
+      "latitude": 33.8142157526324,
+      "hours": "Park open to park close",
+      "name": "Droid Depot",
+      "merchandiseCategories": [
+        "collectibles",
+        "toys",
+        "park-exclusive"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge"
+    },
+    "crystal-arcade": {
+      "notableItems": "Character plush toys, baby blankets, soft accessories",
+      "description": "Located on the Town Square side of Main Street, this shop sells plush toys, blankets, and accessories.",
+      "type": "Gift Shop",
+      "longitude": -117.919094033564,
+      "latitude": 33.8107890875894,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Crystal Arcade",
+      "merchandiseCategories": [
+        "plush",
+        "accessories",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A."
+    },
+    "le-petit-chalet": {
+      "description": "A small kiosk in the shadow of the Matterhorn selling hats, bubble wands, and small souvenirs.",
+      "notableItems": "Bubble wands, light-up toys, hats, small impulse-buy souvenirs",
+      "type": "Cart/Kiosk",
+      "longitude": -117.917918507313,
+      "latitude": 33.813703040173,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Le Petit Chalet",
+      "merchandiseCategories": [
+        "toys",
+        "souvenirs",
+        "accessories"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Fantasyland"
+    },
+    "engineear-souvenirs": {
+      "acceptsAPDiscount": true,
+      "land": "Mickey's Toontown",
+      "merchandiseCategories": [
+        "apparel",
+        "plush",
+        "toys",
+        "souvenirs",
+        "accessories",
+        "pins"
+      ],
+      "status": "operating",
+      "latitude": 33.8155287280228,
+      "name": "EngineEar Souvenirs",
+      "hours": "Park open to park close",
+      "notableItems": "Mickey and Minnie merchandise, ear hats, Runaway Railway themed items",
+      "description": "The only shop in Toontown, located at the exit of Mickey & Minnie's Runaway Railway.",
+      "type": "Gift Shop",
+      "longitude": -117.918425586229
+    },
+    "plaza-point": {
+      "type": "Gift Shop",
+      "longitude": -117.918841547308,
+      "notableItems": "Christmas ornaments year-round, holiday decor, seasonal merchandise",
+      "description": "Year-round holiday shop offering ornaments, seasonal decor, and housewares overlooking the Central Plaza.",
+      "name": "Plaza Point (Disney Showcase)",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8114241042698,
+      "merchandiseCategories": [
+        "home",
+        "collectibles",
+        "souvenirs"
+      ],
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": true
+    },
+    "main-street-magic-shop": {
+      "latitude": 33.8105869601993,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Main Street Magic Shop",
+      "notableItems": "Magic trick kits, Sorcerer Mickey merchandise, illusion props",
+      "description": "Sells Sorcerer Mickey merchandise and magic-themed items. Steve Martin once worked here as a teenager.",
+      "type": "Boutique",
+      "longitude": -117.91886645334,
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A.",
+      "merchandiseCategories": [
+        "toys",
+        "souvenirs",
+        "collectibles"
+      ]
+    },
+    "disney-clothiers": {
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A.",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ],
+      "status": "operating",
+      "latitude": 33.8110573328072,
+      "hours": "Park open to park close",
+      "name": "Disney Clothiers, Ltd.",
+      "notableItems": "Spirit jerseys, seasonal costumes, keepsakes",
+      "description": "Disney-themed apparel for the whole family, including seasonal costumes and customizable clothing.",
+      "type": "Gift Shop",
+      "longitude": -117.918862699559
+    },
+    "black-spire-outfitters": {
+      "name": "Black Spire Outfitters",
+      "hours": "Park open to park close",
+      "latitude": 33.8144424904519,
+      "status": "operating",
+      "longitude": -117.921750287138,
+      "type": "Gift Shop",
+      "notableItems": "Full Star Wars outfits (Jedi robes, Resistance vests, Sith cloaks), Batuuan-style clothing",
+      "description": "The primary apparel shop in Galaxy's Edge, themed as a Batuuan clothing outfitter.",
+      "land": "Star Wars: Galaxy's Edge",
+      "acceptsAPDiscount": false,
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "park-exclusive"
+      ]
+    },
+    "toydarian-toymaker": {
+      "description": "A market stall offering handcrafted-style toys and figurines themed to the Star Wars universe.",
+      "notableItems": "Handcrafted-look wooden figurines, plush characters, children's toys",
+      "longitude": -117.921830917735,
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "latitude": 33.8144098757359,
+      "name": "Toydarian Toymaker",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "toys",
+        "plush",
+        "collectibles"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge"
+    },
+    "mlle-antoinettes": {
+      "merchandiseCategories": [
+        "accessories"
+      ],
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": true,
+      "type": "Boutique",
+      "longitude": -117.921466166593,
+      "description": "A small, atmospheric perfumery styled as a fantasy antique shop.",
+      "notableItems": "Perfumes, colognes, bath and beauty products, Disney-branded fragrances",
+      "name": "Mlle. Antoinette's Parfumerie",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.811130804809
+    },
+    "20th-century-music": {
+      "description": "A small shop selling Disney soundtracks, pins, lanyards, and books.",
+      "notableItems": "Disney film soundtracks, pin collections, books",
+      "type": "Gift Shop",
+      "longitude": -117.918876307124,
+      "status": "operating",
+      "latitude": 33.8106422508844,
+      "name": "20th Century Music Company",
+      "hours": "Park open to park close",
+      "merchandiseCategories": [
+        "pins",
+        "collectibles",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A."
+    },
+    "china-closet": {
+      "merchandiseCategories": [
+        "home",
+        "collectibles",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Main Street U.S.A.",
+      "notableItems": "Snow globes, porcelain figurines, decorative plates, seasonal items",
+      "description": "Specialty shop featuring ceramic and porcelain collectibles, housewares, and mugs.",
+      "longitude": -117.918876676363,
+      "type": "Boutique",
+      "latitude": 33.8113032698276,
+      "status": "operating",
+      "name": "The China Closet",
+      "hours": "Park open to park close"
+    },
+    "candy-palace": {
+      "acceptsAPDiscount": false,
+      "land": "Main Street U.S.A.",
+      "merchandiseCategories": [
+        "candy/snacks"
+      ],
+      "latitude": 33.8113207176016,
+      "status": "operating",
+      "name": "Candy Palace & Candy Kitchen",
+      "hours": "Park open to park close",
+      "notableItems": "Handmade caramel apples, saltwater taffy, fudge, seasonal candy, candy canes during holidays",
+      "description": "Old-fashioned candy shop with a working candy kitchen visible through the window. Handmade sweets produced on site.",
+      "longitude": -117.919103293654,
+      "type": "Gift Shop"
+    },
+    "jewels-of-bith": {
+      "status": "operating",
+      "latitude": 33.8144352690155,
+      "name": "Jewels of Bith",
+      "hours": "Park open to park close",
+      "description": "A tiny marketplace stall selling small accessories and souvenirs branded with Black Spire Outpost.",
+      "notableItems": "Black Spire Outpost branded items, fridge magnets, luggage tags, postcards, pins",
+      "type": "Cart/Kiosk",
+      "longitude": -117.921677999383,
+      "acceptsAPDiscount": false,
+      "land": "Star Wars: Galaxy's Edge",
+      "merchandiseCategories": [
+        "souvenirs",
+        "pins",
+        "accessories",
+        "apparel"
+      ]
+    },
+    "port-royal": {
+      "land": "New Orleans Square",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "home",
+        "collectibles",
+        "souvenirs",
+        "accessories"
+      ],
+      "name": "Port Royal Curios and Curiosities",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "type": "Gift Shop",
+      "notableItems": "Haunted Mansion merchandise, Nightmare Before Christmas items, spooky home decor",
+      "description": "Home base for Haunted Mansion and Nightmare Before Christmas themed merchandise in the winding alleyways."
+    },
+    "fairy-tale-treasures": {
+      "notableItems": "Princess costumes, royal clothing, tiaras, and accessories for children",
+      "description": "A small shop in Fantasy Faire focused on princess merchandise.",
+      "longitude": -117.919600925866,
+      "type": "Gift Shop",
+      "latitude": 33.8125127392425,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Fairy Tale Treasures",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "toys"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Fantasyland"
+    },
+    "strombolis-wagon": {
+      "type": "Cart/Kiosk",
+      "notableItems": "T-shirts, candy, postcards, small souvenirs",
+      "description": "Themed as the puppet-master Stromboli's wagon from Pinocchio, located near Pinocchio's Daring Journey.",
+      "hours": "Park open to park close",
+      "name": "Stromboli's Wagon",
+      "status": "operating",
+      "merchandiseCategories": [
+        "candy/snacks",
+        "apparel",
+        "souvenirs"
+      ],
+      "land": "Fantasyland",
+      "acceptsAPDiscount": false
+    },
+    "westward-ho": {
+      "merchandiseCategories": [
+        "pins",
+        "accessories",
+        "collectibles",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "Frontierland",
+      "notableItems": "Extensive pin collection, limited-edition pin releases, lanyards, MagicBand+",
+      "description": "The largest pin trading shop in Disneyland Park.",
+      "longitude": -117.919780482864,
+      "type": "Gift Shop",
+      "latitude": 33.8122177851822,
+      "status": "operating",
+      "hours": "Park open to park close",
+      "name": "Westward Ho Trading Company"
+    },
+    "resistance-supply": {
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "pins",
+        "souvenirs"
+      ],
+      "land": "Star Wars: Galaxy's Edge",
+      "acceptsAPDiscount": false,
+      "longitude": -117.922825789691,
+      "type": "Gift Shop",
+      "notableItems": "Resistance-themed apparel, patches, pins, character merchandise (Rey, Finn, Poe)",
+      "description": "The Resistance's outpost shop offering Light Side themed gear and accessories.",
+      "name": "Resistance Supply",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8139762872546
+    },
+    "disneyana": {
+      "name": "Disneyana",
+      "hours": "Park open to park close",
+      "status": "operating",
+      "latitude": 33.8101135330388,
+      "type": "Boutique",
+      "longitude": -117.918576410115,
+      "notableItems": "One-of-a-kind original artwork, limited-edition prints, figurines",
+      "description": "A gallery-style shop near the park entrance showcasing limited-edition and original Disney artwork and collectibles.",
+      "land": "Main Street U.S.A.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "art/prints",
+        "collectibles",
+        "park-exclusive"
+      ]
+    },
+    "small-world-toy-shop": {
+      "longitude": -117.918080649779,
+      "type": "Gift Shop",
+      "notableItems": "Mattel Disney dolls, park attraction playsets, Small World dolls, princess toys, magic wands",
+      "description": "Located at the exit of it's a small world, specializes in toys and Small World-themed merchandise.",
+      "name": "It's a Small World Toy Shop",
+      "hours": "Park open to park close",
+      "latitude": 33.8144607287215,
+      "status": "operating",
+      "merchandiseCategories": [
+        "toys",
+        "plush",
+        "pins",
+        "souvenirs"
+      ],
+      "land": "Fantasyland",
+      "acceptsAPDiscount": true
+    }
+  },
+  "downtown": {
+    "pandora-jewelry": {
+      "name": "PANDORA Jewelry",
+      "land": "East Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "Standalone PANDORA store offering customizable charm bracelets with Disney park-exclusive designs.",
+      "merchandiseCategories": [
+        "accessories",
+        "collectibles",
+        "park-exclusive"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Disney Parks Collection charms, customizable bracelets, sterling silver and 14k gold pieces",
+      "latitude": 33.8086145,
+      "longitude": -117.9221247
+    },
+    "kawaii-slime-cart": {
+      "merchandiseCategories": [
+        "toys"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "West Downtown Disney",
+      "description": "Create custom slime with mix-ins or buy pre-made slime in various textures, colors, and scents. Opened October 2024.",
+      "notableItems": "Custom slime creations, Unicorn Butter, Gummy Shark Jelly, Marshmallow Goo, slime charms",
+      "longitude": -117.920763862144,
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "latitude": 33.8087968971979,
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "Kawaii Slime Cart"
+    },
+    "star-wars-trading-post": {
+      "name": "Star Wars Trading Post",
+      "land": "West Downtown Disney",
+      "type": "Gift Shop",
+      "status": "operating",
+      "description": "Dedicated Star Wars retail destination offering Galaxy's Edge merchandise and items from all eras of Star Wars. Opened February 2021.",
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "toys",
+        "accessories",
+        "collectibles",
+        "park-exclusive"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": true,
+      "notableItems": "Galaxy's Edge lightsaber accessories, Mandalorian merchandise, droid figures, exclusive pins",
+      "latitude": 33.8092299,
+      "longitude": -117.9248338
+    },
+    "sunglass-hut": {
+      "name": "Sunglass Hut",
+      "land": "West Downtown Disney",
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "description": "Designer sunglasses retailer offering high-end and brand-name frames.",
+      "merchandiseCategories": [
+        "accessories"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Designer frames from major eyewear brands, Disney-themed sunglasses",
+      "latitude": 33.8086208,
+      "longitude": -117.9219814
+    },
+    "pin-traders": {
+      "name": "Disney's Pin Traders",
+      "land": "West Downtown Disney",
+      "type": "Cart/Kiosk",
+      "status": "operating",
+      "description": "Pin trading headquarters at Downtown Disney near the monorail station with special trading privileges for kids.",
+      "merchandiseCategories": [
+        "pins",
+        "accessories",
+        "collectibles"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": true,
+      "notableItems": "Limited-edition pins, character pin sets, lanyards, pin trading boards",
+      "latitude": 33.8092252,
+      "longitude": -117.9245049
+    },
+    "sephora": {
+      "name": "Sephora",
+      "land": "East Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "The Paris-based beauty retailer offering over 14,000 products from 200+ brands with beauty consultation services.",
+      "merchandiseCategories": [
+        "accessories"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Fenty Beauty, Rare Beauty, Sephora Collection exclusives, complimentary mini makeovers",
+      "latitude": 33.8086584,
+      "longitude": -117.9223942
+    },
+    "curl-surf": {
+      "latitude": 33.8086192,
+      "status": "operating",
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "Curl Surf",
+      "description": "Surfing-inspired California lifestyle store offering beach apparel, footwear, and accessories from premium surf brands.",
+      "notableItems": "Billabong, Quiksilver, Roxy, Patagonia, Vuori, Vans, Oakley, Ray-Ban, GoPro",
+      "longitude": -117.9220606,
+      "type": "Boutique",
+      "acceptsAPDiscount": false,
+      "land": "East Downtown Disney",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories"
+      ]
+    },
+    "lululemon": {
+      "name": "lululemon",
+      "land": "West Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "Athletic apparel retailer featuring a Disney x lululemon limited-edition collection. Opened December 2025.",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Disney x lululemon collection with Mickey and Minnie graphics, leggings, joggers, yoga gear",
+      "latitude": 33.8091351,
+      "longitude": -117.9253575
+    },
+    "d-lander-shop": {
+      "merchandiseCategories": [
+        "apparel",
+        "accessories",
+        "collectibles",
+        "pins"
+      ],
+      "land": "West Downtown Disney",
+      "acceptsAPDiscount": true,
+      "type": "Boutique",
+      "longitude": -117.924776916668,
+      "description": "A trend-forward fashion boutique with designer Disney collaborations and a dedicated PANDORA shop-within-a-shop. Opened December 2024.",
+      "notableItems": "Kate Spade Disney bags, Dooney & Bourke handbags, PANDORA charms, Her Universe apparel, Loungefly bags",
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "The D-Lander Shop",
+      "latitude": 33.8084434327772,
+      "status": "operating"
+    },
+    "wonderground-gallery": {
+      "name": "WonderGround Gallery",
+      "land": "East Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "Technology-driven boutique gallery with an Artist in Residence program and live sketch artists creating hand-drawn character portraits.",
+      "merchandiseCategories": [
+        "apparel",
+        "home",
+        "accessories",
+        "collectibles",
+        "art/prints"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": true,
+      "notableItems": "Original Disney artwork, limited-edition prints, artist-signed pieces, custom character sketches",
+      "latitude": 33.8089355,
+      "longitude": -117.9223612
+    },
+    "pele-soccer": {
+      "name": "Pele Soccer",
+      "land": "East Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "Soccer fan destination with official jerseys from clubs and countries worldwide, plus in-store customization. Opened December 2021.",
+      "merchandiseCategories": [
+        "apparel",
+        "accessories"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Official club and national team jerseys, custom jersey personalization, limited-edition footwear",
+      "latitude": 33.8089277,
+      "longitude": -117.9230867
+    },
+    "wonderful-world-of-sweets": {
+      "name": "Disney Wonderful World of Sweets",
+      "land": "East Downtown Disney",
+      "type": "Gift Shop",
+      "status": "operating",
+      "description": "A whimsical confectionery with an exhibition kitchen where guests watch candies being freshly made.",
+      "merchandiseCategories": [
+        "souvenirs",
+        "candy/snacks"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Werther's Original caramel popcorn, caramel apples, churro toffee, seasonal treats",
+      "latitude": 33.8088189,
+      "longitude": -117.9227117
+    },
+    "lego-store": {
+      "merchandiseCategories": [
+        "toys",
+        "collectibles",
+        "souvenirs"
+      ],
+      "acceptsAPDiscount": false,
+      "land": "West Downtown Disney",
+      "notableItems": "Disney/Star Wars/Marvel LEGO sets, Minifigure Factory custom figures, exclusive display sets",
+      "description": "Full LEGO retail store with life-sized Disney character displays, interactive play areas, and Minifigure Factory.",
+      "type": "Gift Shop",
+      "longitude": -117.924395647168,
+      "status": "operating",
+      "latitude": 33.8088392842759,
+      "name": "The LEGO Store",
+      "hours": "10:00 AM - 10:00 PM"
+    },
+    "disney-home": {
+      "description": "Dedicated Disney home goods store with kitchenware, linens, gadgets, ornaments, and decor. Opened February 2018.",
+      "notableItems": "Disney mugs, tea sets, towel sets, pillows, glassware, kitchen gadgets, ornaments",
+      "type": "Gift Shop",
+      "longitude": -117.9231951,
+      "status": "operating",
+      "latitude": 33.8090037,
+      "name": "Disney Home",
+      "hours": "10:00 AM - 10:00 PM",
+      "merchandiseCategories": [
+        "souvenirs",
+        "home",
+        "accessories"
+      ],
+      "acceptsAPDiscount": true,
+      "land": "East Downtown Disney"
+    },
+    "avengers-reserve": {
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "Avengers Reserve",
+      "latitude": 33.8085659,
+      "status": "operating",
+      "type": "Gift Shop",
+      "longitude": -117.924789,
+      "notableItems": "Marvel comic books, superhero role-play toys, exclusive apparel, film prop replicas",
+      "description": "The ultimate Marvel fan destination featuring a 9-foot Hulk sculpture, Spider-Man on the building, and authentic film props. Opened December 2024.",
+      "land": "West Downtown Disney",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "toys",
+        "accessories",
+        "collectibles"
+      ]
+    },
+    "lovepop": {
+      "acceptsAPDiscount": false,
+      "land": "East Downtown Disney",
+      "merchandiseCategories": [
+        "souvenirs",
+        "accessories"
+      ],
+      "latitude": 33.8089535955,
+      "status": "operating",
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "Lovepop",
+      "notableItems": "Disney character pop-up cards, Star Wars and Marvel cards, 3D paper flower bouquets",
+      "description": "Specialty greeting card store featuring intricate laser-cut 3D pop-up cards using kirigami paper cutting. Opened December 2021.",
+      "longitude": -117.923152756458,
+      "type": "Boutique"
+    },
+    "disney-storyland-boutique": {
+      "hours": "10:00 AM - 10:00 PM",
+      "name": "Disney Storyland Boutique",
+      "status": "operating",
+      "latitude": 33.8090615659755,
+      "type": "Boutique",
+      "longitude": -117.923267151213,
+      "notableItems": "Create-Your-Own Plush Headbands, Disney Mini Mix-Its, Tokyo Disney imports, shoulder plushes",
+      "description": "An enchanting retail concept with rotating themes and imports from Disney Store Japan. Opened January 2025.",
+      "land": "East Downtown Disney",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "plush",
+        "accessories",
+        "apparel",
+        "souvenirs",
+        "collectibles",
+        "park-exclusive"
+      ]
+    },
+    "nectar-life": {
+      "name": "Nectar Life",
+      "land": "West Downtown Disney",
+      "type": "Boutique",
+      "status": "operating",
+      "description": "Vegan bath and body brand with custom blending stations for personalized scented products. Opened July 2025.",
+      "merchandiseCategories": [
+        "accessories"
+      ],
+      "hours": "10:00 AM - 10:00 PM",
+      "acceptsAPDiscount": false,
+      "notableItems": "Blending Bar for custom shea body butters, Soap Mini Bar, Elite Skincare Collection",
+      "latitude": 33.8083227,
+      "longitude": -117.9247612
+    },
+    "world-of-disney": {
+      "name": "World of Disney",
+      "land": "East Downtown Disney",
+      "type": "Gift Shop",
+      "status": "operating",
+      "description": "The largest Disney merchandise store at the resort, featuring animated wall displays and interactive technology throughout.",
+      "merchandiseCategories": [
+        "apparel",
+        "pins",
+        "souvenirs",
+        "plush",
+        "home",
+        "toys",
+        "accessories",
+        "collectibles",
+        "park-exclusive",
+        "art/prints"
+      ],
+      "hours": "8:00 AM - 11:00 PM",
+      "acceptsAPDiscount": true,
+      "notableItems": "Spirit Jerseys, MagicBand+ accessories, character plush, seasonal merchandise, fine art prints",
+      "latitude": 33.80867,
+      "longitude": -117.92106
+    }
+  },
+  "lastUpdated": "2026-06-17T00:00:00.000Z",
+  "hotels": {
+    "acorns-gifts-goods": {
+      "name": "Acorns Gifts & Goods",
+      "land": "Disney's Grand Californian Hotel",
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.8079525237777,
+      "longitude": -117.922302465382,
+      "hours": "7:00 AM - 11:00 PM",
+      "notableItems": "Grand Californian branded bathrobe, hotel-exclusive apparel, Chip & Dale merchandise, MagicBand+ accessories, hotel-branded pins and ornaments",
+      "description": "Located on the ground floor facing the hotel lobby, offering souvenirs, sundries, and exclusive Grand Californian-branded merchandise. Open 7 AM - 11 PM.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "plush",
+        "accessories",
+        "collectibles",
+        "candy/snacks",
+        "park-exclusive"
+      ]
+    },
+    "fantasia-shop": {
+      "name": "Disney's Fantasia Shop",
+      "land": "Disneyland Hotel",
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.80907772011,
+      "longitude": -117.927129453521,
+      "hours": "7:00 AM - 11:00 PM",
+      "notableItems": "Exclusive Disneyland Hotel merchandise line, live sketch artist character portraits, MagicBand+ gear, autograph books",
+      "description": "The main gift shop at the Disneyland Hotel in the Fantasy tower. Features a live Disneyland sketch artist creating character portraits.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "plush",
+        "toys",
+        "collectibles",
+        "accessories",
+        "art/prints",
+        "park-exclusive"
+      ]
+    },
+    "small-world-gifts": {
+      "name": "Small World Gifts & Sundries",
+      "land": "Disneyland Hotel",
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.8091919990753,
+      "longitude": -117.926741220742,
+      "hours": "7:00 AM - 11:00 PM",
+      "notableItems": "Disneyland hats and ears, snacks and drinks, sundries, basic Disney souvenirs",
+      "description": "A small convenience shop in the Fantasy tower lobby, offering quick essentials and a modest selection of Disney merchandise.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "candy/snacks",
+        "accessories"
+      ]
+    },
+    "stor-e": {
+      "name": "STOR-E",
+      "land": "Pixar Place Hotel",
+      "type": "Gift Shop",
+      "status": "operating",
+      "latitude": 33.806238578371,
+      "longitude": -117.92434916828,
+      "hours": "7:00 AM - 10:00 PM",
+      "notableItems": "Pixar Place Hotel branded merchandise (Luxo Jr. logo items), Pixar character merchandise, pressed penny machine (8 designs)",
+      "description": "Gift shop named in homage to the Pixar film WALL-E, featuring artwork of iconic Pixar props. Open 7 AM - 10 PM.",
+      "acceptsAPDiscount": true,
+      "merchandiseCategories": [
+        "apparel",
+        "souvenirs",
+        "plush",
+        "toys",
+        "collectibles",
+        "accessories",
+        "park-exclusive",
+        "candy/snacks"
+      ]
+    }
+  }
+}

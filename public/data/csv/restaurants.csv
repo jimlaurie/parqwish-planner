@@ -1,0 +1,165 @@
+id,name,park,land,cuisine,type,reservations,status,latitude,longitude
+wetzels-pretzels-cart,Wetzel’s Pretzels Cart,downtown,Downtown Disney District,Pretzels,Quick Service,FALSE,operating,33.808711199351,-117.921657842531
+keylas-cake,Kayla’s Cake,downtown,Downtown Disney District,Desserts,Quick Service,FALSE,operating,33.808711199351,-117.921657842531
+starbucks,Starbucks®,downtown,Downtown Disney District,"American, Bakery",Quick Service,FALSE,operating,33.8085955340418,-117.921848954171
+naples-ristorante-e-bar,Naples Ristorante e Bar,downtown,Downtown Disney District,Italian,Table Service,FALSE,operating,33.8088758751104,-117.922082535066
+napolini-pizzeria,Napolini Pizzeria,downtown,Downtown Disney District,Italian,Quick Service,FALSE,operating,33.8090033025663,-117.922259490289
+jamba,Jamba®,downtown,Downtown Disney District,American,Snack,FALSE,operating,33.8085778901699,-117.922195786409
+salt-n-straw,Salt & Straw,downtown,Downtown Disney District,Ice Cream,Snack,FALSE,operating,33.8090091838311,-117.922460039542
+disney-wonerful-world-of-sweets,Disney Wonderful World of Sweets,downtown,Downtown Disney District,"American, Bakery",Snack,FALSE,operating,33.8088398141169,-117.922709454153
+wetzels-pretzels,Wetzel’s Pretzels,downtown,Downtown Disney District,Pretzels,Quick Service,FALSE,operating,33.809111875526,-117.922637057385
+black-tap-craft-burgers,Black Tap Craft Burgers & Shakes,downtown,Downtown Disney District,American,Table Service,FALSE,operating,33.8092376523655,-117.922722617204
+ballast-point-brewing,Ballast Point® Brewing Co.,downtown,Downtown Disney District,American,Table Service,FALSE,operating,33.8092280823951,-117.922831212358
+paseo,Paseo,downtown,Downtown Disney District,Mexican,Table Service,FALSE,operating,33.8089710599339,-117.922811467784
+tiendita,Tiendita,downtown,Downtown Disney District,Mexican,Quick Service,FALSE,operating,33.8088986013346,-117.922984232802
+centrico,Centrico,downtown,Downtown Disney District,Mexican,Table Service,FALSE,operating,33.8090906076898,-117.922951533703
+crazyshake,CrazyShake™ Window by Black Tap,downtown,Downtown Disney District,American,Quick Service,FALSE,operating,33.8092584518156,-117.923063569493
+splitsville,Splitsville Luxury Lanes™ - Dining,downtown,Downtown Disney District,American,Table Service,FALSE,operating,33.8094717545663,-117.923379120626
+beignets-expressed,Beignets Expressed,downtown,Downtown Disney District,Cajun & Creole,Snack,FALSE,operating,33.8090291794043,-117.923481757302
+jazz-kitchen,Jazz Kitchen Coastal Grill & Patio,downtown,Downtown Disney District,Cajun & Creole,Table Service,FALSE,operating,33.8089821280901,-117.923649869098
+cathys-cookies,Cathy’s Cookies,downtown,Downtown Disney District,Cookies,Snack,FALSE,operating,33.8091798719222,-117.923838191747
+california-churros,California Churro near Disney’s Pin Trader,downtown,Downtown Disney District,Churros,Snack,FALSE,operating,33.8091798719222,-117.923838191747
+blue-ribbon-corn-dog,Blue Ribbon Corn Dog,downtown,Downtown Disney District,American,Quick Service,FALSE,operating,33.809175971811,-117.923950844525
+vista-parkside-market,Vista Parkside Market,downtown,Downtown Disney District,American,Quick Service,FALSE,operating,33.8088079600262,-117.924682322212
+seoul-sister,Seoul Sister,downtown,Downtown Disney District,Asian,Quick Service,FALSE,operating,33.8088079600262,-117.924682322212
+parkside-market-coffee,Parkside Market Coffee,downtown,Downtown Disney District,Bakery & Sandwiches,Quick Service,FALSE,operating,33.8088079600262,-117.924682322212
+ggs-chicken-shop,GG’s Chicken Shop,downtown,Downtown Disney District,American,Quick Service,FALSE,operating,33.8088079600262,-117.924682322212
+din-tai-fung,Din Tai Fung,downtown,Downtown Disney District,Asian,Table Service,TRUE,operating,33.8086717189875,-117.925249231641
+tangaroa-terrace,Tangaroa Terrace Tropical Bar & Grill,disneyland_hotel,Disneyland Hotel,American,Lounge,FALSE,operating,33.8085230961823,-117.926615648448
+Trader-sams-mixology,Trader Sam's Mixology Seminar,disneyland_hotel,Disneyland Hotel,American,Bar,FALSE,operating,33.8083829526297,-117.926608471244
+Trader-sams-enchanted-tiki-bar,Trader Sam’s Enchanted Tiki Bar,disneyland_hotel,Disneyland Hotel,American,Bar,FALSE,operating,33.8083829526297,-117.926608471244
+coffee-house,The Coffee House,disneyland_hotel,Disneyland Hotel,Coffee & Snacks,Quick Service,FALSE,operating,33.808863017892,-117.927261596762
+goofys-kitchen,Goofy’s Kitchen,disneyland_hotel,Disneyland Hotel,American,Table Service,TRUE,operating,33.8087901006021,-117.92734650829
+broken-spell-lounge,Broken Spell Lounge,disneyland_hotel,Disneyland Hotel,American,Lounge,FALSE,operating,33.8088522667394,-117.927565974249
+palm-breeze-bar,Palm Breeze Bar,disneyland_hotel,Disneyland Hotel,American,Bar,FALSE,operating,33.807981936686,-117.927531059208
+sketch-pad-cafe,The Sketch Pad Cafe,pixar_place_hotel,Pixar Place Hotel,American,Quick Service,FALSE,operating,33.8061856555846,-117.924554054946
+great-maple,Great Maple Modern American Eatery,pixar_place_hotel,Pixar Place Hotel,American,Table Service,FALSE,operating,33.8065314383532,-117.924361208136
+napa-rose,Napa Rose,grandcalifornian,Disney's Grand Californian Hotel,American,Table Service,FALSE,operating,33.8077212164958,-117.921528402425
+storytellers-cafe,Storytellers Cafe,grandcalifornian,Disney's Grand Californian Hotel,American,Table Service,FALSE,operating,33.8079457417776,-117.921835031247
+hearthstone-lounge,Hearthstone Lounge,grandcalifornian,Disney's Grand Californian Hotel,American,Table Service,FALSE,operating,33.807694146032,-117.922273893749
+gch-craftsman-grill,GCH Craftsman Grill,grandcalifornian,Disney's Grand Californian Hotel,American,Lounge,FALSE,operating,33.8075253535349,-117.921470909521
+tiki-juice-bar,Tiki Juice Bar,disneyland,Adventureland,Drinks & Snacks,Snack,FALSE,operating,33.811743,-117.919443
+bengal-barbecue,Bengal Barbecue,disneyland,Adventureland,Skewers & BBQ,Quick Service,FALSE,operating,33.811566,-117.920294
+tropical-hideaway,The Tropical Hideaway,disneyland,Adventureland,Asian Fusion,Quick Service,FALSE,operating,33.811570,-117.919554
+south-seas-traders,South Seas Traders,disneyland,Adventureland,Fruit & Snacks,Snack,FALSE,operating,33.811603,-117.920120
+churros-lemonade-bayou,Churros & Lemonade in Bayou Country,disneyland,Bayou Country,Desserts & Drinks,Snack,FALSE,operating,33.812332,-117.922440
+hungry-bear-bbq,Hungry Bear Barbecue Jamboree,disneyland,Bayou Country,BBQ,Quick Service,FALSE,operating,33.812769,-117.922574
+bayou-country-fruit-cart,Bayou Country Fruit Cart,disneyland,Bayou Country,Fruit,Snack,FALSE,operating,33.812390,-117.922008
+lemonaide-cart-at-bayou-country,Lemonaide Cart at Bayou Country,disneyland,Bayou Country,Lemonaide,Snack,FALSE,operating,33.812332,-117.922440
+turkey-leg-edelweiss,Turkey Leg Cart at Edelweiss Snacks,disneyland,Fantasyland,Turkey Legs,Snack,FALSE,operating,33.813743,-117.917740
+maurice-treats,Maurice's Treats,disneyland,Fantasyland,Desserts,Quick Service,FALSE,operating,33.812485,-117.919306
+red-rose-taverne,Red Rose Taverne,disneyland,Fantasyland,American,Quick Service,FALSE,operating,33.813431,-117.919481
+fantasyland-fruit-cart,Fantasyland Fruit Cart,disneyland,Fantasyland,Fruit,Snack,FALSE,operating,33.813779,-117.919545
+troubadour-tavern,Troubadour Tavern,disneyland,Fantasyland,American,Quick Service,FALSE,operating,33.814467,-117.918786
+churros-casey-jr,Churros near Casey Jr. Circus Train,disneyland,Fantasyland,Desserts,Snack,FALSE,operating,33.813683,-117.919221
+edelweiss-snacks,Edelweiss Snacks,disneyland,Fantasyland,Snacks,Snack,FALSE,operating,33.813743,-117.917740
+popcorn-small-world,Popcorn at small world Promenade,disneyland,Fantasyland,Snacks,Snack,FALSE,operating,33.814131,-117.918095
+churros-small-world,Churros at small world Promenade,disneyland,Fantasyland,Desserts,Snack,FALSE,operating,33.814064,-117.918078
+popcorn-fantasyland-theatre,Popcorn near Fantasyland Theatre,disneyland,Fantasyland,Snacks,Snack,FALSE,operating,33.814064,-117.918078
+lemonade-small-world,Lemonade at small world Promenade,disneyland,Fantasyland,Drinks,Snack,FALSE,operating,33.814013,-117.918076
+pretzels-small-world,Pretzels at small world Promenade,disneyland,Fantasyland,Pretzels,Snack,FALSE,operating,33.814013,-117.918076
+popcorn-mark-twain,Popcorn near Mark Twain Riverboat,disneyland,Frontierland,Snacks,Snack,FALSE,operating,33.812034,-117.920476
+churros-big-thunder,Churros near Big Thunder Mountain Railroad,disneyland,Frontierland,Desserts,Snack,FALSE,operating,33.812266,-117.920389
+fantasmic-dining-packages,Fantasmic! Dining Packages,disneyland,Frontierland,American,Special Event,TRUE,operating,33.811537,-117.921112
+pretzels-big-thunder,Pretzels near Big Thunder Mountain Railroad,disneyland,Frontierland,Pretzels,Snack,FALSE,operating,33.812831,-117.920836
+fruit-cart-ship-shore,Fruit Cart at Ship to Shore Marketplace,disneyland,Frontierland,Fruit,Snack,FALSE,operating,33.812831,-117.920836
+rancho-del-zocalo,Rancho del Zocalo Restaurante,disneyland,Frontierland,Mexican,Quick Service,FALSE,operating,33.812404,-117.919883
+turkey-leg-ship-shore,Turkey Leg Cart at Ship to Shore Marketplace,disneyland,Frontierland,Turkey Legs,Snack,FALSE,operating,33.812831,-117.920836
+stage-door-cafe,Stage Door Cafe,disneyland,Frontierland,American,Quick Service,FALSE,operating,33.811878,-117.920229
+golden-horseshoe,The Golden Horseshoe,disneyland,Frontierland,American,Quick Service,FALSE,operating,33.812012,-117.920240
+river-belle-terrace,River Belle Terrace,disneyland,Frontierland,American,Table Service,TRUE,operating,33.811496,-117.920567
+main-street-fruit-cart,Main Street U.S.A. Fruit Cart,disneyland,Main Street U.S.A.,Fruit,Snack,FALSE,operating,33.811496,-117.920567
+gibson-girl-ice-cream,Gibson Girl Ice Cream Parlor,disneyland,Main Street U.S.A.,Ice Cream,Quick Service,FALSE,operating,33.811496,-117.920567
+market-house,Market House,disneyland,Main Street U.S.A.,Coffee & Snacks,Quick Service,FALSE,operating,33.810872,-117.918862
+churros-sleeping-beauty,Churros near Sleeping Beauty Castle,disneyland,Main Street U.S.A.,Desserts,Snack,FALSE,operating,33.812389,-117.918805
+little-red-wagon,Little Red Wagon,disneyland,Main Street U.S.A.,Corn Dogs,Snack,FALSE,operating,33.811479,-117.918691
+churros-town-square,Churros near Town Square,disneyland,Main Street U.S.A.,Desserts,Snack,FALSE,operating,33.810243,-117.918839
+popcorn-central-plaza,Popcorn near Central Plaza,disneyland,Main Street U.S.A.,Snacks,Snack,FALSE,operating,33.810209,-117.919146
+plaza-inn,Plaza Inn,disneyland,Main Street U.S.A.,American,Quick Service,FALSE,operating,33.811698,-117.918509
+candy-palace-candy-kitchen,Candy Palace and Candy Kitchen,disneyland,Main Street U.S.A.,American,Quick Service,FALSE,operating,33.811249,-117.919149
+carnation-cafe,Carnation Cafe,disneyland,Main Street U.S.A.,American,Table Service,TRUE,operating,33.811061,-117.919067
+refreshment-corner,Refreshment Corner,disneyland,Main Street U.S.A.,Hot Dogs,Quick Service,FALSE,operating,33.811428,-117.919095
+plaza-inn-dining-package,Plaza Inn Dining Package,disneyland,Main Street U.S.A.,American,Special Event,TRUE,operating,33.811777,-117.918649
+turkey-leg-central-plaza,Turkey Leg Cart at Hot Foods near Central Plaza,disneyland,Main Street U.S.A.,Turkey Legs,Snack,FALSE,operating,33.812190,-117.919158
+popcorn-city-hall,Popcorn near City Hall,disneyland,Main Street U.S.A.,Snacks,Snack,FALSE,operating,33.810209,-117.919146
+jolly-holiday-bakery,Jolly Holiday Bakery Cafe,disneyland,Main Street U.S.A.,Bakery & Sandwiches,Quick Service,FALSE,operating,33.811607,-117.919278
+popcorn-gadgetcoaster,Popcorn near Chip 'n' Dale's GADGETcoaster,disneyland,Mickey's Toontown,Snacks,Snack,FALSE,operating,33.815439,-117.919301
+fruit-cart-toontown,Fruit Cart at Good Boy! Grocers,disneyland,Mickey's Toontown,Fruit,Snack,FALSE,operating,33.815357,-117.918714
+cafe-daisy,Cafe Daisy,disneyland,Mickey's Toontown,Pizza,Quick Service,FALSE,operating,33.815512,-117.918725
+good-boy-grocers,Good Boy! Grocers,disneyland,Mickey's Toontown,Hot Dogs & Snacks,Quick Service,FALSE,operating,33.815357,-117.918714
+tianas-palace,Tiana's Palace,disneyland,New Orleans Square,Cajun & Creole,Table Service,TRUE,operating,33.811233,-117.921543
+mint-julep-bar,Mint Julep Bar,disneyland,New Orleans Square,Drinks & Beignets,Snack,FALSE,operating,33.811164,-117.921690
+popcorn-haunted-mansion,Popcorn near Haunted Mansion,disneyland,New Orleans Square,Snacks,Snack,FALSE,operating,33.811329,-117.921905
+cafe-orleans,Cafe Orleans,disneyland,New Orleans Square,Cajun & Creole,Table Service,TRUE,operating,33.811165,-117.921259
+harbour-galley,Harbour Galley,disneyland,New Orleans Square,Sandwiches & Seafood,Quick Service,FALSE,operating,33.812061,-117.921946
+blue-bayou,Blue Bayou Restaurant,disneyland,New Orleans Square,Cajun & Creole,Table Service,TRUE,operating,33.810966,-117.921182
+disneyland-after-dark-sweethearts,Disneyland After Dark: Sweethearts' Nite Dining,disneyland,New Orleans Square,American,Special Event,TRUE,seasonal,33.811165,-117.921259
+royal-street-veranda,Royal Street Veranda,disneyland,New Orleans Square,Snacks,Quick Service,FALSE,operating,33.811192,-117.920929
+churros-haunted-mansion,Churros near Haunted Mansion,disneyland,New Orleans Square,Desserts,Snack,FALSE,operating,33.811856,-117.921898
+docking-bay-7,Docking Bay 7 Food and Cargo,disneyland,Star Wars: Galaxy's Edge,American & Asian Fusion,Quick Service,FALSE,operating,33.814668,-117.921466
+ronto-roasters,Ronto Roasters,disneyland,Star Wars: Galaxy's Edge,BBQ Wraps,Quick Service,FALSE,operating,33.814393,-117.921493
+kat-sakas-kettle,Kat Saka's Kettle,disneyland,Star Wars: Galaxy's Edge,Popcorn,Snack,FALSE,operating,33.814365,-117.921665
+docking-bay-7-nighttime,Docking Bay 7 Food and Cargo Nighttime Gathering,disneyland,Star Wars: Galaxy's Edge,American,Special Event,TRUE,seasonal,33.814668,-117.921466
+milk-stand,Milk Stand,disneyland,Star Wars: Galaxy's Edge,Specialty Drinks,Snack,FALSE,operating,33.814338,-117.920745
+ogas-cantina,Oga's Cantina at the Disneyland Resort,disneyland,Star Wars: Galaxy's Edge,Drinks & Small Plates,Lounge,TRUE,operating,33.814688,-117.921014
+tomorrowland-skyline-terrace,Tomorrowland Skyline Terrace,disneyland,Tomorrowland,American,Quick Service,FALSE,operating,33.811916,-117.916804
+pretzels-star-tours,Pretzels near Star Tours – The Adventures Continue,disneyland,Tomorrowland,Pretzels,Snack,FALSE,operating,33.812072,-117.917440
+churros-buzz-lightyear,Churros near Buss Lightyear Astro Blasters,disneyland,Tomorrowland,Snacks,Snack,FALSE,operating,33.812138,-117.917531
+popcorn-star-trader,Popcorn near Star Trader,disneyland,Tomorrowland,Snacks,Snack,FALSE,operating,33.811954,-117.917091
+tommorowland-fruit-cart,Tomorrowland Fruit Cart,disneyland,Tomorrowland,Snacks,Snack,FALSE,operating,33.812034,-117.917223
+galactic-grill,Galactic Grill,disneyland,Tomorrowland,Burgers & Sandwiches,Quick Service,FALSE,operating,33.812357,-117.917168
+alien-pizza-planet,Alien Pizza Planet,disneyland,Tomorrowland,Pizza,Quick Service,FALSE,operating,33.8116963841475,-117.916966337384
+pym-tasting-lab,Pym Tasting Lab,californiaadventure,Avengers Campus,Drinks & Pretzels,Lounge,FALSE,operating,33.806724023823,-117.91755699722
+terran-treats,Terran Treats,californiaadventure,Avengers Campus,Snacks,Snack,FALSE,operating,33.8071120115142,-117.917010851805
+pym-test-kitchen,Pym Test Kitchen,californiaadventure,Avengers Campus,American,Quick Service,FALSE,operating,33.8067363107166,-117.917737055618
+shawarma-palace,Shawarma Palace,californiaadventure,Avengers Campus,Mediterranean,Quick Service,FALSE,operating,33.8065287793809,-117.91810754195
+shawarma-and-more,Shawarma & More,californiaadventure,Avengers Campus,Mediterranean,Snack,FALSE,operating,33.8073132201865,-117.917061450498
+fruit-carts-mortimers,Fruit Carts - Mortimer's Market,californiaadventure,Buena Vista Street,Fruit & Snacks,Snack,FALSE,operating,33.8083228779131,-117.919077925267
+carthay-circle-restaurant,Carthay Circle Restaurant,californiaadventure,Buena Vista Street,American,Table Service,TRUE,operating,33.8074601968613,-117.919051865076
+willies-churros,Willie's Churros,californiaadventure,Buena Vista Street,Desserts,Snack,FALSE,operating,33.8076768445652,-117.919482710208
+clarabelles-ice-cream,Clarabelle's Hand-Scooped Ice Cream,californiaadventure,Buena Vista Street,Ice Cream,Quick Service,FALSE,operating,33.8079789948824,-117.919180938571
+fiddler-fifer-practical,"Fiddler, Fifer & Practical Cafe",californiaadventure,Buena Vista Street,Coffee & Pastries,Quick Service,FALSE,operating,33.8078128146971,-117.919350370223
+carthay-circle-lounge,Carthay Circle Lounge,californiaadventure,Buena Vista Street,Small Plates & Drinks,Lounge,FALSE,operating,33.8074587277021,-117.919051083143
+popcorn-carthay,Popcorn near Carthay Circle Restaurant,californiaadventure,Buena Vista Street,Snacks,Snack,FALSE,operating,33.8078193291815,-117.918593328519
+fillmores-taste-in,Fillmore's Taste-In,californiaadventure,Cars Land,Drinks & Snacks,Snack,FALSE,operating,33.806111493574,-117.919439783761
+cozy-cone-motel,Cozy Cone Motel,californiaadventure,Cars Land,Snacks,Quick Service,FALSE,operating,33.80594293448,-117.918734850376
+flos-v8-cafe,Flo's V8 Cafe,californiaadventure,Cars Land,American,Quick Service,FALSE,operating,33.8055534286646,-117.918977600904
+smokejumpers-grill,Smokejumpers Grill,californiaadventure,Grizzly Peak,American,Quick Service,FALSE,operating,33.8079053108344,-117.91969990481
+popcorn-grizzly-peak,Popcorn at Grizzly Peak Airfield,californiaadventure,Grizzly Peak,Snacks,Snack,FALSE,operating,33.8081618773964,-117.920535116169
+churros-redwood-creek,Churros near Redwood Creek Challenge Trail,californiaadventure,Grizzly Peak,Desserts,Snack,FALSE,operating,33.8068086807751,-117.92126488268
+festival-marketplace-mercado-de-antojos,Festival Marketplace - Mercado de Antojos,californiaadventure,Grizzly Peak,Snacks,Snack,FALSE,operating,33.8066812500522,-117.920915691042
+fairfax-market,Fairfax Market,californiaadventure,Hollywood Land,American,Quick Service,FALSE,operating,33.8077803902536,-117.917469544939
+churros-hollywood,Churros at Hollywood Land,californiaadventure,Hollywood Land,Desserts,Snack,FALSE,operating,33.8077886044098,-117.917851134786
+award-wieners,Award Wieners,californiaadventure,Hollywood Land,Hot Dogs,Quick Service,FALSE,operating,33.8077309105891,-117.918164751613
+schmoozies,Schmoozies,californiaadventure,Hollywood Land,Smoothies & Snacks,Quick Service,FALSE,operating,33.8077664261868,-117.917660107794
+studio-catering-co,Studio Catering Co.,californiaadventure,Hollywood Land,American,Quick Service,FALSE,operating,33.8079701370391,-117.916857617182
+hollywood-lounge,Hollywood Lounge,californiaadventure,Hollywood Land,Drinks & Small Plates,Lounge,FALSE,operating,33.8081919184588,-117.917058297851
+churros-goofy-sky-school,Churros near Goofy's Sky School,californiaadventure,Paradise Gardens Park,Desserts,Snack,FALSE,operating,33.8061881179732,-117.9230374317
+paradise-beer-garden,Paradise Beer Garden,californiaadventure,Paradise Gardens Park,American,Quick Service,FALSE,operating,33.8062430115473,-117.923202589908
+world-of-color-dessert-party,World of Color Dessert Party,californiaadventure,Paradise Gardens Park,Desserts,Special Event,TRUE,operating,33.8059365244673,-117.921436314783
+corn-dog-castle,Corn Dog Castle,californiaadventure,Paradise Gardens Park,American,Quick Service,FALSE,operating,33.8063962914075,-117.922454914778
+bayside-brews,Bayside Brews,californiaadventure,Paradise Gardens Park,Coffee & Beer,Snack,FALSE,operating,33.8058744330858,-117.922830078851
+chiller-paradise-gardens,Chiller at Paradise Gardens Park,californiaadventure,Paradise Gardens Park,Frozen Drinks,Snack,FALSE,operating,33.8055980584094,-117.92308575233
+paradise-garden-grill,Paradise Garden Grill,californiaadventure,Paradise Gardens Park,Mediterranean,Quick Service,FALSE,operating,33.806087154422,-117.923388733103
+boardwalk-pizza-pasta,Boardwalk Pizza & Pasta,californiaadventure,Paradise Gardens Park,Italian,Quick Service,FALSE,operating,33.8057692894891,-117.923255165984
+sonoma-terrace,Sonoma Terrace,californiaadventure,Performance Corridor,American,Quick Service,FALSE,seasonal,33.8064436616369,-117.920363272268
+menocino-terrace,Menocino Terrace,californiaadventure,Performance Corridor,American,Quick Service,FALSE,seasonal,33.80644950245,-117.920044609954
+magic-key-terrace,Magic Key Terrace - Magic Key Holder Dining,californiaadventure,Performance Corridor,American,Table Service,TRUE,operating,33.8066140184938,-117.919946199534
+world-of-color-dining,World of Color Dining Package,californiaadventure,Performance Corridor,American,Special Event,TRUE,operating,33.8059316155513,-117.921443443791
+wine-country-trattoria,Wine Country Trattoria,californiaadventure,Performance Corridor,Italian,Table Service,TRUE,operating,33.8065289493699,-117.920133931618
+bing-bongs-sweet-stuff,Bing Bong's Sweet Stuff,californiaadventure,Pixar Pier,Candy & Desserts,Snack,FALSE,operating,33.8050439798598,-117.922536482567
+adorable-snowman,Adorable Snowman Frosted Treats,californiaadventure,Pixar Pier,Desserts,Quick Service,FALSE,operating,33.8051864495811,-117.920492113207
+lamplight-lounge-boardwalk,Lamplight Lounge - Boardwalk Dining,californiaadventure,Pixar Pier,American,Quick Service,FALSE,operating,33.8051743279683,-117.920838030363
+lamplight-lounge,Lamplight Lounge,californiaadventure,Pixar Pier,American,Table Service,TRUE,operating,33.805332730066,-117.921018542501
+popcorn-pixar-pier,Popcorn at Pixar Pier,californiaadventure,Pixar Pier,Snacks,Snack,FALSE,operating,33.8049001801595,-117.922181414562
+senor-buzz-churros,Senor Buzz Churros,californiaadventure,Pixar Pier,Desserts,Snack,FALSE,operating,33.8047661874051,-117.921657981678
+poultry-palace,Poultry Palace,californiaadventure,Pixar Pier,Chicken,Quick Service,FALSE,operating,33.8047441347234,-117.921574101141
+jack-jack-cookie-num-nums,Jack-Jack Cookie Num Nums,californiaadventure,Pixar Pier,Cookies,Snack,FALSE,operating,33.8045101837388,-117.920899312006
+angry-dogs,Angry Dogs,californiaadventure,Pixar Pier,Hot Dogs,Quick Service,FALSE,operating,33.8048430791023,-117.921988901627
+aunt-cass-cafe,Aunt Cass Cafe,californiaadventure,San Fransokyo Square,Asian Fusion,Quick Service,FALSE,operating,33.8058722683557,-117.920177644933
+cocina-cucamonga,Cocina Cucamonga Mexican Grill,californiaadventure,San Fransokyo Square,Mexican,Quick Service,FALSE,operating,33.8055274688851,-117.920287007311
+ritas-turbine-blenders,Rita's Turbine Blenders,californiaadventure,San Fransokyo Square,Smoothies,Snack,FALSE,operating,33.8057549722426,-117.920009335459
+ghirardelli,Ghirardelli Soda Fountain and Chocolate Shop,californiaadventure,San Fransokyo Square,Desserts,Quick Service,FALSE,operating,33.8059831194788,-117.919590500824
+lucky-fortune-cookery,Lucky Fortune Cookery,californiaadventure,San Fransokyo Square,Asian,Quick Service,FALSE,operating,33.8057987971854,-117.919865845815
+port-san-fransokyo,Port of San Fransokyo Cerveceria,californiaadventure,San Fransokyo Square,Beer & Small Plates,Lounge,FALSE,operating,33.8056789230273,-117.920351383745
+cappuccino-cart,Cappuccino Cart,californiaadventure,San Fransokyo Square,Coffee,Snack,FALSE,operating,33.8060445280103,-117.920695861569

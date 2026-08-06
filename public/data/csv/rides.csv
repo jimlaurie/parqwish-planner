@@ -1,0 +1,78 @@
+id,name,park,land,type,status,hasLL,heightRequirement,latitude,longitude
+adventureland-treehouse,Adventureland Treehouse,disneyland,Adventureland,walkthrough,operating,FALSE,,33.8113682882044,-117.920570566658
+indiana-jones,Indiana Jones Adventure,disneyland,Adventureland,dark_ride,operating,TRUE,46,33.8111678507525,-117.920543219206
+jungle-cruise,Jungle Cruise,disneyland,Adventureland,boat_ride,operating,FALSE,,33.8114543618054,-117.920101208984
+enchanted-tiki-room,Walt Disney's Enchanted Tiki Room,disneyland,Adventureland,show,operating,FALSE,,33.8116566553978,-117.919566198976
+alice-in-wonderland,Alice in Wonderland,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.8133446276894,-117.918292493911
+casey-jr,Casey Jr. Circus Train,disneyland,Fantasyland,ride,operating,FALSE,,33.8137654204425,-117.919208015639
+dumbo,Dumbo the Flying Elephant,disneyland,Fantasyland,spinner,operating,FALSE,,33.8136546201859,-117.918896348668
+its-a-small-world,It's a Small World,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.8143827082154,-117.917745459061
+king-arthur-carrousel,King Arthur Carrousel,disneyland,Fantasyland,carousel,operating,FALSE,,33.8134876107577,-117.918928345082
+mad-tea-party,Mad Tea Party,disneyland,Fantasyland,spinner,operating,FALSE,,33.8135359632817,-117.91845616206
+matterhorn,Matterhorn Bobsleds,disneyland,Fantasyland,thrill,operating,TRUE,42,33.81351288594,-117.917804099787
+mr-toads-wild-ride,Mr. Toad's Wild Ride,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.8133733228603,-117.91876301489
+peter-pans-flight,Peter Pan's Flight,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.8131348562827,-117.918913796026
+pinocchio,Pinocchio's Daring Journey,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.8133095853153,-117.919128063953
+snow-white,Snow White's Enchanted Wish,disneyland,Fantasyland,dark_ride,operating,FALSE,,33.81317277692,-117.919056215047
+storybook-canal-boats,Storybook Land Canal Boats,disneyland,Fantasyland,boat_ride,operating,FALSE,,33.8137850679436,-117.918134811934
+astro-orbitor,Astro Orbitor,disneyland,Tomorrowland,spinner,operating,FALSE,,33.8121080416584,-117.918207716057
+autopia,Autopia,disneyland,Tomorrowland,ride,operating,FALSE,32,33.8124017877431,-117.916381080832
+buzz-lightyear,Buzz Lightyear Astro Blasters,disneyland,Tomorrowland,dark_ride,operating,FALSE,,33.8121867237431,-117.917913097469
+monorail,Disneyland Monorail,disneyland,Tomorrowland,transportation,operating,FALSE,,33.8127112691405,-117.916793546849
+finding-nemo-submarine,Finding Nemo Submarine Voyage,disneyland,Tomorrowland,dark_ride,operating,FALSE,,33.8126832934678,-117.916926125212
+space-mountain,Space Mountain,disneyland,Tomorrowland,thrill,operating,TRUE,40,33.8115520195116,-117.917060807995
+star-tours,Star Tours - The Adventures Continue,disneyland,Tomorrowland,simulator,operating,FALSE,40,33.8120409844383,-117.918050330865
+disneyland-railroad-tomorrowland,Disneyland Railroad - Tomorrowland,disneyland,Tomorrowland,transportation,operating,FALSE,,33.8124585976631,-117.915885512305
+big-thunder-mountain,Big Thunder Mountain Railroad,disneyland,Frontierland,thrill,operating,TRUE,40,33.8125307575434,-117.920494408557
+frontierland-shootin-exposition,Frontierland Shootin' Exposition,disneyland,Frontierland,games,operating,FALSE,,33.8122400029035,-117.919873474118
+mark-twain-riverboat,Mark Twain Riverboat,disneyland,Frontierland,boat_ride,operating,FALSE,,33.8122488673887,-117.92048800717
+pirate-lair,Pirate's Lair on Tom Sawyer Island,disneyland,Frontierland,walkthrough,operating,FALSE,,33.8119864782354,-117.921360729461
+sailing-ship-columbia,Sailing Ship Columbia,disneyland,Frontierland,boat_ride,seasonal,FALSE,,33.8122151823364,-117.920496542357
+gadgets-go-coaster,Chip 'n' Dale's GADGETcoaster,disneyland,Mickey's Toontown,coaster,operating,FALSE,35,33.8153073874624,-117.919134130379
+Donalds-duck-pond,Donald's Duck Pond,disneyland,Mickey's Toontown,walkthrough,operating,FALSE,,33.8152382836293,-117.91907581058
+goffys-how-to-play-yard,Goofy's How-to-Play Yard,disneyland,Mickey's Toontown,games,operating,FALSE,,33.8152182273334,-117.918847822814
+mickeys-runaway-railway,Mickey & Minnie's Runaway Railway,disneyland,Mickey's Toontown,dark_ride,operating,TRUE,,33.8154644737576,-117.918385141759
+mickeys-house,Mickey's House,disneyland,Mickey's Toontown,walkthrough,operating,FALSE,,33.8155302136328,-117.919188463357
+minnies-house,Minnie's House,disneyland,Mickey's Toontown,walkthrough,operating,FALSE,,33.8155970676908,-117.919024848608
+roger-rabbit,Roger Rabbit's Car Toon Spin,disneyland,Mickey's Toontown,dark_ride,operating,FALSE,,33.8152226842898,-117.918104850917
+disneyland-railroad-toontown,Disneyland Railroad - Mickey’s Toontown,disneyland,Mickey's Toontown,transportation,operating,FALSE,,33.8148390426457,-117.918598055864
+davy-crockett-canoes,Davy Crockett's Explorer Canoes,disneyland,Bayou Country,boat_ride,seasonal,FALSE,0,33.8125113261269,-117.922116878793
+winnie-the-pooh,The Many Adventures of Winnie the Pooh,disneyland,Bayou Country,dark_ride,operating,FALSE,0,33.8123781702697,-117.922616440222
+tianas-bayou-adventure,Tiana's Bayou Adventure,disneyland,Bayou Country,thrill,operating,TRUE,40,33.8122750996942,-117.922897401616
+splash-mountain,Splash Mountain,disneyland,Bayou Country,thrill,closed,TRUE,40,33.8122750996942,-117.922897401616
+disneyland-railroad-main-street,Disneyland Railroad - Main Street,disneyland,Main Street U.S.A.,transportation,operating,FALSE,,33.8100458722607,-117.918965564752
+main-street-cinema,Main Street Cinema,disneyland,Main Street U.S.A.,walkthrough,operating,FALSE,,33.8107197792144,-117.918911321275
+main-street-vehicles,Main Street Vehicles,disneyland,Main Street U.S.A.,transportation,operating,FALSE,,33.8101778142006,-117.918976143732
+walt-disney-a-magical-life,Opera House - Walt Disney - A Magical Life,disneyland,Main Street U.S.A.,show,operating,FALSE,,33.8102583937729,-117.918430566897
+disneyland-railroad-new-orleans,Disneyland Railroad - New Orleans Square,disneyland,New Orleans Square,transportation,operating,FALSE,,33.8112743619949,-117.921887959361
+haunted-mansion,Haunted Mansion,disneyland,New Orleans Square,dark_ride,operating,TRUE,,33.8116454993812,-117.921820917363
+pirates-of-the-caribbean,Pirates of the Caribbean,disneyland,New Orleans Square,dark_ride,operating,FALSE,,33.8114850341524,-117.920829925823
+millennium-falcon,Millennium Falcon: Smugglers Run,disneyland,Star Wars: Galaxy's Edge,simulator,operating,TRUE,38,33.8148776074849,-117.921368217706
+rise-of-the-resistance,Star Wars: Rise of the Resistance,disneyland,Star Wars: Galaxy's Edge,dark_ride,operating,TRUE,40,33.8138366376163,-117.923103879201
+animation-academy,Animation Academy,californiaadventure,Hollywood Land,interactive,operating,FALSE,,33.8076014232569,-117.917603906954
+guardians-of-the-galaxy,Guardians of the Galaxy - Mission: BREAKOUT!,californiaadventure,Hollywood Land,thrill,operating,TRUE,40,33.8069512397027,-117.917138268357
+mickeys-philharmagic,Mickey's PhilharMagic,californiaadventure,Hollywood Land,show,operating,FALSE,,33.8078866933168,-117.917784956064
+monsters-inc,"Monsters, Inc. Mike & Sulley to the Rescue!",californiaadventure,Hollywood Land,dark_ride,operating,FALSE,,33.8081764197467,-117.917279359665
+sorcerers-workshop,Sorcerer's Workshop,californiaadventure,Hollywood Land,interactive,operating,FALSE,,33.8076014232569,-117.917603906954
+turtle-talk,Turtle Talk with Crush,californiaadventure,Hollywood Land,show,operating,FALSE,,33.8076014232569,-117.917603906954
+games-of-pixar-pier,Games of Pixar Pier,californiaadventure,Pixar Pier,games,operating,FALSE,,33.8048788124919,-117.922339432511
+incredicoaster,Incredicoaster,californiaadventure,Pixar Pier,coaster,operating,TRUE,48,33.8046760285627,-117.920825786657
+inside-out-emotional-whirlwind,Inside Out Emotional Whirlwind,californiaadventure,Pixar Pier,spinner,operating,FALSE,,33.8052373799608,-117.922806179118
+jessies-critter-carousel,Jessie's Critter Carousel,californiaadventure,Pixar Pier,carousel,operating,FALSE,,33.8046009510983,-117.92109091944
+pixar-pal-a-round,Pixar Pal-A-Round - Swinging,californiaadventure,Pixar Pier,ferris_wheel,operating,FALSE,,33.8050712259162,-117.922307018513
+pixar-pal-a-round-non-swinging,Pixar Pal-A-Round - Non-Swinging,californiaadventure,Pixar Pier,ferris_wheel,operating,FALSE,,33.8050712259162,-117.922307018513
+toy-story-mania,Toy Story Midway Mania!,californiaadventure,Pixar Pier,dark_ride,operating,TRUE,,33.804649070112,-117.921757497488
+golden-zephyr,Golden Zephyr,californiaadventure,Paradise Gardens Park,spinner,operating,FALSE,,33.8060476224225,-117.922315207666
+goofy-sky-school,Goofy's Sky School,californiaadventure,Paradise Gardens Park,coaster,operating,FALSE,42,33.8063418124958,-117.922763136569
+jumpin-jellyfish,Jumpin' Jellyfish,californiaadventure,Paradise Gardens Park,ride,operating,FALSE,40,33.8060608482619,-117.922753264026
+silly-symphony-swings,Silly Symphony Swings,californiaadventure,Paradise Gardens Park,swing_ride,operating,FALSE,40,33.8056732391499,-117.922886543356
+little-mermaid,The Little Mermaid - Ariel's Undersea Adventure,californiaadventure,Paradise Gardens Park,dark_ride,operating,FALSE,,33.8061996810022,-117.921096801551
+grizzly-river-run,Grizzly River Run,californiaadventure,Grizzly Peak,water_ride,operating,TRUE,42,33.8074819864074,-117.920968120721
+redwood-creek-challenge,Redwood Creek Challenge Trail,californiaadventure,Grizzly Peak,walkthrough,operating,FALSE,,33.806925351485,-117.921409649916
+soarin,Soarin' Over California,californiaadventure,Grizzly Peak,simulator,operating,TRUE,40,33.8082009678312,-117.92001147413
+luigis-rollickin-roadsters,Luigi's Rollickin' Roadsters,californiaadventure,Cars Land,thrill,operating,FALSE,,33.8054274986432,-117.918416542979
+maters-junkyard-jamboree,Mater's Junkyard Jamboree,californiaadventure,Cars Land,spinner,operating,FALSE,,33.8062993837329,-117.91926893029
+radiator-springs-racers,Radiator Springs Racers,californiaadventure,Cars Land,thrill,operating,TRUE,40,33.8052189605506,-117.918643540319
+red-car-trolley,Red Car Trolley,californiaadventure,Buena Vista Street,transportation,closed,FALSE,,33.808461835903,-117.919074904562
+the-bakery-tour,The Bakery Tour,californiaadventure,San Fransokyo Square,walkthrough,operating,FALSE,,33.8060585558049,-117.919731694333
+web-slingers,WEB SLINGERS: A Spider-Man Adventure,californiaadventure,Avengers Campus,dark_ride,operating,TRUE,0,33.8066634898478,-117.918283413156

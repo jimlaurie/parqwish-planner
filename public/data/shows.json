@@ -1,0 +1,1018 @@
+{
+  "version": "1.2.0",
+  "californiaadventure": {
+    "avengers-assemble": {
+      "duration": 20,
+      "status": "closed",
+      "types": [
+        "live show"
+      ],
+      "land": "Avengers Campus",
+      "longitude": -117.917055,
+      "times": [],
+      "latitude": 33.806978,
+      "name": "Avengers Assemble",
+      "timeRanges": []
+    },
+    "disney-junior-dance-party": {
+      "duration": 25,
+      "status": "closed",
+      "land": "Hollywood Land",
+      "types": [
+        "theater show"
+      ],
+      "longitude": -117.9183444,
+      "times": [],
+      "latitude": 33.8075887,
+      "name": "Disney Junior Dance Party!",
+      "timeRanges": []
+    },
+    "meet-mickey-disney-friends": {
+      "latitude": 33.8075887,
+      "name": "Meet Mickey Mouse and Disney Friends",
+      "apiEntityId": "1dcd9141-54b8-4451-8920-f0549bb8c753",
+      "timeRanges": [],
+      "duration": 15,
+      "status": "closed",
+      "land": "Hollywood Land",
+      "types": [
+        "character experience"
+      ],
+      "longitude": -117.9183444,
+      "times": []
+    },
+    "meet-mulan-mushu": {
+      "timeRanges": [],
+      "apiEntityId": "1766a316-c087-48d8-b290-9ad3ac2a7258",
+      "name": "Meet Mulan and Mushu",
+      "latitude": 33.8060787,
+      "times": [],
+      "longitude": -117.9232652,
+      "types": [
+        "character experience"
+      ],
+      "land": "Paradise Gardens Park",
+      "status": "closed",
+      "duration": 15
+    },
+    "operation-playtime": {
+      "times": [
+        "10:45",
+        "11:45",
+        "12:45",
+        "14:15",
+        "15:15",
+        "16:15"
+      ],
+      "types": [
+        "street show"
+      ],
+      "land": "Hollywood Land",
+      "longitude": -117.920853,
+      "status": "operating",
+      "duration": 20,
+      "apiEntityId": "af195dcb-a69e-499a-b659-6751ee871f79",
+      "timeRanges": [],
+      "name": "Operation: Playtime! - featuring the Green Army Patrol",
+      "latitude": 33.806095
+    },
+    "citizens-of-buena-vista-street": {
+      "status": "closed",
+      "duration": 20,
+      "times": [],
+      "land": "Buena Vista Street",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.919152,
+      "latitude": 33.807619,
+      "apiEntityId": "8d4b6d5f-558f-4210-82b5-02b0570232ea",
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "17:15"
+        }
+      ],
+      "name": "Citizens of Buena Vista Street"
+    },
+    "meet-red-panda-mei": {
+      "times": [],
+      "land": "San Fransokyo Square",
+      "types": [
+        "character experience"
+      ],
+      "longitude": -117.920177,
+      "status": "closed",
+      "duration": 20,
+      "apiEntityId": "775f8b7f-9ff5-4381-96c5-7f3605179435",
+      "timeRanges": [],
+      "name": "Meet Red Panda Mei from Turning Red",
+      "latitude": 33.8058722
+    },
+    "hurry-home": {
+      "latitude": 33.8060787,
+      "apiEntityId": "d3c6062a-73ea-4ac5-9a2d-44a24f49e804",
+      "timeRanges": [],
+      "name": "Hurry Home -- A Lunar New Year Celebration",
+      "status": "closed",
+      "duration": 8,
+      "times": [],
+      "types": [
+        "seasonal"
+      ],
+      "land": "Paradise Gardens Park",
+      "longitude": -117.9232652
+    },
+    "meet-disney-pals-bvs": {
+      "duration": 15,
+      "status": "operating",
+      "land": "Buena Vista Street",
+      "types": [
+        "character experience"
+      ],
+      "longitude": -117.918943,
+      "times": [],
+      "latitude": 33.80785,
+      "name": "Meet Disney Pals on Buena Vista Street",
+      "apiEntityId": "4c570f5a-c5da-4388-9804-dd56123d18ce",
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "22:00"
+        }
+      ]
+    },
+    "avengers-headquarters": {
+      "status": "operating",
+      "duration": 20,
+      "times": [],
+      "longitude": -117.917404,
+      "types": [
+        "street show"
+      ],
+      "land": "Avengers Campus",
+      "latitude": 33.806589,
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "22:00"
+        }
+      ],
+      "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
+      "name": "Avengers Headquarters"
+    },
+    "paradise-garden-jie-ma": {
+      "latitude": 33.806078,
+      "timeRanges": [],
+      "apiEntityId": "b00ddef4-08fe-45e4-8802-2c3baaa1bff5",
+      "name": "Paradise Garden Bandstand Presents Jie Ma",
+      "status": "closed",
+      "duration": 25,
+      "times": [],
+      "longitude": -117.9232652,
+      "types": [
+        "street show"
+      ],
+      "land": "Paradise Gardens Park"
+    },
+    "paradise-garden-vocal-seoul": {
+      "latitude": 33.806078,
+      "timeRanges": [],
+      "apiEntityId": "e5599140-20c0-431a-bce4-e54f7da1da4d",
+      "name": "Paradise Garden Bandstand Presents Vocal Seoul",
+      "status": "closed",
+      "duration": 25,
+      "times": [],
+      "longitude": -117.923265,
+      "land": "Paradise Gardens Park",
+      "types": [
+        "street show"
+      ]
+    },
+    "paradise-garden-lac-hong": {
+      "types": [
+        "street show"
+      ],
+      "land": "Paradise Gardens Park",
+      "longitude": -117.9232652,
+      "times": [],
+      "duration": 25,
+      "status": "closed",
+      "name": "Paradise Garden Bandstand Presents Lac Hong Performing Arts Group",
+      "apiEntityId": "1f7f2db2-7535-42b1-9095-5ac74f795a94",
+      "timeRanges": [],
+      "latitude": 33.8060787
+    },
+    "meet-radiator-springs": {
+      "latitude": 33.805908,
+      "name": "Meet the Residents of Radiator Springs in Cars Land",
+      "apiEntityId": "f71bfc6e-2f10-40a1-bf29-a4b98c5350f4",
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "22:00"
+        }
+      ],
+      "duration": 15,
+      "status": "operating",
+      "types": [
+        "character experience"
+      ],
+      "land": "Cars Land",
+      "longitude": -117.918787,
+      "times": []
+    },
+    "mulans-lunar-new-year-procession": {
+      "name": "Mulan's Lunar New Year Procession",
+      "timeRanges": [],
+      "apiEntityId": "57f454da-52bb-407d-9daa-db74f1a32db3",
+      "latitude": 33.8060787,
+      "longitude": -117.9232652,
+      "land": "Paradise Gardens Park",
+      "types": [
+        "parade",
+        "street show"
+      ],
+      "times": [],
+      "duration": 15,
+      "status": "closed"
+    },
+    "paradise-garden-bandstand": {
+      "status": "operating",
+      "duration": 25,
+      "times": [
+        "13:30",
+        "14:30",
+        "15:30",
+        "17:00",
+        "18:00",
+        "19:00"
+      ],
+      "longitude": -117.9232652,
+      "land": "Paradise Gardens Park",
+      "types": [
+        "street show"
+      ],
+      "latitude": 33.8060787,
+      "timeRanges": [],
+      "apiEntityId": "dca741a6-3472-4d4f-a9aa-7774aae81754",
+      "name": "Paradise Garden Bandstand"
+    },
+    "disney-jr-mickey-mouse-clubhouse-live": {
+      "name": "Disney Jr. Mickey Mouse Clubhouse Live!",
+      "apiEntityId": "8c0a4fdb-69e0-4e4e-ab80-d8247edabe3a",
+      "timeRanges": [],
+      "latitude": 33.8075887,
+      "types": [
+        "live show"
+      ],
+      "land": "Hollywood Land",
+      "longitude": -117.9183444,
+      "times": [
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:45",
+        "14:45",
+        "15:45"
+      ],
+      "duration": 20,
+      "status": "operating"
+    },
+    "ancient-sanctum": {
+      "times": [],
+      "land": "Avengers Campus",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.918172,
+      "status": "operating",
+      "duration": 15,
+      "apiEntityId": "531f6200-393e-4e4d-b95e-aedd30102e49",
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "14:30"
+        }
+      ],
+      "name": "Ancient Sanctum",
+      "latitude": 33.80649
+    },
+    "world-of-color-happiness": {
+      "status": "operating",
+      "duration": 22,
+      "times": [
+        "21:00",
+        "22:20"
+      ],
+      "longitude": -117.9214083,
+      "types": [
+        "nighttime spectacular"
+      ],
+      "land": "Paradise Gardens Park",
+      "latitude": 33.8056457,
+      "timeRanges": [],
+      "apiEntityId": "457e2029-852f-4de7-9ca0-e4cc6f0cfcad",
+      "name": "World of Color Happiness!"
+    },
+    "world-of-color": {
+      "timeRanges": [],
+      "name": "World of Color",
+      "latitude": 33.8056457,
+      "times": [],
+      "longitude": -117.9214083,
+      "land": "Paradise Gardens Park",
+      "types": [
+        "nighttime spectacular"
+      ],
+      "status": "closed",
+      "duration": 25
+    },
+    "guardians-dance-off": {
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "15:00",
+        "15:55",
+        "16:55",
+        "18:25",
+        "19:25",
+        "20:25"
+      ],
+      "types": [
+        "street show"
+      ],
+      "land": "Avengers Campus",
+      "longitude": -117.917055,
+      "latitude": 33.806978,
+      "apiEntityId": "0c6c7664-94f0-48b0-91ce-7cc2108a72c9",
+      "timeRanges": [],
+      "name": "Guardians of the Galaxy: Awesome Dance Off!"
+    },
+    "warriors-of-wakanda": {
+      "timeRanges": [],
+      "apiEntityId": "1b6a816a-337c-431c-8df6-72f993e15e64",
+      "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
+      "latitude": 33.806476,
+      "times": [
+        "11:45",
+        "12:45",
+        "13:45",
+        "15:15",
+        "16:15",
+        "17:15"
+      ],
+      "longitude": -117.917839,
+      "land": "Avengers Campus",
+      "types": [
+        "street show"
+      ],
+      "status": "operating",
+      "duration": 25
+    },
+    "amazing-spider-man": {
+      "longitude": -117.918828,
+      "types": [
+        "street show"
+      ],
+      "land": "Avengers Campus",
+      "times": [
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30"
+      ],
+      "duration": 10,
+      "status": "operating",
+      "name": "The Amazing Spider-Man!",
+      "timeRanges": [],
+      "apiEntityId": "bdb0a3ec-eb7a-41c9-918f-ccee7194743e",
+      "latitude": 33.806802
+    },
+    "five-and-dime": {
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "14:30",
+        "15:30",
+        "16:30",
+        "18:00",
+        "19:00",
+        "20:00"
+      ],
+      "longitude": -117.919083,
+      "types": [
+        "street show"
+      ],
+      "land": "Buena Vista Street",
+      "latitude": 33.807657,
+      "timeRanges": [],
+      "apiEntityId": "449e351b-a05a-4a52-8893-0ed5c1f6fc48",
+      "name": "Five & Dime"
+    },
+    "disney-visa-heroic-encounter": {
+      "latitude": 33.808194,
+      "name": "Disney Visa Cardmember Heroic Encounter",
+      "apiEntityId": "12180467-471a-4f93-a7b1-7115aab487f2",
+      "timeRanges": [
+        {
+          "start": "15:00",
+          "end": "18:00"
+        }
+      ],
+      "duration": 20,
+      "status": "operating",
+      "land": "Avengers Campus",
+      "types": [
+        "character experience"
+      ],
+      "longitude": -117.917943,
+      "times": []
+    },
+    "paradise-garden-fortunes": {
+      "status": "closed",
+      "duration": 25,
+      "times": [],
+      "types": [
+        "street show"
+      ],
+      "land": "Paradise Gardens Park",
+      "longitude": -117.9232652,
+      "latitude": 33.806078,
+      "apiEntityId": "4bb23055-717d-469c-a0d1-a13432a63db7",
+      "timeRanges": [],
+      "name": "Paradise Garden Bandstand Presents Fortunes"
+    }
+  },
+  "lastUpdated": "2026-07-03T13:00:06.067Z",
+  "disneyland": {
+    "pearly-band-small-world": {
+      "latitude": 33.814016,
+      "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
+      "timeRanges": [],
+      "name": "Pearly Band near \"it's a small world\"",
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "11:50",
+        "13:05",
+        "14:05"
+      ],
+      "land": "Fantasyland",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.917863
+    },
+    "blues-best-day-ever": {
+      "timeRanges": [],
+      "apiEntityId": "95a9cde3-ff1f-40a3-8276-2477ded688f8",
+      "name": "Bluey’s Best Day Ever!",
+      "latitude": 33.8144,
+      "times": [
+        "11:00",
+        "12:20",
+        "13:40",
+        "15:20",
+        "16:40"
+      ],
+      "longitude": -117.91855,
+      "land": "Fantasyland",
+      "types": [
+        "theater show"
+      ],
+      "status": "operating",
+      "duration": 25
+    },
+    "disneyland-band-frontierland": {
+      "duration": 20,
+      "status": "operating",
+      "land": "Frontierland",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.9203231,
+      "times": [
+        "10:30",
+        "14:15"
+      ],
+      "latitude": 33.8120796,
+      "name": "Disneyland Band at Frontierland",
+      "apiEntityId": "cb84b53c-dbb5-483d-a717-00d9259c6484",
+      "timeRanges": []
+    },
+    "disney-visa-cardmember-star-wars-photo-opportunity": {
+      "times": [
+        "14:00"
+      ],
+      "name": "Disney® Visa® Cardmember Star Wars Photo Opportunity",
+      "land": "Tomorrowland",
+      "longitude": -117.91805,
+      "types": [
+        "street show"
+      ],
+      "status": "seasonal",
+      "duration": 240,
+      "latitude": 33.812041
+    },
+    "dapper-dans": {
+      "times": [
+        "11:00",
+        "12:15",
+        "13:10",
+        "14:20",
+        "16:15",
+        "17:00"
+      ],
+      "types": [
+        "street show",
+        "character experience"
+      ],
+      "land": "Main Street U.S.A.",
+      "longitude": -117.918962,
+      "status": "operating",
+      "duration": 20,
+      "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
+      "timeRanges": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "name": "The Dapper Dans",
+      "latitude": 33.810308
+    },
+    "disneyland-band-small-world": {
+      "latitude": 33.814016,
+      "apiEntityId": "78568c55-6dcb-4893-a14e-ba7ed9bddaff",
+      "timeRanges": [],
+      "name": "Disneyland Band at \"it's a small world\" Promenade",
+      "status": "closed",
+      "duration": 20,
+      "times": [],
+      "types": [
+        "street show"
+      ],
+      "land": "Fantasyland",
+      "longitude": -117.917863
+    },
+    "disneyland-band-main-street": {
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "11:25",
+        "12:15",
+        "15:15",
+        "16:15"
+      ],
+      "longitude": -117.9189609,
+      "land": "Main Street U.S.A.",
+      "types": [
+        "street show"
+      ],
+      "latitude": 33.8109775,
+      "timeRanges": [],
+      "apiEntityId": "a6760f7b-3489-47df-9547-d70dd2d8cb76",
+      "name": "Disneyland Band at Main Street, U.S.A."
+    },
+    "jambalaya-jazz-mark-twain": {
+      "latitude": 33.811687,
+      "apiEntityId": "640525ab-75db-4f3c-b917-27ecb7b5ef97",
+      "timeRanges": [],
+      "name": "Jambalaya Jazz Band on the Mark Twain Riverboat",
+      "status": "closed",
+      "duration": 30,
+      "times": [],
+      "land": "Frontierland",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.921151
+    },
+    "main-street-electrical-parade": {
+      "times": [
+        "20:30",
+        "22:30"
+      ],
+      "land": "Parade Route",
+      "types": [
+        "parade",
+        "seasonal"
+      ],
+      "longitude": -117.9189609,
+      "name": "Main Street Electrical Parade",
+      "status": "seasonal",
+      "latitude": 33.81097757,
+      "duration": 20
+    },
+    "sweethearts-nite-characters": {
+      "duration": 15,
+      "status": "closed",
+      "longitude": -117.9189609,
+      "types": [
+        "character experience",
+        "seasonal"
+      ],
+      "land": "Main Street U.S.A.",
+      "times": [],
+      "latitude": 33.8109775,
+      "name": "Character Encounters at Sweethearts' Nite",
+      "timeRanges": [],
+      "apiEntityId": "e012c3af-95fc-455c-b4eb-777a1726715e"
+    },
+    "fantasy-faire": {
+      "name": "Fantasy Faire",
+      "apiEntityId": "645c11b7-51f7-41d5-9764-5a7fa9d2535c",
+      "timeRanges": [],
+      "latitude": 33.812591,
+      "land": "Fantasyland",
+      "types": [
+        "theater show"
+      ],
+      "longitude": -117.919379,
+      "times": [],
+      "duration": 20,
+      "status": "closed"
+    },
+    "princesses-royal-hall": {
+      "duration": 15,
+      "status": "closed",
+      "longitude": -117.919419,
+      "land": "Fantasyland",
+      "types": [
+        "character experience"
+      ],
+      "times": [],
+      "latitude": 33.812669,
+      "name": "Meet Disney Princesses at Royal Hall",
+      "timeRanges": [
+        {
+          "start": "10:00",
+          "end": "17:00"
+        }
+      ],
+      "apiEntityId": "33cbbd09-6d93-40d7-b758-9d7b7d3fd2eb"
+    },
+    "tale-of-the-lion-king": {
+      "status": "operating",
+      "duration": 25,
+      "latitude": 33.8144,
+      "times": [
+        "11:00",
+        "13:00",
+        "15:00",
+        "17:00"
+      ],
+      "name": "Tale of the Lion King",
+      "land": "Fantasyland",
+      "types": [
+        "theater show"
+      ],
+      "longitude": -117.91855
+    },
+    "fantasmic": {
+      "longitude": -117.921151,
+      "types": [
+        "nighttime spectacular"
+      ],
+      "land": "Frontierland",
+      "times": [
+        "21:05",
+        "22:30"
+      ],
+      "duration": 25,
+      "status": "operating",
+      "name": "Fantasmic!",
+      "timeRanges": [],
+      "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db",
+      "latitude": 33.811687
+    },
+    "disneyland-band-castle": {
+      "name": "Disneyland Band at Castle Promenade",
+      "timeRanges": [],
+      "apiEntityId": "228b9736-f889-469f-92f7-0e89bf150d5c",
+      "latitude": 33.812523,
+      "longitude": -117.918969,
+      "land": "Hub",
+      "types": [
+        "street show"
+      ],
+      "times": [
+        "13:05"
+      ],
+      "duration": 20,
+      "status": "operating"
+    },
+    "paint-the-night": {
+      "latitude": 33.8109775,
+      "timeRanges": [],
+      "apiEntityId": "c60e9de0-df2b-4484-9b05-299939dc247a",
+      "name": "Paint the Night",
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "20:45",
+        "22:45"
+      ],
+      "longitude": -117.9189609,
+      "land": "Main Street U.S.A.",
+      "types": [
+        "parade"
+      ]
+    },
+    "jambalaya-jazz": {
+      "status": "operating",
+      "duration": 25,
+      "times": [
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:05",
+        "16:00",
+        "17:00"
+      ],
+      "types": [
+        "street show"
+      ],
+      "land": "New Orleans Square",
+      "longitude": -117.921742,
+      "latitude": 33.81136,
+      "apiEntityId": "3220fd76-38e4-49a4-afa3-4842c07203fa",
+      "timeRanges": [],
+      "name": "Jambalaya Jazz"
+    },
+    "tapestry-of-happiness": {
+      "status": "operating",
+      "duration": 15,
+      "times": [
+        "22:10",
+        "23:35",
+        "23:55"
+      ],
+      "land": "Main Street U.S.A.",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.917926,
+      "latitude": 33.814359,
+      "apiEntityId": "34f7bd8a-ec8e-41ac-9d63-d94ffc54f1ef",
+      "timeRanges": [],
+      "name": "Tapestry of Happiness"
+    },
+    "believein-holiday-magic-fireworks-spectacular": {
+      "name": "\"Believe...In Holiday Magic\" Fireworks Spectacular",
+      "land": "Fantasyland",
+      "longitude": -117.9189732,
+      "types": [
+        "fireworks"
+      ],
+      "duration": 15,
+      "latitude": 33.8123896,
+      "status": "seasonal"
+    },
+    "princess-meet-greet": {
+      "times": [],
+      "types": [
+        "character experience"
+      ],
+      "land": "Fantasyland",
+      "longitude": -117.919419,
+      "status": "closed",
+      "duration": 15,
+      "timeRanges": [],
+      "name": "Disney Princess Meet-and-Greet",
+      "latitude": 33.812669
+    },
+    "the-celebrate-happy-cavalcade": {
+      "status": "closed",
+      "duration": 15,
+      "times": [],
+      "longitude": -117.9189609,
+      "land": "Parade Route",
+      "types": [
+        "parade"
+      ],
+      "latitude": 33.81097757,
+      "timeRanges": [],
+      "apiEntityId": "ff9c3639-2edd-4ece-8515-54e71ccf1067",
+      "name": "The Celebrate Happy Cavalcade"
+    },
+    "mickey-meet-greet": {
+      "timeRanges": [],
+      "name": "Mickey & Friends Meet-and-Greet",
+      "latitude": 33.8154677877,
+      "times": [],
+      "longitude": -117.9191226037,
+      "land": "Mickey's Toontown",
+      "types": [
+        "character experience"
+      ],
+      "status": "closed",
+      "duration": 15
+    },
+    "wondrous-journeys-projections": {
+      "status": "closed",
+      "duration": 20,
+      "times": [],
+      "longitude": -117.9189732,
+      "land": "Main Street U.S.A.",
+      "types": [
+        "nighttime spectacular"
+      ],
+      "latitude": 33.8123896,
+      "timeRanges": [],
+      "apiEntityId": "2e062fa5-42fd-4167-859c-aa00fddfa22c",
+      "name": "Wondrous Journeys with Projections"
+    },
+    "flag-retreat": {
+      "timeRanges": [],
+      "apiEntityId": "eeafc865-a4e0-4dc5-9cea-446108bf7d48",
+      "name": "Flag Retreat Ceremony",
+      "latitude": 33.810343,
+      "times": [
+        "16:15"
+      ],
+      "longitude": -117.9189595,
+      "land": "Main Street U.S.A.",
+      "types": [
+        "street show"
+      ],
+      "status": "operating",
+      "duration": 15
+    },
+    "mickeys-house": {
+      "latitude": 33.8154677,
+      "name": "Mickey's House and Meet Mickey Mouse",
+      "apiEntityId": "5a107a57-9174-4f3f-9be7-625a5d5bb899",
+      "timeRanges": [
+        {
+          "start": "08:00",
+          "end": "19:30"
+        }
+      ],
+      "duration": 15,
+      "status": "closed",
+      "types": [
+        "character experience"
+      ],
+      "land": "Mickey's Toontown",
+      "longitude": -117.9191226,
+      "times": []
+    },
+    "disneyland-forever": {
+      "duration": 15,
+      "status": "closed",
+      "types": [
+        "fireworks"
+      ],
+      "land": "Main Street U.S.A.",
+      "longitude": -117.9189732,
+      "times": [],
+      "latitude": 33.8123896,
+      "name": "Disneyland Forever Fireworks",
+      "timeRanges": []
+    },
+    "storytelling-royal-theatre": {
+      "status": "operating",
+      "duration": 25,
+      "times": [
+        "10:15",
+        "11:25",
+        "12:40",
+        "14:15",
+        "15:25",
+        "16:35"
+      ],
+      "longitude": -117.919443,
+      "land": "Fantasyland",
+      "types": [
+        "theater show"
+      ],
+      "latitude": 33.812495,
+      "timeRanges": [],
+      "apiEntityId": "72340a8a-b6d2-474f-aca5-5ea7d2d52335",
+      "name": "Storytelling at Royal Theatre"
+    },
+    "shadows-of-memory": {
+      "name": "Shadows of Memory: A Skywalker Saga",
+      "apiEntityId": "fa0ef252-8002-4c39-934b-46c3231d206e",
+      "timeRanges": [],
+      "latitude": 33.814988,
+      "land": "Star Wars: Galaxy's Edge",
+      "types": [
+        "nighttime spectacular"
+      ],
+      "longitude": -117.921242,
+      "times": [
+        "20:45",
+        "22:30"
+      ],
+      "duration": 12,
+      "status": "operating"
+    },
+    "wondrous-journeys-fireworks": {
+      "longitude": -117.9189732,
+      "land": "Main Street U.S.A.",
+      "types": [
+        "fireworks",
+        "nighttime spectacular"
+      ],
+      "times": [],
+      "duration": 20,
+      "status": "closed",
+      "name": "Wondrous Journeys with Fireworks",
+      "timeRanges": [],
+      "apiEntityId": "115863ac-0880-4630-afd3-b1a1b5033d51",
+      "latitude": 33.8123896
+    },
+    "bootstrappers": {
+      "duration": 20,
+      "status": "operating",
+      "land": "New Orleans Square",
+      "types": [
+        "street show"
+      ],
+      "longitude": -117.921011,
+      "times": [
+        "08:30",
+        "09:30",
+        "10:30",
+        "11:30",
+        "12:35",
+        "14:30"
+      ],
+      "latitude": 33.811384,
+      "name": "The Bootstrappers",
+      "apiEntityId": "8160b905-b318-41be-84bf-869fb6a55b14",
+      "timeRanges": []
+    },
+    "pearly-band-castle": {
+      "status": "operating",
+      "duration": 20,
+      "times": [
+        "09:15",
+        "10:05",
+        "11:00",
+        "15:05"
+      ],
+      "types": [
+        "street show"
+      ],
+      "land": "Fantasyland",
+      "longitude": -117.918967,
+      "latitude": 33.813093,
+      "apiEntityId": "9212c98b-3638-4f0b-bf42-2e2848330e1d",
+      "timeRanges": [],
+      "name": "Pearly Band at Castle Courtyard"
+    },
+    "main-street-piano-player": {
+      "types": [
+        "street show"
+      ],
+      "land": "Main Street U.S.A.",
+      "longitude": -117.9192024,
+      "times": [
+        "11:00",
+        "11:55",
+        "12:50",
+        "14:00",
+        "15:20",
+        "16:15",
+        "17:05"
+      ],
+      "duration": 25,
+      "status": "operating",
+      "name": "Main Street Piano Player",
+      "apiEntityId": "8b12916b-a384-4305-838a-c4b07affbb14",
+      "timeRanges": [],
+      "latitude": 33.8114432
+    },
+    "fire-of-the-rising-moons": {
+      "name": "Fire of the Rising Moons",
+      "apiEntityId": "e9ef1443-c735-43b6-81c6-45e53527cf93",
+      "timeRanges": [],
+      "latitude": 33.8147638,
+      "land": "Star Wars: Galaxy's Edge",
+      "types": [
+        "fireworks",
+        "nighttime spectacular"
+      ],
+      "longitude": -117.9213958,
+      "times": [
+        "21:35"
+      ],
+      "duration": 15,
+      "status": "operating"
+    }
+  },
+  "lastShowtimeSync": "2026-07-03T13:00:06.067Z"
+}

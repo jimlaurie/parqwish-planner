@@ -196,7 +196,19 @@
   --color-purple-light: #D0CBE0;
   --color-nav-bg: #FFFFFF;
   --color-border-subtle: rgba(0, 0, 0, 0.08);
+  --color-border-default: rgba(0, 0, 0, 0.12);
+  --color-border-strong: rgba(0, 0, 0, 0.2);
+  --color-border-input: rgba(0, 0, 0, 0.14);
   --color-card-shadow: rgba(0, 0, 0, 0.06);
+
+  /* Surfaces — dark mode lightens with white-tinted overlays; light mode
+     needs the inverse (darken) or these are invisible against a white
+     --color-bg-card. Missing here for a while — see the Anytime toggle
+     bug this was found from (components/play/DayItemEditModal.tsx). */
+  --color-surface-sunken: rgba(0, 0, 0, 0.06);
+  --color-surface-raised: rgba(0, 0, 0, 0.05);
+  --color-surface-overlay: rgba(0, 0, 0, 0.08);
+  --color-surface-hover: rgba(0, 0, 0, 0.1);
 
   /* Phase accent colors */
   --color-accent-plan: #996515;

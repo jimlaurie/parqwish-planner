@@ -28,9 +28,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.812485,
-      "longitude": -117.919306,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/maurices-treats/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/maurices-treats/menus/"
+      "longitude": -117.919306
     },
     "main-street-fruit-cart": {
       "cuisine": "Fruit",
@@ -60,9 +58,7 @@
       "land": "New Orleans Square",
       "reservations": false,
       "latitude": 33.811164,
-      "longitude": -117.92169,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/mint-julep-bar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/mint-julep-bar/menus/"
+      "longitude": -117.92169
     },
     "gibson-girl-ice-cream": {
       "name": "Gibson Girl Ice Cream Parlor",
@@ -72,9 +68,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.811496,
-      "longitude": -117.920567,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/gibson-girl-ice-cream-parlor/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/gibson-girl-ice-cream-parlor/menus/"
+      "longitude": -117.920567
     },
     "popcorn-gadgetcoaster": {
       "cuisine": "Snacks",
@@ -104,9 +98,7 @@
       "land": "Main Street U.S.A.",
       "type": "Quick Service",
       "latitude": 33.810872,
-      "longitude": -117.918862,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/market-house/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/market-house/menus/"
+      "longitude": -117.918862
     },
     "docking-bay-7": {
       "name": "Docking Bay 7 Food and Cargo",
@@ -116,9 +108,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.814668,
-      "longitude": -117.921466,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/docking-bay-7-food-and-cargo/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/docking-bay-7-food-and-cargo/menus/"
+      "longitude": -117.921466
     },
     "popcorn-haunted-mansion": {
       "name": "Popcorn near Haunted Mansion",
@@ -138,9 +128,7 @@
       "name": "Ronto Roasters",
       "cuisine": "BBQ Wraps",
       "latitude": 33.814393,
-      "longitude": -117.921493,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/ronto-roasters/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/ronto-roasters/menus/"
+      "longitude": -117.921493
     },
     "red-rose-taverne": {
       "name": "Red Rose Taverne",
@@ -150,9 +138,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.813431,
-      "longitude": -117.919481,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/red-rose-taverne/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/red-rose-taverne/menus/"
+      "longitude": -117.919481
     },
     "fantasyland-fruit-cart": {
       "name": "Fantasyland Fruit Cart",
@@ -172,9 +158,7 @@
       "cuisine": "Popcorn",
       "name": "Kat Saka's Kettle",
       "latitude": 33.814365,
-      "longitude": -117.921665,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/kat-sakas-kettle/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/kat-sakas-kettle/menus/"
+      "longitude": -117.921665
     },
     "churros-sleeping-beauty": {
       "name": "Churros near Sleeping Beauty Castle",
@@ -204,9 +188,7 @@
       "name": "Tiki Juice Bar",
       "cuisine": "Drinks & Snacks",
       "latitude": 33.811743,
-      "longitude": -117.919443,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/tiki-juice-bar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/tiki-juice-bar/menus/"
+      "longitude": -117.919443
     },
     "hungry-bear-bbq": {
       "status": "operating",
@@ -216,9 +198,7 @@
       "cuisine": "BBQ",
       "name": "Hungry Bear Barbecue Jamboree",
       "latitude": 33.812769,
-      "longitude": -117.922574,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/hungry-bear-barbecue/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/hungry-bear-barbecue/menus/"
+      "longitude": -117.922574
     },
     "bengal-barbecue": {
       "name": "Bengal Barbecue",
@@ -228,9 +208,7 @@
       "land": "Adventureland",
       "status": "operating",
       "latitude": 33.811566,
-      "longitude": -117.920294,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/bengal-barbecue/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/bengal-barbecue/menus/"
+      "longitude": -117.920294
     },
     "churros-big-thunder": {
       "name": "Churros near Big Thunder Mountain Railroad",
@@ -250,9 +228,7 @@
       "cuisine": "American",
       "name": "Troubadour Tavern",
       "latitude": 33.814467,
-      "longitude": -117.918786,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/troubadour-tavern/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/troubadour-tavern/menus/"
+      "longitude": -117.918786
     },
     "churros-town-square": {
       "cuisine": "Desserts",
@@ -272,10 +248,7 @@
       "cuisine": "Cajun & Creole",
       "name": "Cafe Orleans",
       "latitude": 33.811165,
-      "longitude": -117.921259,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/cafe-orleans/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/cafe-orleans/menus/",
-      "reservationUrl": "/dine-res/restaurant/cafe-orleans/"
+      "longitude": -117.921259
     },
     "fantasmic-dining-packages": {
       "reservations": true,
@@ -285,10 +258,7 @@
       "name": "Fantasmic! Dining Packages",
       "cuisine": "American",
       "latitude": 33.811537,
-      "longitude": -117.921112,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/fantasmic-dinner-packages/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/fantasmic-dinner-packages/menus/",
-      "reservationUrl": "/dine-res/dining-event/fantasmic-dinner-packages/"
+      "longitude": -117.921112
     },
     "popcorn-central-plaza": {
       "reservations": false,
@@ -328,9 +298,7 @@
       "type": "Quick Service",
       "reservations": false,
       "latitude": 33.812061,
-      "longitude": -117.921946,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/harbour-galley/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/harbour-galley/menus/"
+      "longitude": -117.921946
     },
     "plaza-inn": {
       "land": "Main Street U.S.A.",
@@ -340,10 +308,7 @@
       "name": "Plaza Inn",
       "cuisine": "American",
       "latitude": 33.811698,
-      "longitude": -117.918509,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/plaza-inn/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/plaza-inn/menus/",
-      "reservationUrl": "/dine-res/restaurant/plaza-inn/"
+      "longitude": -117.918509
     },
     "carnation-cafe": {
       "cuisine": "American",
@@ -393,10 +358,7 @@
       "type": "Quick Service",
       "status": "operating",
       "latitude": 33.811916,
-      "longitude": -117.916804,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/tomorrowland-skyline-terrace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/tomorrowland-skyline-terrace/menus/",
-      "reservationUrl": "/dine-res/dining-event/tomorrowland-skyline-terrace/"
+      "longitude": -117.916804
     },
     "edelweiss-snacks": {
       "name": "Edelweiss Snacks",
@@ -406,9 +368,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.813743,
-      "longitude": -117.91774,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/edelweiss-snacks/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/edelweiss-snacks/menus/"
+      "longitude": -117.91774
     },
     "popcorn-small-world": {
       "status": "operating",
@@ -428,9 +388,7 @@
       "cuisine": "Mexican",
       "name": "Rancho del Zocalo Restaurante",
       "latitude": 33.812404,
-      "longitude": -117.919883,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/rancho-del-zocalo-restaurante/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/rancho-del-zocalo-restaurante/menus/"
+      "longitude": -117.919883
     },
     "docking-bay-7-nighttime": {
       "reservations": true,
@@ -440,10 +398,7 @@
       "name": "Docking Bay 7 Food and Cargo Nighttime Gathering",
       "cuisine": "American",
       "latitude": 33.814668,
-      "longitude": -117.921466,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/docking-bay-7-nighttime-gathering/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/docking-bay-7-nighttime-gathering/menus/",
-      "reservationUrl": "/dine-res/dining-event/docking-bay-7-nighttime-gathering/"
+      "longitude": -117.921466
     },
     "refreshment-corner": {
       "cuisine": "Hot Dogs",
@@ -453,9 +408,7 @@
       "land": "Main Street U.S.A.",
       "type": "Quick Service",
       "latitude": 33.811428,
-      "longitude": -117.919095,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/refreshment-corner/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/refreshment-corner/menus/"
+      "longitude": -117.919095
     },
     "blue-bayou": {
       "status": "operating",
@@ -465,10 +418,7 @@
       "cuisine": "Cajun & Creole",
       "name": "Blue Bayou Restaurant",
       "latitude": 33.810966,
-      "longitude": -117.921182,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/blue-bayou-restaurant/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/blue-bayou-restaurant/menus/",
-      "reservationUrl": "/dine-res/restaurant/blue-bayou-restaurant/"
+      "longitude": -117.921182
     },
     "churros-small-world": {
       "name": "Churros at small world Promenade",
@@ -518,9 +468,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.81157,
-      "longitude": -117.919554,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/tropical-hideaway/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/tropical-hideaway/menus/"
+      "longitude": -117.919554
     },
     "galactic-grill": {
       "name": "Galactic Grill",
@@ -530,9 +478,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.812357,
-      "longitude": -117.917168,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/galactic-grill/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/galactic-grill/menus/"
+      "longitude": -117.917168
     },
     "plaza-inn-dining-package": {
       "cuisine": "American",
@@ -542,10 +488,7 @@
       "land": "Main Street U.S.A.",
       "reservations": true,
       "latitude": 33.811777,
-      "longitude": -117.918649,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/plaza-inn-dining-package/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/plaza-inn-dining-package/menus/",
-      "reservationUrl": "/dine-res/dining-event/plaza-inn-dining-package/"
+      "longitude": -117.918649
     },
     "turkey-leg-central-plaza": {
       "cuisine": "Turkey Legs",
@@ -605,9 +548,7 @@
       "cuisine": "Bakery & Sandwiches",
       "name": "Jolly Holiday Bakery Cafe",
       "latitude": 33.811607,
-      "longitude": -117.919278,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/jolly-holiday-bakery-cafe/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/jolly-holiday-bakery-cafe/menus/"
+      "longitude": -117.919278
     },
     "stage-door-cafe": {
       "name": "Stage Door Cafe",
@@ -647,9 +588,7 @@
       "type": "Quick Service",
       "reservations": false,
       "latitude": 33.815357,
-      "longitude": -117.918714,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/good-boy-grocers/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/good-boy-grocers/menus/"
+      "longitude": -117.918714
     },
     "golden-horseshoe": {
       "cuisine": "American",
@@ -659,9 +598,7 @@
       "type": "Quick Service",
       "reservations": false,
       "latitude": 33.812012,
-      "longitude": -117.92024,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/golden-horseshoe-restaurant/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/golden-horseshoe-restaurant/menus/"
+      "longitude": -117.92024
     },
     "tropical-imports": {
       "cuisine": "Fruit & Snacks",
@@ -679,9 +616,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8116963841475,
-      "longitude": -117.916966337384,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/alien-pizza-planet/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/alien-pizza-planet/menus/"
+      "longitude": -117.916966337384
     },
     "milk-stand": {
       "name": "Milk Stand",
@@ -691,9 +626,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.814338,
-      "longitude": -117.920745,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/milk-stand/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/milk-stand/menus/"
+      "longitude": -117.920745
     },
     "river-belle-terrace": {
       "name": "River Belle Terrace",
@@ -703,10 +636,7 @@
       "type": "Table Service",
       "status": "operating",
       "latitude": 33.811496,
-      "longitude": -117.920567,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/river-belle-terrace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/river-belle-terrace/menus/",
-      "reservationUrl": "/dine-res/restaurant/river-belle-terrace/"
+      "longitude": -117.920567
     },
     "royal-street-veranda": {
       "status": "operating",
@@ -716,9 +646,7 @@
       "cuisine": "Snacks",
       "name": "Royal Street Veranda",
       "latitude": 33.811192,
-      "longitude": -117.920929,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/royal-street-veranda/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/royal-street-veranda/menus/"
+      "longitude": -117.920929
     },
     "ogas-cantina": {
       "cuisine": "Drinks & Small Plates",
@@ -728,9 +656,7 @@
       "type": "Lounge",
       "reservations": true,
       "latitude": 33.814688,
-      "longitude": -117.921014,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/ogas-cantina/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/ogas-cantina/menus/"
+      "longitude": -117.921014
     },
     "churros-haunted-mansion": {
       "cuisine": "Desserts",
@@ -750,9 +676,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.811603,
-      "longitude": -117.92012,
-      "url": "https://disneyland.disney.go.com/dining/disneyland/south-seas-traders/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/south-seas-traders/menus/"
+      "longitude": -117.92012
     },
     "candy-palace-candy-kitchen": {
       "name": "Candy Palace and Candy Kitchen",
@@ -804,9 +728,7 @@
       "cuisine": "American",
       "name": "Sonoma Terrace",
       "latitude": 33.8064436616369,
-      "longitude": -117.920363272268,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/sonoma-terrace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/sonoma-terrace/menus/"
+      "longitude": -117.920363272268
     },
     "churros-goofy-sky-school": {
       "name": "Churros near Goofy's Sky School",
@@ -836,9 +758,7 @@
       "cuisine": "American",
       "name": "Smokejumpers Grill",
       "latitude": 33.8079053108344,
-      "longitude": -117.91969990481,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/smokejumpers-grill/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/smokejumpers-grill/menus/"
+      "longitude": -117.91969990481
     },
     "world-of-color-dessert-party": {
       "name": "World of Color Dessert Party",
@@ -848,10 +768,7 @@
       "reservations": true,
       "status": "operating",
       "latitude": 33.8059365244673,
-      "longitude": -117.921436314783,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/world-of-color-dessert-party/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/world-of-color-dessert-party/menus/",
-      "reservationUrl": "/dine-res/dining-event/world-of-color-dessert-party/"
+      "longitude": -117.921436314783
     },
     "fruit-carts-mortimers": {
       "reservations": false,
@@ -871,9 +788,7 @@
       "cuisine": "Drinks & Pretzels",
       "name": "Pym Tasting Lab",
       "latitude": 33.806724023823,
-      "longitude": -117.91755699722,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/pym-tasting-lab/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/pym-tasting-lab/menus/"
+      "longitude": -117.91755699722
     },
     "bing-bongs-sweet-stuff": {
       "reservations": false,
@@ -893,10 +808,7 @@
       "type": "Table Service",
       "land": "Buena Vista Street",
       "latitude": 33.8074601968613,
-      "longitude": -117.919051865076,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/carthay-circle-restaurant/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/carthay-circle-restaurant/menus/",
-      "reservationUrl": "/dine-res/restaurant/carthay-circle-restaurant/"
+      "longitude": -117.919051865076
     },
     "adorable-snowman": {
       "status": "operating",
@@ -906,9 +818,7 @@
       "cuisine": "Desserts",
       "name": "Adorable Snowman Frosted Treats",
       "latitude": 33.8051864495811,
-      "longitude": -117.920492113207,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/adorable-snowman-frosted-treats/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/adorable-snowman-frosted-treats/menus/"
+      "longitude": -117.920492113207
     },
     "corn-dog-castle": {
       "status": "operating",
@@ -918,9 +828,7 @@
       "cuisine": "American",
       "name": "Corn Dog Castle",
       "latitude": 33.8063962914075,
-      "longitude": -117.922454914778,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/corn-dog-castle/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/corn-dog-castle/menus/"
+      "longitude": -117.922454914778
     },
     "willies-churros": {
       "cuisine": "Desserts",
@@ -938,9 +846,7 @@
       "land": "Paradise Gardens Park",
       "type": "Quick Service",
       "cuisine": "Asian",
-      "name": "Lunar New Year Marketplaces",
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/lunar-new-year-food-marketplaces/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/lunar-new-year-food-marketplaces/menus/"
+      "name": "Lunar New Year Marketplaces"
     },
     "fairfax-market": {
       "status": "operating",
@@ -950,9 +856,7 @@
       "cuisine": "American",
       "name": "Fairfax Market",
       "latitude": 33.8077803902536,
-      "longitude": -117.917469544939,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/fairfax-fruit-market/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/fairfax-fruit-market/menus/"
+      "longitude": -117.917469544939
     },
     "terran-treats": {
       "type": "Snack",
@@ -962,9 +866,7 @@
       "name": "Terran Treats",
       "cuisine": "Snacks",
       "latitude": 33.8071120115142,
-      "longitude": -117.917010851805,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/terran-treats/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/terran-treats/menus/"
+      "longitude": -117.917010851805
     },
     "cocina-cucamonga": {
       "cuisine": "Mexican",
@@ -974,9 +876,7 @@
       "land": "San Fransokyo Square",
       "type": "Quick Service",
       "latitude": 33.8055274688851,
-      "longitude": -117.920287007311,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/cocina-cucamonga-mexican-grill/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/cocina-cucamonga-mexican-grill/menus/"
+      "longitude": -117.920287007311
     },
     "clarabelles-ice-cream": {
       "status": "operating",
@@ -986,9 +886,7 @@
       "cuisine": "Ice Cream",
       "name": "Clarabelle's Hand-Scooped Ice Cream",
       "latitude": 33.8079789948824,
-      "longitude": -117.919180938571,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/clarabelles-hand-scooped-ice-cream/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/clarabelles-hand-scooped-ice-cream/menus/"
+      "longitude": -117.919180938571
     },
     "churros-hollywood": {
       "name": "Churros at Hollywood Land",
@@ -1008,9 +906,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8077309105891,
-      "longitude": -117.918164751613,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/award-wieners/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/award-wieners/menus/"
+      "longitude": -117.918164751613
     },
     "pym-test-kitchen": {
       "status": "operating",
@@ -1020,9 +916,7 @@
       "cuisine": "American",
       "name": "Pym Test Kitchen",
       "latitude": 33.8067363107166,
-      "longitude": -117.917737055618,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/pym-test-kitchen/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/pym-test-kitchen/menus/"
+      "longitude": -117.917737055618
     },
     "lamplight-lounge-boardwalk": {
       "reservations": false,
@@ -1032,10 +926,7 @@
       "name": "Lamplight Lounge - Boardwalk Dining",
       "cuisine": "American",
       "latitude": 33.8051743279683,
-      "longitude": -117.920838030363,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/lamplight-lounge-boardwalk-dining/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/lamplight-lounge-boardwalk-dining/menus/",
-      "reservationUrl": "/dine-res/restaurant/lamplight-lounge-boardwalk-dining/"
+      "longitude": -117.920838030363
     },
     "bayside-brews": {
       "name": "Bayside Brews",
@@ -1045,9 +936,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8058744330858,
-      "longitude": -117.922830078851,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/bayside-brews/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/bayside-brews/menus/"
+      "longitude": -117.922830078851
     },
     "menocino-terrace": {
       "status": "seasonal",
@@ -1067,9 +956,7 @@
       "name": "Fiddler, Fifer & Practical Cafe",
       "cuisine": "Coffee & Pastries",
       "latitude": 33.8078128146971,
-      "longitude": -117.919350370223,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/fiddler-fifer-and-practical-cafe/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/fiddler-fifer-and-practical-cafe/menus/"
+      "longitude": -117.919350370223
     },
     "ritas-turbine-blenders": {
       "name": "Rita's Turbine Blenders",
@@ -1079,9 +966,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8057549722426,
-      "longitude": -117.920009335459,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/ritas-turbine-blenders/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/ritas-turbine-blenders/menus/"
+      "longitude": -117.920009335459
     },
     "shawarma-palace": {
       "type": "Quick Service",
@@ -1091,9 +976,7 @@
       "name": "Shawarma Palace",
       "cuisine": "Mediterranean",
       "latitude": 33.8065287793809,
-      "longitude": -117.91810754195,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/shawarma-palace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/shawarma-palace/menus/"
+      "longitude": -117.91810754195
     },
     "chiller-paradise-gardens": {
       "reservations": false,
@@ -1111,9 +994,7 @@
       "status": "operating",
       "land": "Paradise Gardens Park",
       "type": "Snack",
-      "reservations": false,
-      "url": "https://disneyland.disney.go.com/dining/lemonade/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/lemonade/menus/"
+      "reservations": false
     },
     "magic-key-terrace": {
       "name": "Magic Key Terrace - Magic Key Holder Dining",
@@ -1123,10 +1004,7 @@
       "reservations": true,
       "status": "operating",
       "latitude": 33.8066140184938,
-      "longitude": -117.919946199534,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/magic-key-terrace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/magic-key-terrace/menus/",
-      "reservationUrl": "/dine-res/restaurant/magic-key-terrace/"
+      "longitude": -117.919946199534
     },
     "shawarma-and-more": {
       "status": "operating",
@@ -1146,10 +1024,7 @@
       "name": "Carthay Circle Lounge",
       "cuisine": "Small Plates & Drinks",
       "latitude": 33.8074587277021,
-      "longitude": -117.919051083143,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/carthay-circle-lounge/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/carthay-circle-lounge/menus/",
-      "reservationUrl": "/dine-res/restaurant/carthay-circle-lounge/"
+      "longitude": -117.919051083143
     },
     "ghirardelli": {
       "reservations": false,
@@ -1169,10 +1044,7 @@
       "reservations": true,
       "status": "operating",
       "latitude": 33.805332730066,
-      "longitude": -117.921018542501,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/lamplight-lounge/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/lamplight-lounge/menus/",
-      "reservationUrl": "/dine-res/restaurant/lamplight-lounge/"
+      "longitude": -117.921018542501
     },
     "paradise-garden-grill": {
       "status": "operating",
@@ -1182,9 +1054,7 @@
       "cuisine": "Mediterranean",
       "name": "Paradise Garden Grill",
       "latitude": 33.806087154422,
-      "longitude": -117.923388733103,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/paradise-garden-grill/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/paradise-garden-grill/menus/"
+      "longitude": -117.923388733103
     },
     "fillmores-taste-in": {
       "cuisine": "Drinks & Snacks",
@@ -1194,9 +1064,7 @@
       "type": "Snack",
       "land": "Cars Land",
       "latitude": 33.806111493574,
-      "longitude": -117.919439783761,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/fillmores-taste-in/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/fillmores-taste-in/menus/"
+      "longitude": -117.919439783761
     },
     "schmoozies": {
       "status": "operating",
@@ -1216,9 +1084,7 @@
       "cuisine": "Asian",
       "name": "Lucky Fortune Cookery",
       "latitude": 33.8057987971854,
-      "longitude": -117.919865845815,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/lucky-fortune-cookery/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/lucky-fortune-cookery/menus/"
+      "longitude": -117.919865845815
     },
     "popcorn-pixar-pier": {
       "cuisine": "Snacks",
@@ -1238,9 +1104,7 @@
       "type": "Quick Service",
       "status": "operating",
       "latitude": 33.8079701370391,
-      "longitude": -117.916857617182,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/studio-catering-co/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/studio-catering-co/menus/"
+      "longitude": -117.916857617182
     },
     "cozy-cone-motel": {
       "status": "operating",
@@ -1250,9 +1114,7 @@
       "cuisine": "Snacks",
       "name": "Cozy Cone Motel",
       "latitude": 33.80594293448,
-      "longitude": -117.918734850376,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/cozy-cone-motel/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/cozy-cone-motel/menus/"
+      "longitude": -117.918734850376
     },
     "hollywood-lounge": {
       "status": "operating",
@@ -1262,9 +1124,7 @@
       "cuisine": "Drinks & Small Plates",
       "name": "Hollywood Lounge",
       "latitude": 33.8081919184588,
-      "longitude": -117.917058297851,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/hollywood-lounge/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/hollywood-lounge/menus/"
+      "longitude": -117.917058297851
     },
     "senor-buzz-churros": {
       "status": "operating",
@@ -1284,10 +1144,7 @@
       "name": "World of Color Dining Package",
       "cuisine": "American",
       "latitude": 33.8059316155513,
-      "longitude": -117.921443443791,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/world-of-color-dining/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/world-of-color-dining/menus/",
-      "reservationUrl": "/dine-res/dining-event/world-of-color-dining/"
+      "longitude": -117.921443443791
     },
     "poultry-palace": {
       "name": "Poultry Palace",
@@ -1297,9 +1154,7 @@
       "land": "Pixar Pier",
       "status": "operating",
       "latitude": 33.8047441347234,
-      "longitude": -117.921574101141,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/poultry-palace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/poultry-palace/menus/"
+      "longitude": -117.921574101141
     },
     "popcorn-carthay": {
       "name": "Popcorn near Carthay Circle Restaurant",
@@ -1319,9 +1174,7 @@
       "cuisine": "American",
       "name": "Flo's V8 Cafe",
       "latitude": 33.8055534286646,
-      "longitude": -117.918977600904,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/flos-v8-cafe/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/flos-v8-cafe/menus/"
+      "longitude": -117.918977600904
     },
     "popcorn-grizzly-peak": {
       "cuisine": "Snacks",
@@ -1341,9 +1194,7 @@
       "cuisine": "Italian",
       "name": "Boardwalk Pizza & Pasta",
       "latitude": 33.8057692894891,
-      "longitude": -117.923255165984,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/boardwalk-pizza-pasta/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/boardwalk-pizza-pasta/menus/"
+      "longitude": -117.923255165984
     },
     "wine-country-trattoria": {
       "name": "Wine Country Trattoria",
@@ -1353,10 +1204,7 @@
       "land": "Performance Corridor",
       "status": "operating",
       "latitude": 33.8065289493699,
-      "longitude": -117.920133931618,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/wine-country-trattoria/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/wine-country-trattoria/menus/",
-      "reservationUrl": "/dine-res/restaurant/wine-country-trattoria/"
+      "longitude": -117.920133931618
     },
     "port-san-fransokyo": {
       "name": "Port of San Fransokyo Cerveceria",
@@ -1376,9 +1224,7 @@
       "name": "Jack-Jack Cookie Num Nums",
       "cuisine": "Cookies",
       "latitude": 33.8045101837388,
-      "longitude": -117.920899312006,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/jack-jack-cookie-num-nums/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/jack-jack-cookie-num-nums/menus/"
+      "longitude": -117.920899312006
     },
     "cappuccino-cart": {
       "reservations": false,
@@ -1388,9 +1234,7 @@
       "name": "Cappuccino Cart",
       "cuisine": "Coffee",
       "latitude": 33.8060445280103,
-      "longitude": -117.920695861569,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/cappuccino-cart/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/cappuccino-cart/menus/"
+      "longitude": -117.920695861569
     },
     "churros-redwood-creek": {
       "name": "Churros near Redwood Creek Challenge Trail",
@@ -1410,9 +1254,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8048430791023,
-      "longitude": -117.921988901627,
-      "url": "https://disneyland.disney.go.com/dining/disney-california-adventure/angry-dogs/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disney-california-adventure/angry-dogs/menus/"
+      "longitude": -117.921988901627
     },
     "festival-marketplace-mercado-de-antojos": {
       "name": "Festival Marketplace - Mercado de Antojos",
@@ -1464,9 +1306,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8085955340418,
-      "longitude": -117.921848954171,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/starbucks-coffee/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/starbucks-coffee/menus/"
+      "longitude": -117.921848954171
     },
     "naples-ristorante-e-bar": {
       "name": "Naples Ristorante e Bar",
@@ -1476,10 +1316,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088758751104,
-      "longitude": -117.922082535066,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/naples-ristorante-e-bar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/naples-ristorante-e-bar/menus/",
-      "reservationUrl": "/dine-res/restaurant/naples-ristorante-e-bar/"
+      "longitude": -117.922082535066
     },
     "napolini-pizzeria": {
       "name": "Napolini Pizzeria",
@@ -1489,9 +1326,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8090033025663,
-      "longitude": -117.922259490289,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/napolini-pizzeria/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/napolini-pizzeria/menus/"
+      "longitude": -117.922259490289
     },
     "jamba": {
       "name": "Jamba®",
@@ -1501,9 +1336,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8085778901699,
-      "longitude": -117.922195786409,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/jamba/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/jamba/menus/"
+      "longitude": -117.922195786409
     },
     "salt-n-straw": {
       "name": "Salt & Straw",
@@ -1513,9 +1346,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8090091838311,
-      "longitude": -117.922460039542,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/salt-and-straw/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/salt-and-straw/menus/"
+      "longitude": -117.922460039542
     },
     "disney-wonerful-world-of-sweets": {
       "name": "Disney Wonderful World of Sweets",
@@ -1545,9 +1376,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8092376523655,
-      "longitude": -117.922722617204,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/black-tap-craft-burgers/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/black-tap-craft-burgers/menus/"
+      "longitude": -117.922722617204
     },
     "ballast-point-brewing": {
       "name": "Ballast Point® Brewing Co.",
@@ -1557,9 +1386,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8092280823951,
-      "longitude": -117.922831212358,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/ballast-point-brewing-company/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/ballast-point-brewing-company/menus/"
+      "longitude": -117.922831212358
     },
     "paseo": {
       "name": "Paseo",
@@ -1569,10 +1396,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8089710599339,
-      "longitude": -117.922811467784,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/paseo/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/paseo/menus/",
-      "reservationUrl": "/dine-res/restaurant/paseo/"
+      "longitude": -117.922811467784
     },
     "tiendita": {
       "name": "Tiendita",
@@ -1582,9 +1406,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088986013346,
-      "longitude": -117.922984232802,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/tiendita/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/tiendita/menus/"
+      "longitude": -117.922984232802
     },
     "centrico": {
       "name": "Centrico",
@@ -1604,9 +1426,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8092584518156,
-      "longitude": -117.923063569493,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/black-tap-crazyshake-counter/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/black-tap-crazyshake-counter/menus/"
+      "longitude": -117.923063569493
     },
     "splitsville": {
       "name": "Splitsville Luxury Lanes™ - Dining",
@@ -1626,9 +1446,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8090291794043,
-      "longitude": -117.923481757302,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/jazz-kitchen-beignets-expressed/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/jazz-kitchen-beignets-expressed/menus/"
+      "longitude": -117.923481757302
     },
     "jazz-kitchen": {
       "name": "Jazz Kitchen Coastal Grill & Patio",
@@ -1638,10 +1456,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8089821280901,
-      "longitude": -117.923649869098,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/jazz-kitchen-coastal-grill-patio/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/jazz-kitchen-coastal-grill-patio/menus/",
-      "reservationUrl": "/dine-res/restaurant/jazz-kitchen-coastal-grill-patio/"
+      "longitude": -117.923649869098
     },
     "cathys-cookies": {
       "name": "Cathy’s Cookies",
@@ -1671,9 +1486,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.809175971811,
-      "longitude": -117.923950844525,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/blue-ribbon-corn-dogs/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/blue-ribbon-corn-dogs/menus/"
+      "longitude": -117.923950844525
     },
     "vista-parkside-market": {
       "name": "Vista Parkside Market",
@@ -1683,9 +1496,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088079600262,
-      "longitude": -117.924682322212,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/vista-parkside-market/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/vista-parkside-market/menus/"
+      "longitude": -117.924682322212
     },
     "seoul-sister": {
       "name": "Seoul Sister",
@@ -1695,9 +1506,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088079600262,
-      "longitude": -117.924682322212,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/seoul-sister/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/seoul-sister/menus/"
+      "longitude": -117.924682322212
     },
     "parkside-market-coffee": {
       "name": "Parkside Market Coffee",
@@ -1707,9 +1516,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088079600262,
-      "longitude": -117.924682322212,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/parkside-market-coffee/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/parkside-market-coffee/menus/"
+      "longitude": -117.924682322212
     },
     "ggs-chicken-shop": {
       "name": "GG’s Chicken Shop",
@@ -1729,12 +1536,10 @@
       "reservations": true,
       "status": "operating",
       "latitude": 33.8086717189875,
-      "longitude": -117.925249231641,
-      "url": "https://disneyland.disney.go.com/dining/downtown-disney-district/din-tai-fung/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/din-tai-fung/menus/"
+      "longitude": -117.925249231641
     }
   },
-  "lastUpdated": "2026-07-03T09:00:08.088Z",
+  "lastUpdated": "2026-08-07T09:00:08.547Z",
   "hotels": {
     "napa-rose": {
       "name": "Napa Rose",
@@ -1744,9 +1549,7 @@
       "requiresReservations": true,
       "status": "operating",
       "latitude": 33.8077212164958,
-      "longitude": -117.921528402425,
-      "url": "https://disneyland.disney.go.com/dining/grand-californian-hotel/napa-rose/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/grand-californian-hotel/napa-rose/menus/"
+      "longitude": -117.921528402425
     },
     "storytellers-cafe": {
       "name": "Storytellers Cafe",
@@ -1756,10 +1559,7 @@
       "requiresReservations": false,
       "status": "operating",
       "latitude": 33.8079457417776,
-      "longitude": -117.921835031247,
-      "url": "https://disneyland.disney.go.com/dining/grand-californian-hotel/storytellers-cafe/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/grand-californian-hotel/storytellers-cafe/menus/",
-      "reservationUrl": "/dine-res/restaurant/storytellers-cafe/"
+      "longitude": -117.921835031247
     },
     "hearthstone-lounge": {
       "name": "Hearthstone Lounge",
@@ -1769,10 +1569,7 @@
       "requiresReservations": false,
       "status": "operating",
       "latitude": 33.807694146032,
-      "longitude": -117.922273893749,
-      "url": "https://disneyland.disney.go.com/dining/grand-californian-hotel/hearthstone-lounge/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/grand-californian-hotel/hearthstone-lounge/menus/",
-      "reservationUrl": "/dine-res/restaurant/hearthstone-lounge/"
+      "longitude": -117.922273893749
     },
     "gch-craftsman-grill": {
       "name": "GCH Craftsman Grill",
@@ -1782,9 +1579,7 @@
       "requiresReservations": false,
       "status": "operating",
       "latitude": 33.8075253535349,
-      "longitude": -117.921470909521,
-      "url": "https://disneyland.disney.go.com/dining/grand-californian-hotel/craftsman-grill/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/grand-californian-hotel/craftsman-grill/menus/"
+      "longitude": -117.921470909521
     },
     "tangaroa-terrace": {
       "name": "Tangaroa Terrace Tropical Bar & Grill",
@@ -1794,9 +1589,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8085230961823,
-      "longitude": -117.926615648448,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/tangaroa-terrace/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/tangaroa-terrace/menus/"
+      "longitude": -117.926615648448
     },
     "Trader-sams-mixology": {
       "name": "Trader Sam's Mixology Seminar",
@@ -1806,10 +1599,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8083829526297,
-      "longitude": -117.926608471244,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams-mixology-seminar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams-mixology-seminar/menus/",
-      "reservationUrl": "/dine-res/dining-event/trader-sams-mixology-seminar/"
+      "longitude": -117.926608471244
     },
     "Trader-sams-enchanted-tiki-bar": {
       "name": "Trader Sam's Enchanted Tiki Bar",
@@ -1819,9 +1609,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8083829526297,
-      "longitude": -117.926608471244,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams/menus/"
+      "longitude": -117.926608471244
     },
     "coffee-house": {
       "name": "The Coffee House",
@@ -1831,9 +1619,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.808863017892,
-      "longitude": -117.927261596762,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/coffee-house/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/coffee-house/menus/"
+      "longitude": -117.927261596762
     },
     "goofys-kitchen": {
       "name": "Goofy's Kitchen",
@@ -1843,10 +1629,7 @@
       "reservations": true,
       "status": "operating",
       "latitude": 33.8087901006021,
-      "longitude": -117.92734650829,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/goofys-kitchen/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/goofys-kitchen/menus/",
-      "reservationUrl": "/dine-res/restaurant/goofys-kitchen/"
+      "longitude": -117.92734650829
     },
     "broken-spell-lounge": {
       "name": "Broken Spell Lounge",
@@ -1856,9 +1639,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8088522667394,
-      "longitude": -117.927565974249,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/broken-spell-lounge/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/broken-spell-lounge/menus/"
+      "longitude": -117.927565974249
     },
     "palm-breeze-bar": {
       "name": "Palm Breeze Bar",
@@ -1868,10 +1649,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.807981936686,
-      "longitude": -117.927531059208,
-      "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/palm-breeze-bar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/palm-breeze-bar/menus/",
-      "reservationUrl": "/dine-res/restaurant/palm-breeze-bar/"
+      "longitude": -117.927531059208
     },
     "sketch-pad-cafe": {
       "name": "The Sketch Pad Cafe",
@@ -1891,10 +1669,7 @@
       "reservations": false,
       "status": "operating",
       "latitude": 33.8065314383532,
-      "longitude": -117.924361208136,
-      "url": "https://disneyland.disney.go.com/dining/pixar-place-hotel/great-maple-modern-american-eatery/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/pixar-place-hotel/great-maple-modern-american-eatery/menus/",
-      "reservationUrl": "/dine-res/restaurant/great-maple-modern-american-eatery/"
+      "longitude": -117.924361208136
     }
   }
 }

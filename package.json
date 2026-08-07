@@ -7,7 +7,7 @@
     "build": "next build --turbopack && node -e \"const fs=require('fs');fs.writeFileSync('out/version.json',JSON.stringify({version:require('./package.json').version}))\"",
     "start": "next start",
     "serve": "serve out -l 3000 --cors",
-    "deploy": "npm run build && firebase deploy --only hosting:pwa",
+    "deploy": "node scripts/download-park-data.mjs && npm run build && firebase deploy --only hosting:pwa",
     "lint": "eslint"
   },
   "dependencies": {

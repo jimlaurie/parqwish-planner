@@ -133,6 +133,11 @@ export default function SyncPanel() {
             planner automatically. Data is end-to-end encrypted before it
             leaves your device — only you can read it.
           </p>
+          <p className="text-xs mb-1" style={{ color: "var(--color-text-muted)" }}>
+            Requires signing in with your Apple ID — the identity that stays
+            consistent across your devices. (Joining someone else&rsquo;s
+            trip doesn&rsquo;t need one — see Edit Trip → Collaborate.)
+          </p>
           <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>
             Prefer manual control? File-based transfer (below) works without
             an account and always will.
@@ -163,8 +168,9 @@ export default function SyncPanel() {
       {cloudSyncEnabled && authChecked && !synced && (
         <>
           <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>
-            Sign in with Apple to activate sync. Your data is encrypted on
-            this device before upload — no one else can read it.
+            Cloud Sync uses your Apple ID as the one identity that stays
+            consistent across your devices. Your data is encrypted on this
+            device before upload — no one else can read it.
           </p>
 
           <button

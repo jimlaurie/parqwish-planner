@@ -1,15 +1,19 @@
 "use client";
 
 // ==================== TRIP MAP VIEW ====================
-// Static Leaflet map for a single trip day: GPS trail + every item that
-// day (not just completed ones) plotted at its real-world location, with
-// a visual flag on any item whose logged time doesn't line up with where
-// the trail actually was. Loaded dynamically by the Trip Map page (no SSR
-// — Leaflet touches window). Distinct from TrailMiniMap (Publish page's
-// animated playback card, completed-items-only) — this view is about
-// reviewing/correcting the day's record, not replaying it.
+// Leaflet map for a single trip day: GPS trail + every item that day (not
+// just completed ones) plotted at its real-world location, with a visual
+// flag on any item whose logged time doesn't line up with where the trail
+// actually was. Loaded dynamically by the Trip Map page (no SSR — Leaflet
+// touches window).
+//
+// Shares TrailMiniMap's animated playback (ghost trail, scrubber,
+// play/pause, speed) so a flagged item can be checked by scrubbing to its
+// time and watching where the dot actually was — but item markers are
+// always fully visible regardless of playback position, since the point
+// here is comparing logged items against the trail, not just replaying it.
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { TripTrail } from "@/lib/db";
@@ -20,6 +24,10 @@ import type { FlagResult } from "@/lib/trip-map-flags";
 
 const TRAIL_COLOR = "#FFA500";
 const FLAG_COLOR = "#F44336";
+const TICK_MS = 50;
+const BASE_DURATION_MS = 30_000;
+const SPEEDS = [1, 2, 5, 10] as const;
+type Speed = (typeof SPEEDS)[number];
 
 // ==================== MARKER TYPES ====================
 
@@ -59,6 +67,10 @@ function flagLabel(flag: FlagResult): string | null {
   return "Worth a second look";
 }
 
+function formatClockTime(ms: number): string {
+  return new Date(ms).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", hour12: true });
+}
+
 // ==================== SUB-COMPONENTS ====================
 
 // Leaflet reads its container's size synchronously on mount and caches it.
@@ -67,7 +79,7 @@ function flagLabel(flag: FlagResult): string | null {
 // invalidateSize() alone enlarges the tile canvas but leaves the view
 // fitted to the stale, smaller box. Re-measure AND re-fit on every real
 // resize (not just once), which also naturally re-fits when bounds change
-// (e.g. switching day tabs).
+// (e.g. switching day tabs or the time-range filter).
 function MapFitBounds({ bounds }: { bounds: [[number, number], [number, number]] }) {
   const map = useMap();
   useEffect(() => {
@@ -116,6 +128,57 @@ export default function TripMapView({
     [sortedPoints]
   );
 
+  // ---- Playback state ----
+  const [sliderIndex, setSliderIndex] = useState(sortedPoints.length);
+  const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState<Speed>(2);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Jump to fully-drawn and stop playback whenever the underlying point set
+  // changes (day switch, time-range filter) rather than mid-scrubbing a now
+  // out-of-range slider position.
+  useEffect(() => {
+    setSliderIndex(sortedPoints.length);
+    setPlaying(false);
+  }, [sortedPoints]);
+
+  const stepsPerTick = useMemo(
+    () => Math.max(1, Math.ceil((trailPositions.length * speed * TICK_MS) / BASE_DURATION_MS)),
+    [trailPositions.length, speed]
+  );
+
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (!playing) return;
+    intervalRef.current = setInterval(() => {
+      setSliderIndex((prev) => {
+        const next = prev + stepsPerTick;
+        if (next >= trailPositions.length) {
+          setPlaying(false);
+          return trailPositions.length;
+        }
+        return next;
+      });
+    }, TICK_MS);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [playing, stepsPerTick, trailPositions.length]);
+
+  const activePositions = trailPositions.slice(0, sliderIndex);
+  const currentPoint = sliderIndex > 0 && sliderIndex < trailPositions.length
+    ? sortedPoints[sliderIndex - 1]
+    : null;
+  const complete = activePositions.length >= trailPositions.length;
+
+  const handleTogglePlay = () => {
+    if (sliderIndex >= trailPositions.length) setSliderIndex(0);
+    setPlaying((p) => !p);
+  };
+  const handleReset = () => { setPlaying(false); setSliderIndex(0); };
+  const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlaying(false);
+    setSliderIndex(Number(e.target.value));
+  };
+
   // Fit to the dense trail cluster (ignoring off-park commute legs) plus
   // every marker position, so an item the trail didn't directly cross
   // still ends up on-screen.
@@ -157,63 +220,152 @@ export default function TripMapView({
   }, [trailPositions, markers]);
 
   const activeMarker = markers.find((m) => m.id === activeMarkerId) ?? null;
+  const hasPlayback = trailPositions.length > 1;
 
   return (
-    <MapContainer
-      bounds={bounds}
-      boundsOptions={{ padding: [30, 30] }}
-      scrollWheelZoom
-      style={{ height: "100%", width: "100%" }}
-    >
-      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} />
+    <>
+      <div className="flex-1 relative min-h-0">
+        <MapContainer
+          bounds={bounds}
+          boundsOptions={{ padding: [30, 30] }}
+          scrollWheelZoom
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} />
 
-      {trailPositions.length > 1 && (
-        <Polyline
-          positions={trailPositions}
-          pathOptions={{ color: TRAIL_COLOR, weight: 3, opacity: 0.6, lineCap: "round", lineJoin: "round" }}
-        />
-      )}
+          {hasPlayback && (
+            <>
+              {/* Ghost — full path at low opacity, so the un-walked portion stays visible during playback */}
+              <Polyline
+                positions={trailPositions}
+                pathOptions={{ color: TRAIL_COLOR, weight: 2, opacity: 0.25, lineCap: "round", lineJoin: "round" }}
+              />
+              {/* Active — drawn portion */}
+              {activePositions.length > 1 && (
+                <Polyline
+                  positions={activePositions}
+                  pathOptions={{ color: TRAIL_COLOR, weight: 3, opacity: 0.9, lineCap: "round", lineJoin: "round" }}
+                />
+              )}
+              {/* Start marker */}
+              <CircleMarker
+                center={trailPositions[0]}
+                radius={6}
+                pathOptions={{ color: "#4CAF50", fillColor: "#4CAF50", fillOpacity: 1, weight: 2 }}
+              />
+              {/* Moving position dot */}
+              {currentPoint && !complete && (
+                <CircleMarker
+                  center={[currentPoint.latitude, currentPoint.longitude]}
+                  radius={7}
+                  pathOptions={{ color: "#fff", fillColor: TRAIL_COLOR, fillOpacity: 1, weight: 2 }}
+                />
+              )}
+              {/* End marker when fully played */}
+              {complete && (
+                <CircleMarker
+                  center={trailPositions[trailPositions.length - 1]}
+                  radius={6}
+                  pathOptions={{ color: "#F44336", fillColor: "#F44336", fillOpacity: 1, weight: 2 }}
+                />
+              )}
+            </>
+          )}
 
-      {markers.map((m) => {
-        const color = MARKER_COLORS[m.itemType] ?? "#78909C";
-        const icon = DAY_ITEM_TYPE_ICONS[m.itemType] ?? "📌";
-        const label = flagLabel(m.flag);
-        return (
-          <CircleMarker
-            key={m.id}
-            center={[m.latitude, m.longitude]}
-            radius={m.flag.flagged ? 10 : 8}
-            eventHandlers={{ click: () => onMarkerClick(m.id) }}
-            pathOptions={{
-              color: m.flag.flagged ? FLAG_COLOR : "#fff",
-              weight: m.flag.flagged ? 3 : 2,
-              fillColor: color,
-              fillOpacity: 0.9,
-              dashArray: m.flag.flagged ? "4 3" : undefined,
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -8]} opacity={1}>
-              <div style={{ minWidth: 140 }}>
-                <div style={{ fontWeight: 600, fontSize: 12 }}>
-                  {icon} {m.title} {m.hasPhoto && "📷"}
-                </div>
-                {m.time && (
-                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{m.time}</div>
-                )}
-                {label && (
-                  <div style={{ fontSize: 11, color: FLAG_COLOR, marginTop: 2, fontWeight: 600 }}>
-                    ⚠ {label}
+          {markers.map((m) => {
+            const color = MARKER_COLORS[m.itemType] ?? "#78909C";
+            const icon = DAY_ITEM_TYPE_ICONS[m.itemType] ?? "📌";
+            const label = flagLabel(m.flag);
+            return (
+              <CircleMarker
+                key={m.id}
+                center={[m.latitude, m.longitude]}
+                radius={m.flag.flagged ? 10 : 8}
+                eventHandlers={{ click: () => onMarkerClick(m.id) }}
+                pathOptions={{
+                  color: m.flag.flagged ? FLAG_COLOR : "#fff",
+                  weight: m.flag.flagged ? 3 : 2,
+                  fillColor: color,
+                  fillOpacity: 0.9,
+                  dashArray: m.flag.flagged ? "4 3" : undefined,
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -8]} opacity={1}>
+                  <div style={{ minWidth: 140 }}>
+                    <div style={{ fontWeight: 600, fontSize: 12 }}>
+                      {icon} {m.title} {m.hasPhoto && "📷"}
+                    </div>
+                    {m.time && (
+                      <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{m.time}</div>
+                    )}
+                    {label && (
+                      <div style={{ fontSize: 11, color: FLAG_COLOR, marginTop: 2, fontWeight: 600 }}>
+                        ⚠ {label}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>Click to edit</div>
                   </div>
-                )}
-                <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>Click to edit</div>
-              </div>
-            </Tooltip>
-          </CircleMarker>
-        );
-      })}
+                </Tooltip>
+              </CircleMarker>
+            );
+          })}
 
-      <MapFitBounds bounds={bounds} />
-      <PanToMarker marker={activeMarker} />
-    </MapContainer>
+          <MapFitBounds bounds={bounds} />
+          <PanToMarker marker={activeMarker} />
+        </MapContainer>
+      </div>
+
+      {hasPlayback && (
+        <div className="px-3 pt-2 pb-3 space-y-2 shrink-0"
+             style={{ backgroundColor: "var(--color-surface-raised)", borderTop: "1px solid var(--color-border-subtle)" }}>
+
+          <div className="flex items-center justify-between text-[10px]" style={{ color: "var(--color-text-muted)" }}>
+            <span>{formatClockTime(sortedPoints[0].timestamp)}</span>
+            <span className="font-semibold text-xs" style={{ color: "var(--color-text-primary)" }}>
+              {sliderIndex > 0 ? formatClockTime(sortedPoints[Math.min(sliderIndex, trailPositions.length) - 1].timestamp) : "—"}
+            </span>
+            <span>{formatClockTime(sortedPoints[sortedPoints.length - 1].timestamp)}</span>
+          </div>
+
+          <input
+            type="range"
+            min={0}
+            max={trailPositions.length}
+            value={sliderIndex}
+            onChange={handleSlider}
+            className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+            style={{ accentColor: TRAIL_COLOR }}
+          />
+
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={handleReset}
+              className="w-7 h-7 rounded flex items-center justify-center text-sm cursor-pointer"
+              style={{ backgroundColor: "var(--color-surface-overlay)", color: "var(--color-text-muted)" }}>
+              ↺
+            </button>
+            <button type="button" onClick={handleTogglePlay}
+              className="w-8 h-7 rounded flex items-center justify-center text-sm font-bold cursor-pointer"
+              style={{ backgroundColor: TRAIL_COLOR, color: "#000" }}>
+              {playing ? "⏸" : "▶"}
+            </button>
+            <span className="text-[10px] ml-1" style={{ color: "var(--color-text-muted)" }}>
+              {sliderIndex}/{trailPositions.length} pts
+            </span>
+            <div className="flex gap-1 ml-auto">
+              {SPEEDS.map((s) => (
+                <button key={s} type="button" onClick={() => setSpeed(s)}
+                  className="text-[10px] px-1.5 py-0.5 rounded cursor-pointer"
+                  style={{
+                    backgroundColor: speed === s ? TRAIL_COLOR : "var(--color-surface-overlay)",
+                    color: speed === s ? "#000" : "var(--color-text-muted)",
+                  }}>
+                  {s}×
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

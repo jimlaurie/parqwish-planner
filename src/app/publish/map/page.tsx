@@ -16,6 +16,7 @@ import { useTrips } from "@/hooks/use-trips";
 import { useDayItems } from "@/hooks/use-day-items";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
 import { flagItem } from "@/lib/trip-map-flags";
+import { filterPointsByRange, defaultTimeRange, type TrailTimeRange } from "@/lib/trail-geo";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
 import type { TripMapMarker } from "@/components/publish/TripMapView";
@@ -26,7 +27,7 @@ const FLAG_COLOR = "var(--color-error)";
 const TripMapView = dynamic(() => import("@/components/publish/TripMapView"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center"
+    <div className="flex-1 w-full flex items-center justify-center"
          style={{ backgroundColor: "var(--color-surface-sunken)" }}>
       <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading map…</span>
     </div>
@@ -71,6 +72,7 @@ export default function TripMapPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [activeMarkerId, setActiveMarkerId] = useState<string | null>(null);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [timeRange, setTimeRange] = useState<TrailTimeRange | null>(null);
 
   useEffect(() => {
     if (!_hasHydrated || currentTripId) return;
@@ -117,6 +119,32 @@ export default function TripMapPage() {
     return { ...dayTrails[0], points, pointCount: points.length };
   }, [dayTrails, selectedDate]);
 
+  const fullDayRange = useMemo(
+    () => (mergedTrail ? defaultTimeRange(mergedTrail.points) : null),
+    [mergedTrail]
+  );
+
+  // Reset the time-range filter to the full day whenever a different day is
+  // selected — switching days should show that day's whole trail, not
+  // whatever range was left over from the last one.
+  useEffect(() => {
+    setTimeRange(null);
+  }, [selectedDate]);
+
+  const effectiveRange = timeRange ?? fullDayRange;
+  const isRangeFiltered = !!timeRange && !!fullDayRange &&
+    (timeRange.from !== fullDayRange.from || timeRange.to !== fullDayRange.to);
+
+  // The trail shown/played on the map is range-filtered for focus, but
+  // flagging always checks against the full unfiltered day — narrowing the
+  // visible range shouldn't manufacture new "no trail coverage" flags for
+  // items outside that window.
+  const displayTrail = useMemo<TripTrail | null>(() => {
+    if (!mergedTrail || !effectiveRange) return mergedTrail;
+    const filtered = filterPointsByRange(mergedTrail.points, effectiveRange);
+    return { ...mergedTrail, points: filtered, pointCount: filtered.length };
+  }, [mergedTrail, effectiveRange]);
+
   const markers = useMemo<TripMapMarker[]>(() => {
     if (!coordMaps || !selectedDate) return [];
     const result: TripMapMarker[] = [];
@@ -156,14 +184,14 @@ export default function TripMapPage() {
 
   if (!currentTrip) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center">
         <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</span>
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
+    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 shrink-0"
            style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
@@ -200,12 +228,49 @@ export default function TripMapPage() {
         )}
       </div>
 
+      {/* Time range filter */}
+      {mergedTrail && fullDayRange && (
+        <div className="flex items-center gap-3 px-4 py-2 flex-wrap shrink-0"
+             style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
+          <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>
+            Trail range:
+          </span>
+          <label className="flex items-center gap-1.5 text-xs" style={{ color: "var(--color-text-muted)" }}>
+            From
+            <input
+              type="time"
+              value={effectiveRange?.from ?? ""}
+              onChange={(e) => setTimeRange({ from: e.target.value, to: effectiveRange?.to ?? fullDayRange.to })}
+              className="rounded px-2 py-0.5 text-xs border"
+              style={{ backgroundColor: "var(--color-bg-card)", color: "var(--color-text-primary)", borderColor: "var(--color-border-input)" }}
+            />
+          </label>
+          <label className="flex items-center gap-1.5 text-xs" style={{ color: "var(--color-text-muted)" }}>
+            To
+            <input
+              type="time"
+              value={effectiveRange?.to ?? ""}
+              onChange={(e) => setTimeRange({ from: effectiveRange?.from ?? fullDayRange.from, to: e.target.value })}
+              className="rounded px-2 py-0.5 text-xs border"
+              style={{ backgroundColor: "var(--color-bg-card)", color: "var(--color-text-primary)", borderColor: "var(--color-border-input)" }}
+            />
+          </label>
+          {isRangeFiltered && (
+            <button type="button" onClick={() => setTimeRange(null)}
+                    className="text-xs px-2 py-0.5 rounded cursor-pointer"
+                    style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>
+              Reset
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Body */}
       <div className="flex-1 flex min-h-0">
         {/* Map */}
-        <div className="flex-1 relative min-h-0">
+        <div className="flex-1 flex flex-col min-h-0">
           <TripMapView
-            trail={mergedTrail}
+            trail={displayTrail}
             markers={markers}
             activeMarkerId={activeMarkerId}
             onMarkerClick={handleMarkerClick}

@@ -99,3 +99,35 @@ export function calcDurationMinutes(points: TrailPointLike[]): number {
   if (points.length < 2) return 0;
   return Math.round((points[points.length - 1].timestamp - points[0].timestamp) / 60_000);
 }
+
+// ==================== TIME RANGE FILTER ====================
+// Same "From/To" wall-clock filtering TrailGallery uses on the Publish page,
+// pulled out here so a second surface (Trip Map) can filter a trail's
+// *display* without duplicating the logic a third time.
+
+export interface TrailTimeRange { from: string; to: string }
+
+export function filterPointsByRange<T extends TrailPointLike>(
+  points: T[],
+  range: TrailTimeRange
+): T[] {
+  const [fh, fm] = range.from.split(":").map(Number);
+  const [th, tm] = range.to.split(":").map(Number);
+  const fromMins = fh * 60 + fm;
+  const toMins = th * 60 + tm;
+  return points.filter((p) => {
+    const d = new Date(p.timestamp);
+    const mins = d.getHours() * 60 + d.getMinutes();
+    return mins >= fromMins && mins <= toMins;
+  });
+}
+
+export function defaultTimeRange(points: TrailPointLike[]): TrailTimeRange | null {
+  if (points.length === 0) return null;
+  const sorted = [...points].sort((a, b) => a.timestamp - b.timestamp);
+  const toTimeStr = (ts: number) => {
+    const d = new Date(ts);
+    return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+  };
+  return { from: toTimeStr(sorted[0].timestamp), to: toTimeStr(sorted[sorted.length - 1].timestamp) };
+}

@@ -12,6 +12,7 @@ import DayBreakdown from "@/components/publish/DayBreakdown";
 import ParkAnalytics from "@/components/publish/ParkAnalytics";
 import PhotoGallery from "@/components/publish/PhotoGallery";
 import TrailGallery, { type TrailTimeRanges } from "@/components/publish/TrailGallery";
+import AIExportPanel from "@/components/publish/AIExportPanel";
 
 const ACCENT = "var(--color-accent-publish)";
 
@@ -127,6 +128,8 @@ export default function PublishPage() {
             excludedIds={excludedSet}
             onToggleExclusion={(id) => currentTripId && togglePhotoExclusion(currentTripId, id)}
           />
+
+          <AIExportPanel data={data} excludedPhotoIds={excludedSet} />
 
           {/* Generate PDF button */}
           <div className="w-full max-w-4xl mb-12 flex justify-center">

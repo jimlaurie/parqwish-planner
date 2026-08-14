@@ -33,7 +33,7 @@ export interface PublishData {
   completedPackingItems: number;
   parkBreakdown: Record<string, { count: number; completed: number }>;
   landBreakdown: Record<string, { count: number; completed: number }>;
-  allPhotos: { id: string; url: string; caption: string }[];
+  allPhotos: { id: string; url: string; full: string; caption: string }[];
   wishSelections: Array<{ wishId: string; completed: boolean }>;
   wishes: Wish[];
 }
@@ -233,16 +233,16 @@ export function usePublishData() {
 
     // ==================== PHOTOS ====================
 
-    const allPhotos: { id: string; url: string; caption: string }[] = [];
+    const allPhotos: { id: string; url: string; full: string; caption: string }[] = [];
 
     for (const wish of wishes) {
       if (wish.photoSets && wish.photoSets.length > 0) {
         wish.photoSets.forEach((ps, idx) => {
-          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: ps.display, caption: wish.title });
+          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: ps.display, full: ps.full, caption: wish.title });
         });
       } else if (wish.photos && wish.photos.length > 0) {
         wish.photos.forEach((photo, idx) => {
-          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: photo, caption: wish.title });
+          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: photo, full: photo, caption: wish.title });
         });
       }
     }
@@ -250,11 +250,11 @@ export function usePublishData() {
     for (const item of packingItems) {
       if (item.photoSets && item.photoSets.length > 0) {
         item.photoSets.forEach((ps, idx) => {
-          allPhotos.push({ id: `packing_${item.id}_${idx}`, url: ps.display, caption: item.name });
+          allPhotos.push({ id: `packing_${item.id}_${idx}`, url: ps.display, full: ps.full, caption: item.name });
         });
       } else if (item.photos && item.photos.length > 0) {
         item.photos.forEach((photo, idx) => {
-          allPhotos.push({ id: `packing_${item.id}_${idx}`, url: photo, caption: item.name });
+          allPhotos.push({ id: `packing_${item.id}_${idx}`, url: photo, full: photo, caption: item.name });
         });
       }
     }
@@ -267,7 +267,7 @@ export function usePublishData() {
     for (const item of itineraryItems) {
       if (item.photos && item.photos.length > 0) {
         item.photos.forEach((photo, idx) => {
-          allPhotos.push({ id: `dayitem_${item.id}_${idx}`, url: photo, caption: item.title });
+          allPhotos.push({ id: `dayitem_${item.id}_${idx}`, url: photo, full: photo, caption: item.title });
         });
       }
     }
@@ -285,11 +285,11 @@ export function usePublishData() {
       seenScheduledWishIds.add(wish.id);
       if (wish.photoSets && wish.photoSets.length > 0) {
         wish.photoSets.forEach((ps, idx) => {
-          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: ps.display, caption: wish.title });
+          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: ps.display, full: ps.full, caption: wish.title });
         });
       } else if (wish.photos && wish.photos.length > 0) {
         wish.photos.forEach((photo, idx) => {
-          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: photo, caption: wish.title });
+          allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: photo, full: photo, caption: wish.title });
         });
       }
     }

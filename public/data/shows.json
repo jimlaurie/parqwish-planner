@@ -299,12 +299,9 @@
       "latitude": 33.80649
     },
     "world-of-color-happiness": {
-      "status": "operating",
+      "status": "closed",
       "duration": 22,
-      "times": [
-        "21:00",
-        "22:15"
-      ],
+      "times": [],
       "longitude": -117.9214083,
       "types": [
         "nighttime spectacular"
@@ -452,7 +449,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-08-07T13:00:08.926Z",
+  "lastUpdated": "2026-08-14T13:00:14.831Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -793,12 +790,9 @@
       "latitude": 33.812669
     },
     "the-celebrate-happy-cavalcade": {
-      "status": "operating",
+      "status": "closed",
       "duration": 15,
-      "times": [
-        "13:30",
-        "14:45"
-      ],
+      "times": [],
       "longitude": -117.9189609,
       "land": "Parade Route",
       "types": [
@@ -1019,5 +1013,5 @@
       "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-08-07T13:00:08.926Z"
+  "lastShowtimeSync": "2026-08-14T13:00:14.831Z"
 }

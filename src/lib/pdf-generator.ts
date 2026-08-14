@@ -3,6 +3,7 @@ import db, { type DayItemRecord } from "@/lib/db";
 import { buildResortTrailSVG, type MapMarker, type LandOverlayFeature } from "./resort-map-svg";
 import { getAttractionCoords, type CoordMaps } from "./park-data";
 import { LAND_COORDINATES } from "./map-data";
+import { calcDistanceMiles, calcDurationMinutes } from "./trail-geo";
 import type { TrailTimeRanges } from "@/components/publish/TrailGallery";
 
 // ==================== HELPERS ====================
@@ -50,32 +51,6 @@ function filterPointsByRange(points: RawPoint[], from: string, to: string): RawP
     const mins = d.getHours() * 60 + d.getMinutes();
     return mins >= fromMins && mins <= toMins;
   });
-}
-
-function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R    = 3958.8;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function calcDistanceMiles(points: RawPoint[]): number {
-  let total = 0;
-  for (let i = 1; i < points.length; i++) {
-    total += haversineMiles(
-      points[i-1].latitude, points[i-1].longitude,
-      points[i].latitude,   points[i].longitude,
-    );
-  }
-  return total;
-}
-
-function calcDurationMinutes(points: RawPoint[]): number {
-  if (points.length < 2) return 0;
-  return Math.round((points[points.length - 1].timestamp - points[0].timestamp) / 60_000);
 }
 
 function formatDuration(minutes: number): string {

@@ -12,6 +12,7 @@
 import JSZip from "jszip";
 import type { PublishData } from "@/hooks/use-publish-data";
 import type { TripTrail } from "@/lib/db";
+import { calcDistanceMiles, calcDurationMinutes } from "@/lib/trail-geo";
 
 // ==================== TYPES ====================
 
@@ -98,7 +99,12 @@ export function buildAIExportPackage(
 
   const days: AIExportDay[] = data.days.map((day, idx) => {
     const items: AIExportItem[] = day.items.map((item) => {
-      if (item.land) landCounts[item.land] = (landCounts[item.land] ?? 0) + 1;
+      // "none" is the placeholder land value for non-park-located items
+      // (equipment/sundry/outfit) — counting it would let packing-list
+      // items swamp real park lands just by outnumbering them.
+      if (item.land && item.land.toLowerCase() !== "none") {
+        landCounts[item.land] = (landCounts[item.land] ?? 0) + 1;
+      }
       return {
         time: to12Hour(item.scheduledTime),
         type: item.itemType,
@@ -110,12 +116,17 @@ export function buildAIExportPackage(
       };
     });
 
+    // Recomputed from raw points (bounded to the resort) rather than trusting
+    // the trail's own stored distanceMiles/durationMinutes — those were
+    // computed once on mobile at record time and can be stale (e.g. GPS left
+    // running past the parking lot on the drive home inflates them, since a
+    // naive sum has no way to know "walking" stopped and "driving" started).
     const dayTrails = trailsByDate.get(day.date) ?? [];
     const walkingMiles = dayTrails.length > 0
-      ? Math.round(dayTrails.reduce((sum, t) => sum + t.distanceMiles, 0) * 10) / 10
+      ? Math.round(dayTrails.reduce((sum, t) => sum + calcDistanceMiles(t.points), 0) * 10) / 10
       : null;
     const walkingMinutes = dayTrails.length > 0
-      ? Math.round(dayTrails.reduce((sum, t) => sum + t.durationMinutes, 0))
+      ? Math.round(dayTrails.reduce((sum, t) => sum + calcDurationMinutes(t.points), 0))
       : null;
 
     // Only itineraryItems (DayItemRecord) carry a date — wish/packing
@@ -135,7 +146,7 @@ export function buildAIExportPackage(
   });
 
   const totalMiles = trails.length > 0
-    ? Math.round(trails.reduce((sum, t) => sum + t.distanceMiles, 0) * 10) / 10
+    ? Math.round(trails.reduce((sum, t) => sum + calcDistanceMiles(t.points), 0) * 10) / 10
     : null;
 
   const favoriteLand = Object.entries(landCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;

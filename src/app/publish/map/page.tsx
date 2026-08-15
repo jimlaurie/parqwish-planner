@@ -4,9 +4,12 @@
 // Standalone day-by-day map: GPS trail + every logged item plotted at its
 // real-world location, with a visual flag on anything whose logged time
 // doesn't line up with where the trail actually was — a way to catch a
-// missed "completed" tap or a fudged time, not just replay the day.
+// missed "completed" tap or a fudged time, not just replay the day. Also
+// supports correcting individual GPS points that drifted (e.g. recorded
+// while indoors) — see trip-map-prefs.ts for why that's a local-only
+// overlay rather than a rewrite of the synced trail record.
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -17,12 +20,18 @@ import { useDayItems } from "@/hooks/use-day-items";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
 import { flagItem } from "@/lib/trip-map-flags";
 import { filterPointsByRange, defaultTimeRange, type TrailTimeRange } from "@/lib/trail-geo";
+import {
+  getStoredTimeRange, setStoredTimeRange, clearStoredTimeRange,
+  getAllPointCorrections, setPointCorrection, clearPointCorrection, pointCorrectionKey,
+} from "@/lib/trip-map-prefs";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
-import type { TripMapMarker } from "@/components/publish/TripMapView";
+import type { TripMapMarker, MergedTrail, MergedTrailPoint } from "@/components/publish/TripMapView";
 
 const ACCENT = "var(--color-accent-publish)";
 const FLAG_COLOR = "var(--color-error)";
+const CORRECTING_COLOR = "#42A5F5";
+const TRAIL_ACCENT = "#FFA500";
 
 const TripMapView = dynamic(() => import("@/components/publish/TripMapView"), {
   ssr: false,
@@ -61,6 +70,10 @@ function format12h(hhmm?: string): string | undefined {
   return `${h12}:${mm.toString().padStart(2, "0")} ${period}`;
 }
 
+function formatPointTime(ts: number): string {
+  return new Date(ts).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", hour12: true });
+}
+
 // ==================== PAGE ====================
 
 export default function TripMapPage() {
@@ -72,7 +85,12 @@ export default function TripMapPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [activeMarkerId, setActiveMarkerId] = useState<string | null>(null);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState<TrailTimeRange | null>(null);
+  const [timeRange, setTimeRangeState] = useState<TrailTimeRange | null>(null);
+  const [sidebarTab, setSidebarTab] = useState<"review" | "points">("review");
+  const [activePlaybackPoint, setActivePlaybackPoint] = useState<MergedTrailPoint | null>(null);
+  const [correctingKey, setCorrectingKey] = useState<string | null>(null);
+  const [correctionVersion, setCorrectionVersion] = useState(0);
+  const activeRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!_hasHydrated || currentTripId) return;
@@ -100,6 +118,22 @@ export default function TripMapPage() {
     setSelectedDate(dates[0]);
   }, [dates, selectedDate]);
 
+  // Restore the last-used range for this trip+day (if any) whenever the
+  // selected day changes; falls back to the full-day default (null) when
+  // nothing was ever saved for that day.
+  useEffect(() => {
+    if (!currentTripId || !selectedDate) return;
+    setTimeRangeState(getStoredTimeRange(currentTripId, selectedDate));
+    setCorrectingKey(null);
+  }, [currentTripId, selectedDate]);
+
+  const setTimeRange = useCallback((range: TrailTimeRange | null) => {
+    setTimeRangeState(range);
+    if (!currentTripId || !selectedDate) return;
+    if (range) setStoredTimeRange(currentTripId, selectedDate, range);
+    else clearStoredTimeRange(currentTripId, selectedDate);
+  }, [currentTripId, selectedDate]);
+
   const { items, updateItem, removeItem, toggleCompleted } = useDayItems(selectedDate);
 
   // A trail can have one row per recording user for the same day — merge
@@ -113,23 +147,36 @@ export default function TripMapPage() {
     [] as TripTrail[],
   );
 
-  const mergedTrail = useMemo<TripTrail | null>(() => {
+  // Flattens every recorded row into one point list, tagging each with the
+  // trail it actually came from (needed to key a correction stably — see
+  // trip-map-prefs.ts), then applies any locally-saved corrections on top.
+  const mergedTrail = useMemo<MergedTrail | null>(() => {
     if (!dayTrails || dayTrails.length === 0 || !selectedDate) return null;
-    const points = dayTrails.flatMap((t) => t.points).sort((a, b) => a.timestamp - b.timestamp);
-    return { ...dayTrails[0], points, pointCount: points.length };
-  }, [dayTrails, selectedDate]);
+    const corrections = getAllPointCorrections();
+    const points: MergedTrailPoint[] = dayTrails
+      .flatMap((t) => t.points.map((p) => {
+        const key = pointCorrectionKey(t.id, p.timestamp);
+        const fix = corrections[key];
+        return {
+          latitude: fix ? fix.latitude : p.latitude,
+          longitude: fix ? fix.longitude : p.longitude,
+          timestamp: p.timestamp,
+          accuracy: p.accuracy,
+          sourceTrailId: t.id,
+        };
+      }))
+      .sort((a, b) => a.timestamp - b.timestamp);
+    return { id: dayTrails[0].id, points };
+    // correctionVersion isn't read directly but forces a recompute right
+    // after the user saves/reverts a correction (localStorage writes don't
+    // trigger React re-renders on their own).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayTrails, selectedDate, correctionVersion]);
 
   const fullDayRange = useMemo(
     () => (mergedTrail ? defaultTimeRange(mergedTrail.points) : null),
     [mergedTrail]
   );
-
-  // Reset the time-range filter to the full day whenever a different day is
-  // selected — switching days should show that day's whole trail, not
-  // whatever range was left over from the last one.
-  useEffect(() => {
-    setTimeRange(null);
-  }, [selectedDate]);
 
   const effectiveRange = timeRange ?? fullDayRange;
   const isRangeFiltered = !!timeRange && !!fullDayRange &&
@@ -139,10 +186,10 @@ export default function TripMapPage() {
   // flagging always checks against the full unfiltered day — narrowing the
   // visible range shouldn't manufacture new "no trail coverage" flags for
   // items outside that window.
-  const displayTrail = useMemo<TripTrail | null>(() => {
+  const displayTrail = useMemo<MergedTrail | null>(() => {
     if (!mergedTrail || !effectiveRange) return mergedTrail;
     const filtered = filterPointsByRange(mergedTrail.points, effectiveRange);
-    return { ...mergedTrail, points: filtered, pointCount: filtered.length };
+    return { id: mergedTrail.id, points: filtered };
   }, [mergedTrail, effectiveRange]);
 
   const markers = useMemo<TripMapMarker[]>(() => {
@@ -181,6 +228,34 @@ export default function TripMapPage() {
     setActiveMarkerId(id);
     setEditingItemId(id);
   };
+
+  const correctingPoint = useMemo(
+    () => (correctingKey ? displayTrail?.points.find((p) => pointCorrectionKey(p.sourceTrailId, p.timestamp) === correctingKey) ?? null : null),
+    [correctingKey, displayTrail]
+  );
+
+  const handleCorrectPoint = useCallback((lat: number, lng: number) => {
+    if (!correctingKey) return;
+    setPointCorrection(correctingKey, { latitude: lat, longitude: lng });
+    setCorrectionVersion((v) => v + 1);
+    setCorrectingKey(null);
+  }, [correctingKey]);
+
+  const handleRevertCorrection = (key: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    clearPointCorrection(key);
+    setCorrectionVersion((v) => v + 1);
+  };
+
+  // correctionVersion forces a re-read after a localStorage write, which
+  // otherwise wouldn't trigger a React re-render on its own.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const corrections = useMemo(() => getAllPointCorrections(), [correctionVersion]);
+
+  // Auto-scroll the GPS list to whichever point the playback scrubber is on
+  useEffect(() => {
+    if (sidebarTab === "points") activeRowRef.current?.scrollIntoView({ block: "nearest" });
+  }, [activePlaybackPoint, sidebarTab]);
 
   if (!currentTrip) {
     return (
@@ -265,6 +340,21 @@ export default function TripMapPage() {
         </div>
       )}
 
+      {/* Correction mode banner */}
+      {correctingPoint && (
+        <div className="flex items-center gap-3 px-4 py-2 shrink-0"
+             style={{ borderBottom: `1px solid ${CORRECTING_COLOR}`, backgroundColor: "color-mix(in srgb, " + CORRECTING_COLOR + " 12%, transparent)" }}>
+          <span className="text-xs font-medium" style={{ color: CORRECTING_COLOR }}>
+            📍 Click the map to set the corrected location for {formatPointTime(correctingPoint.timestamp)}
+          </span>
+          <button type="button" onClick={() => setCorrectingKey(null)}
+                  className="text-xs px-2 py-0.5 rounded cursor-pointer ml-auto"
+                  style={{ color: CORRECTING_COLOR, border: `1px solid ${CORRECTING_COLOR}` }}>
+            Cancel
+          </button>
+        </div>
+      )}
+
       {/* Body */}
       <div className="flex-1 flex min-h-0">
         {/* Map */}
@@ -274,65 +364,149 @@ export default function TripMapPage() {
             markers={markers}
             activeMarkerId={activeMarkerId}
             onMarkerClick={handleMarkerClick}
+            onActivePointChange={setActivePlaybackPoint}
+            correctingPoint={correctingPoint}
+            onCorrectPoint={handleCorrectPoint}
           />
         </div>
 
         {/* Sidebar */}
-        <div className="w-72 shrink-0 overflow-y-auto p-3 hidden md:block"
+        <div className="w-72 shrink-0 flex flex-col hidden md:flex"
              style={{ borderLeft: "1px solid var(--color-border-subtle)", backgroundColor: "var(--color-surface-raised)" }}>
+
           {!mergedTrail && (
-            <p className="text-xs mb-3" style={{ color: "var(--color-text-muted)" }}>
+            <p className="text-xs p-3" style={{ color: "var(--color-text-muted)" }}>
               No GPS trail recorded for this day — items are plotted at their real-world location, but there&rsquo;s nothing to compare them against.
             </p>
           )}
 
-          <div className="flex items-center gap-1.5 mb-2">
-            <span style={{ color: FLAG_COLOR }}>⚠</span>
-            <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
-              {flaggedMarkers.length === 0 ? "Nothing flagged" : `${flaggedMarkers.length} to review`}
-            </h2>
-          </div>
-
-          {flaggedMarkers.length === 0 && (
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-              Everything checked off lines up with where the trail actually was.
-            </p>
+          {mergedTrail && (
+            <div className="flex shrink-0" style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
+              <button type="button" onClick={() => setSidebarTab("review")}
+                className="flex-1 text-xs font-semibold py-2 cursor-pointer"
+                style={{
+                  color: sidebarTab === "review" ? FLAG_COLOR : "var(--color-text-muted)",
+                  borderBottom: sidebarTab === "review" ? `2px solid ${FLAG_COLOR}` : "2px solid transparent",
+                }}>
+                ⚠ Review ({flaggedMarkers.length})
+              </button>
+              <button type="button" onClick={() => setSidebarTab("points")}
+                className="flex-1 text-xs font-semibold py-2 cursor-pointer"
+                style={{
+                  color: sidebarTab === "points" ? ACCENT : "var(--color-text-muted)",
+                  borderBottom: sidebarTab === "points" ? `2px solid ${ACCENT}` : "2px solid transparent",
+                }}>
+                📍 GPS Points ({displayTrail?.points.length ?? 0})
+              </button>
+            </div>
           )}
 
-          <div className="flex flex-col gap-1.5">
-            {flaggedMarkers.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => handleMarkerClick(m.id)}
-                className="text-left p-2 rounded-lg cursor-pointer hover:brightness-110"
-                style={{
-                  backgroundColor: "var(--color-surface-overlay)",
-                  border: activeMarkerId === m.id ? `1px solid ${FLAG_COLOR}` : "1px solid transparent",
-                }}
-              >
-                <div className="text-xs font-semibold" style={{ color: "var(--color-text-primary)" }}>
-                  {DAY_ITEM_TYPE_ICONS[m.itemType] ?? "📌"} {m.title}
-                </div>
-                {m.time && (
-                  <div className="text-[10px] mt-0.5" style={{ color: "var(--color-text-muted)" }}>
-                    {m.time}
+          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+            {(!mergedTrail || sidebarTab === "review") && (
+              <>
+                {mergedTrail && (
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span style={{ color: FLAG_COLOR }}>⚠</span>
+                    <h2 className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
+                      {flaggedMarkers.length === 0 ? "Nothing flagged" : `${flaggedMarkers.length} to review`}
+                    </h2>
                   </div>
                 )}
-                <div className="text-[10px] mt-1" style={{ color: FLAG_COLOR }}>
-                  {m.flag.reason === "no-trail-coverage"
-                    ? "No trail data near this time"
-                    : `~${m.flag.nearestDistanceMiles} mi from the trail at this time`}
-                </div>
-              </button>
-            ))}
-          </div>
 
-          {markers.length > 0 && (
-            <p className="text-[10px] mt-4 pt-3" style={{ color: "var(--color-text-dim)", borderTop: "1px solid var(--color-border-subtle)" }}>
-              {markers.length} item{markers.length === 1 ? "" : "s"} plotted this day. Items without a park/dining/show location (outfits, gear, sundries) aren&rsquo;t mappable and don&rsquo;t appear here.
-            </p>
-          )}
+                {flaggedMarkers.length === 0 && mergedTrail && (
+                  <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                    Everything checked off lines up with where the trail actually was.
+                  </p>
+                )}
+
+                <div className="flex flex-col gap-1.5">
+                  {flaggedMarkers.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => handleMarkerClick(m.id)}
+                      className="text-left p-2 rounded-lg cursor-pointer hover:brightness-110"
+                      style={{
+                        backgroundColor: "var(--color-surface-overlay)",
+                        border: activeMarkerId === m.id ? `1px solid ${FLAG_COLOR}` : "1px solid transparent",
+                      }}
+                    >
+                      <div className="text-xs font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                        {DAY_ITEM_TYPE_ICONS[m.itemType] ?? "📌"} {m.title}
+                      </div>
+                      {m.time && (
+                        <div className="text-[10px] mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+                          {m.time}
+                        </div>
+                      )}
+                      <div className="text-[10px] mt-1" style={{ color: FLAG_COLOR }}>
+                        {m.flag.reason === "no-trail-coverage"
+                          ? "No trail data near this time"
+                          : `~${m.flag.nearestDistanceMiles} mi from the trail at this time`}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {markers.length > 0 && (
+                  <p className="text-[10px] mt-4 pt-3" style={{ color: "var(--color-text-dim)", borderTop: "1px solid var(--color-border-subtle)" }}>
+                    {markers.length} item{markers.length === 1 ? "" : "s"} plotted this day. Items without a park/dining/show location (outfits, gear, sundries) aren&rsquo;t mappable and don&rsquo;t appear here.
+                  </p>
+                )}
+              </>
+            )}
+
+            {mergedTrail && sidebarTab === "points" && (
+              <>
+                <p className="text-[10px] mb-2" style={{ color: "var(--color-text-dim)" }}>
+                  Click a point, then click the map to correct its location. Corrections stay on this device only.
+                </p>
+                <div className="flex flex-col gap-1">
+                  {(displayTrail?.points ?? []).map((p) => {
+                    const key = pointCorrectionKey(p.sourceTrailId, p.timestamp);
+                    const isActive = activePlaybackPoint?.sourceTrailId === p.sourceTrailId && activePlaybackPoint?.timestamp === p.timestamp;
+                    const isCorrecting = correctingKey === key;
+                    const isCorrected = !!corrections[key];
+                    return (
+                      <div
+                        key={key}
+                        ref={isActive ? activeRowRef : undefined}
+                        onClick={() => setCorrectingKey(key)}
+                        className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:brightness-110"
+                        style={{
+                          backgroundColor: isActive ? "color-mix(in srgb, " + TRAIL_ACCENT + " 18%, var(--color-surface-overlay))" : "var(--color-surface-overlay)",
+                          border: isCorrecting ? `1px solid ${CORRECTING_COLOR}` : "1px solid transparent",
+                        }}
+                      >
+                        <div>
+                          <div className="text-xs font-medium" style={{ color: "var(--color-text-primary)" }}>
+                            {formatPointTime(p.timestamp)}
+                            {isCorrected && <span style={{ color: CORRECTING_COLOR }}> · corrected</span>}
+                          </div>
+                          <div className="text-[10px] font-mono" style={{ color: "var(--color-text-muted)" }}>
+                            {p.latitude.toFixed(5)}, {p.longitude.toFixed(5)}
+                          </div>
+                        </div>
+                        {isCorrected && (
+                          <button type="button" onClick={(e) => handleRevertCorrection(key, e)}
+                                  title="Revert to recorded location"
+                                  className="text-xs px-1.5 py-0.5 rounded cursor-pointer shrink-0"
+                                  style={{ color: "var(--color-text-muted)" }}>
+                            ↺
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {(displayTrail?.points.length ?? 0) === 0 && (
+                    <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                      No points in the current trail range.
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

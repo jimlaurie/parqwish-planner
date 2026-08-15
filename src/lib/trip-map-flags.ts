@@ -8,7 +8,7 @@
 // common and not necessarily wrong.
 
 import { haversineMiles } from "./trail-geo";
-import type { TripTrail } from "./db";
+import type { TrailPointLike } from "./trail-geo";
 
 const TIME_TOLERANCE_MINUTES = 20;
 const DISTANCE_THRESHOLD_MILES = 0.2;
@@ -31,7 +31,7 @@ export function flagItem(
   date: string,
   scheduledTime: string | undefined,
   coord: { latitude: number; longitude: number } | undefined,
-  trailPoints: TripTrail["points"]
+  trailPoints: TrailPointLike[]
 ): FlagResult {
   if (!scheduledTime || !coord || trailPoints.length === 0) {
     return { flagged: false };

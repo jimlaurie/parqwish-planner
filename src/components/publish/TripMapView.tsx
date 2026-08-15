@@ -12,11 +12,14 @@
 // time and watching where the dot actually was — but item markers are
 // always fully visible regardless of playback position, since the point
 // here is comparing logged items against the trail, not just replaying it.
+//
+// Also supports correcting an individual GPS point (e.g. one that drifted
+// while indoors): the page puts one point into "correcting" state, this
+// view highlights it and listens for the next map click to relocate it.
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap, useMapEvent } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import type { TripTrail } from "@/lib/db";
 import type { DayItemType } from "@shared/types/day-item";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, RESORT_CENTER } from "@/lib/map-data";
@@ -24,10 +27,31 @@ import type { FlagResult } from "@/lib/trip-map-flags";
 
 const TRAIL_COLOR = "#FFA500";
 const FLAG_COLOR = "#F44336";
+const CORRECTING_COLOR = "#42A5F5";
 const TICK_MS = 50;
 const BASE_DURATION_MS = 30_000;
 const SPEEDS = [1, 2, 5, 10] as const;
 type Speed = (typeof SPEEDS)[number];
+
+// ==================== TRAIL POINT / MERGED TRAIL TYPES ====================
+// A day can have more than one recorded TripTrail row (one per user); the
+// page flattens them into a single point list for display. Each point
+// carries sourceTrailId so a correction can be written back to the right
+// underlying record's key, and so a point stays identifiable across
+// re-sorts/filters (see trip-map-prefs.ts's pointCorrectionKey).
+
+export interface MergedTrailPoint {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+  accuracy: number;
+  sourceTrailId: string;
+}
+
+export interface MergedTrail {
+  id: string;
+  points: MergedTrailPoint[];
+}
 
 // ==================== MARKER TYPES ====================
 
@@ -105,6 +129,23 @@ function PanToMarker({ marker }: { marker: TripMapMarker | null }) {
   return null;
 }
 
+function PanToPoint({ point }: { point: MergedTrailPoint | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!point) return;
+    map.panTo([point.latitude, point.longitude], { animate: true });
+  }, [map, point]);
+  return null;
+}
+
+// Listens for the next map click while a point is being corrected. Not
+// rendered/attached at all when nothing is being corrected, so an ordinary
+// click on the map never accidentally relocates anything.
+function CorrectionClickListener({ onPick }: { onPick: (lat: number, lng: number) => void }) {
+  useMapEvent("click", (e) => onPick(e.latlng.lat, e.latlng.lng));
+  return null;
+}
+
 // ==================== MAIN COMPONENT ====================
 
 export default function TripMapView({
@@ -112,11 +153,17 @@ export default function TripMapView({
   markers,
   activeMarkerId,
   onMarkerClick,
+  onActivePointChange,
+  correctingPoint,
+  onCorrectPoint,
 }: {
-  trail: TripTrail | null;
+  trail: MergedTrail | null;
   markers: TripMapMarker[];
   activeMarkerId?: string | null;
   onMarkerClick: (id: string) => void;
+  onActivePointChange?: (point: MergedTrailPoint | null) => void;
+  correctingPoint?: MergedTrailPoint | null;
+  onCorrectPoint?: (lat: number, lng: number) => void;
 }) {
   const sortedPoints = useMemo(
     () => (trail ? [...trail.points].sort((a, b) => a.timestamp - b.timestamp) : []),
@@ -168,6 +215,19 @@ export default function TripMapView({
     ? sortedPoints[sliderIndex - 1]
     : null;
   const complete = activePositions.length >= trailPositions.length;
+
+  // The point the scrubber is "on" for list-highlighting purposes — unlike
+  // currentPoint (which hides once playback completes, so the moving dot
+  // disappears), this stays resolved to the last point at full draw, since
+  // "slider at the end" should still highlight that last GPS entry.
+  const activePoint = sliderIndex > 0
+    ? sortedPoints[Math.min(sliderIndex, trailPositions.length) - 1]
+    : null;
+
+  useEffect(() => {
+    onActivePointChange?.(activePoint ?? null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePoint?.sourceTrailId, activePoint?.timestamp]);
 
   const handleTogglePlay = () => {
     if (sliderIndex >= trailPositions.length) setSliderIndex(0);
@@ -229,7 +289,7 @@ export default function TripMapView({
           bounds={bounds}
           boundsOptions={{ padding: [30, 30] }}
           scrollWheelZoom
-          style={{ height: "100%", width: "100%" }}
+          style={{ height: "100%", width: "100%", cursor: correctingPoint ? "crosshair" : undefined }}
         >
           <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} />
 
@@ -310,8 +370,28 @@ export default function TripMapView({
             );
           })}
 
+          {/* The point currently being relocated — pulsing-style dashed ring at its (about to change) location */}
+          {correctingPoint && (
+            <CircleMarker
+              center={[correctingPoint.latitude, correctingPoint.longitude]}
+              radius={12}
+              pathOptions={{ color: CORRECTING_COLOR, fillColor: CORRECTING_COLOR, fillOpacity: 0.3, weight: 3, dashArray: "3 4" }}
+            >
+              <Tooltip direction="top" offset={[0, -12]} opacity={1} permanent>
+                <div style={{ fontSize: 11, fontWeight: 600, color: CORRECTING_COLOR }}>
+                  Click the map to relocate
+                </div>
+              </Tooltip>
+            </CircleMarker>
+          )}
+
+          {correctingPoint && onCorrectPoint && (
+            <CorrectionClickListener onPick={onCorrectPoint} />
+          )}
+
           <MapFitBounds bounds={bounds} />
           <PanToMarker marker={activeMarker} />
+          <PanToPoint point={correctingPoint ?? null} />
         </MapContainer>
       </div>
 
@@ -322,7 +402,7 @@ export default function TripMapView({
           <div className="flex items-center justify-between text-[10px]" style={{ color: "var(--color-text-muted)" }}>
             <span>{formatClockTime(sortedPoints[0].timestamp)}</span>
             <span className="font-semibold text-xs" style={{ color: "var(--color-text-primary)" }}>
-              {sliderIndex > 0 ? formatClockTime(sortedPoints[Math.min(sliderIndex, trailPositions.length) - 1].timestamp) : "—"}
+              {activePoint ? formatClockTime(activePoint.timestamp) : "—"}
             </span>
             <span>{formatClockTime(sortedPoints[sortedPoints.length - 1].timestamp)}</span>
           </div>

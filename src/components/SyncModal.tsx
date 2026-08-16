@@ -21,6 +21,7 @@ import {
   importPhotoZip,
 } from "@/lib/universal-sync";
 import type { ImportPreview, PhotoImportResult } from "@/lib/universal-sync";
+import TripPhotoImportPanel from "@/components/publish/TripPhotoImportPanel";
 
 // ==================== TYPES ====================
 
@@ -96,6 +97,8 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
   const [photoImportResult, setPhotoImportResult] = useState<PhotoImportResult | null>(null);
   const photoFileInputRef = useRef<HTMLInputElement | null>(null);
   const [photoDragOver, setPhotoDragOver] = useState(false);
+  const [photoImportMode, setPhotoImportMode] = useState<"mobile" | "device">("mobile");
+  const [devicePhotosImportedCount, setDevicePhotosImportedCount] = useState<number | null>(null);
 
   // ==================== ARCHIVE STATE ====================
   const [archiveDates, setArchiveDates] = useState<string[]>([]);
@@ -1204,6 +1207,56 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
         {/* ==================== PHOTOS TAB ==================== */}
         {activeTab === "photos" && (
           <div>
+            {/* Mode toggle */}
+            <div className="flex gap-1 mb-3 p-1 rounded-full" style={{ backgroundColor: "var(--color-surface-sunken)" }}>
+              <button type="button" onClick={() => setPhotoImportMode("mobile")}
+                      className="flex-1 text-xs py-1.5 rounded-full cursor-pointer transition-colors"
+                      style={{
+                        backgroundColor: photoImportMode === "mobile" ? "var(--color-accent-publish)" : "transparent",
+                        color: photoImportMode === "mobile" ? "var(--color-bg-deep)" : "var(--color-text-secondary)",
+                      }}>
+                From ParQwish Pal
+              </button>
+              <button type="button" onClick={() => setPhotoImportMode("device")}
+                      className="flex-1 text-xs py-1.5 rounded-full cursor-pointer transition-colors"
+                      style={{
+                        backgroundColor: photoImportMode === "device" ? "var(--color-accent-publish)" : "transparent",
+                        color: photoImportMode === "device" ? "var(--color-bg-deep)" : "var(--color-text-secondary)",
+                      }}>
+                From your device
+              </button>
+            </div>
+
+            {photoImportMode === "device" ? (
+              <div>
+                <p className="text-xs mb-3" style={{ color: "var(--color-text-secondary)" }}>
+                  Import photos straight from this device — a Camera Roll export, a Disney App/PhotoPass download, anywhere. No verification code needed.
+                </p>
+                {!currentTrip ? (
+                  <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>Select a trip first.</p>
+                ) : devicePhotosImportedCount !== null ? (
+                  <div className="text-center py-6">
+                    <span className="text-5xl mb-4 block">✨</span>
+                    <p className="text-lg font-bold mb-2" style={{ color: "var(--color-success)" }}>
+                      {devicePhotosImportedCount} Photo{devicePhotosImportedCount === 1 ? "" : "s"} Imported!
+                    </p>
+                    <button onClick={() => setDevicePhotosImportedCount(null)}
+                            className="px-8 py-2.5 rounded-full text-sm font-semibold cursor-pointer"
+                            style={{ backgroundColor: "var(--color-surface-hover)", color: "var(--color-text-secondary)" }}>
+                      Import More
+                    </button>
+                  </div>
+                ) : (
+                  <TripPhotoImportPanel
+                    tripId={currentTrip.id}
+                    tripStartDate={currentTrip.startDate}
+                    tripEndDate={currentTrip.endDate}
+                    onImported={(count) => setDevicePhotosImportedCount(count)}
+                  />
+                )}
+              </div>
+            ) : (
+            <>
             <p className="text-xs mb-3" style={{ color: "var(--color-text-secondary)" }}>
               Import photos exported from the mobile app&apos;s Photo Gallery. No verification code needed.
             </p>
@@ -1282,6 +1335,8 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
                   Import Another
                 </button>
               </div>
+            )}
+            </>
             )}
           </div>
         )}

@@ -28,6 +28,7 @@ import type { FlagResult } from "@/lib/trip-map-flags";
 const TRAIL_COLOR = "#FFA500";
 const FLAG_COLOR = "#F44336";
 const CORRECTING_COLOR = "#42A5F5";
+const PHOTO_COLOR = "#EC407A";
 const TICK_MS = 50;
 const BASE_DURATION_MS = 30_000;
 const SPEEDS = [1, 2, 5, 10] as const;
@@ -64,6 +65,16 @@ export interface TripMapMarker {
   time?: string; // "H:MM AM/PM"
   hasPhoto: boolean;
   flag: FlagResult;
+}
+
+// A standalone imported photo (Camera Roll, PhotoPass download) placed on
+// the map — no schedule/completion concept, so no flagging applies.
+export interface TripPhotoMarker {
+  id: string;
+  latitude: number;
+  longitude: number;
+  thumbnailUrl: string;
+  caption?: string;
 }
 
 const MARKER_COLORS: Record<DayItemType, string> = {
@@ -151,6 +162,7 @@ function CorrectionClickListener({ onPick }: { onPick: (lat: number, lng: number
 export default function TripMapView({
   trail,
   markers,
+  photoMarkers = [],
   activeMarkerId,
   onMarkerClick,
   onActivePointChange,
@@ -159,6 +171,7 @@ export default function TripMapView({
 }: {
   trail: MergedTrail | null;
   markers: TripMapMarker[];
+  photoMarkers?: TripPhotoMarker[];
   activeMarkerId?: string | null;
   onMarkerClick: (id: string) => void;
   onActivePointChange?: (point: MergedTrailPoint | null) => void;
@@ -259,6 +272,7 @@ export default function TripMapView({
     const allPoints: [number, number][] = [
       ...clusterSource,
       ...markers.map((m) => [m.latitude, m.longitude] as [number, number]),
+      ...photoMarkers.map((m) => [m.latitude, m.longitude] as [number, number]),
     ];
 
     if (allPoints.length === 0) {
@@ -277,7 +291,7 @@ export default function TripMapView({
       if (lng > maxLng) maxLng = lng;
     }
     return [[minLat, minLng], [maxLat, maxLng]] as [[number, number], [number, number]];
-  }, [trailPositions, markers]);
+  }, [trailPositions, markers, photoMarkers]);
 
   const activeMarker = markers.find((m) => m.id === activeMarkerId) ?? null;
   const hasPlayback = trailPositions.length > 1;
@@ -369,6 +383,27 @@ export default function TripMapView({
               </CircleMarker>
             );
           })}
+
+          {photoMarkers.map((m) => (
+            <CircleMarker
+              key={m.id}
+              center={[m.latitude, m.longitude]}
+              radius={7}
+              pathOptions={{ color: "#fff", weight: 2, fillColor: PHOTO_COLOR, fillOpacity: 0.9 }}
+            >
+              <Tooltip direction="top" offset={[0, -8]} opacity={1}>
+                <div style={{ minWidth: 100 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.thumbnailUrl} alt="" style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 6, display: "block" }} />
+                  {m.caption && (
+                    <div style={{ fontSize: 10, color: "#666", marginTop: 4, maxWidth: 96, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {m.caption}
+                    </div>
+                  )}
+                </div>
+              </Tooltip>
+            </CircleMarker>
+          ))}
 
           {/* The point currently being relocated — pulsing-style dashed ring at its (about to change) location */}
           {correctingPoint && (

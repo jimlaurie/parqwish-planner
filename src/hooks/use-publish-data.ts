@@ -116,6 +116,10 @@ export function usePublishData() {
         ? (await db.wishes.bulkGet(scheduledOnlyWishIds)).filter((w): w is Wish => w !== undefined)
         : [];
 
+      // Standalone photos imported from the device (Camera Roll, PhotoPass
+      // downloads) — not tied to any wish/packing/day item.
+      const tripPhotos = await db.tripPhotos.where("tripId").equals(currentTripId).toArray();
+
       return {
         trip,
         wishSelections,
@@ -124,6 +128,7 @@ export function usePublishData() {
         packingItems,
         itineraryItems,
         scheduledOnlyWishes,
+        tripPhotos,
       };
     },
     [currentTripId]
@@ -292,6 +297,15 @@ export function usePublishData() {
           allPhotos.push({ id: `wish_${wish.id}_${idx}`, url: photo, full: photo, caption: wish.title });
         });
       }
+    }
+
+    // Standalone photos imported from the device (Camera Roll, PhotoPass
+    // downloads) via the Photos tab's "From your device" mode — not tied to
+    // any catalog item, so no active-user filtering applies to them.
+    for (const photo of rawData.tripPhotos) {
+      photo.photoSets.forEach((ps, idx) => {
+        allPhotos.push({ id: `tphoto_${photo.id}_${idx}`, url: ps.display, full: ps.full, caption: photo.caption ?? "" });
+      });
     }
 
     return {

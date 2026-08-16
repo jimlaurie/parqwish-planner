@@ -17,6 +17,7 @@ import type { Trip } from "@shared/types/trip";
 import type { Wish, TripWishSelection } from "@shared/types/wish";
 import type { PackingItem, TripPackingSelection, Ensemble } from "@shared/types/packing";
 import type { ItineraryItem } from "@shared/types/itinerary";
+import type { PhotoResolutions } from "./image-utils";
 
 // PWA-specific: User type (slightly different from mobile's UserProfile)
 export interface User {
@@ -67,6 +68,26 @@ export interface PhotoMetadata {
   importedAt: number;
 }
 
+// PWA-specific: a standalone photo imported from the user's device (Photos
+// app, PhotoPass/Disney App downloads) rather than captured through an
+// item's own photo picker. Deliberately its own table, not a Wish — these
+// carry none of a Wish's catalog baggage (tags, priority, completion), just
+// a photo and where/when it was taken. Feeds both the Trip Map (as a marker,
+// when placed) and Publish's photo gallery (always) — see use-trip-photos.ts.
+export interface TripPhoto {
+  id: string;
+  tripId: string;
+  date: string; // YYYY-MM-DD — which trip day this photo belongs to
+  photoSets: PhotoResolutions[]; // always exactly one entry; array for shape-parity with Wish/PackingItem photoSets
+  caption?: string;
+  latitude?: number;
+  longitude?: number;
+  capturedAt?: string; // ISO-8601, from EXIF when available
+  linkedParkDataId?: string; // resolved ride/show/dining/shop, if placed via the location picker
+  linkedWishId?: string; // resolved custom Place (a place-tagged Wish), if placed that way
+  createdAt: number;
+}
+
 // PWA-specific: Sync history entry for tracking exports/imports/archives
 export interface SyncHistoryEntry {
   id: string;
@@ -95,6 +116,7 @@ const db = new Dexie("ParQwishPWA") as Dexie & {
   scheduledEvents: EntityTable<ScheduledEventRecord, "id">;
   dayItems: EntityTable<DayItemRecord, "id">;
   photoMetadata: EntityTable<PhotoMetadata, "id">;
+  tripPhotos: EntityTable<TripPhoto, "id">;
 };
 
 db.version(1).stores({
@@ -683,6 +705,25 @@ db.version(22).stores({
   scheduledEvents: "id, tripId, userId, date, sourceId, itemType, [tripId+date]",
   dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
   photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
+});
+
+// v23: Add tripPhotos table — standalone photos imported from the user's
+// device (Photos app, PhotoPass downloads), independent of any catalog item.
+db.version(23).stores({
+  trips: "id, name, startDate, phase, isTemplate, isArchived",
+  wishes: "id, *tags, pendingSync, userId",
+  tripWishSelections: "id, tripId, wishId, userId",
+  packingItems: "id, type, category, userId",
+  tripPackingSelections: "id, tripId, itemId, userId",
+  itineraryItems: "id, tripId, date, [tripId+date], startTime, userId",
+  users: "id, name, role",
+  ensembles: "id, name, userId",
+  syncHistory: "id, type, date",
+  trails: "id, tripId, userId, date, [tripId+date]",
+  scheduledEvents: "id, tripId, userId, date, sourceId, itemType, [tripId+date]",
+  dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
+  photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
+  tripPhotos: "id, tripId, date, [tripId+date]",
 });
 
 // Without this, an already-open tab (e.g. left open from before a schema

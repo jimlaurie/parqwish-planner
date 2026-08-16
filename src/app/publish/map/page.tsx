@@ -26,7 +26,9 @@ import {
 } from "@/lib/trip-map-prefs";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
-import type { TripMapMarker, MergedTrail, MergedTrailPoint } from "@/components/publish/TripMapView";
+import { useTripPhotos } from "@/hooks/use-trip-photos";
+import { getFirstThumbnail } from "@/lib/image-utils";
+import type { TripMapMarker, TripPhotoMarker, MergedTrail, MergedTrailPoint } from "@/components/publish/TripMapView";
 
 const ACCENT = "var(--color-accent-publish)";
 const FLAG_COLOR = "var(--color-error)";
@@ -219,6 +221,20 @@ export default function TripMapPage() {
 
   const flaggedMarkers = useMemo(() => markers.filter((m) => m.flag.flagged), [markers]);
 
+  const { photos: tripPhotos } = useTripPhotos(currentTripId);
+  const photoMarkers = useMemo<TripPhotoMarker[]>(() => {
+    if (!selectedDate) return [];
+    return tripPhotos
+      .filter((p) => p.date === selectedDate && p.latitude != null && p.longitude != null)
+      .map((p) => ({
+        id: p.id,
+        latitude: p.latitude!,
+        longitude: p.longitude!,
+        thumbnailUrl: getFirstThumbnail(p) ?? "",
+        caption: p.caption,
+      }));
+  }, [tripPhotos, selectedDate]);
+
   const editingItem = useMemo(
     () => items.find((i) => i.id === editingItemId) ?? null,
     [items, editingItemId]
@@ -362,6 +378,7 @@ export default function TripMapPage() {
           <TripMapView
             trail={displayTrail}
             markers={markers}
+            photoMarkers={photoMarkers}
             activeMarkerId={activeMarkerId}
             onMarkerClick={handleMarkerClick}
             onActivePointChange={setActivePlaybackPoint}

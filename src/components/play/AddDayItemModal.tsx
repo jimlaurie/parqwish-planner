@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type { PoolItem } from "@/hooks/use-play-pool";
+import type { PoolItem, PoolSourceType } from "@/hooks/use-play-pool";
+import { POOL_TYPE_TO_DAY_ITEM_TYPE } from "@/hooks/use-play-pool";
 import type { AddDayItemParams } from "@/hooks/use-day-items";
-import type { DayItemType } from "@shared/types/day-item";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -17,23 +17,19 @@ interface AddDayItemModalProps {
   onClose: () => void;
 }
 
-type TabId = "wish" | "ride" | "dining" | "shopping" | "custom";
+type TabId = PoolSourceType | "custom";
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: "wish",     label: "Wish",     icon: "⭐"  },
-  { id: "ride",     label: "Ride",     icon: "🎢" },
-  { id: "dining",   label: "Dining",   icon: "🍽️" },
-  { id: "shopping", label: "Shopping", icon: "🛍️" },
-  { id: "custom",   label: "Custom",   icon: "🗓️" },
+  { id: "wish",      label: "Wish",      icon: "⭐"  },
+  { id: "ride",      label: "Ride",      icon: "🎢" },
+  { id: "place",     label: "Place",     icon: "📍" },
+  { id: "dining",    label: "Dining",    icon: "🍽️" },
+  { id: "shopping",  label: "Shopping",  icon: "🛍️" },
+  { id: "outfit",    label: "Outfit",    icon: "👗" },
+  { id: "equipment", label: "Equipment", icon: "🎒" },
+  { id: "sundry",    label: "Sundry",    icon: "🧴" },
+  { id: "custom",    label: "Custom",    icon: "🗓️" },
 ];
-
-// Map pool sourceType → DayItemType
-const SOURCE_TYPE_MAP: Record<string, DayItemType> = {
-  wish:     "wish",
-  ride:     "ride",
-  dining:   "dining",
-  shopping: "shopping",
-};
 
 // ==================== TIME HELPERS ====================
 
@@ -94,13 +90,7 @@ export default function AddDayItemModal({
     }
   }, [visible, initialTime]);
 
-  const tabItems = poolItems.filter((p) =>
-    activeTab === "wish"     ? p.sourceType === "wish"     :
-    activeTab === "ride"     ? p.sourceType === "ride"     :
-    activeTab === "dining"   ? p.sourceType === "dining"   :
-    activeTab === "shopping" ? p.sourceType === "shopping" :
-    false
-  );
+  const tabItems = activeTab === "custom" ? [] : poolItems.filter((p) => p.sourceType === activeTab);
 
   const handleTabChange = useCallback((tab: TabId) => {
     setActiveTab(tab);
@@ -147,7 +137,7 @@ export default function AddDayItemModal({
 
     await onAdd({
       title:       poolItem.title,
-      itemType:    SOURCE_TYPE_MAP[poolItem.sourceType] ?? "wish",
+      itemType:    POOL_TYPE_TO_DAY_ITEM_TYPE[poolItem.sourceType] ?? "wish",
       scheduledTime,
       park:        poolItem.park,
       land:        poolItem.land,

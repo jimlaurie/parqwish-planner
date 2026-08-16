@@ -14,7 +14,7 @@ import {
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { useDayItems } from "@/hooks/use-day-items";
-import { usePlayPool, type PoolItem } from "@/hooks/use-play-pool";
+import { usePlayPool, type PoolItem, POOL_TYPE_TO_DAY_ITEM_TYPE } from "@/hooks/use-play-pool";
 import { useUsers } from "@/hooks/use-users";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { auth } from "@/lib/auth";
@@ -37,6 +37,7 @@ export default function PreviewPage() {
     currentTripId,
     selectedPlayDate,
     setSelectedPlayDate,
+    timelineTypeFilter,
   } = useAppStore();
   const { currentTrip } = useTrips();
   const { userMap } = useUsers();
@@ -65,6 +66,15 @@ export default function PreviewPage() {
   const editingItem = useMemo(
     () => items.find((i) => i.id === editingItemId) ?? null,
     [items, editingItemId]
+  );
+
+  // The category filter narrows what the Timeline and map display — the
+  // underlying day plan (and drag/drop targets) are untouched, since
+  // handleDragEnd resolves items via poolItems/parsed drag ids, not this
+  // array.
+  const visibleItems = useMemo(
+    () => (timelineTypeFilter ? items.filter((i) => timelineTypeFilter.includes(i.itemType)) : items),
+    [items, timelineTypeFilter]
   );
 
   // DnD sensors
@@ -119,13 +129,9 @@ export default function PreviewPage() {
       const poolItem = poolItems.find((p) => p.id === sourceId && p.sourceType === sourceType);
       if (!poolItem) return;
 
-      const itemTypeMap: Record<string, import("@shared/types/day-item").DayItemType> = {
-        wish: "wish", ride: "ride", dining: "dining", shopping: "shopping",
-      };
-
       await addItem({
         title:      poolItem.title,
-        itemType:   itemTypeMap[poolItem.sourceType] ?? "wish",
+        itemType:   POOL_TYPE_TO_DAY_ITEM_TYPE[poolItem.sourceType] ?? "wish",
         scheduledTime: targetTime,
         park:       poolItem.park,
         land:       poolItem.land,
@@ -175,13 +181,9 @@ export default function PreviewPage() {
     if (hour >= 23) { hour = 8; min = 0; }
     const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`;
 
-    const itemTypeMap: Record<string, import("@shared/types/day-item").DayItemType> = {
-      wish: "wish", ride: "ride", dining: "dining", shopping: "shopping",
-    };
-
     await addItem({
       title:      item.title,
-      itemType:   itemTypeMap[item.sourceType] ?? "wish",
+      itemType:   POOL_TYPE_TO_DAY_ITEM_TYPE[item.sourceType] ?? "wish",
       scheduledTime: time,
       park:       item.park,
       land:       item.land,
@@ -236,7 +238,7 @@ export default function PreviewPage() {
         {/* Layout: Desktop vs Mobile */}
         {isDesktop ? (
           <PlayDesktopLayout
-            items={items}
+            items={visibleItems}
             poolItems={poolItems}
             poolLoading={poolLoading}
             selectedDate={selectedPlayDate}
@@ -252,7 +254,7 @@ export default function PreviewPage() {
           />
         ) : (
           <PlayMobileLayout
-            items={items}
+            items={visibleItems}
             poolItems={poolItems}
             poolLoading={poolLoading}
             selectedDate={selectedPlayDate}

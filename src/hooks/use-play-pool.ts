@@ -6,12 +6,15 @@ import db from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { WISH_TAGS, PACKING_TABS } from "@/lib/constants";
 import { useParkData } from "@/hooks/use-park-data";
+import type { DayItemType } from "@shared/types/day-item";
 
 // ==================== TYPES ====================
 
+export type PoolSourceType = "wish" | "ride" | "place" | "dining" | "shopping" | "outfit" | "equipment" | "sundry";
+
 export interface PoolItem {
   id: string;
-  sourceType: "wish" | "ride" | "dining" | "shopping";
+  sourceType: PoolSourceType;
   title: string;
   subtitle?: string;
   park?: string;
@@ -21,6 +24,20 @@ export interface PoolItem {
   icon: string;
   reservationTime?: string;
 }
+
+// Shared by every "add this pool item to the timeline" call site (drag-drop,
+// quick-schedule, the Add-to-Day modal) so the mapping only needs updating
+// in one place.
+export const POOL_TYPE_TO_DAY_ITEM_TYPE: Record<PoolSourceType, DayItemType> = {
+  wish: "wish",
+  ride: "ride",
+  place: "place",
+  dining: "dining",
+  shopping: "shopping",
+  outfit: "outfit",
+  equipment: "equipment",
+  sundry: "sundry",
+};
 
 // ==================== HOOK ====================
 
@@ -62,7 +79,9 @@ export function usePlayPool(date: string | null) {
     [currentTripId]
   );
 
-  // Get all trip packing items (dining + shopping only)
+  // Get all trip packing items — every type; the timeline pool covers the
+  // full catalog (outfits/equipment/sundries included), not just dining and
+  // shopping.
   const tripPacking = useLiveQuery(
     async () => {
       if (!currentTripId) return [];
@@ -77,7 +96,7 @@ export function usePlayPool(date: string | null) {
 
       return selections
         .map((sel, i) => ({ sel, item: items[i] }))
-        .filter((x) => x.item != null && (x.item!.type === "dining" || x.item!.type === "shopping"))
+        .filter((x) => x.item != null)
         .map(({ sel, item }) => ({
           ...item!,
           completed: sel.completed,
@@ -109,11 +128,12 @@ export function usePlayPool(date: string | null) {
       const firstTag = wish.tags?.[0];
       const tagDef = WISH_TAGS.find((t) => t.id === firstTag);
       const isRide = wish.tags?.includes("rides") ?? false;
+      const isPlace = !isRide && (wish.tags?.includes("place") ?? false);
       const icon = isRide ? "🎢" : (tagDef?.icon ?? "⭐");
 
       pool.push({
         id: wish.id,
-        sourceType: isRide ? "ride" : "wish",
+        sourceType: isRide ? "ride" : isPlace ? "place" : "wish",
         title: wish.title,
         subtitle: wish.land ? `${wish.park ?? ""} · ${wish.land}`.trim() : undefined,
         park: wish.park,
@@ -124,13 +144,15 @@ export function usePlayPool(date: string | null) {
       });
     }
 
-    // Dining / shopping
+    // Packing catalog — dining, shopping, outfits, equipment, sundries.
+    // Only dining/shopping items carry park/land (they're the only packing
+    // types ever linked to a real park location); outfits/equipment/
+    // sundries fall back to their packing category as the subtitle.
     for (const item of tripPacking ?? []) {
       if (item.completed) continue;
-      if (item.type !== "dining" && item.type !== "shopping") continue;
 
       const tabDef = PACKING_TABS.find((t) => t.id === item.type);
-      const icon = tabDef?.icon ?? (item.type === "dining" ? "🍽️" : "🛍️");
+      const icon = tabDef?.icon ?? "🎒";
 
       let resolvedPark: string | undefined;
       let resolvedLand: string | undefined;
@@ -144,7 +166,7 @@ export function usePlayPool(date: string | null) {
 
       pool.push({
         id: item.id,
-        sourceType: item.type as "dining" | "shopping",
+        sourceType: item.type,
         title: item.name,
         subtitle: resolvedLand
           ? `${resolvedPark ?? ""} · ${resolvedLand}`.trim()

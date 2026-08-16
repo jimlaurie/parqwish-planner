@@ -5,6 +5,7 @@ import type { PoolItem } from "@/hooks/use-play-pool";
 import type { TripMember } from "@shared/types/trip";
 import ItemPool from "./ItemPool";
 import Timeline from "./Timeline";
+import TimelineTypeFilter from "./TimelineTypeFilter";
 import ParkMapWrapper from "./ParkMapWrapper";
 import UserPanel from "@/components/UserPanel";
 
@@ -84,7 +85,8 @@ export default function PlayDesktopLayout({
         </div>
 
         {/* Middle: Timeline */}
-        <div style={{ maxHeight: "calc(100vh - 220px)", overflow: "hidden" }}>
+        <div className="flex flex-col" style={{ maxHeight: "calc(100vh - 220px)", overflow: "hidden" }}>
+          <TimelineTypeFilter />
           <Timeline
             items={items}
             onToggleCompleted={onToggleCompleted}

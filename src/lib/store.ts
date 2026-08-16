@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { PackingType } from "@/lib/db";
+import type { DayItemType } from "@shared/types/day-item";
 
 // ==================== TYPES ====================
 
@@ -101,6 +102,13 @@ interface AppState {
   setPlayItemPoolFilter: (q: string) => void;
   editingTimelineItemId: string | null;
   setEditingTimelineItemId: (id: string | null) => void;
+
+  // Timeline category filter (not persisted — resets each session) —
+  // null = show every type; a non-empty array narrows what the Timeline
+  // (and its map) display down to just those DayItem types.
+  timelineTypeFilter: DayItemType[] | null;
+  setTimelineTypeFilter: (types: DayItemType[] | null) => void;
+  toggleTimelineType: (type: DayItemType, allTypes: DayItemType[]) => void;
 }
 
 // ==================== DEFAULT VALUES ====================
@@ -267,6 +275,27 @@ export const useAppStore = create<AppState>()(
       setHoveredTimelineItemId: (id) => set({ hoveredTimelineItemId: id }),
       playItemPoolFilter: "",
       setPlayItemPoolFilter: (q) => set({ playItemPoolFilter: q }),
+
+      timelineTypeFilter: null,
+      setTimelineTypeFilter: (types) => set({ timelineTypeFilter: types }),
+      toggleTimelineType: (type, allTypes) => set((state) => {
+        // null = every type showing. The first tap on a chip from that
+        // state isolates just that type, matching how faceted filters
+        // (Gmail labels, Trello) behave — not "remove this one from all".
+        let next: DayItemType[];
+        if (state.timelineTypeFilter === null) {
+          next = [type];
+        } else if (state.timelineTypeFilter.includes(type)) {
+          next = state.timelineTypeFilter.filter((t) => t !== type);
+        } else {
+          next = [...state.timelineTypeFilter, type];
+        }
+        // Collapse back to "show all" rather than leaving an empty or
+        // full-but-explicit set — both are equivalent to null and null is
+        // the simpler state to reason about everywhere else.
+        const collapsed = next.length === 0 || next.length === allTypes.length ? null : next;
+        return { timelineTypeFilter: collapsed };
+      }),
       editingTimelineItemId: null,
       setEditingTimelineItemId: (id) => set({ editingTimelineItemId: id }),
     }),

@@ -7,6 +7,7 @@ import MiniParkMap from "./MiniParkMap";
 import MobileTabBar from "./MobileTabBar";
 import ItemPool from "./ItemPool";
 import Timeline from "./Timeline";
+import TimelineTypeFilter from "./TimelineTypeFilter";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -87,7 +88,8 @@ export default function PlayMobileLayout({
         )}
 
         {mobileTab === "timeline" && (
-          <div className="h-full overflow-hidden">
+          <div className="h-full flex flex-col overflow-hidden">
+            <TimelineTypeFilter />
             <Timeline
               items={items}
               onToggleCompleted={onToggleCompleted}

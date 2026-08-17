@@ -11,7 +11,7 @@ import SyncStatusIndicator from "@/components/SyncStatusIndicator";
 
 // ==================== TYPES ====================
 
-type NavPhase = "home" | "catalog" | "plan" | "prepare" | "preview" | "play" | "publish" | "guide";
+type NavPhase = "home" | "catalog" | "plan" | "prepare" | "preview" | "play" | "publish" | "guide" | "story" | "blog";
 
 interface NavLink {
   id: NavPhase;
@@ -33,6 +33,8 @@ const NAV_LINKS: NavLink[] = [
   { id: "publish", label: "Publish", icon: "\u{1F680}", href: "/publish", accent: "var(--color-accent-publish)", requiresTrip: true },
   { id: "catalog", label: "Catalog", icon: "\u{1F4E6}", href: "/catalog", accent: "var(--color-accent-catalog)", requiresTrip: false },
   { id: "guide",   label: "Guide",   icon: "\u{1F4D6}", href: "/guide",   accent: "var(--color-gold)",           requiresTrip: false },
+  { id: "story",   label: "Story",   icon: "\u{1F387}", href: "/story",   accent: "var(--color-gold)",           requiresTrip: false },
+  { id: "blog",    label: "Blog",    icon: "\u{1F4F0}", href: "/blog",    accent: "var(--color-gold)",           requiresTrip: false },
 ];
 
 // ==================== COMPONENT ====================
@@ -64,6 +66,8 @@ export default function TopNavBar() {
     if (pathname.startsWith("/play")) return "play";
     if (pathname.startsWith("/publish")) return "publish";
     if (pathname.startsWith("/guide"))   return "guide";
+    if (pathname.startsWith("/story"))   return "story";
+    if (pathname.startsWith("/blog"))    return "blog";
     return "home";
   })();
 

@@ -449,7 +449,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-08-16T13:00:06.488Z",
+  "lastUpdated": "2026-08-17T13:00:56.378Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -491,13 +491,16 @@
     },
     "disneyland-band-frontierland": {
       "duration": 20,
-      "status": "closed",
+      "status": "operating",
       "land": "Frontierland",
       "types": [
         "street show"
       ],
       "longitude": -117.9203231,
-      "times": [],
+      "times": [
+        "10:30",
+        "14:15"
+      ],
       "latitude": 33.8120796,
       "name": "Disneyland Band at Frontierland",
       "apiEntityId": "cb84b53c-dbb5-483d-a717-00d9259c6484",
@@ -520,10 +523,10 @@
     "dapper-dans": {
       "times": [
         "11:00",
-        "12:20",
+        "12:15",
         "13:10",
         "14:20",
-        "16:00",
+        "16:15",
         "17:00"
       ],
       "types": [
@@ -559,9 +562,14 @@
       "longitude": -117.917863
     },
     "disneyland-band-main-street": {
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
-      "times": [],
+      "times": [
+        "11:25",
+        "12:15",
+        "15:15",
+        "16:15"
+      ],
       "longitude": -117.9189609,
       "land": "Main Street U.S.A.",
       "types": [
@@ -694,9 +702,11 @@
       "types": [
         "street show"
       ],
-      "times": [],
+      "times": [
+        "13:05"
+      ],
       "duration": 20,
-      "status": "closed"
+      "status": "operating"
     },
     "paint-the-night": {
       "latitude": 33.8109775,
@@ -996,5 +1006,5 @@
       "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-08-16T13:00:06.488Z"
+  "lastShowtimeSync": "2026-08-17T13:00:56.378Z"
 }

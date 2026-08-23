@@ -389,6 +389,12 @@ export async function executeImport(
   const data = envelope.data;
   if (!data) throw new Error("No data in envelope");
 
+  // Replace mode deletes existing trip data before writing the replacement.
+  // Wrapped in one transaction spanning every table (db.tables, rather than
+  // hand-picking the ones the importers touch today and risking a missed
+  // one) so a bad or partial import file can't leave a trip half-deleted —
+  // either the whole replace commits or Dexie rolls the deletes back too.
+  return db.transaction("rw", db.tables, async () => {
   if (mode === "replace") {
     // For replace mode, clear existing trip data for the matching categories
     // only — not the whole junction table. tripWishSelections holds rides,
@@ -500,6 +506,7 @@ export async function executeImport(
 
   const counts = await syncPayloadToPwa(data, tripId, userId);
   return counts;
+  });
 }
 
 // ==================== PHOTO ZIP IMPORT ====================

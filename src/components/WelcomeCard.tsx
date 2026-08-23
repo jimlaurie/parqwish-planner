@@ -207,16 +207,16 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
             lineHeight: "var(--leading-relaxed)",
           }}
         >
-          New to ParQwish?{" "}
-          <a
-            href="https://apps.apple.com"
-            target="_blank"
-            rel="noopener noreferrer"
+          New to ParQwish? The iOS companion app — in-park wait times, GPS
+          trail recording, and real-time scheduling — is in App Store review
+          now. Check back soon, or watch{" "}
+          <Link
+            href="/blog"
             style={{ color: "var(--color-gold)", textDecoration: "none" }}
           >
-            Get the iOS app
-          </a>{" "}
-          for in-park wait times, GPS trail recording, and real-time scheduling.
+            the blog
+          </Link>{" "}
+          for the announcement.
         </p>
       </div>
     </div>

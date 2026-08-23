@@ -1,6 +1,6 @@
 # ParQwish Planner
 
-A free, local-first trip planner for Disneyland Resort — the desk-planning companion to [ParQwish Pal](https://apps.apple.com/app/parqwish-pal) (the in-park iOS app). Build your wish list, pack your bags, and lay out your day's itinerary before you ever get in the car, then sync it to your phone for the day itself.
+A free, local-first trip planner for Disneyland Resort — the desk-planning companion to ParQwish Pal (the in-park iOS app, currently in App Store review). Build your wish list, pack your bags, and lay out your day's itinerary before you ever get in the car, then sync it to your phone for the day itself.
 
 **Live at [parqwish.com](https://parqwish.com)**
 
@@ -50,7 +50,7 @@ src/
 
 ## About the mobile companion
 
-[ParQwish Pal](https://apps.apple.com/app/parqwish-pal) is the in-park iOS app this planner syncs with — live wait times, a smart home screen, and day-of tracking. It's closed-source and lives in a separate, private repository, since it carries the App Store subscription/entitlement logic this planner doesn't need.
+ParQwish Pal is the in-park iOS app this planner syncs with — live wait times, a smart home screen, and day-of tracking. It's closed-source and lives in a separate, private repository, since it carries the App Store subscription/entitlement logic this planner doesn't need. It's currently in App Store review; [parqwish.com/blog](https://parqwish.com/blog) has the announcement once it's live.
 
 ## Contributing
 

@@ -165,21 +165,59 @@ export default function StoryPage() {
         >
           Our Story
         </h1>
+        <div className="flex flex-col gap-4 max-w-[62ch]">
+          <p
+            className="text-lg leading-relaxed"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            I really like Disneyland — probably more than is reasonable.
+          </p>
+          <p
+            className="text-lg leading-relaxed"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            The name&rsquo;s a bit of a pun: <strong style={{ color: "var(--color-text-primary)" }}>ParQ Wish</strong>,
+            built to cut down the time spent waiting around in the actual park
+            Queue — standing in line, trying to remember what we&rsquo;d agreed to do
+            that day, hunting through a text thread for a dining reservation time.
+            That one annoyance turned into thinking about a Disney trip as three
+            separate moments: planning before you go, the day itself in the park,
+            and looking back on it after — which is roughly how this is organized
+            today: ParQ Wish Planner for the before, ParQ Wish Pal for the during,
+            and a Publish page (inside Planner for now, maybe its own app someday)
+            for the after.
+          </p>
+          <p
+            className="text-lg leading-relaxed"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            Trip data is personal — where you are, who you&rsquo;re with, photos of
+            your kids — so keeping it secure mattered to me from the start, but so
+            did being able to share it: with the people you&rsquo;re actually
+            traveling with, or later, a recap you&rsquo;re proud to post. Everything
+            lives on your device first; syncing is opt-in and end-to-end encrypted,
+            private unless you decide otherwise.
+          </p>
+          <p
+            className="text-lg leading-relaxed"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
+            The other honest part: I&rsquo;d never actually built and shipped an app
+            before this. I know a fair amount about how software should behave and
+            how a real development process works — I just hadn&rsquo;t done the
+            writing-and-deploying part myself. This project doubled as learning
+            that, working alongside{" "}
+            <strong style={{ color: "var(--color-text-primary)" }}>Claude Code</strong>{" "}
+            the whole way, closer to a genuine collaborator than autocomplete. Which
+            is also why this story is dated as precisely as it is —{" "}
+            <strong style={{ color: "var(--color-text-primary)" }}>
+              pulled straight from the actual commit history
+            </strong>
+            , and a lot of those commits are me figuring it out in real time.
+          </p>
+        </div>
         <p
-          className="text-lg leading-relaxed max-w-[60ch]"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          I really like Disneyland — probably more than is reasonable. At some point
-          the running list of rides, dining reservations, and things-we-forgot-last-time
-          got too big to keep in my head, so I started building something to hold it.
-          This turned into two apps, and this page is the honest story of how —{" "}
-          <strong style={{ color: "var(--color-text-primary)" }}>
-            pulled straight from the actual commit history
-          </strong>
-          , dates included.
-        </p>
-        <p
-          className="text-xs mt-4"
+          className="text-xs mt-6"
           style={{ color: "var(--color-text-dim)", fontFamily: "var(--font-mono, ui-monospace, monospace)" }}
         >
           620 commits · one person · nights, weekends, and park days · Oct 2025 → today

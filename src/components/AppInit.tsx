@@ -6,6 +6,7 @@ import db from "@/lib/db";
 import { ensureAuth, onAuthChanged, isSyncEnabled, canCollaborate, auth } from "@/lib/auth";
 import { startSync, startCollaboratorSync, stopSync, pullWishes, pullSharedTrips, pullAllTripContent, pushWish, pushPackingItem } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
+import { IN_APP_SESSION_KEY } from "@/lib/in-app-session";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "0";
 
@@ -293,6 +294,25 @@ function useSyncInit() {
   }, [cloudSyncEnabled]);
 }
 
+// ==================== IN-APP SESSION MARKER ====================
+// AppInit only ever mounts inside the (app) route group — its presence
+// means this tab has genuinely opened the Planner, not just landed on a
+// Guide/Story/Blog content page. Read by ContentLogoLink.tsx so the logo
+// on those content pages can send an in-app visitor back to the Planner's
+// own dashboard, while a fresh external visitor goes to the marketing
+// site instead. sessionStorage (not localStorage) so a new tab/session
+// with no recent app activity defaults back to the marketing-site case.
+
+function useMarkInAppSession() {
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(IN_APP_SESSION_KEY, "1");
+    } catch {
+      // sessionStorage may be blocked — ContentLogoLink falls back safely
+    }
+  }, []);
+}
+
 // ==================== APP INIT ====================
 // Client-side initialization that runs once on app mount.
 // Add any future init hooks here.
@@ -303,6 +323,7 @@ export default function AppInit() {
   usePhotoSetsMigration();
   useUserInit();
   useCacheBuster();
+  useMarkInAppSession();
   useSyncInit();
   useFocusPull();
   useVersionCheck();

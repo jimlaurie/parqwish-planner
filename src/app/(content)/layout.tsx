@@ -26,7 +26,11 @@ export default function ContentGroupLayout({
       >
         <div className="max-w-3xl mx-auto px-4">
           <div className="flex items-center justify-between gap-3 h-14 flex-wrap">
-            <Link href="/" className="shrink-0">
+            {/* Plain <a>, not <Link> — this app is deployed at app.parqwish.com,
+                so a Next.js Link to "/" would land on the Planner's own
+                dashboard. The logo on a content page should return the
+                reader to the actual marketing site they arrived from. */}
+            <a href="https://parqwish.com" className="shrink-0">
               <Image
                 src="/images/parqwish-logo.png"
                 alt="ParQwish"
@@ -35,7 +39,7 @@ export default function ContentGroupLayout({
                 className="h-6 w-auto"
                 priority
               />
-            </Link>
+            </a>
 
             <div className="flex items-center gap-1 text-sm font-medium">
               <Link

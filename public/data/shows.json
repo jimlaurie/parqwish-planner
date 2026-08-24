@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "21:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "21:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "17:30"
+          "end": "20:30"
         }
       ],
       "duration": 15,
@@ -322,12 +322,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "12:10",
-        "13:10",
-        "14:15",
-        "15:45",
-        "16:45",
-        "17:45"
+        "15:30",
+        "16:30",
+        "17:30",
+        "18:45",
+        "19:35",
+        "20:25"
       ],
       "types": [
         "street show"
@@ -345,12 +345,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
-        "10:30",
         "11:30",
         "12:30",
-        "14:00",
+        "13:30",
         "15:00",
-        "16:00"
+        "16:00",
+        "17:00"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -391,12 +391,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "11:30",
         "12:30",
         "13:30",
-        "15:10",
-        "16:10",
-        "17:10"
+        "14:35",
+        "16:05",
+        "17:05",
+        "18:05"
       ],
       "longitude": -117.919083,
       "types": [
@@ -442,7 +442,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-08-23T13:00:33.634Z",
+  "lastUpdated": "2026-08-24T13:00:06.111Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -674,12 +674,9 @@
         "nighttime spectacular"
       ],
       "land": "Frontierland",
-      "times": [
-        "21:00",
-        "22:30"
-      ],
+      "times": [],
       "duration": 25,
-      "status": "operating",
+      "status": "closed",
       "name": "Fantasmic!",
       "timeRanges": [],
       "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db",
@@ -901,6 +898,7 @@
       "longitude": -117.921242,
       "times": [
         "20:30",
+        "21:25",
         "22:15"
       ],
       "duration": 12,
@@ -987,12 +985,10 @@
         "nighttime spectacular"
       ],
       "longitude": -117.9213958,
-      "times": [
-        "21:30"
-      ],
+      "times": [],
       "duration": 15,
-      "status": "operating"
+      "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-08-23T13:00:33.634Z"
+  "lastShowtimeSync": "2026-08-24T13:00:06.112Z"
 }

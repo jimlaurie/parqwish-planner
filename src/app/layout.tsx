@@ -2,10 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import ThemeProvider from "@/components/ThemeProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import TopNavBar from "@/components/TopNavBar";
-import AppInit from "@/components/AppInit";
-import InstallBanner from "@/components/InstallBanner";
-import UpdateBanner from "@/components/UpdateBanner";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -78,13 +74,7 @@ export default function RootLayout({
             >
               Skip to main content
             </a>
-            <AppInit />
-            <TopNavBar />
-            <main id="main-content">
             {children}
-            </main>
-            <UpdateBanner />
-            <InstallBanner />
           </ErrorBoundary>
 
           <footer className="py-4 px-6 text-center text-[10px] text-[var(--color-text-muted)] border-t border-[var(--color-border-subtle)] space-y-2">

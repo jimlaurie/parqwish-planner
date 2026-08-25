@@ -1,31 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { IN_APP_SESSION_KEY } from "@/lib/in-app-session";
+import { useContentHomeHref } from "@/hooks/use-content-home-href";
 
 // ==================== COMPONENT ====================
 // The logo in the Guide/Story/Blog header (see (content)/layout.tsx).
-// "Home" is ambiguous here: a visitor who arrived from outside (Reddit, a
-// search result) expects the logo to go to the marketing site at
-// parqwish.com; a visitor already using the Planner (deployed separately
-// at app.parqwish.com) who clicked through to a content page expects it
-// to return to the Planner's own dashboard. Decided client-side after
-// mount via AppInit's session marker — defaults to the marketing site
-// (the external-visitor case, and the safe fallback if sessionStorage is
-// unavailable) until proven otherwise.
+// See useContentHomeHref for why the target depends on whether this tab
+// has been inside the Planner app this session.
 
 export default function ContentLogoLink() {
-  const [inApp, setInApp] = useState(false);
-
-  useEffect(() => {
-    try {
-      setInApp(sessionStorage.getItem(IN_APP_SESSION_KEY) === "1");
-    } catch {
-      // sessionStorage may be blocked — stay on the marketing-site default
-    }
-  }, []);
+  const { href, internal } = useContentHomeHref();
 
   const logo = (
     <Image
@@ -38,16 +23,16 @@ export default function ContentLogoLink() {
     />
   );
 
-  if (inApp) {
+  if (internal) {
     return (
-      <Link href="/" className="shrink-0">
+      <Link href={href} className="shrink-0">
         {logo}
       </Link>
     );
   }
 
   return (
-    <a href="https://parqwish.com" className="shrink-0">
+    <a href={href} className="shrink-0">
       {logo}
     </a>
   );

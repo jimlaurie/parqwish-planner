@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import ContentLogoLink from "@/components/ContentLogoLink";
+import ContentHomeLink from "@/components/ContentHomeLink";
 
 // ==================== COMPONENT ====================
 // Layout for Guide/Story/Blog — content someone can land on directly from
@@ -29,6 +30,7 @@ export default function ContentGroupLayout({
             <ContentLogoLink />
 
             <div className="flex items-center gap-1 text-sm font-medium">
+              <ContentHomeLink />
               <Link
                 href="/story"
                 className="px-3 py-1.5 rounded-full hover:bg-white/5"

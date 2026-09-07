@@ -85,6 +85,12 @@ export interface TripPhoto {
   capturedAt?: string; // ISO-8601, from EXIF when available
   linkedParkDataId?: string; // resolved ride/show/dining/shop, if placed via the location picker
   linkedWishId?: string; // resolved custom Place (a place-tagged Wish), if placed that way
+  // Catalog Photo Gallery multi-item linking (additive, unindexed — no Dexie
+  // version bump needed). Superset of the singular fields above, which stay
+  // for read-compat with rows written before this existed; readers should
+  // prefer these arrays and fall back to the singular fields when absent.
+  linkedParkDataIds?: string[];
+  linkedWishIds?: string[];
   createdAt: number;
 }
 

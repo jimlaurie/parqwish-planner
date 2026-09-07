@@ -38,6 +38,25 @@ export function useTripPhotos(tripId: string | null) {
 }
 
 export async function addTripPhoto(params: AddTripPhotoParams): Promise<string> {
+  // Dedup: importing the same photo twice (e.g. re-running an import, or a
+  // photo that's in both the Camera Roll and a PhotoPass download) should
+  // not create a second row. Same exact-match approach already used for
+  // photo dedup elsewhere in this codebase (sync-translate.ts's
+  // existingPhotos.includes(dataUri)). Prefer matching on capturedAt when
+  // it's available (from EXIF), but most PhotoPass downloads and plenty of
+  // Camera Roll exports carry no EXIF at all — capturedAt is then undefined
+  // for every import, which would silently defeat this check entirely.
+  // Fall back to same trip day + identical thumbnail bytes in that case.
+  {
+    const existing = await db.tripPhotos.where("tripId").equals(params.tripId).toArray();
+    const dupe = existing.find((p) =>
+      params.capturedAt
+        ? p.capturedAt === params.capturedAt && p.photoSets[0]?.thumbnail === params.photoSet.thumbnail
+        : !p.capturedAt && p.date === params.date && p.photoSets[0]?.thumbnail === params.photoSet.thumbnail
+    );
+    if (dupe) return dupe.id;
+  }
+
   const id = `tphoto_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const record: TripPhoto = {
     id,
@@ -61,6 +80,20 @@ export async function updateTripPhotoLocation(
   location: { latitude?: number; longitude?: number; linkedParkDataId?: string; linkedWishId?: string }
 ): Promise<void> {
   await db.tripPhotos.update(id, location);
+}
+
+// Catalog Photo Gallery's multi-item linking — see linkedParkDataIds/
+// linkedWishIds on TripPhoto (db.ts). Replaces the full set of links each
+// call rather than appending, matching how the picker UI presents a
+// checked/unchecked list of every candidate item.
+export async function updateTripPhotoLinks(
+  id: string,
+  links: { parkDataIds: string[]; wishIds: string[] }
+): Promise<void> {
+  await db.tripPhotos.update(id, {
+    linkedParkDataIds: links.parkDataIds,
+    linkedWishIds: links.wishIds,
+  });
 }
 
 export async function removeTripPhoto(id: string): Promise<void> {

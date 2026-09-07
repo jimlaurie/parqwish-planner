@@ -42,10 +42,11 @@ import { addDayItemsBatch, type AddDayItemParams } from "@/hooks/use-day-items";
 import type { DayItemType } from "@shared/types/day-item";
 import { PACKING_TABS, PRIORITY_SORT_ORDER } from "@/lib/constants";
 import db from "@/lib/db";
+import PhotoGalleryTab from "@/components/catalog/PhotoGalleryTab";
 
 // ==================== TYPES ====================
 
-type CatalogTab = "wishes" | "ensembles" | PackingType;
+type CatalogTab = "wishes" | "ensembles" | "photos" | PackingType;
 
 interface TabConfig {
   id: CatalogTab;
@@ -61,6 +62,7 @@ const CATALOG_TABS: TabConfig[] = [
   { id: "shopping", label: "Shopping", icon: "\uD83D\uDECD\uFE0F", accent: "var(--color-accent-prepare)" },
   { id: "dining", label: "Dining", icon: "\uD83C\uDF7D\uFE0F", accent: "var(--color-accent-prepare)" },
   { id: "wishes", label: "Wishes", icon: "\u2B50", accent: "var(--color-gold)" },
+  { id: "photos", label: "Photos", icon: "\uD83D\uDCF7", accent: "var(--color-accent-publish)" },
 ];
 
 // Tabs that use visual grid layout instead of list
@@ -139,6 +141,7 @@ export default function CatalogPage() {
 
   const isWishesTab = activeTab === "wishes";
   const isEnsemblesTab = activeTab === "ensembles";
+  const isPhotosTab = activeTab === "photos";
   const isGridTab = GRID_TABS.has(activeTab);
   const tabConfig = isEnsemblesTab
     ? { id: "ensembles" as const, label: "Ensembles", icon: "\uD83E\uDDF3", accent: "var(--color-accent-prepare)" }
@@ -201,7 +204,7 @@ export default function CatalogPage() {
   }, [wishes, search, activeUserFilter, sortBy]);
 
   const filteredPacking = useMemo(() => {
-    if (isWishesTab || isEnsemblesTab) return [];
+    if (isWishesTab || isEnsemblesTab || isPhotosTab) return [];
     const q = search.toLowerCase().trim();
     let items = getPackingByType(activeTab as PackingType);
     if (activeUserFilter) {
@@ -224,7 +227,7 @@ export default function CatalogPage() {
       }
     }
     return sortCatalogItems(items, sortBy);
-  }, [isWishesTab, isEnsemblesTab, activeTab, getPackingByType, search, selectedEnsembleId, ensembles, activeUserFilter, sortBy]);
+  }, [isWishesTab, isEnsemblesTab, isPhotosTab, activeTab, getPackingByType, search, selectedEnsembleId, ensembles, activeUserFilter, sortBy]);
 
   // ==================== SELECT MODE / BULK ADD TO DAY ====================
 
@@ -645,7 +648,16 @@ export default function CatalogPage() {
       onDragEnd={handleDragEnd}
     >
       <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
-        <div className={`px-6 py-8 ${isGridTab ? "max-w-5xl" : "max-w-3xl"}`}>
+        <div className={`px-6 py-8 ${isGridTab ? "max-w-5xl" : activeTab === "photos" ? "max-w-6xl" : "max-w-3xl"}`}>
+          {activeTab === "photos" ? (
+            <PhotoGalleryTab
+              tripId={currentTripId}
+              tripStartDate={currentTrip?.startDate}
+              tripEndDate={currentTrip?.endDate}
+              onNavigateToItemTab={(tab) => setActiveTab(tab as CatalogTab)}
+            />
+          ) : (
+          <>
           {/* Active user indicator */}
           <div className="mb-3 flex justify-end">
             <ActiveUserChip />
@@ -1101,6 +1113,8 @@ export default function CatalogPage() {
               </AnimatePresence>
             </div>
           )}
+          </>
+          )}
         </div>
 
         {/* Wish Form Modal */}
@@ -1117,7 +1131,7 @@ export default function CatalogPage() {
         />
 
         {/* Packing Form Modal */}
-        {!isWishesTab && !isEnsemblesTab && (
+        {!isWishesTab && !isEnsemblesTab && !isPhotosTab && (
           <PackingFormModal
             visible={showPackingForm}
             itemId={editingPackingId ?? undefined}

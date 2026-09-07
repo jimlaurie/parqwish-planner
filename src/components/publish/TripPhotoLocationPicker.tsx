@@ -14,7 +14,7 @@ import { useParkData } from "@/hooks/use-park-data";
 import type { ParkDataItem } from "@/lib/park-data";
 import db from "@/lib/db";
 
-const TYPE_ICONS: Record<ParkDataItem["type"] | "custom", string> = {
+export const TYPE_ICONS: Record<ParkDataItem["type"] | "custom", string> = {
   ride: "🎢", show: "🎭", dining: "🍽️", shop: "🛍️", place: "📍", custom: "⭐",
 };
 
@@ -27,22 +27,11 @@ export interface LocationMatch {
   linkedWishId?: string;
 }
 
-export default function TripPhotoLocationPicker({
-  tripId,
-  onSelect,
-  placeholder = "Search rides, shows, dining, places…",
-}: {
-  tripId: string;
-  onSelect: (match: LocationMatch) => void;
-  placeholder?: string;
-}) {
-  const { items: catalogItems } = useParkData();
+// This trip's own custom Places — place-tagged wishes with real GPS, created
+// via mobile's "Create Place". Shared with PhotoItemLinkerModal (the Catalog
+// Photo Gallery's multi-item linker) so both search the same set of places.
+export function useTripCustomPlaces(tripId: string): LocationMatch[] {
   const [customPlaces, setCustomPlaces] = useState<LocationMatch[]>([]);
-  const [value, setValue] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +49,26 @@ export default function TripPhotoLocationPicker({
     })();
     return () => { cancelled = true; };
   }, [tripId]);
+
+  return customPlaces;
+}
+
+export default function TripPhotoLocationPicker({
+  tripId,
+  onSelect,
+  placeholder = "Search rides, shows, dining, places…",
+}: {
+  tripId: string;
+  onSelect: (match: LocationMatch) => void;
+  placeholder?: string;
+}) {
+  const { items: catalogItems } = useParkData();
+  const customPlaces = useTripCustomPlaces(tripId);
+  const [value, setValue] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const catalogMatches: LocationMatch[] = useMemo(
     () => catalogItems

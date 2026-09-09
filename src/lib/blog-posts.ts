@@ -2,8 +2,9 @@
 // Single source of truth for the /blog index listing. Each post itself is a
 // hand-authored page at src/app/blog/<slug>/page.tsx (same pattern as the
 // guide's feature pages) — this file only holds what's needed to list and
-// link to them. Keep entries sorted newest first isn't required; the index
-// page sorts by date.
+// link to them. The index page sorts by date, newest first; for two posts
+// on the same date, list order below is the tiebreak (list the newer one
+// first) — see getSortedPosts()'s comparator, which relies on a stable sort.
 
 export interface BlogPostMeta {
   slug: string;
@@ -13,6 +14,13 @@ export interface BlogPostMeta {
 }
 
 export const BLOG_POSTS: BlogPostMeta[] = [
+  {
+    slug: "2026-09-09-pal-on-testflight",
+    title: "It's on TestFlight",
+    date: "2026-09-09",
+    excerpt:
+      "Build 68 cleared Apple's processing and is now on a real device. First time this app has run anywhere but a simulator or a phone plugged into Xcode.",
+  },
   {
     slug: "2026-09-09-photo-gallery-and-testflight",
     title: "The Planner gets a Photo Gallery, and Pal heads to TestFlight",
@@ -30,5 +38,9 @@ export const BLOG_POSTS: BlogPostMeta[] = [
 ];
 
 export function getSortedPosts(): BlogPostMeta[] {
-  return [...BLOG_POSTS].sort((a, b) => (a.date < b.date ? 1 : -1));
+  // A proper 3-way comparator (returning 0 for equal dates) is required for
+  // the stable sort to preserve list order as the tiebreak on same-date
+  // posts — the previous version always returned -1 on a tie, which isn't
+  // a valid comparator and silently reordered same-date entries.
+  return [...BLOG_POSTS].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }

@@ -14,6 +14,13 @@ export interface BlogPostMeta {
 
 export const BLOG_POSTS: BlogPostMeta[] = [
   {
+    slug: "2026-09-09-photo-gallery-and-testflight",
+    title: "The Planner gets a Photo Gallery, and Pal heads to TestFlight",
+    date: "2026-09-09",
+    excerpt:
+      "ParQ Wish Pal build 68 is in Apple's queue, a date-formatting bug that was quietly breaking the Ready Now list and park hours, plus a catch-up on what shipped on the web planner: a real Photo Gallery, a proper Story intro, and some navigation fixes.",
+  },
+  {
     slug: "2026-08-17-trip-maps-and-ai-recaps",
     title: "Trip maps, photo imports, and a smarter Preview sidebar",
     date: "2026-08-17",

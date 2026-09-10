@@ -360,7 +360,13 @@ export default function StoryPage() {
           , built because I wanted it to exist and figured other people planning a
           Disneyland trip might feel the same. I keep shipping and fixing things the
           same informal way it&rsquo;s happened so far — see what&rsquo;s new on the{" "}
-          <a href="/blog" className="underline" style={{ color: "var(--color-gold)", textUnderlineOffset: 2 }}>
+          <a
+            href="https://parqwish.com/blog"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+            style={{ color: "var(--color-gold)", textUnderlineOffset: 2 }}
+          >
             blog
           </a>
           .

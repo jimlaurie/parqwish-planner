@@ -20,6 +20,8 @@ interface NavLink {
   href: string;
   accent: string;
   requiresTrip: boolean;
+  /** True for links that now point off-app (Guide/Blog moved to parqwish.com) */
+  external?: boolean;
 }
 
 // ==================== CONFIG ====================
@@ -32,9 +34,9 @@ const NAV_LINKS: NavLink[] = [
   { id: "play", label: "Play", icon: "\u{1F504}", href: "/play", accent: "var(--color-accent-play)", requiresTrip: false },
   { id: "publish", label: "Publish", icon: "\u{1F680}", href: "/publish", accent: "var(--color-accent-publish)", requiresTrip: true },
   { id: "catalog", label: "Catalog", icon: "\u{1F4E6}", href: "/catalog", accent: "var(--color-accent-catalog)", requiresTrip: false },
-  { id: "guide",   label: "Guide",   icon: "\u{1F4D6}", href: "/guide",   accent: "var(--color-gold)",           requiresTrip: false },
+  { id: "guide",   label: "Guide",   icon: "\u{1F4D6}", href: "https://parqwish.com/guide", accent: "var(--color-gold)", requiresTrip: false, external: true },
   { id: "story",   label: "Story",   icon: "\u{1F387}", href: "/story",   accent: "var(--color-gold)",           requiresTrip: false },
-  { id: "blog",    label: "Blog",    icon: "\u{1F4F0}", href: "/blog",    accent: "var(--color-gold)",           requiresTrip: false },
+  { id: "blog",    label: "Blog",    icon: "\u{1F4F0}", href: "https://parqwish.com/blog",  accent: "var(--color-gold)", requiresTrip: false, external: true },
 ];
 
 // ==================== COMPONENT ====================
@@ -65,9 +67,9 @@ export default function TopNavBar() {
     if (pathname.startsWith("/preview")) return "preview";
     if (pathname.startsWith("/play")) return "play";
     if (pathname.startsWith("/publish")) return "publish";
-    if (pathname.startsWith("/guide"))   return "guide";
     if (pathname.startsWith("/story"))   return "story";
-    if (pathname.startsWith("/blog"))    return "blog";
+    // Guide/Blog now live at parqwish.com, never matched by an app pathname —
+    // they just never appear "active" in the nav, same as any external link.
     return "home";
   })();
 
@@ -137,6 +139,8 @@ export default function TopNavBar() {
                 <Link
                   key={link.id}
                   href={disabled ? "#" : link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
                   aria-disabled={disabled}
                   aria-label={disabled ? `${link.label} — select a trip first` : link.label}
                   onClick={(e) => {

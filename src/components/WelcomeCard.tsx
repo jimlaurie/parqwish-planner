@@ -174,7 +174,9 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
 
           {/* Secondary: Guide */}
           <Link
-            href="/guide"
+            href="https://parqwish.com/guide"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               width: "100%",
               padding: "11px 20px",
@@ -211,7 +213,9 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
           trail recording, and real-time scheduling — is in App Store review
           now. Check back soon, or watch{" "}
           <Link
-            href="/blog"
+            href="https://parqwish.com/blog"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{ color: "var(--color-gold)", textDecoration: "none" }}
           >
             the blog

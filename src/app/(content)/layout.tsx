@@ -39,14 +39,18 @@ export default function ContentGroupLayout({
                 Story
               </Link>
               <Link
-                href="/blog"
+                href="https://parqwish.com/blog"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-full hover:bg-white/5"
                 style={{ color: "var(--color-text-muted)" }}
               >
                 Blog
               </Link>
               <Link
-                href="/guide"
+                href="https://parqwish.com/guide"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-full hover:bg-white/5"
                 style={{ color: "var(--color-text-muted)" }}
               >

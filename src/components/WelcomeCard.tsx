@@ -7,6 +7,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { marketingUrl } from "@/lib/marketing-links";
 
 interface WelcomeCardProps {
   onCreateTrip: () => void;
@@ -174,7 +175,7 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
 
           {/* Secondary: Guide */}
           <Link
-            href="https://parqwish.com/guide"
+            href={marketingUrl("/guide")}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -213,7 +214,7 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
           trail recording, and real-time scheduling — is in App Store review
           now. Check back soon, or watch{" "}
           <Link
-            href="https://parqwish.com/blog"
+            href={marketingUrl("/blog")}
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "var(--color-gold)", textDecoration: "none" }}

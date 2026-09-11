@@ -8,6 +8,7 @@ import db from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import ThemeToggle from "@/components/ThemeToggle";
 import SyncStatusIndicator from "@/components/SyncStatusIndicator";
+import { marketingUrl } from "@/lib/marketing-links";
 
 // ==================== TYPES ====================
 
@@ -34,9 +35,9 @@ const NAV_LINKS: NavLink[] = [
   { id: "play", label: "Play", icon: "\u{1F504}", href: "/play", accent: "var(--color-accent-play)", requiresTrip: false },
   { id: "publish", label: "Publish", icon: "\u{1F680}", href: "/publish", accent: "var(--color-accent-publish)", requiresTrip: true },
   { id: "catalog", label: "Catalog", icon: "\u{1F4E6}", href: "/catalog", accent: "var(--color-accent-catalog)", requiresTrip: false },
-  { id: "guide",   label: "Guide",   icon: "\u{1F4D6}", href: "https://parqwish.com/guide", accent: "var(--color-gold)", requiresTrip: false, external: true },
-  { id: "story",   label: "Story",   icon: "\u{1F387}", href: "/story",   accent: "var(--color-gold)",           requiresTrip: false },
-  { id: "blog",    label: "Blog",    icon: "\u{1F4F0}", href: "https://parqwish.com/blog",  accent: "var(--color-gold)", requiresTrip: false, external: true },
+  { id: "guide",   label: "Guide",   icon: "\u{1F4D6}", href: marketingUrl("/guide"), accent: "var(--color-gold)", requiresTrip: false, external: true },
+  { id: "story",   label: "Story",   icon: "\u{1F387}", href: marketingUrl("/story"), accent: "var(--color-gold)", requiresTrip: false, external: true },
+  { id: "blog",    label: "Blog",    icon: "\u{1F4F0}", href: marketingUrl("/blog"),  accent: "var(--color-gold)", requiresTrip: false, external: true },
 ];
 
 // ==================== COMPONENT ====================
@@ -67,9 +68,9 @@ export default function TopNavBar() {
     if (pathname.startsWith("/preview")) return "preview";
     if (pathname.startsWith("/play")) return "play";
     if (pathname.startsWith("/publish")) return "publish";
-    if (pathname.startsWith("/story"))   return "story";
-    // Guide/Blog now live at parqwish.com, never matched by an app pathname —
-    // they just never appear "active" in the nav, same as any external link.
+    // Guide/Blog/Story now live at parqwish.com, never matched by an app
+    // pathname — they just never appear "active" in the nav, same as any
+    // external link.
     return "home";
   })();
 

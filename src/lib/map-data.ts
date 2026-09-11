@@ -75,16 +75,39 @@ export const LAND_COORDINATES: Record<string, { lat: number; lng: number }> = {
 export const RESORT_CENTER = { lat: 33.8100, lng: -117.9190 };
 export const RESORT_ZOOM = 16;
 
-// OpenStreetMap's standard tile server — no API key required. Previously
-// pointed at CartoDB's "Voyager" raster tiles (basemaps.cartocdn.com), which
-// silently started requiring an account/key at some point after this was
-// first wired up: requests still returned 200, but the image itself was a
-// placeholder tile reading "API KEY REQUIRED", which Leaflet just rendered
-// as if it were real map imagery. Standard OSM tiles don't support the
-// {r} retina-resolution placeholder Carto's URL scheme did.
-export const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+// Esri's free "World Light Gray" basemap — no API key required, roads and
+// place labels only, no baked-in POI icons (shops/restaurants/ATMs/etc.).
+// Deliberately built as a muted backdrop for apps that draw their own
+// markers on top, which is exactly what every consumer of this constant
+// does (ParkMap's attraction pins, TripMapView/TrailMiniMap's GPS trails).
+//
+// Second stop for this constant: originally CartoDB's "Voyager" raster
+// tiles (basemaps.cartocdn.com), which silently started requiring an
+// account/key — requests still returned 200, but the image itself was a
+// placeholder reading "API KEY REQUIRED", which Leaflet just rendered as
+// if it were real map imagery. Swapped to OpenStreetMap's standard tile
+// server to fix that, but standard OSM tiles are busy with built-in POI
+// icons (baked into the raster image itself, not a toggleable layer) that
+// visually competed with this app's own pins — Esri's Light Gray style
+// avoids both problems at once. Note the {z}/{y}/{x} order (Esri's
+// MapServer tile scheme, not the {z}/{x}/{y} XYZ order OSM/Carto used)
+// and no {s} subdomain (Esri serves from a single host, no sharding).
+export const TILE_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
 export const TILE_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, FAO, NOAA, USGS';
+
+// This basemap's detailed source imagery doesn't cover every region equally —
+// confirmed by direct tile fetch that for the Anaheim resort area specifically,
+// zoom 16 returns real map content but zoom 17+ returns another placeholder
+// tile ("Map data not yet available"), even though the service's own tile
+// grid technically goes up to zoom 23. Every consumer of TILE_URL must pass
+// this as the TileLayer's maxNativeZoom prop, so Leaflet stops requesting
+// tiles past this level and instead upscales the zoom-16 tile — blurrier at
+// close zoom, but real geography instead of another broken watermark. (Any
+// future tile-source swap should re-check this per-region limit rather than
+// assuming a service's documented max zoom holds everywhere.)
+export const TILE_MAX_NATIVE_ZOOM = 16;
 
 // CSS class name applied to the tile layer for dark-theme filtering
 export const TILE_CLASS_NAME = "dark-map-tiles";

@@ -8,7 +8,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { TripTrail } from "@/lib/db";
-import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME } from "@/lib/map-data";
+import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM } from "@/lib/map-data";
 
 const TRAIL_COLOR = "#FFA500";
 const TICK_MS = 50;
@@ -81,7 +81,7 @@ function TrailMapView({
       scrollWheelZoom
       style={{ height: "100%", width: "100%" }}
     >
-      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} />
+      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
 
       {/* Ghost — full path at low opacity */}
       <Polyline

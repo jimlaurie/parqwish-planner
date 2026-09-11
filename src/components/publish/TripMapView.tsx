@@ -22,7 +22,7 @@ import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap, useMa
 import "leaflet/dist/leaflet.css";
 import type { DayItemType } from "@shared/types/day-item";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
-import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, RESORT_CENTER } from "@/lib/map-data";
+import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM, RESORT_CENTER } from "@/lib/map-data";
 import type { FlagResult } from "@/lib/trip-map-flags";
 
 const TRAIL_COLOR = "#FFA500";
@@ -305,7 +305,7 @@ export default function TripMapView({
           scrollWheelZoom
           style={{ height: "100%", width: "100%", cursor: correctingPoint ? "crosshair" : undefined }}
         >
-          <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} />
+          <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
 
           {hasPlayback && (
             <>

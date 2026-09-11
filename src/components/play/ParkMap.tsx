@@ -24,6 +24,7 @@ import {
   TILE_URL,
   TILE_ATTRIBUTION,
   TILE_CLASS_NAME,
+  TILE_MAX_NATIVE_ZOOM,
 } from "@/lib/map-data";
 
 const ACCENT = "var(--color-accent-preview)";
@@ -384,6 +385,7 @@ export default function ParkMap({ items }: ParkMapProps) {
           url={TILE_URL}
           attribution={TILE_ATTRIBUTION}
           className={TILE_CLASS_NAME}
+          maxNativeZoom={TILE_MAX_NATIVE_ZOOM}
         />
 
         {/* Land colour overlays — same polygons + colours as the SVG map */}

@@ -75,11 +75,16 @@ export const LAND_COORDINATES: Record<string, { lat: number; lng: number }> = {
 export const RESORT_CENTER = { lat: 33.8100, lng: -117.9190 };
 export const RESORT_ZOOM = 16;
 
-// CartoDB Voyager tiles — detailed roads & buildings, darkened via CSS filter
-export const TILE_URL =
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+// OpenStreetMap's standard tile server — no API key required. Previously
+// pointed at CartoDB's "Voyager" raster tiles (basemaps.cartocdn.com), which
+// silently started requiring an account/key at some point after this was
+// first wired up: requests still returned 200, but the image itself was a
+// placeholder tile reading "API KEY REQUIRED", which Leaflet just rendered
+// as if it were real map imagery. Standard OSM tiles don't support the
+// {r} retina-resolution placeholder Carto's URL scheme did.
+export const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 export const TILE_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 // CSS class name applied to the tile layer for dark-theme filtering
 export const TILE_CLASS_NAME = "dark-map-tiles";

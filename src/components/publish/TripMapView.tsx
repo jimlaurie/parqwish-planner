@@ -18,7 +18,8 @@
 // view highlights it and listens for the next map click to relocate it.
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap, useMapEvent } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap, useMapEvent } from "react-leaflet";
+import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import type { DayItemType } from "@shared/types/day-item";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
@@ -178,6 +179,16 @@ export default function TripMapView({
   correctingPoint?: MergedTrailPoint | null;
   onCorrectPoint?: (lat: number, lng: number) => void;
 }) {
+  const [landGeoJSON, setLandGeoJSON] = useState<GeoJsonObject | null>(null);
+
+  // Land overlay polygons — same file ParkMap uses (see ParkMap.tsx)
+  useEffect(() => {
+    fetch("/data/land-overlays.geojson")
+      .then((r) => r.json())
+      .then(setLandGeoJSON)
+      .catch(() => {/* non-critical — map works without overlays */});
+  }, []);
+
   const sortedPoints = useMemo(
     () => (trail ? [...trail.points].sort((a, b) => a.timestamp - b.timestamp) : []),
     [trail]
@@ -306,6 +317,21 @@ export default function TripMapView({
           style={{ height: "100%", width: "100%", cursor: correctingPoint ? "crosshair" : undefined }}
         >
           <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
+
+          {landGeoJSON && (
+            <GeoJSON
+              key={JSON.stringify(landGeoJSON)}
+              data={landGeoJSON}
+              interactive={false}
+              style={(feature) => ({
+                fillColor: feature?.properties?.color ?? "#888888",
+                fillOpacity: feature?.properties?.opacity ?? 0.28,
+                color: feature?.properties?.color ?? "#888888",
+                weight: 1.5,
+                opacity: 0.6,
+              })}
+            />
+          )}
 
           {hasPlayback && (
             <>

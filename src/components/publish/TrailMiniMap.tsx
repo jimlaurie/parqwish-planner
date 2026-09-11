@@ -5,7 +5,8 @@
 // Loaded dynamically by TrailGallery (no SSR — Leaflet touches window).
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
+import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import type { TripTrail } from "@/lib/db";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM } from "@/lib/map-data";
@@ -66,12 +67,14 @@ function TrailMapView({
   currentPoint,
   bounds,
   markers = [],
+  landGeoJSON,
 }: {
   allPositions: [number, number][];
   activePositions: [number, number][];
   currentPoint: { latitude: number; longitude: number } | null;
   bounds: [[number, number], [number, number]];
   markers?: TrailMarker[];
+  landGeoJSON?: GeoJsonObject | null;
 }) {
   const complete = activePositions.length >= allPositions.length;
   return (
@@ -82,6 +85,21 @@ function TrailMapView({
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
+
+      {landGeoJSON && (
+        <GeoJSON
+          key={JSON.stringify(landGeoJSON)}
+          data={landGeoJSON}
+          interactive={false}
+          style={(feature) => ({
+            fillColor: feature?.properties?.color ?? "#888888",
+            fillOpacity: feature?.properties?.opacity ?? 0.28,
+            color: feature?.properties?.color ?? "#888888",
+            weight: 1.5,
+            opacity: 0.6,
+          })}
+        />
+      )}
 
       {/* Ghost — full path at low opacity */}
       <Polyline
@@ -164,6 +182,15 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<Speed>(2);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [landGeoJSON, setLandGeoJSON] = useState<GeoJsonObject | null>(null);
+
+  // Land overlay polygons — same file ParkMap uses (see ParkMap.tsx)
+  useEffect(() => {
+    fetch("/data/land-overlays.geojson")
+      .then((r) => r.json())
+      .then(setLandGeoJSON)
+      .catch(() => {/* non-critical — map works without overlays */});
+  }, []);
 
   const sortedPoints = useMemo(
     () => [...trail.points].sort((a, b) => a.timestamp - b.timestamp),
@@ -307,7 +334,7 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
     </div>
   );
 
-  const mapProps = { allPositions, activePositions, currentPoint, bounds, markers };
+  const mapProps = { allPositions, activePositions, currentPoint, bounds, markers, landGeoJSON };
 
   return (
     <>

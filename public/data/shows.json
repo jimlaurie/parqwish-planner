@@ -442,7 +442,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-09-10T13:00:37.604Z",
+  "lastUpdated": "2026-09-17T13:00:07.254Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -718,7 +718,8 @@
       "duration": 15,
       "times": [
         "20:55",
-        "21:55"
+        "21:55",
+        "22:55"
       ],
       "land": "Main Street U.S.A.",
       "types": [
@@ -869,7 +870,8 @@
       "longitude": -117.921242,
       "times": [
         "20:30",
-        "21:25"
+        "21:25",
+        "22:15"
       ],
       "duration": 12,
       "status": "operating"
@@ -967,5 +969,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-09-10T13:00:37.604Z"
+  "lastShowtimeSync": "2026-09-17T13:00:07.254Z"
 }

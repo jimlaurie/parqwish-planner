@@ -25,6 +25,8 @@ import type { DayItemType } from "@shared/types/day-item";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM, RESORT_CENTER } from "@/lib/map-data";
 import type { FlagResult } from "@/lib/trip-map-flags";
+import { findNearestMarkerAt } from "@/lib/trip-map-proximity";
+import ResortMask from "@/components/map/ResortMask";
 
 const TRAIL_COLOR = "#FFA500";
 const FLAG_COLOR = "#F44336";
@@ -34,6 +36,11 @@ const TICK_MS = 50;
 const BASE_DURATION_MS = 30_000;
 const SPEEDS = [1, 2, 5, 10] as const;
 type Speed = (typeof SPEEDS)[number];
+// Fixed step per arrow-key press, not a fraction of trail duration — gives a
+// predictable nudge size regardless of trail length (a 2-hour evening visit
+// and a 14-hour full day shouldn't jump by wildly different absolute amounts
+// per key press).
+const ARROW_KEY_STEP_MS = 5 * 60_000;
 
 // ==================== TRAIL POINT / MERGED TRAIL TYPES ====================
 // A day can have more than one recorded TripTrail row (one per user); the
@@ -66,6 +73,8 @@ export interface TripMapMarker {
   time?: string; // "H:MM AM/PM"
   hasPhoto: boolean;
   flag: FlagResult;
+  scheduledMs?: number; // absolute ms for `time` on its date; undefined if unscheduled
+  photoThumbnailUrls?: string[];
 }
 
 // A standalone imported photo (Camera Roll, PhotoPass download) placed on
@@ -167,6 +176,7 @@ export default function TripMapView({
   activeMarkerId,
   onMarkerClick,
   onActivePointChange,
+  onNearbyMarkerChange,
   correctingPoint,
   onCorrectPoint,
 }: {
@@ -176,6 +186,7 @@ export default function TripMapView({
   activeMarkerId?: string | null;
   onMarkerClick: (id: string) => void;
   onActivePointChange?: (point: MergedTrailPoint | null) => void;
+  onNearbyMarkerChange?: (marker: TripMapMarker | null) => void;
   correctingPoint?: MergedTrailPoint | null;
   onCorrectPoint?: (lat: number, lng: number) => void;
 }) {
@@ -200,68 +211,134 @@ export default function TripMapView({
   );
 
   // ---- Playback state ----
-  const [sliderIndex, setSliderIndex] = useState(sortedPoints.length);
+  // Time-based (elapsed ms since the trail's first point), not point-index —
+  // GPS points aren't evenly spaced in time (denser during fast movement,
+  // sparser when stationary), so an index-based slider doesn't correspond to
+  // a linear division of the day: a dense burst of points would eat up a
+  // disproportionate share of the slider's length relative to a long, sparse
+  // stationary stretch. Position is resolved by snapping to the last real
+  // recorded point at-or-before the current elapsed time, not by
+  // interpolating a synthetic point between two real ones — interpolating
+  // would draw motion during a genuine GPS gap that was never recorded, and
+  // onActivePointChange/point-correction both key off a real point's
+  // (sourceTrailId, timestamp) identity, which an interpolated point has none of.
+  const totalDurationMs = sortedPoints.length > 1
+    ? sortedPoints[sortedPoints.length - 1].timestamp - sortedPoints[0].timestamp
+    : 0;
+  const [elapsedMs, setElapsedMs] = useState(totalDurationMs);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<Speed>(2);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Jump to fully-drawn and stop playback whenever the underlying point set
   // changes (day switch, time-range filter) rather than mid-scrubbing a now
-  // out-of-range slider position.
+  // out-of-range elapsed time.
   useEffect(() => {
-    setSliderIndex(sortedPoints.length);
+    setElapsedMs(totalDurationMs);
     setPlaying(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortedPoints]);
 
-  const stepsPerTick = useMemo(
-    () => Math.max(1, Math.ceil((trailPositions.length * speed * TICK_MS) / BASE_DURATION_MS)),
-    [trailPositions.length, speed]
+  const msPerTick = useMemo(
+    () => (totalDurationMs * speed * TICK_MS) / BASE_DURATION_MS,
+    [totalDurationMs, speed]
   );
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (!playing) return;
     intervalRef.current = setInterval(() => {
-      setSliderIndex((prev) => {
-        const next = prev + stepsPerTick;
-        if (next >= trailPositions.length) {
+      setElapsedMs((prev) => {
+        const next = prev + msPerTick;
+        if (next >= totalDurationMs) {
           setPlaying(false);
-          return trailPositions.length;
+          return totalDurationMs;
         }
         return next;
       });
     }, TICK_MS);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [playing, stepsPerTick, trailPositions.length]);
+  }, [playing, msPerTick, totalDurationMs]);
 
-  const activePositions = trailPositions.slice(0, sliderIndex);
-  const currentPoint = sliderIndex > 0 && sliderIndex < trailPositions.length
-    ? sortedPoints[sliderIndex - 1]
-    : null;
+  // Index of the last recorded point at-or-before the current elapsed time
+  // (binary search — sortedPoints is already sorted by timestamp).
+  const activeIndex = useMemo(() => {
+    if (sortedPoints.length === 0) return -1;
+    const targetMs = sortedPoints[0].timestamp + elapsedMs;
+    let lo = 0, hi = sortedPoints.length - 1, result = -1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (sortedPoints[mid].timestamp <= targetMs) {
+        result = mid;
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    return result;
+  }, [sortedPoints, elapsedMs]);
+
+  const activePositions = trailPositions.slice(0, activeIndex + 1);
   const complete = activePositions.length >= trailPositions.length;
+  const currentPoint = activeIndex >= 0 && !complete ? sortedPoints[activeIndex] : null;
 
   // The point the scrubber is "on" for list-highlighting purposes — unlike
   // currentPoint (which hides once playback completes, so the moving dot
   // disappears), this stays resolved to the last point at full draw, since
   // "slider at the end" should still highlight that last GPS entry.
-  const activePoint = sliderIndex > 0
-    ? sortedPoints[Math.min(sliderIndex, trailPositions.length) - 1]
-    : null;
+  const activePoint = activeIndex >= 0 ? sortedPoints[activeIndex] : null;
 
   useEffect(() => {
     onActivePointChange?.(activePoint ?? null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePoint?.sourceTrailId, activePoint?.timestamp]);
 
+  // What's nearby right now, for the sidebar panel — uses activePoint (not
+  // currentPoint, which hides once playback completes) since proximity
+  // detection should keep working whether the user is playing, paused, or
+  // has manually scrubbed to a static spot; scrubbing to inspect a moment is
+  // already a documented use of this view (see file header).
+  const currentAbsoluteMs = sortedPoints.length > 0 ? sortedPoints[0].timestamp + elapsedMs : null;
+  const nearbyMarker = useMemo(
+    () => findNearestMarkerAt(activePoint, currentAbsoluteMs, markers),
+    [activePoint, currentAbsoluteMs, markers]
+  );
+
+  useEffect(() => {
+    onNearbyMarkerChange?.(nearbyMarker);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nearbyMarker?.id]);
+
   const handleTogglePlay = () => {
-    if (sliderIndex >= trailPositions.length) setSliderIndex(0);
+    if (complete) setElapsedMs(0);
     setPlaying((p) => !p);
   };
-  const handleReset = () => { setPlaying(false); setSliderIndex(0); };
+  const handleReset = () => { setPlaying(false); setElapsedMs(0); };
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlaying(false);
-    setSliderIndex(Number(e.target.value));
+    setElapsedMs(Number(e.target.value));
   };
+
+  // Left/right arrow keys step the scrubber by a fixed amount of elapsed
+  // time, matching the pattern in PhotoViewer.tsx. Ignored while an input or
+  // textarea has focus — both as standard defensive practice, and because
+  // the scrubber <input type="range"> below is itself one such element and
+  // would otherwise double-step from both its own native arrow-key handling
+  // and this global listener.
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (trailPositions.length < 2) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const target = document.activeElement;
+      if (target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+      e.preventDefault();
+      setPlaying(false);
+      const delta = e.key === "ArrowRight" ? ARROW_KEY_STEP_MS : -ARROW_KEY_STEP_MS;
+      setElapsedMs((prev) => Math.min(totalDurationMs, Math.max(0, prev + delta)));
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [trailPositions.length, totalDurationMs]);
 
   // Fit to the dense trail cluster (ignoring off-park commute legs) plus
   // every marker position, so an item the trail didn't directly cross
@@ -317,6 +394,8 @@ export default function TripMapView({
           style={{ height: "100%", width: "100%", cursor: correctingPoint ? "crosshair" : undefined }}
         >
           <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
+
+          <ResortMask />
 
           {landGeoJSON && (
             <GeoJSON
@@ -463,7 +542,7 @@ export default function TripMapView({
           <div className="flex items-center justify-between text-[10px]" style={{ color: "var(--color-text-muted)" }}>
             <span>{formatClockTime(sortedPoints[0].timestamp)}</span>
             <span className="font-semibold text-xs" style={{ color: "var(--color-text-primary)" }}>
-              {activePoint ? formatClockTime(activePoint.timestamp) : "—"}
+              {formatClockTime(sortedPoints[0].timestamp + elapsedMs)}
             </span>
             <span>{formatClockTime(sortedPoints[sortedPoints.length - 1].timestamp)}</span>
           </div>
@@ -471,8 +550,8 @@ export default function TripMapView({
           <input
             type="range"
             min={0}
-            max={trailPositions.length}
-            value={sliderIndex}
+            max={totalDurationMs}
+            value={elapsedMs}
             onChange={handleSlider}
             className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
             style={{ accentColor: TRAIL_COLOR }}
@@ -490,7 +569,7 @@ export default function TripMapView({
               {playing ? "⏸" : "▶"}
             </button>
             <span className="text-[10px] ml-1" style={{ color: "var(--color-text-muted)" }}>
-              {sliderIndex}/{trailPositions.length} pts
+              {Math.round(elapsedMs / 60_000)}/{Math.round(totalDurationMs / 60_000)} min
             </span>
             <div className="flex gap-1 ml-auto">
               {SPEEDS.map((s) => (

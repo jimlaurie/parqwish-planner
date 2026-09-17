@@ -18,7 +18,7 @@ import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { useDayItems } from "@/hooks/use-day-items";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
-import { flagItem } from "@/lib/trip-map-flags";
+import { flagItem, scheduledTimeToMs } from "@/lib/trip-map-flags";
 import { filterPointsByRange, defaultTimeRange, type TrailTimeRange } from "@/lib/trail-geo";
 import {
   getStoredTimeRange, setStoredTimeRange, clearStoredTimeRange,
@@ -27,7 +27,7 @@ import {
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
 import { useTripPhotos } from "@/hooks/use-trip-photos";
-import { getFirstThumbnail } from "@/lib/image-utils";
+import { getFirstThumbnail, getPhotos } from "@/lib/image-utils";
 import type { TripMapMarker, TripPhotoMarker, MergedTrail, MergedTrailPoint } from "@/components/publish/TripMapView";
 
 const ACCENT = "var(--color-accent-publish)";
@@ -90,6 +90,7 @@ export default function TripMapPage() {
   const [timeRange, setTimeRangeState] = useState<TrailTimeRange | null>(null);
   const [sidebarTab, setSidebarTab] = useState<"review" | "points">("review");
   const [activePlaybackPoint, setActivePlaybackPoint] = useState<MergedTrailPoint | null>(null);
+  const [nearbyMarker, setNearbyMarker] = useState<TripMapMarker | null>(null);
   const [correctingKey, setCorrectingKey] = useState<string | null>(null);
   const [correctionVersion, setCorrectionVersion] = useState(0);
   const activeRowRef = useRef<HTMLDivElement | null>(null);
@@ -214,6 +215,8 @@ export default function TripMapPage() {
         time: format12h(item.scheduledTime),
         hasPhoto: !!item.photos?.length,
         flag,
+        scheduledMs: item.scheduledTime ? scheduledTimeToMs(selectedDate, item.scheduledTime) ?? undefined : undefined,
+        photoThumbnailUrls: getPhotos(item, "thumbnail"),
       });
     }
     return result;
@@ -382,6 +385,7 @@ export default function TripMapPage() {
             activeMarkerId={activeMarkerId}
             onMarkerClick={handleMarkerClick}
             onActivePointChange={setActivePlaybackPoint}
+            onNearbyMarkerChange={setNearbyMarker}
             correctingPoint={correctingPoint}
             onCorrectPoint={handleCorrectPoint}
           />
@@ -390,6 +394,38 @@ export default function TripMapPage() {
         {/* Sidebar */}
         <div className="w-72 shrink-0 flex flex-col hidden md:flex"
              style={{ borderLeft: "1px solid var(--color-border-subtle)", backgroundColor: "var(--color-surface-raised)" }}>
+
+          {/* Nearby item — surfaces as the scrubber passes near a completed item's location, regardless of which tab below is active */}
+          {nearbyMarker && (
+            <button
+              type="button"
+              onClick={() => handleMarkerClick(nearbyMarker.id)}
+              className="text-left m-3 p-2.5 rounded-lg cursor-pointer shrink-0 hover:brightness-110"
+              style={{ backgroundColor: "var(--color-surface-overlay)", border: "1px solid var(--color-border-subtle)" }}
+            >
+              <div className="text-xs font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                {DAY_ITEM_TYPE_ICONS[nearbyMarker.itemType] ?? "📌"} {nearbyMarker.title}
+              </div>
+              {nearbyMarker.time && (
+                <div className="text-[10px] mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+                  {nearbyMarker.time}
+                </div>
+              )}
+              {!!nearbyMarker.photoThumbnailUrls?.length && (
+                <div className="flex items-center gap-1 mt-1.5">
+                  {nearbyMarker.photoThumbnailUrls.slice(0, 4).map((url, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={i} src={url} alt="" style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 4 }} />
+                  ))}
+                  {nearbyMarker.photoThumbnailUrls.length > 4 && (
+                    <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>
+                      +{nearbyMarker.photoThumbnailUrls.length - 4}
+                    </span>
+                  )}
+                </div>
+              )}
+            </button>
+          )}
 
           {!mergedTrail && (
             <p className="text-xs p-3" style={{ color: "var(--color-text-muted)" }}>

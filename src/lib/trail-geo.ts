@@ -25,6 +25,13 @@ export interface TrailPointLike {
 // it within moments of leaving.
 const BOUNDARY_MARGIN_MILES = 0.25;
 
+// Degrees-per-mile is ~constant for latitude, but longitude needs a
+// cos(latitude) correction — fine as an approximation for both the resort
+// boundary gate below and ResortMask.tsx's mask radius math, neither of
+// which needs precision mapping.
+export const MILES_PER_DEGREE_LAT = 69.0;
+export const MILES_PER_DEGREE_LNG_AT_EQUATOR = 69.17;
+
 function computeResortBounds() {
   const lats = Object.values(LAND_COORDINATES).map((c) => c.lat);
   const lngs = Object.values(LAND_COORDINATES).map((c) => c.lng);
@@ -33,12 +40,9 @@ function computeResortBounds() {
   const lngMin = Math.min(...lngs);
   const lngMax = Math.max(...lngs);
 
-  // Degrees-per-mile is ~constant for latitude, but longitude needs a
-  // cos(latitude) correction — fine as an approximation here since this
-  // is a coarse in/out gate, not precision mapping.
   const avgLat = (latMin + latMax) / 2;
-  const latMarginDeg = BOUNDARY_MARGIN_MILES / 69.0;
-  const lngMarginDeg = BOUNDARY_MARGIN_MILES / (69.17 * Math.cos((avgLat * Math.PI) / 180));
+  const latMarginDeg = BOUNDARY_MARGIN_MILES / MILES_PER_DEGREE_LAT;
+  const lngMarginDeg = BOUNDARY_MARGIN_MILES / (MILES_PER_DEGREE_LNG_AT_EQUATOR * Math.cos((avgLat * Math.PI) / 180));
 
   return {
     latMin: latMin - latMarginDeg,

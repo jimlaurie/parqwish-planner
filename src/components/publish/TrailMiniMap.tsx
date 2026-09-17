@@ -10,6 +10,7 @@ import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import type { TripTrail } from "@/lib/db";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM } from "@/lib/map-data";
+import ResortMask from "@/components/map/ResortMask";
 
 const TRAIL_COLOR = "#FFA500";
 const TICK_MS = 50;
@@ -85,6 +86,8 @@ function TrailMapView({
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
+
+      <ResortMask />
 
       {landGeoJSON && (
         <GeoJSON

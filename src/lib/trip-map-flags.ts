@@ -19,7 +19,7 @@ export interface FlagResult {
   nearestDistanceMiles?: number;
 }
 
-function scheduledTimeToMs(date: string, scheduledTime: string): number | null {
+export function scheduledTimeToMs(date: string, scheduledTime: string): number | null {
   const [hh, mm] = scheduledTime.split(":").map(Number);
   if (isNaN(hh) || isNaN(mm)) return null;
   const d = new Date(date + "T00:00:00");

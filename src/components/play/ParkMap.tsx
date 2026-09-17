@@ -16,6 +16,7 @@ import "leaflet/dist/leaflet.css";
 import { useAppStore } from "@/lib/store";
 import type { DayItemRecord } from "@/lib/db";
 import { getAttractionCoords, type AttractionCoord, type CoordMaps } from "@/lib/park-data";
+import ResortMask from "@/components/map/ResortMask";
 import {
   LAND_COLORS,
   LAND_COORDINATES,
@@ -387,6 +388,8 @@ export default function ParkMap({ items }: ParkMapProps) {
           className={TILE_CLASS_NAME}
           maxNativeZoom={TILE_MAX_NATIVE_ZOOM}
         />
+
+        <ResortMask />
 
         {/* Land colour overlays — same polygons + colours as the SVG map */}
         {landGeoJSON && (

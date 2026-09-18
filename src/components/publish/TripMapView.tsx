@@ -230,14 +230,20 @@ export default function TripMapView({
   const [speed, setSpeed] = useState<Speed>(2);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Jump to fully-drawn and stop playback whenever the underlying point set
-  // changes (day switch, time-range filter) rather than mid-scrubbing a now
-  // out-of-range elapsed time.
+  // Jump to fully-drawn and stop playback when the day or time-range filter
+  // actually changes — but NOT when a GPS point is merely corrected (same
+  // day, same range, just one point's lat/lng moved). Keyed on trail id
+  // (changes on day switch) and point count (changes when the range filter
+  // widens/narrows what's included) rather than the sortedPoints array
+  // reference itself, which gets a new identity on every correction too
+  // (correction only ever touches lat/lng, never timestamp, so the range
+  // filter's inclusion of a point — and therefore this count — is unaffected
+  // by a correction alone).
   useEffect(() => {
     setElapsedMs(totalDurationMs);
     setPlaying(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortedPoints]);
+  }, [trail?.id, sortedPoints.length]);
 
   const msPerTick = useMemo(
     () => (totalDurationMs * speed * TICK_MS) / BASE_DURATION_MS,

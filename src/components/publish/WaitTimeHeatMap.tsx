@@ -41,51 +41,73 @@ export default function WaitTimeHeatMap({ markers }: { markers: WaitTimeMarker[]
   }, []);
 
   return (
-    <MapContainer
-      center={[RESORT_CENTER.lat, RESORT_CENTER.lng]}
-      zoom={RESORT_ZOOM}
-      scrollWheelZoom
-      style={{ height: "100%", width: "100%" }}
-    >
-      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
+    <>
+      {/* A drop shadow keeps light-colored dots (yellow, pale green) from
+          blending into similarly-toned land overlay fills. filter on an SVG
+          path works fine but doesn't resolve CSS custom properties any
+          better than fill/stroke do (same gotcha as waitColor's raw hex),
+          so this is a plain global style rule, not a token. Kept outside
+          MapContainer rather than as a child of it — MapContainer's
+          children are expected to be Leaflet-context-aware layers, and a
+          plain non-Leaflet element is safer rendered as a sibling. */}
+      <style>{`
+        .wait-marker-dot {
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
+        }
+      `}</style>
 
-      <ResortMask />
+      <MapContainer
+        center={[RESORT_CENTER.lat, RESORT_CENTER.lng]}
+        zoom={RESORT_ZOOM}
+        scrollWheelZoom
+        style={{ height: "100%", width: "100%" }}
+      >
+        <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} className={TILE_CLASS_NAME} maxNativeZoom={TILE_MAX_NATIVE_ZOOM} />
 
-      {landGeoJSON && (
-        <GeoJSON
-          key={JSON.stringify(landGeoJSON)}
-          data={landGeoJSON}
-          interactive={false}
-          style={(feature) => ({
-            fillColor: feature?.properties?.color ?? "#888888",
-            fillOpacity: feature?.properties?.opacity ?? 0.28,
-            color: feature?.properties?.color ?? "#888888",
-            weight: 1.5,
-            opacity: 0.6,
-          })}
-        />
-      )}
+        <ResortMask />
 
-      {markers.map((m) => (
-        <CircleMarker
-          key={m.id}
-          center={[m.latitude, m.longitude]}
-          radius={8}
-          pathOptions={{ color: "#fff", weight: 2, fillColor: waitColor(m.medianWaitMinutes), fillOpacity: 0.9 }}
-        >
-          <Tooltip direction="top" offset={[0, -8]} opacity={1}>
-            <div style={{ minWidth: 140 }}>
-              <div style={{ fontWeight: 600, fontSize: 12 }}>{m.rideName}</div>
-              <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
-                {m.medianWaitMinutes} min median
+        {landGeoJSON && (
+          <GeoJSON
+            key={JSON.stringify(landGeoJSON)}
+            data={landGeoJSON}
+            interactive={false}
+            style={(feature) => ({
+              fillColor: feature?.properties?.color ?? "#888888",
+              fillOpacity: feature?.properties?.opacity ?? 0.28,
+              color: feature?.properties?.color ?? "#888888",
+              weight: 1.5,
+              opacity: 0.6,
+            })}
+          />
+        )}
+
+        {markers.map((m) => (
+          <CircleMarker
+            key={m.id}
+            center={[m.latitude, m.longitude]}
+            radius={8}
+            pathOptions={{
+              color: "#fff",
+              weight: 2,
+              fillColor: waitColor(m.medianWaitMinutes),
+              fillOpacity: 0.9,
+              className: "wait-marker-dot",
+            }}
+          >
+            <Tooltip direction="top" offset={[0, -8]} opacity={1}>
+              <div style={{ minWidth: 140 }}>
+                <div style={{ fontWeight: 600, fontSize: 12 }}>{m.rideName}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+                  {m.medianWaitMinutes} min median
+                </div>
+                <div style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
+                  {m.sampleSize.toLocaleString()} readings
+                </div>
               </div>
-              <div style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
-                {m.sampleSize.toLocaleString()} readings
-              </div>
-            </div>
-          </Tooltip>
-        </CircleMarker>
-      ))}
-    </MapContainer>
+            </Tooltip>
+          </CircleMarker>
+        ))}
+      </MapContainer>
+    </>
   );
 }

@@ -248,7 +248,14 @@ export async function getParkData(): Promise<ParkDataItem[]> {
 // 2. By name (lowercase) → fuzzy fallback for unlinked items
 const coordCacheKey = "dland-park-coord-cache";
 
-const waitStatsCacheKey = "dland-wait-time-stats-cache-v1";
+// Bump the version suffix whenever WaitTimeRideEntry's shape changes (e.g.
+// a new field like byHourByDayOfWeek) — otherwise a client with an old
+// object already cached under this key keeps serving it for the full
+// 24h TTL, silently missing whatever new field a just-shipped feature
+// reads. Hit this for real: the day-of-week and hourly-by-day fields both
+// shipped without a version bump, so existing sessions saw those features
+// as broken/missing until their cache happened to expire.
+const waitStatsCacheKey = "dland-wait-time-stats-cache-v3";
 
 export function clearParkDataCache(): void {
   try {

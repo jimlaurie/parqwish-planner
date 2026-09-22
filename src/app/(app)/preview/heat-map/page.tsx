@@ -6,6 +6,13 @@
 // regardless of which trip you arrived from — so this page doesn't gate on
 // or read any trip/day/trail state, just the published wait-time aggregate
 // joined against attraction coordinates.
+//
+// Lives under /preview (moved from /publish Sep 2026) — Preview is where
+// you're deciding what time to schedule each activity, so this data's
+// hour-of-day/day-of-week dimensions are directly actionable there in a way
+// they weren't on Publish's after-the-fact trip recap. Components still
+// live under components/publish/ (WaitTimeHeatMap, waitTimeColors) since
+// they're not Preview-specific and the rename wasn't worth the churn.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -14,7 +21,7 @@ import { getAttractionCoords, getWaitTimeStats, type WaitTimeStats } from "@/lib
 import type { WaitTimeMarker } from "@/components/publish/WaitTimeHeatMap";
 import { WaitTimeLegend } from "@/components/publish/waitTimeColors";
 
-const ACCENT = "var(--color-accent-publish)";
+const ACCENT = "var(--color-accent-preview)";
 
 const WaitTimeHeatMap = dynamic(() => import("@/components/publish/WaitTimeHeatMap"), {
   ssr: false,
@@ -168,10 +175,10 @@ export default function WaitTimeHeatMapPage() {
       <div className="flex flex-col gap-2 px-4 py-3 shrink-0"
            style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
         <div className="flex items-center gap-3 flex-wrap">
-          <button type="button" onClick={() => router.push("/publish")}
+          <button type="button" onClick={() => router.push("/preview")}
             className="text-sm px-2 py-1 rounded cursor-pointer"
             style={{ color: "var(--color-text-muted)" }}>
-            ← Publish
+            ← Preview
           </button>
           <div className="flex items-center gap-2">
             <span className="text-lg">🌡️</span>
@@ -180,6 +187,10 @@ export default function WaitTimeHeatMapPage() {
             </h1>
           </div>
         </div>
+
+        <p className="text-xs" style={{ color: "var(--color-text-dim)" }}>
+          Historical resort-wide averages, not a live forecast for your trip dates — useful for spotting generally slower times to plan around.
+        </p>
 
         <div className="flex gap-1 overflow-x-auto pb-0.5">
           {DAY_FILTERS.map(({ value, label }, i) => {

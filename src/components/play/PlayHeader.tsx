@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { Trip } from "@/lib/db";
 import type { DayItemStats } from "@/hooks/use-day-items";
 import ActiveUserChip from "@/components/ActiveUserChip";
@@ -9,7 +10,11 @@ interface PlayHeaderProps {
   stats: DayItemStats;
 }
 
+const ACCENT = "var(--color-accent-preview)";
+
 export default function PlayHeader({ trip, stats }: PlayHeaderProps) {
+  const router = useRouter();
+
   return (
     <div className="w-full max-w-7xl mb-4">
       <div className="flex items-center gap-3 mb-1">
@@ -35,6 +40,24 @@ export default function PlayHeader({ trip, stats }: PlayHeaderProps) {
             {"\u23F3"} {stats.total - stats.completed} remaining
           </span>
         )}
+
+        {/* Analytics link \u2014 currently just the wait time heat map, but a
+            natural spot for other historical-data tools to join later
+            (e.g. crowd calendars) since they're all "help me decide when"
+            rather than "what did we do", which is what the rest of this
+            page and Publish's own analytics section are about. */}
+        <button
+          type="button"
+          onClick={() => router.push("/preview/heat-map")}
+          className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-full cursor-pointer transition-colors duration-100 hover:brightness-110"
+          style={{
+            backgroundColor: "var(--color-surface-sunken)",
+            color: ACCENT,
+            border: `1px solid color-mix(in srgb, ${ACCENT} 40%, transparent)`,
+          }}
+        >
+          {"\uD83C\uDF21\uFE0F"} Wait Times
+        </button>
       </div>
     </div>
   );

@@ -346,6 +346,7 @@ export interface WaitTimeRideEntry {
   park: string;
   weekday: WaitTimeDayStat | null;
   weekend: WaitTimeDayStat | null;
+  byDayOfWeek?: Record<string, WaitTimeDayStat>;
   byHour?: {
     weekday: Record<string, WaitTimeDayStat>;
     weekend: Record<string, WaitTimeDayStat>;

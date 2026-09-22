@@ -19,6 +19,7 @@ import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM, RESORT_CENTER, RESORT_ZOOM } from "@/lib/map-data";
 import ResortMask from "@/components/map/ResortMask";
+import { waitColor } from "./waitTimeColors";
 
 export interface WaitTimeMarker {
   id: string;
@@ -27,14 +28,6 @@ export interface WaitTimeMarker {
   longitude: number;
   medianWaitMinutes: number;
   sampleSize: number;
-}
-
-// Raw hex, not CSS vars — SVG/Leaflet fill attributes don't resolve CSS
-// custom properties (same documented gotcha as ResortMask.tsx).
-function waitColor(median: number): string {
-  if (median <= 20) return "#4CAF50"; // green
-  if (median <= 45) return "#FFC107"; // yellow
-  return "#F44336";                   // red
 }
 
 export default function WaitTimeHeatMap({ markers }: { markers: WaitTimeMarker[] }) {

@@ -248,11 +248,14 @@ export async function getParkData(): Promise<ParkDataItem[]> {
 // 2. By name (lowercase) → fuzzy fallback for unlinked items
 const coordCacheKey = "dland-park-coord-cache";
 
+const waitStatsCacheKey = "dland-wait-time-stats-cache-v1";
+
 export function clearParkDataCache(): void {
   try {
     localStorage.removeItem(CACHE_KEY);
     localStorage.removeItem(coordCacheKey);
     localStorage.removeItem(landConfigCacheKey);
+    localStorage.removeItem(waitStatsCacheKey);
   } catch {
     // localStorage unavailable
   }
@@ -323,6 +326,66 @@ export async function getAttractionCoords(): Promise<CoordMaps> {
   }
 
   return maps;
+}
+
+// ==================== WAIT TIME STATS ====================
+// Published nightly by the dland-wishes Cloud Function generateWaitTimeStats,
+// keyed "parkKey__entityId" to match CoordMaps.byId directly — no fuzzy
+// name matching needed on this side, that resolution already happened
+// server-side against the same rides.json this file also fetches.
+
+const WAIT_STATS_FILE = "waitTimeStats.json";
+
+export interface WaitTimeDayStat {
+  medianWaitMinutes: number;
+  sampleSize: number;
+}
+
+export interface WaitTimeRideEntry {
+  rideName: string;
+  park: string;
+  weekday: WaitTimeDayStat | null;
+  weekend: WaitTimeDayStat | null;
+  byHour?: {
+    weekday: Record<string, WaitTimeDayStat>;
+    weekend: Record<string, WaitTimeDayStat>;
+  };
+}
+
+export interface WaitTimeStats {
+  generatedAt: string;
+  windowDays: number;
+  windowStart: string;
+  windowEnd: string;
+  minSampleSize: number;
+  rides: Record<string, WaitTimeRideEntry>;
+  unmatchedRideNames: string[];
+}
+
+export async function getWaitTimeStats(): Promise<WaitTimeStats | null> {
+  try {
+    const cached = localStorage.getItem(waitStatsCacheKey);
+    if (cached) {
+      const entry = JSON.parse(cached);
+      if (Date.now() - entry.timestamp < CACHE_TTL && entry.data?.rides) {
+        return entry.data;
+      }
+    }
+  } catch { /* cache read failed */ }
+
+  try {
+    const res = await fetch(`${BASE_URL}/${WAIT_STATS_FILE}`);
+    if (!res.ok) return null;
+    const data = await res.json() as WaitTimeStats;
+
+    try {
+      localStorage.setItem(waitStatsCacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+    } catch { /* cache write failed */ }
+
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 // ==================== TAG MAPPING ====================

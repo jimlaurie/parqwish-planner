@@ -77,7 +77,7 @@
       "latitude": 33.806095
     },
     "citizens-of-buena-vista-street": {
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
       "times": [],
       "land": "Buena Vista Street",
@@ -125,7 +125,7 @@
     },
     "meet-disney-pals-bvs": {
       "duration": 15,
-      "status": "operating",
+      "status": "closed",
       "land": "Buena Vista Street",
       "types": [
         "character experience"
@@ -442,20 +442,16 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-09-17T13:00:07.254Z",
+  "lastUpdated": "2026-09-22T13:00:27.945Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "timeRanges": [],
       "name": "Pearly Band near \"it's a small world\"",
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "11:50",
-        "13:05",
-        "14:05"
-      ],
+      "times": [],
       "land": "Fantasyland",
       "types": [
         "street show"
@@ -508,14 +504,21 @@
       "latitude": 33.812041
     },
     "dapper-dans": {
-      "times": [],
+      "times": [
+        "11:00",
+        "12:15",
+        "13:10",
+        "14:20",
+        "16:15",
+        "17:00"
+      ],
       "types": [
         "street show",
         "character experience"
       ],
       "land": "Main Street U.S.A.",
       "longitude": -117.918962,
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
       "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
       "timeRanges": [
@@ -542,14 +545,9 @@
       "longitude": -117.917863
     },
     "disneyland-band-main-street": {
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "11:25",
-        "12:15",
-        "15:15",
-        "16:15"
-      ],
+      "times": [],
       "longitude": -117.9189609,
       "land": "Main Street U.S.A.",
       "types": [
@@ -679,11 +677,9 @@
       "types": [
         "street show"
       ],
-      "times": [
-        "13:05"
-      ],
+      "times": [],
       "duration": 20,
-      "status": "operating"
+      "status": "closed"
     },
     "paint-the-night": {
       "latitude": 33.8109775,
@@ -819,7 +815,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:30"
+          "end": "22:30"
         }
       ],
       "duration": 15,
@@ -845,9 +841,16 @@
       "timeRanges": []
     },
     "storytelling-royal-theatre": {
-      "status": "closed",
+      "status": "operating",
       "duration": 25,
-      "times": [],
+      "times": [
+        "10:15",
+        "11:25",
+        "12:40",
+        "14:15",
+        "15:25",
+        "16:35"
+      ],
       "longitude": -117.919443,
       "land": "Fantasyland",
       "types": [
@@ -913,14 +916,9 @@
       "timeRanges": []
     },
     "pearly-band-castle": {
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "09:15",
-        "10:05",
-        "11:00",
-        "15:05"
-      ],
+      "times": [],
       "types": [
         "street show"
       ],
@@ -969,5 +967,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-09-17T13:00:07.254Z"
+  "lastShowtimeSync": "2026-09-22T13:00:27.945Z"
 }

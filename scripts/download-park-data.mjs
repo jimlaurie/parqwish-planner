@@ -16,7 +16,7 @@ const OUT_DIR = join(__dirname, "..", "public", "data");
 const BASE_URL =
   "https://storage.googleapis.com/my-tour-guide-backend.firebasestorage.app/data";
 
-const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json", "landConfig.json"];
+const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json", "landConfig.json", "waitTimeStats.json"];
 
 async function main() {
   mkdirSync(OUT_DIR, { recursive: true });

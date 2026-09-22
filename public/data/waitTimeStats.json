@@ -1,0 +1,7592 @@
+{
+  "generatedAt": "2026-09-22T16:50:40.141Z",
+  "windowDays": 90,
+  "windowStart": "2026-06-24",
+  "windowEnd": "2026-09-22",
+  "minSampleSize": 20,
+  "rides": {
+    "disneyland__alice-in-wonderland": {
+      "rideName": "Alice in Wonderland",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 10142
+      },
+      "weekend": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 4038
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 696
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 745
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 753
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 753
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 727
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 712
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 719
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 737
+          },
+          "16": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 727
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 732
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 741
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 742
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 203
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 195
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 443
+          },
+          "23": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 517
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 295
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 290
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 289
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 286
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 284
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 295
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 301
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 308
+          },
+          "16": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 295
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 306
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 308
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 300
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 46
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 201
+          },
+          "23": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__big-thunder-mountain": {
+      "rideName": "Big Thunder Mountain Railroad",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 10912
+      },
+      "weekend": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 4498
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 669
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 706
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 680
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 675
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 691
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 685
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 718
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 708
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 709
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 687
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 725
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 727
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 728
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 719
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 605
+          },
+          "23": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 480
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 273
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 291
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 291
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 284
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 283
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 297
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 294
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 282
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 277
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 280
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 292
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 294
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 277
+          },
+          "22": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 286
+          },
+          "23": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 185
+          }
+        }
+      }
+    },
+    "disneyland__finding-nemo-submarine": {
+      "rideName": "Finding Nemo Submarine Voyage",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 11674
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4729
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 676
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 767
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 764
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 758
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 734
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 733
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 739
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 735
+          },
+          "16": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 758
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 763
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 768
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 761
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 759
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 670
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 522
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 271
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 306
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 307
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 305
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 282
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 306
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 301
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 290
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 305
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__inside-out-emotional-whirlwind": {
+      "rideName": "Inside Out Emotional Whirlwind",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 10245
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4151
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 693
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 733
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 722
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 730
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 735
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 723
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 727
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 731
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 730
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 729
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 734
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 738
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 583
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 153
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 29
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 250
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 269
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 292
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 282
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 297
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 302
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 304
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 303
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 301
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 297
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 296
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 256
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 74
+          }
+        }
+      }
+    },
+    "californiaadventure__grizzly-river-run": {
+      "rideName": "Grizzly River Run",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 9076
+      },
+      "weekend": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 3824
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 583
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 725
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 729
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 743
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 720
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 703
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 706
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 665
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 659
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 627
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 577
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 565
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 578
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 462
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 22
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 254
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 297
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 306
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 307
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 300
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 299
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 301
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 307
+          },
+          "16": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 295
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 252
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 234
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 225
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 228
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 193
+          }
+        }
+      }
+    },
+    "disneyland__enchanted-tiki-room": {
+      "rideName": "Walt Disney's Enchanted Tiki Room",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 170
+      },
+      "weekend": null,
+      "byHour": {
+        "weekday": {},
+        "weekend": {}
+      }
+    },
+    "disneyland__autopia": {
+      "rideName": "Autopia",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 11843
+      },
+      "weekend": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 4853
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 731
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 778
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 763
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 768
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 756
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 751
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 762
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 759
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 763
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 768
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 768
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 768
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 767
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 670
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 516
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 291
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 304
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 312
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 308
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 309
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__casey-jr": {
+      "rideName": "Casey Jr. Circus Train",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 11702
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4784
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 704
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 776
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 762
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 746
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 730
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 741
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 753
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 744
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 746
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 752
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 762
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 764
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 767
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 664
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 524
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 275
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 307
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 302
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 302
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 308
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__disneyland-railroad": {
+      "rideName": "Disneyland Railroad",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 11324
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4704
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 578
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 715
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 737
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 748
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 720
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 718
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 719
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 713
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 732
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 759
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 766
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 740
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 722
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 665
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 525
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 262
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 305
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 298
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 299
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 308
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 307
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 293
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 284
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 293
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__incredicoaster": {
+      "rideName": "Incredicoaster",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 8883
+      },
+      "weekend": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 3753
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 515
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 623
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 640
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 643
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 634
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 613
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 606
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 628
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 622
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 627
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 651
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 682
+          },
+          "20": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 690
+          },
+          "21": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 551
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 138
+          },
+          "23": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 20
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 248
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 300
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 285
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 289
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 299
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 271
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 260
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 264
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 246
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 250
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 260
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 251
+          },
+          "20": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 248
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 221
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 48
+          }
+        }
+      }
+    },
+    "disneyland__jungle-cruise": {
+      "rideName": "Jungle Cruise",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 10873
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4542
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 515
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 663
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 658
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 665
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 719
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 720
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 712
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 714
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 721
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 732
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 729
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 726
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 740
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 724
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 620
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 515
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 227
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 280
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 291
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 290
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 285
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 297
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 292
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 295
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 285
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 285
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 293
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 299
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__goofy-sky-school": {
+      "rideName": "Goofy's Sky School",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 9889
+      },
+      "weekend": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 3921
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 631
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 694
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 728
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 722
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 702
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 714
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 690
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 698
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 692
+          },
+          "17": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 681
+          },
+          "18": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 735
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 750
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 735
+          },
+          "21": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 569
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 128
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 20
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 229
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 277
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 269
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 272
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 267
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 252
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 278
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 281
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 293
+          },
+          "17": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 301
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 294
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 266
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 306
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 253
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 69
+          }
+        }
+      }
+    },
+    "californiaadventure__jessies-critter-carousel": {
+      "rideName": "Jessie's Critter Carousel",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 10102
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4136
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 712
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 770
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 765
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 743
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 750
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 740
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 742
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 741
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 737
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 752
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 736
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 747
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 630
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 357
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 151
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 29
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 263
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 306
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 306
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 308
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 301
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 308
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 261
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 158
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 74
+          }
+        }
+      }
+    },
+    "californiaadventure__soarin": {
+      "rideName": "Soarin' Over California",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 1079
+      },
+      "weekend": {
+        "medianWaitMinutes": 30,
+        "sampleSize": 330
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 67
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 72
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 72
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 72
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 72
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 71
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 72
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 71
+          },
+          "16": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 72
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 72
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 72
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 72
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 72
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 69
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 37
+          },
+          "23": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 32
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 21
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 24
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 23
+          },
+          "11": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 24
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 24
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 23
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 24
+          },
+          "15": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 24
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 24
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 23
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 24
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 24
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 24
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 24
+          }
+        }
+      }
+    },
+    "californiaadventure__golden-zephyr": {
+      "rideName": "Golden Zephyr",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 6941
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 2945
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 659
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 709
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 701
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 676
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 656
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 462
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 307
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 202
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 248
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 478
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 632
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 574
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 324
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 136
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 262
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 284
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 267
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 262
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 221
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 157
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 130
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 132
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 114
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 180
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 243
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 222
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 135
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 52
+          }
+        }
+      }
+    },
+    "disneyland__king-arthur-carrousel": {
+      "rideName": "King Arthur Carrousel",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 9185
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4013
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 592
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 655
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 632
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 638
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 629
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 623
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 627
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 629
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 641
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 647
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 657
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 646
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 201
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 415
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 401
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 270
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 284
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 284
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 285
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 287
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 286
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 270
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 267
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 278
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 230
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 209
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 185
+          }
+        }
+      }
+    },
+    "californiaadventure__maters-junkyard-jamboree": {
+      "rideName": "Mater's Junkyard Jamboree",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 6351
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 2690
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 416
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 456
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 455
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 456
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 454
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 456
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 456
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 456
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 440
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 172
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 190
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 193
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 191
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 191
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 192
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 192
+          }
+        }
+      }
+    },
+    "disneyland__storybook-canal-boats": {
+      "rideName": "Storybook Land Canal Boats",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 11714
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4738
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 736
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 776
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 764
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 762
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 756
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 762
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 754
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 755
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 761
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 764
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 761
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 765
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 643
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 662
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 526
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 291
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 299
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 296
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 307
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 308
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 254
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 309
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__winnie-the-pooh": {
+      "rideName": "The Many Adventures of Winnie the Pooh",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 11303
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4603
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 657
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 736
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 731
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 745
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 721
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 711
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 737
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 745
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 714
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 706
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 728
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 740
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 722
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 742
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 654
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 514
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 254
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 285
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 292
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 301
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 295
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 295
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 296
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 290
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 294
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__games-of-pixar-pier": {
+      "rideName": "Games of Pixar Pier",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 6235
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 2130
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 60
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 381
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 543
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 553
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 550
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 552
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 462
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 456
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 456
+          }
+        },
+        "weekend": {
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 126
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 168
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 179
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 180
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 179
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 197
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 204
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 204
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 203
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 158
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          }
+        }
+      }
+    },
+    "disneyland__millennium-falcon": {
+      "rideName": "Millennium Falcon: Smugglers Run",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 11767
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4783
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 690
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 773
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 766
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 767
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 756
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 757
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 762
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 757
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 756
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 764
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 768
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 757
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 751
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 662
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 526
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 280
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 309
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 305
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 307
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 289
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 288
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 306
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__monsters-inc": {
+      "rideName": "Monsters, Inc. Mike & Sulley to the Rescue!",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 30,
+        "sampleSize": 10270
+      },
+      "weekend": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 4226
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 706
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 743
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 716
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 753
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 746
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 721
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 713
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 729
+          },
+          "16": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 740
+          },
+          "17": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 743
+          },
+          "18": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 735
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 741
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 736
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 584
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 143
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 276
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 307
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 295
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 301
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 302
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 300
+          },
+          "15": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 304
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 291
+          },
+          "17": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 287
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 305
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 296
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 299
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 263
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 74
+          }
+        }
+      }
+    },
+    "disneyland__pinocchio": {
+      "rideName": "Pinocchio's Daring Journey",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 10657
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4236
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 723
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 758
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 756
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 762
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 752
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 750
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 726
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 749
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 732
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 743
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 765
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 745
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 487
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 201
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 488
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 520
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 291
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 302
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 296
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 304
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 302
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 307
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 308
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 304
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 289
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 167
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 230
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 199
+          }
+        }
+      }
+    },
+    "disneyland__its-a-small-world": {
+      "rideName": "\"it's a small world\"",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 11442
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4640
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 695
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 768
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 716
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 746
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 745
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 718
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 732
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 739
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 747
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 730
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 753
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 748
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 724
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 707
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 649
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 525
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 277
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 295
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 299
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 296
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 275
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 285
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 306
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 209
+          }
+        }
+      }
+    },
+    "disneyland__astro-orbitor": {
+      "rideName": "Astro Orbitor",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 11747
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4819
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 711
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 766
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 762
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 753
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 759
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 762
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 755
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 746
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 740
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 768
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 762
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 750
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 668
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 523
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 272
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 301
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 295
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 221
+          }
+        }
+      }
+    },
+    "disneyland__pirate-lair": {
+      "rideName": "Pirate's Lair on Tom Sawyer Island",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 5528
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 2174
+      },
+      "byHour": {
+        "weekday": {
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 676
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 719
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 720
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 715
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 700
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 702
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 707
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 585
+          }
+        },
+        "weekend": {
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 226
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 274
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 287
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 237
+          }
+        }
+      }
+    },
+    "disneyland__snow-white": {
+      "rideName": "Snow White's Enchanted Wish",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 10634
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4287
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 684
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 754
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 746
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 733
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 756
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 750
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 747
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 746
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 755
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 750
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 756
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 757
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 485
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 201
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 494
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 520
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 304
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 307
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 292
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 297
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 309
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 309
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 178
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 221
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__star-tours": {
+      "rideName": "Star Tours - The Adventures Continue",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 11797
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4835
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 726
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 768
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 767
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 765
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 758
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 743
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 761
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 759
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 763
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 756
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 768
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 768
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 759
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 660
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 521
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 307
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 301
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 299
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 312
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "californiaadventure__little-mermaid": {
+      "rideName": "The Little Mermaid - Ariel's Undersea Adventure",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 10214
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 3989
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 671
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 764
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 743
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 746
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 754
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 739
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 752
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 732
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 695
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 726
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 731
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 701
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 730
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 568
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 141
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 236
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 261
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 266
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 289
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 294
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 284
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 289
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 286
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 281
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 286
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 288
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 292
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 254
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 69
+          }
+        }
+      }
+    },
+    "disneyland__gadgets-go-coaster": {
+      "rideName": "Chip 'n' Dale's GADGETcoaster",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 10440
+      },
+      "weekend": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 4068
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 690
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 772
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 750
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 764
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 754
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 754
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 754
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 743
+          },
+          "16": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 759
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 758
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 766
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 760
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 207
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 491
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 526
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 297
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 298
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 300
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 293
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 298
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 300
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 306
+          },
+          "16": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 312
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 310
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 205
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 203
+          }
+        }
+      }
+    },
+    "disneyland__mark-twain-riverboat": {
+      "rideName": "Mark Twain Riverboat",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 6231
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 2500
+      },
+      "byHour": {
+        "weekday": {
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 623
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 689
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 680
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 683
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 678
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 685
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 674
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 671
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 523
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 133
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 121
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 71
+          }
+        },
+        "weekend": {
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 257
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 300
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 295
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 294
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 279
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 280
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 288
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 295
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 212
+          }
+        }
+      }
+    },
+    "disneyland__pirates-of-the-caribbean": {
+      "rideName": "Pirates of the Caribbean",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 10760
+      },
+      "weekend": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 4696
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 592
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 684
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 687
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 695
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 699
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 718
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 704
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 677
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 668
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 684
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 701
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 716
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 712
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 718
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 639
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 466
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 239
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 296
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 303
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 295
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 306
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 307
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 305
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 303
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 300
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 303
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 307
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 310
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 303
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 303
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__haunted-mansion": {
+      "rideName": "Haunted Mansion",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 6025
+      },
+      "weekend": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 2214
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 322
+          },
+          "9": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 354
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 366
+          },
+          "11": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 387
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 390
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 384
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 390
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 383
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 384
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 366
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 379
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 393
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 395
+          },
+          "21": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 383
+          },
+          "22": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 365
+          },
+          "23": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 384
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 115
+          },
+          "9": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 123
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 143
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 143
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 140
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 138
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 143
+          },
+          "15": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 135
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 135
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 141
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 144
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 144
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 141
+          },
+          "21": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 140
+          },
+          "22": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 145
+          },
+          "23": {
+            "medianWaitMinutes": 13,
+            "sampleSize": 144
+          }
+        }
+      }
+    },
+    "californiaadventure__luigis-rollickin-roadsters": {
+      "rideName": "Luigi's Rollickin' Roadsters",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 5754
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 2485
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 349
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 393
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 393
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 410
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 404
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 407
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 406
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 416
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 415
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 429
+          },
+          "18": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 431
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 426
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 422
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 403
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 30
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 20
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 143
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 179
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 178
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 164
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 163
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 175
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 177
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 181
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 175
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 184
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 186
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 188
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 179
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 189
+          }
+        }
+      }
+    },
+    "californiaadventure__toy-story-mania": {
+      "rideName": "Toy Story Midway Mania!",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 10136
+      },
+      "weekend": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 4018
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 656
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 732
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 722
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 731
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 732
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 722
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 745
+          },
+          "15": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 737
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 723
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 728
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 706
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 720
+          },
+          "20": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 733
+          },
+          "21": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 587
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 141
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 258
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 308
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 311
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 302
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 291
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 272
+          },
+          "14": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 288
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 282
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 272
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 275
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 264
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 298
+          },
+          "20": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 286
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 233
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 64
+          }
+        }
+      }
+    },
+    "californiaadventure__redwood-creek-challenge": {
+      "rideName": "Redwood Creek Challenge Trail",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 6835
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 2804
+      },
+      "byHour": {
+        "weekday": {
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 612
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 731
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 743
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 750
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 762
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 755
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 680
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 640
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 600
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 470
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 24
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 20
+          }
+        },
+        "weekend": {
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 273
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 312
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 270
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 251
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 252
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 200
+          }
+        }
+      }
+    },
+    "disneyland__rise-of-the-resistance": {
+      "rideName": "Star Wars: Rise of the Resistance",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 9799
+      },
+      "weekend": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 4028
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 570
+          },
+          "9": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 694
+          },
+          "10": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 687
+          },
+          "11": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 716
+          },
+          "12": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 700
+          },
+          "13": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 703
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 680
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 704
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 720
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 723
+          },
+          "18": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 717
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 723
+          },
+          "20": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 724
+          },
+          "21": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 692
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 34
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 231
+          },
+          "9": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 278
+          },
+          "10": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 295
+          },
+          "11": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 292
+          },
+          "12": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 288
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 300
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 305
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 306
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 301
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 296
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 271
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 265
+          },
+          "20": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 277
+          },
+          "21": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 291
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 20
+          }
+        }
+      }
+    },
+    "disneyland__peter-pans-flight": {
+      "rideName": "Peter Pan's Flight",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 10094
+      },
+      "weekend": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 4080
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 706
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 761
+          },
+          "10": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 729
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 724
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 696
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 729
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 727
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 729
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 724
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 737
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 727
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 709
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 206
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 190
+          },
+          "22": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 491
+          },
+          "23": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 509
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 298
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 301
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 297
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 300
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 298
+          },
+          "13": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 294
+          },
+          "14": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 300
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 312
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 309
+          },
+          "17": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 300
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 293
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 282
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 41
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 24
+          },
+          "22": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 226
+          },
+          "23": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 205
+          }
+        }
+      }
+    },
+    "disneyland__dumbo": {
+      "rideName": "Dumbo the Flying Elephant",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 11722
+      },
+      "weekend": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 4737
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 735
+          },
+          "9": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 776
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 764
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 768
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 762
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 755
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 761
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 745
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 753
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 768
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 765
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 764
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 659
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 667
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 525
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 293
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 310
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 310
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 309
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 312
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 299
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 311
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 309
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 300
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 295
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 300
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 253
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__matterhorn": {
+      "rideName": "Matterhorn Bobsleds",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 25,
+        "sampleSize": 10078
+      },
+      "weekend": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 4438
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 548
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 652
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 654
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 655
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 656
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 625
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 651
+          },
+          "15": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 659
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 629
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 672
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 676
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 674
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 647
+          },
+          "21": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 645
+          },
+          "22": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 568
+          },
+          "23": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 467
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 269
+          },
+          "9": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 280
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 283
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 286
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 293
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 290
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 305
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 304
+          },
+          "16": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 276
+          },
+          "17": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 264
+          },
+          "18": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 280
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 277
+          },
+          "20": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 268
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 289
+          },
+          "22": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 285
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 189
+          }
+        }
+      }
+    },
+    "disneyland__mr-toads-wild-ride": {
+      "rideName": "Mr. Toad's Wild Ride",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 10630
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4235
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 702
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 749
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 756
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 747
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 747
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 746
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 745
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 749
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 725
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 754
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 753
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 760
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 492
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 197
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 493
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 515
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 292
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 303
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 305
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 283
+          },
+          "16": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 297
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 306
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 304
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 301
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 171
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 21
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 214
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 194
+          }
+        }
+      }
+    },
+    "californiaadventure__guardians-of-the-galaxy": {
+      "rideName": "Guardians of the Galaxy - Mission: BREAKOUT!",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 8322
+      },
+      "weekend": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 3387
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 727
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 775
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 767
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 768
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 755
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 757
+          },
+          "14": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 479
+          },
+          "15": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 466
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 468
+          },
+          "17": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 468
+          },
+          "18": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 468
+          },
+          "19": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 468
+          },
+          "20": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 468
+          },
+          "21": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 455
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 263
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 312
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 313
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 311
+          },
+          "14": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 198
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 192
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 192
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 191
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 192
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 192
+          },
+          "20": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 192
+          },
+          "21": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 192
+          }
+        }
+      }
+    },
+    "disneyland__indiana-jones": {
+      "rideName": "Indiana Jones™ Adventure",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 35,
+        "sampleSize": 8961
+      },
+      "weekend": {
+        "medianWaitMinutes": 35,
+        "sampleSize": 3760
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 408
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 529
+          },
+          "10": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 574
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 589
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 584
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 588
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 574
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 550
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 585
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 607
+          },
+          "18": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 579
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 572
+          },
+          "20": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 581
+          },
+          "21": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 602
+          },
+          "22": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 558
+          },
+          "23": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 481
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 160
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 218
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 234
+          },
+          "11": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 236
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 235
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 256
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 254
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 258
+          },
+          "16": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 239
+          },
+          "17": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 246
+          },
+          "18": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 243
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 250
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 242
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 252
+          },
+          "22": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 245
+          },
+          "23": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 192
+          }
+        }
+      }
+    },
+    "disneyland__roger-rabbit": {
+      "rideName": "Roger Rabbit's Car Toon Spin",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 30,
+        "sampleSize": 9043
+      },
+      "weekend": {
+        "medianWaitMinutes": 30,
+        "sampleSize": 3565
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 497
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 665
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 670
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 627
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 664
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 674
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 690
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 684
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 662
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 612
+          },
+          "18": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 673
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 666
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 189
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 173
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 422
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 475
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 228
+          },
+          "9": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 261
+          },
+          "10": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 267
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 257
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 273
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 278
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 260
+          },
+          "15": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 251
+          },
+          "16": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 268
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 261
+          },
+          "18": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 281
+          },
+          "19": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 282
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 187
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 200
+          }
+        }
+      }
+    },
+    "disneyland__davy-crockett-canoes": {
+      "rideName": "Davy Crockett's Explorer Canoes",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 1205
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 1824
+      },
+      "byHour": {
+        "weekday": {
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 155
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 168
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 168
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 158
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 156
+          }
+        },
+        "weekend": {
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 243
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 262
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 265
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 257
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 261
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 264
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 264
+          }
+        }
+      }
+    },
+    "disneyland__monorail": {
+      "rideName": "Disneyland Monorail",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 7241
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 3107
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 626
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 690
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 692
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 595
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 459
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 367
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 330
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 306
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 294
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 326
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 501
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 509
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 163
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 585
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 498
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 256
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 283
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 272
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 237
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 163
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 139
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 123
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 129
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 132
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 142
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 166
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 222
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 225
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 128
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 292
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 198
+          }
+        }
+      }
+    },
+    "disneyland__tianas-bayou-adventure": {
+      "rideName": "Tiana's Bayou Adventure",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 35,
+        "sampleSize": 10426
+      },
+      "weekend": {
+        "medianWaitMinutes": 30,
+        "sampleSize": 4134
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 565
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 682
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 699
+          },
+          "11": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 676
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 685
+          },
+          "13": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 662
+          },
+          "14": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 661
+          },
+          "15": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 646
+          },
+          "16": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 615
+          },
+          "17": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 687
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 727
+          },
+          "19": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 704
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 690
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 670
+          },
+          "22": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 600
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 457
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 248
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 261
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 259
+          },
+          "11": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 270
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 252
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 238
+          },
+          "14": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 270
+          },
+          "15": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 276
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 277
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 279
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 271
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 277
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 264
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 256
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 257
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 179
+          }
+        }
+      }
+    },
+    "disneyland__mad-tea-party": {
+      "rideName": "Mad Tea Party",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 10731
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4391
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 642
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 694
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 691
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 695
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 688
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 683
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 690
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 679
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 676
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 691
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 696
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 694
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 696
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 692
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 608
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 516
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 266
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 278
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 269
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 271
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 275
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 274
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 276
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 274
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 282
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 285
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 287
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 287
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 289
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 202
+          }
+        }
+      }
+    },
+    "disneyland__space-mountain": {
+      "rideName": "Space Mountain",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 11319
+      },
+      "weekend": {
+        "medianWaitMinutes": 40,
+        "sampleSize": 4553
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 580
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 709
+          },
+          "10": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 721
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 745
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 715
+          },
+          "13": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 706
+          },
+          "14": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 745
+          },
+          "15": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 731
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 746
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 762
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 751
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 753
+          },
+          "20": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 732
+          },
+          "21": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 759
+          },
+          "22": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 657
+          },
+          "23": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 507
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 224
+          },
+          "9": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 275
+          },
+          "10": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 307
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 298
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 296
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 291
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 291
+          },
+          "15": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 296
+          },
+          "16": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 278
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 283
+          },
+          "18": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 294
+          },
+          "19": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 294
+          },
+          "20": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 299
+          },
+          "21": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 304
+          },
+          "22": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 313
+          },
+          "23": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 210
+          }
+        }
+      }
+    },
+    "disneyland__sailing-ship-columbia": {
+      "rideName": "Sailing Ship Columbia",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 204
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 820
+      },
+      "byHour": {
+        "weekday": {
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 24
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 24
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 24
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 24
+          }
+        },
+        "weekend": {
+          "11": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 127
+          },
+          "12": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 195
+          },
+          "13": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 192
+          },
+          "14": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 187
+          },
+          "15": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 118
+          }
+        }
+      }
+    },
+    "californiaadventure__web-slingers": {
+      "rideName": "WEB SLINGERS: A Spider-Man Adventure",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 35,
+        "sampleSize": 9707
+      },
+      "weekend": {
+        "medianWaitMinutes": 35,
+        "sampleSize": 4109
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 645
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 689
+          },
+          "10": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 672
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 698
+          },
+          "12": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 707
+          },
+          "13": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 666
+          },
+          "14": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 674
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 704
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 715
+          },
+          "17": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 689
+          },
+          "18": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 671
+          },
+          "19": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 715
+          },
+          "20": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 724
+          },
+          "21": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 577
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 140
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 269
+          },
+          "9": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 305
+          },
+          "10": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 283
+          },
+          "11": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 285
+          },
+          "12": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 300
+          },
+          "13": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 293
+          },
+          "14": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 278
+          },
+          "15": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 306
+          },
+          "16": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 304
+          },
+          "17": {
+            "medianWaitMinutes": 40,
+            "sampleSize": 291
+          },
+          "18": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 285
+          },
+          "19": {
+            "medianWaitMinutes": 35,
+            "sampleSize": 289
+          },
+          "20": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 286
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 249
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 72
+          }
+        }
+      }
+    },
+    "californiaadventure__jumpin-jellyfish": {
+      "rideName": "Jumpin' Jellyfish",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 10465
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 4298
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 695
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 744
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 750
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 755
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 757
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 751
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 758
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 745
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 753
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 761
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 761
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 748
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 738
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 585
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 136
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 28
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 277
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 304
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 305
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 301
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 309
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 311
+          },
+          "19": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 310
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 312
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 257
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 74
+          }
+        }
+      }
+    },
+    "disneyland__mickeys-runaway-railway": {
+      "rideName": "Mickey & Minnie's Runaway Railway",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 9766
+      },
+      "weekend": {
+        "medianWaitMinutes": 20,
+        "sampleSize": 3929
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 560
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 671
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 689
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 723
+          },
+          "12": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 707
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 711
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 738
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 732
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 709
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 716
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 714
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 738
+          },
+          "20": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 197
+          },
+          "21": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 182
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 475
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 504
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 254
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 298
+          },
+          "10": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 312
+          },
+          "11": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 310
+          },
+          "12": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 306
+          },
+          "13": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 297
+          },
+          "14": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 299
+          },
+          "15": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 300
+          },
+          "16": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 296
+          },
+          "17": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 275
+          },
+          "18": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 299
+          },
+          "19": {
+            "medianWaitMinutes": 25,
+            "sampleSize": 281
+          },
+          "22": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 194
+          },
+          "23": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 196
+          }
+        }
+      }
+    },
+    "californiaadventure__radiator-springs-racers": {
+      "rideName": "Radiator Springs Racers",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 65,
+        "sampleSize": 10267
+      },
+      "weekend": {
+        "medianWaitMinutes": 60,
+        "sampleSize": 3929
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 80,
+            "sampleSize": 686
+          },
+          "9": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 748
+          },
+          "10": {
+            "medianWaitMinutes": 75,
+            "sampleSize": 744
+          },
+          "11": {
+            "medianWaitMinutes": 75,
+            "sampleSize": 739
+          },
+          "12": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 738
+          },
+          "13": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 725
+          },
+          "14": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 726
+          },
+          "15": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 732
+          },
+          "16": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 723
+          },
+          "17": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 727
+          },
+          "18": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 737
+          },
+          "19": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 735
+          },
+          "20": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 744
+          },
+          "21": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 603
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 139
+          },
+          "23": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 21
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 283
+          },
+          "9": {
+            "medianWaitMinutes": 50,
+            "sampleSize": 285
+          },
+          "10": {
+            "medianWaitMinutes": 70,
+            "sampleSize": 270
+          },
+          "11": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 264
+          },
+          "12": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 294
+          },
+          "13": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 291
+          },
+          "14": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 291
+          },
+          "15": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 279
+          },
+          "16": {
+            "medianWaitMinutes": 60,
+            "sampleSize": 276
+          },
+          "17": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 267
+          },
+          "18": {
+            "medianWaitMinutes": 55,
+            "sampleSize": 274
+          },
+          "19": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 271
+          },
+          "20": {
+            "medianWaitMinutes": 65,
+            "sampleSize": 258
+          },
+          "21": {
+            "medianWaitMinutes": 45,
+            "sampleSize": 252
+          },
+          "22": {
+            "medianWaitMinutes": 30,
+            "sampleSize": 60
+          }
+        }
+      }
+    },
+    "disneyland__buzz-lightyear": {
+      "rideName": "Buzz Lightyear Astro Blasters",
+      "park": "disneyland",
+      "weekday": {
+        "medianWaitMinutes": 15,
+        "sampleSize": 11524
+      },
+      "weekend": {
+        "medianWaitMinutes": 10,
+        "sampleSize": 4623
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 678
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 748
+          },
+          "10": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 755
+          },
+          "11": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 761
+          },
+          "12": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 757
+          },
+          "13": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 731
+          },
+          "14": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 753
+          },
+          "15": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 736
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 744
+          },
+          "17": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 738
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 741
+          },
+          "19": {
+            "medianWaitMinutes": 20,
+            "sampleSize": 748
+          },
+          "20": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 737
+          },
+          "21": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 732
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 654
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 511
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 288
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 300
+          },
+          "10": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 302
+          },
+          "11": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 308
+          },
+          "12": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 290
+          },
+          "13": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 292
+          },
+          "14": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 290
+          },
+          "15": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 299
+          },
+          "16": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 284
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 299
+          },
+          "18": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 294
+          },
+          "19": {
+            "medianWaitMinutes": 15,
+            "sampleSize": 296
+          },
+          "20": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 291
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 295
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 286
+          },
+          "23": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 209
+          }
+        }
+      }
+    },
+    "californiaadventure__silly-symphony-swings": {
+      "rideName": "Silly Symphony Swings",
+      "park": "californiaadventure",
+      "weekday": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 2551
+      },
+      "weekend": {
+        "medianWaitMinutes": 5,
+        "sampleSize": 1224
+      },
+      "byHour": {
+        "weekday": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 181
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 196
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 189
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 177
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 194
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 191
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 184
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 184
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 173
+          },
+          "17": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 180
+          },
+          "18": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 199
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 195
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 158
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 73
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 72
+          }
+        },
+        "weekend": {
+          "8": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 86
+          },
+          "9": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 94
+          },
+          "10": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 96
+          },
+          "11": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 91
+          },
+          "12": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 84
+          },
+          "13": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 95
+          },
+          "14": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 96
+          },
+          "15": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 92
+          },
+          "16": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 86
+          },
+          "17": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 80
+          },
+          "18": {
+            "medianWaitMinutes": 10,
+            "sampleSize": 95
+          },
+          "19": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 90
+          },
+          "20": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 66
+          },
+          "21": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 36
+          },
+          "22": {
+            "medianWaitMinutes": 5,
+            "sampleSize": 36
+          }
+        }
+      }
+    }
+  },
+  "unmatchedRideNames": [
+    "Pixar Pal-A-Round – Non-Swinging",
+    "Guardians of the Galaxy - Monsters After Dark",
+    "Soarin’ Across America",
+    "Mickey's PhilharMagic",
+    "Pixar Pal-A-Round - Swinging",
+    "Luigi's Honkin' Haul-O-Ween",
+    "Mater's Graveyard JamBOOree",
+    "Haunted Mansion Holiday",
+    "Adventureland Treehouse inspired by Walt Disney’s Swiss Family Robinson",
+    "Villains Grove at Oogie Boogie Bash"
+  ]
+}

@@ -121,6 +121,22 @@ export default function PublishPage() {
             />
           )}
 
+          <div className="w-full max-w-4xl mb-8 flex justify-center">
+            <button
+              type="button"
+              onClick={() => router.push("/publish/heat-map")}
+              className="px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer
+                         transition-all duration-200 hover:brightness-110"
+              style={{
+                backgroundColor: "var(--color-surface-raised)",
+                color: "var(--color-accent-publish)",
+                border: "1px solid var(--color-accent-publish)",
+              }}
+            >
+              🌡️ Wait Time Heat Map
+            </button>
+          </div>
+
           <TrailGallery onTimeRangesChange={handleTimeRangesChange} />
 
           <div className="w-full max-w-4xl mb-8 flex justify-center">

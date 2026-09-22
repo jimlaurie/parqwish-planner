@@ -24,7 +24,13 @@ async function main() {
   const failures = [];
 
   for (const file of FILES) {
-    const url = `${BASE_URL}/${file}`;
+    // Cache-busting query param — these files are served with a
+    // Cache-Control: max-age=3600 header, and storage.googleapis.com's
+    // edge caches independently per node, so a deploy running soon after
+    // a file regenerates (e.g. right after the nightly wait-time stats
+    // Cloud Function runs) can otherwise silently fetch a stale cached
+    // copy and ship it, even though the source object is already updated.
+    const url = `${BASE_URL}/${file}?t=${Date.now()}`;
     process.stdout.write(`Downloading ${file}...`);
     const res = await fetch(url);
     if (!res.ok) {

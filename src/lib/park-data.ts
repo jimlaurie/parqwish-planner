@@ -351,6 +351,7 @@ export interface WaitTimeRideEntry {
     weekday: Record<string, WaitTimeDayStat>;
     weekend: Record<string, WaitTimeDayStat>;
   };
+  byHourByDayOfWeek?: Record<string, Record<string, WaitTimeDayStat>>;
 }
 
 export interface WaitTimeStats {

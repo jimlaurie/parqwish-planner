@@ -7,7 +7,7 @@
 // or read any trip/day/trail state, just the published wait-time aggregate
 // joined against attraction coordinates.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { getAttractionCoords, getWaitTimeStats, type WaitTimeStats } from "@/lib/park-data";
@@ -44,12 +44,26 @@ const DAY_FILTERS = [
 
 type DayType = (typeof DAY_FILTERS)[number]["value"];
 
+const PLAY_INTERVAL_MS = 900;
+
+function formatHourLabel(hour: number): string {
+  const period = hour < 12 ? "AM" : "PM";
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${h12} ${period}`;
+}
+
 export default function WaitTimeHeatMapPage() {
   const router = useRouter();
   const [stats, setStats] = useState<WaitTimeStats | null>(null);
   const [coordMaps, setCoordMaps] = useState<Awaited<ReturnType<typeof getAttractionCoords>> | null>(null);
   const [loading, setLoading] = useState(true);
   const [dayType, setDayType] = useState<DayType>("weekday");
+  // null = day-level aggregate (no hour selected); a number engages the
+  // hourly slider. Kept separate from dayType since "by hour" is an
+  // orthogonal on/off mode, not another value of the day selector.
+  const [hourFilter, setHourFilter] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     Promise.all([getWaitTimeStats(), getAttractionCoords()])
@@ -60,13 +74,80 @@ export default function WaitTimeHeatMapPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Hours with at least one ride's data for the currently selected day —
+  // computed from the data rather than hardcoded, so it reflects whatever
+  // hours actually cleared MIN_SAMPLE_SIZE for that specific day/day-type
+  // rather than assuming fixed park hours.
+  const availableHours = useMemo<number[]>(() => {
+    if (!stats) return [];
+    const hourSet = new Set<number>();
+    for (const ride of Object.values(stats.rides)) {
+      const hourMap = dayType === "weekday" || dayType === "weekend"
+        ? ride.byHour?.[dayType]
+        : ride.byHourByDayOfWeek?.[dayType];
+      if (!hourMap) continue;
+      for (const h of Object.keys(hourMap)) hourSet.add(Number(h));
+    }
+    return Array.from(hourSet).sort((a, b) => a - b);
+  }, [stats, dayType]);
+
+  // Changing the day selector while the slider is engaged could otherwise
+  // leave it pointed at an hour with no data for the new day — snap back to
+  // the first available hour (or drop out of hourly mode entirely if the
+  // new day has no hourly data at all) instead of silently showing nothing.
+  useEffect(() => {
+    setIsPlaying(false);
+    setHourFilter((prev) => {
+      if (prev === null) return null;
+      return availableHours.length > 0 ? availableHours[0] : null;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayType]);
+
+  useEffect(() => {
+    if (!isPlaying || availableHours.length === 0) {
+      if (playIntervalRef.current) {
+        clearInterval(playIntervalRef.current);
+        playIntervalRef.current = null;
+      }
+      return;
+    }
+    playIntervalRef.current = setInterval(() => {
+      setHourFilter((prev) => {
+        const idx = prev === null ? -1 : availableHours.indexOf(prev);
+        const nextIdx = (idx + 1) % availableHours.length;
+        return availableHours[nextIdx];
+      });
+    }, PLAY_INTERVAL_MS);
+    return () => {
+      if (playIntervalRef.current) clearInterval(playIntervalRef.current);
+    };
+  }, [isPlaying, availableHours]);
+
+  const toggleHourly = () => {
+    if (hourFilter !== null) {
+      setIsPlaying(false);
+      setHourFilter(null);
+    } else {
+      setHourFilter(availableHours[0] ?? null);
+    }
+  };
+
   const markers = useMemo<WaitTimeMarker[]>(() => {
     if (!stats || !coordMaps) return [];
     const result: WaitTimeMarker[] = [];
     for (const [id, ride] of Object.entries(stats.rides)) {
-      const stat = dayType === "weekday" || dayType === "weekend"
-        ? ride[dayType]
-        : ride.byDayOfWeek?.[dayType] ?? null;
+      let stat = null;
+      if (hourFilter !== null) {
+        const hourMap = dayType === "weekday" || dayType === "weekend"
+          ? ride.byHour?.[dayType]
+          : ride.byHourByDayOfWeek?.[dayType];
+        stat = hourMap?.[String(hourFilter)] ?? null;
+      } else {
+        stat = dayType === "weekday" || dayType === "weekend"
+          ? ride[dayType]
+          : ride.byDayOfWeek?.[dayType] ?? null;
+      }
       const coord = coordMaps.byId[id];
       if (!stat || !coord) continue;
       result.push({
@@ -79,7 +160,7 @@ export default function WaitTimeHeatMapPage() {
       });
     }
     return result;
-  }, [stats, coordMaps, dayType]);
+  }, [stats, coordMaps, dayType, hourFilter]);
 
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
@@ -122,6 +203,53 @@ export default function WaitTimeHeatMapPage() {
               </button>
             );
           })}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleHourly}
+            disabled={availableHours.length === 0}
+            className="text-xs px-3 py-1.5 rounded-full cursor-pointer whitespace-nowrap transition-colors duration-100 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: hourFilter !== null ? `color-mix(in srgb, ${ACCENT} 18%, transparent)` : "var(--color-surface-sunken)",
+              color: hourFilter !== null ? ACCENT : "var(--color-text-dim)",
+              border: hourFilter !== null ? `1px solid color-mix(in srgb, ${ACCENT} 40%, transparent)` : "1px solid transparent",
+            }}
+          >
+            🕐 By Hour
+          </button>
+
+          {hourFilter !== null && availableHours.length > 0 && (
+            <>
+              <button
+                type="button"
+                onClick={() => setIsPlaying((p) => !p)}
+                className="text-xs w-7 h-7 rounded-full cursor-pointer flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "var(--color-surface-sunken)", color: ACCENT }}
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? "⏸" : "▶"}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={availableHours.length - 1}
+                value={Math.max(0, availableHours.indexOf(hourFilter))}
+                onChange={(e) => {
+                  setIsPlaying(false);
+                  setHourFilter(availableHours[Number(e.target.value)]);
+                }}
+                className="flex-1 min-w-[100px] cursor-pointer"
+              />
+              <span
+                className="text-xs tabular-nums shrink-0 w-14 text-right"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                {formatHourLabel(hourFilter)}
+              </span>
+            </>
+          )}
         </div>
       </div>
 

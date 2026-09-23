@@ -263,6 +263,7 @@ export function clearParkDataCache(): void {
     localStorage.removeItem(coordCacheKey);
     localStorage.removeItem(landConfigCacheKey);
     localStorage.removeItem(waitStatsCacheKey);
+    localStorage.removeItem(rideReliabilityCacheKey);
   } catch {
     // localStorage unavailable
   }
@@ -389,6 +390,76 @@ export async function getWaitTimeStats(): Promise<WaitTimeStats | null> {
 
     try {
       localStorage.setItem(waitStatsCacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+    } catch { /* cache write failed */ }
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// ==================== RIDE RELIABILITY STATS ====================
+// Published nightly by the dland-wishes Cloud Function
+// generateRideReliabilityStats, same "${parkKey}__${entityId}" keying as
+// waitTimeStats.json above.
+
+const RIDE_RELIABILITY_FILE = "rideReliabilityStats.json";
+
+// Bump the version suffix whenever RideReliabilityEntry's shape changes —
+// see waitStatsCacheKey's comment above for why this matters (a stale
+// cached object missing a new field silently looks "broken" for up to 24h).
+const rideReliabilityCacheKey = "dland-ride-reliability-cache-v1";
+
+export interface RideReliabilityRecovery {
+  episodeCount: number;
+  avgWaitBeforeDown: number;
+  avgWaitRightAfterReopen: number;
+  avgWaitPlus30min: number;
+  avgDropImmediate: number;
+  avgDropPlus30min: number;
+}
+
+export interface RideReliabilityEntry {
+  rideName: string;
+  park: string;
+  daysOpen: number;
+  daysWithBreakdown: number;
+  oddsOfBreakdownPct: number;
+  breakdownCount: number;
+  avgDowntimeMinutes: number | null;
+  recovery: RideReliabilityRecovery | null;
+}
+
+export interface RideReliabilityStats {
+  generatedAt: string;
+  windowDays: number;
+  windowStart: string;
+  windowEnd: string;
+  minBreakdownMinutes: number;
+  minRecoveryEpisodes: number;
+  minDaysOpen: number;
+  rides: Record<string, RideReliabilityEntry>;
+  unmatchedRideNames: string[];
+}
+
+export async function getRideReliabilityStats(): Promise<RideReliabilityStats | null> {
+  try {
+    const cached = localStorage.getItem(rideReliabilityCacheKey);
+    if (cached) {
+      const entry = JSON.parse(cached);
+      if (Date.now() - entry.timestamp < CACHE_TTL && entry.data?.rides) {
+        return entry.data;
+      }
+    }
+  } catch { /* cache read failed */ }
+
+  try {
+    const res = await fetch(`${BASE_URL}/${RIDE_RELIABILITY_FILE}`);
+    if (!res.ok) return null;
+    const data = await res.json() as RideReliabilityStats;
+
+    try {
+      localStorage.setItem(rideReliabilityCacheKey, JSON.stringify({ data, timestamp: Date.now() }));
     } catch { /* cache write failed */ }
 
     return data;

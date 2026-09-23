@@ -13,6 +13,9 @@
 // they weren't on Publish's after-the-fact trip recap. Components still
 // live under components/publish/ (WaitTimeHeatMap, waitTimeColors) since
 // they're not Preview-specific and the rename wasn't worth the churn.
+//
+// Reached via the /preview/analytics gallery, not a direct PlayHeader link,
+// now that Ride Reliability (/preview/reliability) exists alongside it.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -175,10 +178,10 @@ export default function WaitTimeHeatMapPage() {
       <div className="flex flex-col gap-2 px-4 py-3 shrink-0"
            style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
         <div className="flex items-center gap-3 flex-wrap">
-          <button type="button" onClick={() => router.push("/preview")}
+          <button type="button" onClick={() => router.push("/preview/analytics")}
             className="text-sm px-2 py-1 rounded cursor-pointer"
             style={{ color: "var(--color-text-muted)" }}>
-            ← Preview
+            ← Analytics
           </button>
           <div className="flex items-center gap-2">
             <span className="text-lg">🌡️</span>

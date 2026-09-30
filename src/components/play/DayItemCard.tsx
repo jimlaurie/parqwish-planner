@@ -8,6 +8,8 @@ import UserBadge from "@/components/UserBadge";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import type { User } from "@/lib/db";
+import type { WaitHint } from "@/lib/typical-waits";
+import { waitColor } from "@/components/publish/waitTimeColors";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -21,6 +23,8 @@ interface DayItemCardProps {
   isHighlightedByMap?: boolean;
   userName?: string;
   userColor?: string;
+  /** Typical standby wait for rides (Preview timeline), when known. */
+  waitHint?: WaitHint;
 }
 
 export default function DayItemCard({
@@ -31,6 +35,7 @@ export default function DayItemCard({
   isHighlightedByMap,
   userName,
   userColor,
+  waitHint,
 }: DayItemCardProps) {
   const { highlightedLand, setHighlightedLand, setHoveredTimelineItemId } = useAppStore();
   const mapPinActiveRef = useRef(false);
@@ -150,6 +155,7 @@ export default function DayItemCard({
             <UserBadge color={userColor} name={userName} size="sm" />
           )}
         </div>
+        {waitHint && !item.completed && <WaitHintLine hint={waitHint} />}
       </div>
 
       {/* Map pin (mobile only) */}
@@ -181,6 +187,31 @@ export default function DayItemCard({
       >
         <span className="text-xs" style={{ color: "var(--color-error)" }}>{"✕"}</span>
       </button>
+    </div>
+  );
+}
+
+// ==================== WAIT HINT ====================
+
+/** "~35 min at 2 PM · ~15 at 9 AM" — the typical wait for the scheduled
+ *  hour, plus a quieter hour that day when one saves 15+ minutes. */
+function WaitHintLine({ hint }: { hint: WaitHint }) {
+  const main = hint.atHourLabel
+    ? `~${hint.minutes} min at ${hint.atHourLabel}`
+    : `~${hint.minutes} min typical`;
+  return (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[10px]" title={hint.title}>
+      <span className="inline-flex items-center gap-1" style={{ color: "var(--color-text-secondary)" }}>
+        <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: waitColor(hint.minutes) }} />
+        {main}
+      </span>
+      {hint.quieter && (
+        <span style={{ color: "var(--color-accent-preview)" }}>
+          {hint.atHourLabel
+            ? `Quieter at ${hint.quieter.hourLabel} (~${hint.quieter.minutes})`
+            : `Quietest around ${hint.quieter.hourLabel} (~${hint.quieter.minutes})`}
+        </span>
+      )}
     </div>
   );
 }

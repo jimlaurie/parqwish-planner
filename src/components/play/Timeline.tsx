@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { useAppStore } from "@/lib/store";
 import type { DayItemRecord, User } from "@/lib/db";
@@ -8,6 +8,8 @@ import type { TripMember } from "@shared/types/trip";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
 import TimelineSlot from "./TimelineSlot";
 import DayItemCard from "./DayItemCard";
+import { useTypicalWaits } from "@/hooks/use-typical-waits";
+import { buildWaitHint, findRide, type WaitHint } from "@/lib/typical-waits";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -46,6 +48,7 @@ function AnytimeSection({
   userMap,
   members,
   myUid,
+  getWaitHint,
 }: {
   items: DayItemRecord[];
   onToggleCompleted: (id: string) => void;
@@ -55,6 +58,7 @@ function AnytimeSection({
   userMap?: Map<string, User>;
   members?: Record<string, TripMember>;
   myUid?: string;
+  getWaitHint?: (item: DayItemRecord) => WaitHint | null;
 }) {
   const showBadges = (userMap && userMap.size > 1) || (members && Object.keys(members).length > 1);
   const { highlightedLand } = useAppStore();
@@ -117,6 +121,7 @@ function AnytimeSection({
                 isHighlightedByMap={isHighlighted}
                 userName={owner?.name}
                 userColor={owner?.color}
+                waitHint={getWaitHint?.(item) ?? undefined}
               />
             );
           })}
@@ -160,6 +165,18 @@ export default function Timeline({
 }: TimelineProps) {
   const { highlightedLand } = useAppStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const waitStats = useTypicalWaits();
+
+  // Typical standby wait for ride cards, from the heat map's nightly medians.
+  // Anytime items get the day-level figure plus the quietest hour.
+  const getWaitHint = useCallback(
+    (item: DayItemRecord): WaitHint | null => {
+      if (!waitStats || !selectedDate || item.itemType !== "ride") return null;
+      const ride = findRide(waitStats, item.parkDataId, item.title);
+      return ride ? buildWaitHint(ride, selectedDate, item.scheduledTime) : null;
+    },
+    [waitStats, selectedDate]
+  );
 
   // Split into anytime and timed
   const anytimeItems = useMemo(() => items.filter((i) => !i.scheduledTime), [items]);
@@ -224,6 +241,7 @@ export default function Timeline({
           userMap={userMap}
           members={members}
           myUid={myUid}
+          getWaitHint={getWaitHint}
         />
 
         {/* Time slots */}
@@ -242,6 +260,7 @@ export default function Timeline({
             userMap={userMap}
             members={members}
             myUid={myUid}
+            getWaitHint={getWaitHint}
           />
         ))}
       </div>

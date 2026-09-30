@@ -6,6 +6,7 @@ import type { User } from "@/lib/db";
 import type { TripMember } from "@shared/types/trip";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
 import DayItemCard from "./DayItemCard";
+import type { WaitHint } from "@/lib/typical-waits";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -24,6 +25,8 @@ interface TimelineSlotProps {
   userMap?: Map<string, User>;
   members?: Record<string, TripMember>;
   myUid?: string;
+  /** Typical-wait hint for a card, if its ride has wait history. */
+  getWaitHint?: (item: DayItemRecord) => WaitHint | null;
 }
 
 export default function TimelineSlot({
@@ -39,6 +42,7 @@ export default function TimelineSlot({
   members,
   myUid,
   isNow,
+  getWaitHint,
 }: TimelineSlotProps) {
   const { isOver, setNodeRef } = useDroppable({ id: `slot__${time}` });
 
@@ -107,6 +111,7 @@ export default function TimelineSlot({
                   isHighlightedByMap={isHighlighted}
                   userName={owner?.name}
                   userColor={owner?.color}
+                  waitHint={getWaitHint?.(item) ?? undefined}
                 />
               );
             })}

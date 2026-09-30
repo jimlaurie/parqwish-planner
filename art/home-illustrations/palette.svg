@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 320" width="930" height="320">
+  <rect width="930" height="320" fill="#FFFFFF"/>
+  <rect x="20" y="20" width="110" height="80" rx="8" fill="#BFE3DD"/>
+  <text x="20" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">sky</text>
+  <text x="20" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#BFE3DD</text>
+  <rect x="150" y="20" width="110" height="80" rx="8" fill="#E9D3A3"/>
+  <text x="150" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">sky-2</text>
+  <text x="150" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#E9D3A3</text>
+  <rect x="280" y="20" width="110" height="80" rx="8" fill="#F1E6CF"/>
+  <text x="280" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">wall</text>
+  <text x="280" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#F1E6CF</text>
+  <rect x="410" y="20" width="110" height="80" rx="8" fill="#D8C29C"/>
+  <text x="410" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">floor</text>
+  <text x="410" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#D8C29C</text>
+  <rect x="540" y="20" width="110" height="80" rx="8" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+  <text x="540" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">paper</text>
+  <text x="540" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#FFF9EC</text>
+  <rect x="670" y="20" width="110" height="80" rx="8" fill="#2B2D42"/>
+  <text x="670" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">ink</text>
+  <text x="670" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#2B2D42</text>
+  <rect x="800" y="20" width="110" height="80" rx="8" fill="#2F9C95"/>
+  <text x="800" y="120" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">teal</text>
+  <text x="800" y="138" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#2F9C95</text>
+  <rect x="20" y="170" width="110" height="80" rx="8" fill="#E07A3F"/>
+  <text x="20" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">orange</text>
+  <text x="20" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#E07A3F</text>
+  <rect x="150" y="170" width="110" height="80" rx="8" fill="#E3A93A"/>
+  <text x="150" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">mustard</text>
+  <text x="150" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#E3A93A</text>
+  <rect x="280" y="170" width="110" height="80" rx="8" fill="#D9573F"/>
+  <text x="280" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">coral</text>
+  <text x="280" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#D9573F</text>
+  <rect x="410" y="170" width="110" height="80" rx="8" fill="#7FA97C"/>
+  <text x="410" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">sage</text>
+  <text x="410" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#7FA97C</text>
+  <rect x="540" y="170" width="110" height="80" rx="8" fill="#EFC29C"/>
+  <text x="540" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">skin</text>
+  <text x="540" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#EFC29C</text>
+  <rect x="670" y="170" width="110" height="80" rx="8" fill="#F4B942"/>
+  <text x="670" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">orb</text>
+  <text x="670" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#F4B942</text>
+  <rect x="800" y="170" width="110" height="80" rx="8" fill="#FFFFFF" stroke="#2B2D42" stroke-width="1"/>
+  <text x="800" y="270" font-family="Helvetica, Arial" font-size="14" font-weight="bold" fill="#2B2D42">star</text>
+  <text x="800" y="288" font-family="Helvetica, Arial" font-size="12" fill="#2B2D42">#FFFFFF</text>
+</svg>

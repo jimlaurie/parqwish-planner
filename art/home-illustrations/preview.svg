@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <title>Preview — planning the day at a wall map</title>
+  <g id="room">
+    <rect id="wall" width="300" height="400" fill="#F1E6CF"/>
+    <rect id="floor" y="350" width="300" height="50" fill="#D8C29C"/>
+    <line id="baseboard" x1="0" y1="350" x2="300" y2="350" stroke="#2B2D42" stroke-width="3"/>
+  </g>
+  <g id="decorations">
+    <path id="sparkle" d="M18 15 Q19.5 20.5 25 22 Q19.5 23.5 18 29 Q16.5 23.5 11 22 Q16.5 20.5 18 15 Z" fill="#E3A93A"/>
+    <g id="starburst">
+      <line x1="250" y1="196" x2="270" y2="196" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="257.8" y2="203.8" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="250" y2="216" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="242.2" y2="203.8" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="230" y2="196" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="242.2" y2="188.2" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="250" y2="176" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="196" x2="257.8" y2="188.2" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="250" cy="196" r="2.8" fill="#E3A93A"/>
+    </g>
+  </g>
+  <g id="map">
+    <rect id="map-paper" x="28" y="36" width="184" height="150" rx="4" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <g id="lands">
+      <path d="M40 60 Q80 48 110 66 Q122 96 92 110 Q58 116 44 96 Z" fill="#2F9C95" opacity="0.55"/>
+      <path d="M120 58 Q170 46 200 70 Q206 104 176 112 Q140 110 126 90 Z" fill="#7FA97C" opacity="0.55"/>
+      <path d="M44 120 Q84 112 108 130 Q112 164 76 176 Q46 172 40 150 Z" fill="#E3A93A" opacity="0.55"/>
+      <path d="M118 122 Q160 114 198 128 Q204 166 168 176 Q128 178 120 152 Z" fill="#D9573F" opacity="0.55"/>
+    </g>
+    <path id="route" d="M66 88 C100 100 130 80 158 84 S172 140 150 148 S90 152 74 142" fill="none" stroke="#2B2D42" stroke-width="3" stroke-linecap="round"/>
+    <g id="pin-1">
+      <path d="M158 84 C151 74 150 65 158 65 C166 65 165 74 158 84 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2"/>
+      <circle cx="158" cy="72" r="3" fill="#FFF9EC"/>
+    </g>
+    <g id="pin-2">
+      <path d="M150 148 C143 138 142 129 150 129 C158 129 157 138 150 148 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2"/>
+      <circle cx="150" cy="136" r="3" fill="#FFF9EC"/>
+    </g>
+    <g id="pin-3">
+      <path d="M74 142 C67 132 66 123 74 123 C82 123 81 132 74 142 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2"/>
+      <circle cx="74" cy="130" r="3" fill="#FFF9EC"/>
+    </g>
+    <circle id="tack-left" cx="38" cy="45" r="4" fill="#D9573F"/>
+    <circle id="tack-right" cx="202" cy="45" r="4" fill="#D9573F"/>
+  </g>
+  <g id="calendar">
+    <rect id="calendar-page" x="224" y="52" width="58" height="92" rx="3" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <rect id="calendar-header" x="224" y="52" width="58" height="16" rx="3" fill="#D9573F" stroke="#2B2D42" stroke-width="3"/>
+    <rect id="ring-left" x="236" y="45" width="5" height="12" rx="2" fill="#2B2D42"/>
+    <rect id="ring-right" x="265" y="45" width="5" height="12" rx="2" fill="#2B2D42"/>
+    <g id="calendar-grid">
+      <rect x="230" y="76" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="246" y="76" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="262" y="76" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="230" y="92" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="246" y="92" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="262" y="92" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="230" y="108" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="246" y="108" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="262" y="108" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="230" y="124" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="246" y="124" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+      <rect x="262" y="124" width="13" height="13" rx="2" fill="none" stroke="#2B2D42" stroke-width="1.2" opacity="0.35"/>
+    </g>
+    <rect id="cell-1" x="230" y="76" width="13" height="13" rx="2" fill="#E3A93A"/>
+    <rect id="cell-2" x="246" y="76" width="13" height="13" rx="2" fill="#2F9C95"/>
+    <rect id="cell-3" x="262" y="76" width="13" height="13" rx="2" fill="#D9573F"/>
+    <rect id="cell-4" x="230" y="92" width="13" height="13" rx="2" fill="#2F9C95"/>
+    <rect id="cell-5" x="246" y="92" width="13" height="13" rx="2" fill="#E3A93A"/>
+    <rect id="cell-6" x="230" y="108" width="13" height="13" rx="2" fill="#D9573F"/>
+    <rect id="cell-7" x="246" y="108" width="13" height="13" rx="2" fill="#2F9C95"/>
+    <rect id="cell-8" x="230" y="124" width="13" height="13" rx="2" fill="#E3A93A"/>
+  </g>
+  <g id="plant">
+    <path id="leaves" d="M224 318 L204 262 L236 314 L240 250 L248 314 L276 266 L256 320 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="2"/>
+    <path id="pot" d="M220 318 L274 318 L266 350 L228 350 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2.5"/>
+  </g>
+  <g id="character">
+    <rect id="leg-back" x="72" y="298" width="8" height="50" fill="#2B2D42"/>
+    <rect id="leg-front" x="90" y="298" width="8" height="50" fill="#2B2D42"/>
+    <ellipse id="shoe-back" cx="80" cy="349" rx="10" ry="4" fill="#2B2D42"/>
+    <ellipse id="shoe-front" cx="100" cy="349" rx="10" ry="4" fill="#2B2D42"/>
+    <path id="arm-back" d="M68 246 L56 286" stroke="#2F9C95" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path id="body" d="M64 302 L70 238 Q84 228 100 238 L106 302 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle id="face" cx="86" cy="214" r="16" fill="#EFC29C" stroke="#2B2D42" stroke-width="2.5"/>
+    <path id="hair" d="M70 212 Q70 194 88 195 Q102 197 102 208 Q90 202 78 210 Z" fill="#2B2D42"/>
+    <circle id="eye" cx="95" cy="214" r="2" fill="#2B2D42"/>
+    <g id="pointer-arm">
+      <path d="M96 242 L118 222" stroke="#2F9C95" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <circle cx="119" cy="221" r="4.5" fill="#EFC29C" stroke="#2B2D42" stroke-width="1.5"/>
+      <path d="M120 220 L160 178" stroke="#2B2D42" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
+</svg>

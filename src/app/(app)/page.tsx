@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type ComponentType } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { motion } from "framer-motion";
@@ -11,7 +11,12 @@ import CreateTripModal from "@/components/CreateTripModal";
 import EditTripModal from "@/components/EditTripModal";
 import WelcomeCard from "@/components/WelcomeCard";
 import HomeBanner from "@/components/home/HomeBanner";
-import PreviewScene from "@/components/home/illustrations/PreviewScene";
+import { IlloScene, type IlloArtData } from "@/components/home/illustrations/illo";
+import planArt from "@/components/home/illustrations/generated/plan";
+import previewArt from "@/components/home/illustrations/generated/preview";
+import prepareArt from "@/components/home/illustrations/generated/prepare";
+import playArt from "@/components/home/illustrations/generated/play";
+import publishArt from "@/components/home/illustrations/generated/publish";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
@@ -28,18 +33,18 @@ interface PortalConfig {
   description: string;
   accent: string;
   image: string;
-  /** Animated illustration shown instead of the photo (prototype: Preview only). */
-  Illustration?: ComponentType;
+  /** Animated illustration shown instead of the photo. */
+  art?: IlloArtData;
 }
 
 const PORTALS: PortalConfig[] = [
-  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg" },
-  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", Illustration: PreviewScene },
-  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg" },
-  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg" },
+  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg", art: planArt },
+  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", art: previewArt },
+  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg", art: prepareArt },
+  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg", art: playArt },
   // Stand-in image: a crop of the title banner's Main Street Station clock
   // tower, until a dedicated Publish photo exists.
-  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg" },
+  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg", art: publishArt },
 ];
 
 // ==================== COMPONENT ====================
@@ -141,7 +146,7 @@ export default function Home() {
   // ==================== RENDER PORTAL CARD ====================
 
   const renderPortalCard = (config: PortalConfig) => {
-    const { phase, href, label, description, accent, image, Illustration } = config;
+    const { phase, href, label, description, accent, image, art } = config;
     const disabled = !currentTripId;
     const badge = badgeCounts[phase];
 
@@ -177,8 +182,8 @@ export default function Home() {
       >
         {/* Portal image */}
         <div className="relative aspect-[3/4] overflow-hidden">
-          {Illustration ? (
-            <Illustration />
+          {art ? (
+            <IlloScene art={art} />
           ) : (
             <>
               <Image

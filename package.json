@@ -1,6 +1,6 @@
 {
   "name": "parqwish-planner",
-  "version": "6.0.40",
+  "version": "6.0.41",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

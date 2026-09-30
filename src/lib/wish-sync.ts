@@ -289,6 +289,27 @@ async function getTripKey(
  * at creation — there's no separate "upgrade to shared" step later; a trip
  * that's never invited anyone just has a members map of size 1 forever.
  */
+// Background createSharedTrip calls started by startSharedTripCreate, keyed
+// by trip id, so anything that needs the remote trip doc to exist (invites)
+// can wait for it without the trip-creation UI having to.
+const _pendingSharedTripCreates = new Map<string, Promise<void>>();
+
+/**
+ * Kick off createSharedTrip without blocking the caller. Firestore writes
+ * only resolve once the server acknowledges them, which can take arbitrarily
+ * long on a slow or flaky connection — awaiting that in the New Trip modal
+ * left it stuck on "Creating..." even though the trip was already saved
+ * locally. The trip key is cached synchronously inside createSharedTrip, so
+ * local work can continue immediately; createInvite awaits the pending
+ * upload. A failure is logged and left to the startSync() self-heal sweep.
+ */
+export function startSharedTripCreate(trip: Trip, uid: string, displayName?: string): void {
+  const pending = createSharedTrip(trip, uid, displayName)
+    .catch((err) => console.error("[wish-sync] createSharedTrip failed; startSync will retry:", err))
+    .finally(() => _pendingSharedTripCreates.delete(trip.id));
+  _pendingSharedTripCreates.set(trip.id, pending);
+}
+
 export async function createSharedTrip(trip: Trip, uid: string, displayName?: string): Promise<void> {
   const tripKey = generateRandomKey();
   _tripKeyCache.set(trip.id, tripKey);
@@ -477,6 +498,9 @@ export async function createInvite(
   role: "editor" | "viewer",
   uid: string
 ): Promise<string> {
+  // An invite is useless until the trip doc and the owner's keyWrap exist
+  // remotely — wait for a just-created trip's background upload first.
+  await _pendingSharedTripCreates.get(tripId);
   const tripKey = await getTripKey(tripId, uid);
   if (!tripKey) throw new Error("createInvite: no trip key — is this trip synced yet?");
 

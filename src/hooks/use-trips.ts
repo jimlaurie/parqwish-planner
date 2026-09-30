@@ -4,7 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db, { type Trip } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { auth, isSyncEnabled } from "@/lib/auth";
-import { createSharedTrip, pushTrip, deleteTripRemote, deleteSelectionRemote } from "@/lib/wish-sync";
+import { startSharedTripCreate, pushTrip, deleteTripRemote, deleteSelectionRemote } from "@/lib/wish-sync";
 
 export function useTrips() {
   const { currentTripId, setCurrentTripId } = useAppStore();
@@ -55,14 +55,15 @@ export function useTrips() {
     setCurrentTripId(id);
     const user = auth.currentUser;
     if (user && isSyncEnabled(user)) {
-      // Awaited (not fire-and-forget) — the trip's key and keyWrap need to
-      // exist remotely before the caller can do anything sync-dependent
-      // with it, like immediately opening Collaborate and generating an
-      // invite. Falls back to the startSync() self-heal sweep if it fails.
+      // Not awaited: the trip is already saved locally, and a Firestore
+      // write can take arbitrarily long to be acknowledged on a poor
+      // connection — awaiting it here left the New Trip modal stuck on
+      // "Creating...". createInvite waits on the pending upload instead, so
+      // an invite can never point at a trip that doesn't exist remotely yet.
       // displayName comes from the sign-in provider (Apple/Google often
       // supply one) — absent for anonymous/email-link; falls back to the
       // uid-slice display in the roster until the owner sets one manually.
-      await createSharedTrip(trip, user.uid, user.displayName ?? undefined).catch(() => {});
+      startSharedTripCreate(trip, user.uid, user.displayName ?? undefined);
     }
     return id;
   };

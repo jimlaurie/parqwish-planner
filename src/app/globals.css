@@ -176,6 +176,23 @@
   --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55);
   --shadow-focus: 0 0 0 3px rgba(255, 215, 0, 0.35);
 
+  /* Mid-century illustration palette (Home cards + banner) — night */
+  --illo-sky: #1F3A4D;
+  --illo-sky-2: #2C4F5F;
+  --illo-wall: #243F4C;
+  --illo-floor: #1A2F3A;
+  --illo-paper: #EADFC4;
+  --illo-ink: #10202A;
+  --illo-teal: #4FB3A9;
+  --illo-orange: #E8833A;
+  --illo-mustard: #E9B949;
+  --illo-coral: #E2654F;
+  --illo-sage: #7FA88A;
+  --illo-skin: #E8B98F;
+  --illo-orb: #EADFC4;
+  --illo-star: #F6E7B0;
+  --illo-star-opacity: 1;
+
   /* Overlay backdrop for modals */
   --color-overlay: rgba(0, 0, 0, 0.65);
 }
@@ -224,6 +241,23 @@
   --shadow-lg: 0 12px 24px rgba(16, 24, 40, 0.1), 0 4px 8px rgba(16, 24, 40, 0.05);
   --shadow-xl: 0 24px 48px rgba(16, 24, 40, 0.14), 0 8px 16px rgba(16, 24, 40, 0.06);
   --shadow-focus: 0 0 0 3px rgba(153, 101, 21, 0.3);
+
+  /* Mid-century illustration palette (Home cards + banner) — day */
+  --illo-sky: #BFE3DD;
+  --illo-sky-2: #E9D3A3;
+  --illo-wall: #F1E6CF;
+  --illo-floor: #D8C29C;
+  --illo-paper: #FFF9EC;
+  --illo-ink: #2B2D42;
+  --illo-teal: #2F9C95;
+  --illo-orange: #E07A3F;
+  --illo-mustard: #E3A93A;
+  --illo-coral: #D9573F;
+  --illo-sage: #7FA97C;
+  --illo-skin: #EFC29C;
+  --illo-orb: #F4B942;
+  --illo-star: #FFFFFF;
+  --illo-star-opacity: 0;
 
   /* Overlay backdrop for modals */
   --color-overlay: rgba(28, 28, 40, 0.45);

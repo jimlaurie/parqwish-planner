@@ -4,15 +4,14 @@
 // Title banner for the Home page: a generic mid-century "tomorrow-land"
 // skyline (rocket, palms, a boomerang-roofed pavilion, a Ferris wheel) —
 // deliberately not any real park, so it doesn't lean on Disney imagery —
-// with the logo on a sign panel and a countdown for the active trip.
+// with the logo on a sign panel. The trip countdown lives in the top bar.
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
-import { C, Sparkle } from "./illustrations/illo";
-import { tripCountdown, type CountdownTrip } from "@/lib/trip-countdown";
+import { motion } from "framer-motion";
+import { C, Sparkle, useStillMotion } from "./illustrations/illo";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-export default function HomeBanner({ trip }: { trip: CountdownTrip | null }) {
+export default function HomeBanner() {
   // Phones: the skyline is a strip above the sign, anchored left so the rocket
   // and palms stay in view. Wider screens: the sign sits over the full scene.
   const wide = useMediaQuery("(min-width: 768px)");
@@ -39,13 +38,7 @@ export default function HomeBanner({ trip }: { trip: CountdownTrip | null }) {
             Planner
           </p>
           <p className="text-xs md:text-sm mt-1" style={{ color: "var(--illo-paper)" }}>
-            Plan it. Live it. Relive it.
-          </p>
-          <p
-            className="text-[11px] md:text-xs font-semibold mt-2 px-3 py-1 rounded-full text-center"
-            style={{ backgroundColor: "var(--illo-mustard)", color: "var(--illo-ink)" }}
-          >
-            {tripCountdown(trip)}
+            Your Theme Park and Resort Companion
           </p>
         </div>
       </div>
@@ -122,7 +115,7 @@ function Pavilion() {
 }
 
 function FerrisWheel() {
-  const still = useReducedMotion() ?? false;
+  const still = useStillMotion();
   const cx = 930;
   const cy = 116;
   const r = 62;

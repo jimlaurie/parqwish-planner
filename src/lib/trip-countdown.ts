@@ -1,6 +1,7 @@
 // ==================== TRIP COUNTDOWN ====================
-// One-line status for the Home banner: how far away the active trip is,
-// which day of it you're on, or that it's over. Pure — pass `today` in tests.
+// Short status for the top bar, next to the trip name: how far away the
+// trip is, which day of it you're on, or that it's over. Null for trips
+// without dates (templates). Pure — pass `today` in tests.
 
 export interface CountdownTrip {
   name: string;
@@ -21,20 +22,20 @@ function todayNumber(today: Date): number {
   return Math.round(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / DAY_MS);
 }
 
-export function tripCountdown(trip: CountdownTrip | null | undefined, today: Date = new Date()): string {
-  if (!trip) return "Pick a trip to get started";
-  const start = trip.startDate ? dayNumber(trip.startDate) : null;
+export function tripCountdown(trip: CountdownTrip | null | undefined, today: Date = new Date()): string | null {
+  if (!trip?.startDate) return null;
+  const start = dayNumber(trip.startDate);
   const end = trip.endDate ? dayNumber(trip.endDate) : start;
-  if (start === null || end === null) return trip.name;
+  if (start === null || end === null) return null;
 
   const now = todayNumber(today);
   if (now < start) {
     const days = start - now;
-    return days === 1 ? `${trip.name} · Tomorrow!` : `${trip.name} · ${days} days to go`;
+    return days === 1 ? "Tomorrow!" : `${days} days to go`;
   }
   if (now <= end) {
     const total = end - start + 1;
-    return total === 1 ? `${trip.name} · Today's the day!` : `${trip.name} · Day ${now - start + 1} of ${total}`;
+    return total === 1 ? "Today's the day!" : `Day ${now - start + 1} of ${total}`;
   }
-  return `${trip.name} · Relive it on Publish`;
+  return "Trip complete";
 }

@@ -279,7 +279,7 @@ export default function Home() {
   return (
     <SidebarLayout sidebar={sidebar}>
       <div className="flex flex-col items-center px-4 py-6">
-        <HomeBanner trip={currentTrip ?? null} />
+        <HomeBanner />
 
         {/* Portal cards — the five trip phases, in journey order */}
         <div className="w-full max-w-5xl mx-auto mb-8">

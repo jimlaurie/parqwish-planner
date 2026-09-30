@@ -27,6 +27,18 @@ export const C = {
   star: "var(--illo-star)",
 } as const;
 
+/**
+ * True when animations should be skipped: the viewer's system asks for
+ * reduced motion. Dev builds accept `?motion=on` to preview the animation
+ * on a machine that has Reduce Motion turned on.
+ */
+export function useStillMotion(): boolean {
+  const reduce = useReducedMotion() ?? false;
+  if (!reduce || process.env.NODE_ENV === "production") return reduce;
+  const forced = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("motion") === "on";
+  return !forced;
+}
+
 /** A scene's animations run once on mount; a replay waits for the last one. */
 const REPLAY_COOLDOWN_MS = 2600;
 
@@ -39,7 +51,7 @@ export function SceneFrame({ label, children }: {
   label: string;
   children: (play: number, still: boolean) => ReactNode;
 }) {
-  const still = useReducedMotion() ?? false;
+  const still = useStillMotion();
   const [play, setPlay] = useState(0);
   const lastPlay = useRef(0);
 

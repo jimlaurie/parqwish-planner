@@ -151,8 +151,8 @@ function Presenter({ play, still }: { play: number; still: boolean }) {
       <motion.g
         key={`arm-${play}`}
         style={{ originX: 0, originY: 1 }}
-        initial={still ? false : { rotate: 0 }}
-        animate={{ rotate: [0, -14, 0, -14, 0] }}
+        initial={false}
+        animate={still ? undefined : { rotate: [0, -14, 0, -14, 0] }}
         transition={{ delay: 0.5, duration: 1.4, ease: "easeInOut" }}
       >
         <path d="M96 242 L118 222" style={{ stroke: C.teal, strokeWidth: 8, strokeLinecap: "round" }} />

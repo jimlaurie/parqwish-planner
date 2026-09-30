@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import type { Trip, FlightLeg, HotelStay, TransportLeg } from "@/lib/db";
@@ -75,10 +75,38 @@ export default function EditTripModal({
   const [editingNameUid, setEditingNameUid] = useState<string | null>(null);
   const [nameDraft, setNameDraft] = useState("");
 
-  // Keep the form in sync with the trip's latest data, including remote
-  // edits arriving mid-session (e.g. another collaborator's change).
+  // Fields the user has changed since the modal opened (or last saved).
+  // Background writes to the trip — Cloud Sync echoes, the members stamp a
+  // just-created trip gets when its upload finishes, a collaborator's edit —
+  // replace the trip object while the modal is open. Re-copying the whole
+  // trip into the form on each of those silently discarded whatever the
+  // user was typing; now only untouched fields take the fresh values.
+  const dirtyFields = useRef<Set<keyof Trip>>(new Set());
+  const formTripId = useRef<string | null>(null);
+  const markDirty = useCallback((field: keyof Trip) => {
+    dirtyFields.current.add(field);
+  }, []);
+
+  // Opening the modal (or switching trips) starts from a clean copy.
   useEffect(() => {
-    if (trip) setForm({ ...trip });
+    if (!visible || !trip) return;
+    dirtyFields.current.clear();
+    formTripId.current = trip.id;
+    setForm({ ...trip });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, trip?.id]);
+
+  // Keep the form in sync with the trip's latest data, including remote
+  // edits arriving mid-session, without overwriting the user's own edits.
+  useEffect(() => {
+    if (!trip || formTripId.current !== trip.id) return;
+    setForm((prev) => {
+      const next: Partial<Trip> = { ...trip };
+      for (const field of dirtyFields.current) {
+        (next as Record<string, unknown>)[field] = prev[field];
+      }
+      return next;
+    });
   }, [trip]);
 
   // Reset tab + all transient UI state ONLY when switching to a genuinely
@@ -106,9 +134,10 @@ export default function EditTripModal({
 
   const handleChange = useCallback(
     (field: keyof Trip, value: string | boolean) => {
+      markDirty(field);
       setForm((prev) => ({ ...prev, [field]: value }));
     },
-    []
+    [markDirty]
   );
 
   const handleSave = async () => {
@@ -116,6 +145,7 @@ export default function EditTripModal({
     setSaving(true);
     try {
       await onSave(trip.id, form);
+      dirtyFields.current.clear();
       onClose();
     } finally {
       setSaving(false);
@@ -425,6 +455,7 @@ export default function EditTripModal({
     key: keyof T,
     value: string
   ) => {
+    markDirty(field);
     setForm((prev) => {
       const arr = [...((prev[field] as T[]) || [])];
       arr[index] = { ...arr[index], [key]: value };
@@ -433,6 +464,7 @@ export default function EditTripModal({
   };
 
   const addArrayItem = <T,>(field: "flights" | "hotels" | "transports", blank: T) => {
+    markDirty(field);
     setForm((prev) => ({
       ...prev,
       [field]: [...((prev[field] as T[]) || []), blank],
@@ -440,6 +472,7 @@ export default function EditTripModal({
   };
 
   const removeArrayItem = (field: "flights" | "hotels" | "transports", index: number) => {
+    markDirty(field);
     setForm((prev) => {
       const arr = [...((prev[field] as unknown[]) || [])];
       arr.splice(index, 1);

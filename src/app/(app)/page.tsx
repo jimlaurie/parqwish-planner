@@ -111,6 +111,15 @@ export default function Home() {
     publish: 0,
   };
 
+  // After creating a trip, go straight to its edit screen so flights,
+  // hotels, and notes can be filled in without hunting for the Edit button.
+  // The short delay lets the New Trip modal finish closing first, so the two
+  // overlays don't stack for a frame.
+  const openEditorAfterCreate = useCallback((tripId: string | null) => {
+    if (!tripId) return;
+    setTimeout(() => setEditingTripId(tripId), 250);
+  }, []);
+
   const editingTrip = editingTripId
     ? trips.find((t) => t.id === editingTripId) ?? null
     : null;
@@ -249,8 +258,8 @@ export default function Home() {
         <CreateTripModal
           visible={showTripModal}
           onClose={() => setShowTripModal(false)}
-          onCreateTrip={async (data) => { await createTrip(data); }}
-          onCreateFromTemplate={createFromTemplate}
+          onCreateTrip={async (data) => { openEditorAfterCreate(await createTrip(data)); }}
+          onCreateFromTemplate={async (...args) => { const id = await createFromTemplate(...args); openEditorAfterCreate(id); return id; }}
           templates={templateTrips}
         />
       </main>
@@ -340,8 +349,8 @@ export default function Home() {
       <CreateTripModal
         visible={showTripModal}
         onClose={() => setShowTripModal(false)}
-        onCreateTrip={async (data) => { await createTrip(data); }}
-        onCreateFromTemplate={createFromTemplate}
+        onCreateTrip={async (data) => { openEditorAfterCreate(await createTrip(data)); }}
+        onCreateFromTemplate={async (...args) => { const id = await createFromTemplate(...args); openEditorAfterCreate(id); return id; }}
         templates={templateTrips}
       />
 

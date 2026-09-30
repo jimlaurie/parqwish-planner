@@ -18,6 +18,7 @@ import EmptyState from "@/components/EmptyState";
 import UserPanel from "@/components/UserPanel";
 import { auth } from "@/lib/auth";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
+import { showUndoToast } from "@/lib/undo-toast";
 
 const ACCENT = "var(--color-accent-plan)";
 
@@ -51,6 +52,7 @@ export default function PlanPage() {
     updateWish,
     toggleCompleted,
     unselectWish,
+    restoreWishSelection,
     deleteWishForever,
     selectExistingWish,
     getWishById,
@@ -152,15 +154,16 @@ export default function PlanPage() {
             <button
               key={tag.id}
               onClick={() => toggleFilterTag(tag.id)}
+              aria-pressed={isActive}
               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium
                          transition-all duration-200 cursor-pointer text-left"
               style={{
                 color: isActive ? ACCENT : "var(--color-text-muted)",
-                backgroundColor: isActive ? `${ACCENT}15` : "transparent",
+                backgroundColor: isActive ? `color-mix(in srgb, ${ACCENT} 8%, transparent)` : "transparent",
                 borderLeft: isActive ? `3px solid ${ACCENT}` : "3px solid transparent",
               }}
             >
-              <span>{tag.icon}</span>
+              <span aria-hidden="true">{tag.icon}</span>
               <span className="flex-1">{tag.label}</span>
               {count > 0 && (
                 <span
@@ -191,8 +194,6 @@ export default function PlanPage() {
         )}
         <button
           onClick={() => setShowCompleted(!wishFilters.showCompleted)}
-          role="switch"
-          aria-checked={wishFilters.showCompleted}
           className="text-xs cursor-pointer transition-colors hover:opacity-80"
           style={{ color: "var(--color-text-muted)" }}
         >
@@ -321,7 +322,7 @@ export default function PlanPage() {
                                  cursor-pointer hover:bg-white/5 transition-colors text-left"
                       style={{ color: "var(--color-text-primary)" }}
                     >
-                      <span>{tag.icon}</span>
+                      <span aria-hidden="true">{tag.icon}</span>
                       <span>{tag.label}</span>
                     </button>
                   );
@@ -355,9 +356,15 @@ export default function PlanPage() {
           }
         }}
         onUnselectFromTrip={async () => {
-          if (editingWishId) {
-            await unselectWish(editingWishId);
-            setEditingWishId(null);
+          if (!editingWishId) return;
+          const wish = await getWishById(editingWishId);
+          const removed = await unselectWish(editingWishId);
+          setEditingWishId(null);
+          if (removed) {
+            showUndoToast(
+              `Removed “${wish?.title ?? "wish"}” from this trip`,
+              () => restoreWishSelection(removed),
+            );
           }
         }}
         onDeleteForever={async () => {

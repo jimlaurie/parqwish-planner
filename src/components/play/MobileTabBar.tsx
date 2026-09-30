@@ -27,7 +27,7 @@ export default function MobileTabBar({ activeTab, onTabChange }: MobileTabBarPro
           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium
                      cursor-pointer transition-all duration-150"
           style={{
-            backgroundColor: activeTab === tab.id ? `${ACCENT}20` : "transparent",
+            backgroundColor: activeTab === tab.id ? `color-mix(in srgb, ${ACCENT} 12%, transparent)` : "transparent",
             color: activeTab === tab.id ? ACCENT : "var(--color-text-dim)",
             borderBottom: activeTab === tab.id ? `2px solid ${ACCENT}` : "2px solid transparent",
           }}

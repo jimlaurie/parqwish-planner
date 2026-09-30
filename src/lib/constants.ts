@@ -8,7 +8,7 @@ export type { WishTagId } from "@shared/types/wish";
 
 // Priority system
 export type { PriorityConfig } from "@shared/constants/priorities";
-export { TICKET_PRIORITIES, TICKET_COLORS, PRIORITY_SORT_ORDER } from "@shared/constants/priorities";
+export { TICKET_PRIORITIES, TICKET_COLORS, TICKET_EXPLAINER, ticketTitle, PRIORITY_SORT_ORDER } from "@shared/constants/priorities";
 
 // Packing
 export type { PackingTabConfig } from "@shared/constants/packing";

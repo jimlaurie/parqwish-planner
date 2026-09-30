@@ -11,6 +11,7 @@ import WishLinker from "@/components/WishLinker";
 import ParkDataLinker from "@/components/ParkDataLinker";
 import { PACKING_CATEGORIES, PACKING_TABS } from "@/lib/constants";
 import type { PackingFormData } from "@/hooks/use-packing-items";
+import RemoveControls from "@/components/RemoveControls";
 
 // ==================== COMPONENT ====================
 
@@ -63,7 +64,6 @@ export default function PackingFormModal({
   const [diningType, setDiningType] = useState<"reservation" | "walk-up" | "mobile-order">("walk-up");
   const [dietaryNotes, setDietaryNotes] = useState("");
   const [saving, setSaving] = useState(false);
-  const [deleteStep, setDeleteStep] = useState<null | "confirm" | "choose">(null);
 
   // Load existing item in edit mode
   const loadItem = useCallback(async () => {
@@ -109,7 +109,6 @@ export default function PackingFormModal({
       setDiningType("walk-up");
       setDietaryNotes("");
     }
-    setDeleteStep(null);
   }, [visible, isEditMode, loadItem, categories]);
 
   const canSave = name.trim().length > 0 && !saving;
@@ -410,7 +409,7 @@ export default function PackingFormModal({
                   className="block text-sm font-medium mb-1.5"
                   style={{ color: "var(--color-text-secondary)" }}
                 >
-                  Priority
+                  Priority ticket
                 </label>
                 <PriorityPicker value={priority} onChange={setPriority} />
               </div>
@@ -532,73 +531,12 @@ export default function PackingFormModal({
               </button>
 
               <div className="flex items-center gap-2">
-                {/* Delete / Remove (edit mode only) */}
-                {isEditMode && (onUnselectFromTrip || onDeleteForever) && (
-                  <>
-                    {deleteStep === "choose" ? (
-                      <div className="flex items-center gap-1.5">
-                        {onUnselectFromTrip && (
-                          <button
-                            onClick={async () => {
-                              setSaving(true);
-                              try {
-                                await onUnselectFromTrip();
-                              } finally {
-                                setSaving(false);
-                              }
-                            }}
-                            disabled={saving}
-                            className="px-2.5 py-1.5 rounded-full text-[11px] font-medium cursor-pointer
-                                       transition-colors duration-200"
-                            style={{
-                              backgroundColor: "color-mix(in srgb, var(--color-accent-preview) 12%, transparent)",
-                              color: "var(--color-accent-preview)",
-                            }}
-                          >
-                            This trip
-                          </button>
-                        )}
-                        {onDeleteForever && (
-                          <button
-                            onClick={async () => {
-                              setSaving(true);
-                              try {
-                                await onDeleteForever();
-                              } finally {
-                                setSaving(false);
-                              }
-                            }}
-                            disabled={saving}
-                            className="px-2.5 py-1.5 rounded-full text-[11px] font-medium cursor-pointer
-                                       transition-colors duration-200"
-                            style={{
-                              backgroundColor: "color-mix(in srgb, var(--color-error) 15%, transparent)",
-                              color: "var(--color-error)",
-                            }}
-                          >
-                            Forever
-                          </button>
-                        )}
-                        <button
-                          onClick={() => setDeleteStep(null)}
-                          className="px-2.5 py-1.5 rounded-full text-[11px] font-medium cursor-pointer
-                                     transition-colors duration-200 hover:bg-white/5"
-                          style={{ color: "var(--color-text-muted)" }}
-                        >
-                          No
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setDeleteStep("choose")}
-                        className="px-3 py-2 rounded-full text-xs font-medium cursor-pointer
-                                   transition-colors duration-200 hover:bg-white/5"
-                        style={{ color: "var(--color-error)" }}
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </>
+                {isEditMode && (
+                  <RemoveControls
+                    onRemoveFromTrip={onUnselectFromTrip}
+                    onDeleteForever={onDeleteForever}
+                    disabled={saving}
+                  />
                 )}
 
                 {/* Save */}

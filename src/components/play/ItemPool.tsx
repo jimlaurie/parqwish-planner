@@ -122,7 +122,7 @@ export default function ItemPool({ poolItems, loading, onScheduleReservation, on
                 </span>
                 <span
                   className="text-[10px] px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: `${ACCENT}22`, color: ACCENT }}
+                  style={{ backgroundColor: `color-mix(in srgb, ${ACCENT} 13%, transparent)`, color: ACCENT }}
                 >
                   {items.length}
                 </span>

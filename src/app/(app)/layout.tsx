@@ -2,6 +2,7 @@ import TopNavBar from "@/components/TopNavBar";
 import AppInit from "@/components/AppInit";
 import InstallBanner from "@/components/InstallBanner";
 import UpdateBanner from "@/components/UpdateBanner";
+import UndoToastHost from "@/components/UndoToastHost";
 
 export default function AppGroupLayout({
   children,
@@ -14,6 +15,7 @@ export default function AppGroupLayout({
       <TopNavBar />
       <main id="main-content">{children}</main>
       <UpdateBanner />
+      <UndoToastHost />
       <InstallBanner />
     </>
   );

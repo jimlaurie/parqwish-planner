@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { WishWithStatus } from "@/hooks/use-trip-wishes";
-import { TICKET_COLORS, getTagIcon } from "@/lib/constants";
+import { TICKET_COLORS, getTagIcon, ticketTitle } from "@/lib/constants";
 import UserBadge from "@/components/UserBadge";
 
 interface WishCardProps {
@@ -198,7 +198,8 @@ export default function WishCard({
             backgroundColor: priorityColor.bg,
             color: priorityColor.border,
           }}
-          title={priorityColor.label}
+          title={ticketTitle(wish.priority)}
+          aria-label={ticketTitle(wish.priority)}
         >
           {wish.priority}
         </div>

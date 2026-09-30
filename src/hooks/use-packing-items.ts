@@ -419,12 +419,25 @@ export function usePackingItems() {
   };
 
   /** Remove item from current trip only (catalog entry preserved) */
-  const unselectItem = async (itemId: string) => {
-    if (!currentTripId) return;
+  /** Removes the item from the current trip only. Returns the removed
+   *  selection so the caller can offer Undo via restorePackingSelection. */
+  const unselectItem = async (itemId: string): Promise<TripPackingSelection | undefined> => {
+    if (!currentTripId) return undefined;
     const selId = `${currentTripId}__${itemId}`;
+    const removed = await db.tripPackingSelections.get(selId);
     await db.tripPackingSelections.delete(selId);
     syncDeletePackingSelection(selId, currentTripId);
     syncDeletePackingItemMirror(currentTripId, itemId);
+    return removed;
+  };
+
+  /** Undo for unselectItem — see restoreWishSelection in use-trip-wishes. */
+  const restorePackingSelection = async (selection: TripPackingSelection) => {
+    const restored: TripPackingSelection = { ...selection, updatedAt: Date.now() };
+    await db.tripPackingSelections.put(restored);
+    syncPackingSelection(restored);
+    const item = await db.packingItems.get(selection.itemId);
+    if (item) syncPackingItemMirror(selection.tripId, item);
   };
 
   /** Delete item from catalog AND all trip selections */
@@ -483,6 +496,7 @@ export function usePackingItems() {
     updateItem,
     toggleCompleted,
     unselectItem,
+    restorePackingSelection,
     deleteCatalogItem,
     selectExistingItem,
     getItemById,

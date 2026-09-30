@@ -102,7 +102,7 @@ export default function BulkAddToDayModal({
                 onClick={() => setSelectedDate(day)}
                 className="flex-shrink-0 flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-colors duration-150"
                 style={{
-                  backgroundColor: active ? `${ACCENT}20` : "var(--color-surface-sunken)",
+                  backgroundColor: active ? `color-mix(in srgb, ${ACCENT} 12%, transparent)` : "var(--color-surface-sunken)",
                   border: `1px solid ${active ? ACCENT : "var(--color-border-subtle)"}`,
                   color: active ? ACCENT : "var(--color-text-secondary)",
                 }}
@@ -120,7 +120,7 @@ export default function BulkAddToDayModal({
             onClick={() => setIsAnytime(true)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer"
             style={{
-              backgroundColor: isAnytime ? `${ACCENT}20` : "transparent",
+              backgroundColor: isAnytime ? `color-mix(in srgb, ${ACCENT} 12%, transparent)` : "transparent",
               color: isAnytime ? ACCENT : "var(--color-text-dim)",
               border: `1px solid ${isAnytime ? ACCENT : "var(--color-border-subtle)"}`,
             }}
@@ -131,7 +131,7 @@ export default function BulkAddToDayModal({
             onClick={() => setIsAnytime(false)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer"
             style={{
-              backgroundColor: !isAnytime ? `${ACCENT}20` : "transparent",
+              backgroundColor: !isAnytime ? `color-mix(in srgb, ${ACCENT} 12%, transparent)` : "transparent",
               color: !isAnytime ? ACCENT : "var(--color-text-dim)",
               border: `1px solid ${!isAnytime ? ACCENT : "var(--color-border-subtle)"}`,
             }}
@@ -165,7 +165,7 @@ export default function BulkAddToDayModal({
             onClick={handleConfirm}
             disabled={!selectedDate || saving}
             className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-50"
-            style={{ backgroundColor: `${ACCENT}20`, color: ACCENT }}
+            style={{ backgroundColor: `color-mix(in srgb, ${ACCENT} 12%, transparent)`, color: ACCENT }}
           >
             {saving ? "Adding..." : `Add ${itemCount} to Day`}
           </button>

@@ -230,14 +230,32 @@ export function useTripWishes() {
     }
   };
 
-  const unselectWish = async (id: string) => {
-    if (!currentTripId) return;
+  /** Removes the wish from the current trip only. Returns the removed
+   *  selection so the caller can offer Undo via restoreWishSelection. */
+  const unselectWish = async (id: string): Promise<TripWishSelection | undefined> => {
+    if (!currentTripId) return undefined;
     const selId = `${currentTripId}__${id}`;
+    const removed = await db.tripWishSelections.get(selId);
     await db.tripWishSelections.delete(selId);
     const user = auth.currentUser;
     if (user && canCollaborate(user)) {
       deleteSelectionRemote(selId, user.uid, currentTripId).catch(() => {});
       deleteWishMirrorRemote(currentTripId, id, user.uid).catch(() => {});
+    }
+    return removed;
+  };
+
+  /** Undo for unselectWish: puts the exact removed selection back (same
+   *  owner, completion state, and addedAt), with a fresh updatedAt so
+   *  last-write-wins sync treats it as the newest version. */
+  const restoreWishSelection = async (selection: TripWishSelection) => {
+    const restored: TripWishSelection = { ...selection, updatedAt: Date.now() };
+    await db.tripWishSelections.put(restored);
+    const user = auth.currentUser;
+    if (user && canCollaborate(user)) {
+      pushSelection(restored, user.uid).catch(() => {});
+      const wish = await db.wishes.get(selection.wishId);
+      if (wish) pushWishMirror(selection.tripId, wish, user.uid).catch(() => {});
     }
   };
 
@@ -401,6 +419,7 @@ export function useTripWishes() {
     updateWish,
     toggleCompleted,
     unselectWish,
+    restoreWishSelection,
     deleteWishForever,
     selectExistingWish,
     addOrSelectWish,

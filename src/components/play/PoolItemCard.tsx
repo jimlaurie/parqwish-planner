@@ -77,7 +77,7 @@ export default function PoolItemCard({
           className="text-[10px] px-2 py-0.5 rounded-full shrink-0 cursor-pointer
                      transition-colors duration-100 hover:brightness-110"
           style={{
-            backgroundColor: `${ACCENT}22`,
+            backgroundColor: `color-mix(in srgb, ${ACCENT} 13%, transparent)`,
             color: ACCENT,
           }}
           title={`Schedule at ${item.reservationTime}`}
@@ -103,7 +103,7 @@ export default function PoolItemCard({
           className="lg:hidden text-[10px] px-2 py-0.5 rounded-full shrink-0 cursor-pointer
                      transition-colors duration-100 hover:brightness-110"
           style={{
-            backgroundColor: `${ACCENT}22`,
+            backgroundColor: `color-mix(in srgb, ${ACCENT} 13%, transparent)`,
             color: ACCENT,
           }}
           title="Add to timeline"

@@ -236,7 +236,7 @@ export default function EnsembleBuilderModal({
                         key={item.id}
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium"
                         style={{
-                          backgroundColor: `${ACCENT}20`,
+                          backgroundColor: `color-mix(in srgb, ${ACCENT} 12%, transparent)`,
                           color: ACCENT,
                         }}
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -345,7 +345,7 @@ export default function EnsembleBuilderModal({
                       className="flex items-center gap-2.5 w-full px-3 py-2 text-left
                                  cursor-pointer transition-colors hover:bg-white/5"
                       style={{
-                        backgroundColor: isSelected ? `${ACCENT}10` : "transparent",
+                        backgroundColor: isSelected ? `color-mix(in srgb, ${ACCENT} 6%, transparent)` : "transparent",
                       }}
                     >
                       {/* Checkbox */}

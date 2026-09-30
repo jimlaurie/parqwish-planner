@@ -24,7 +24,7 @@ function StatCard({ label, completed, total, icon, showProgress = true }: StatCa
       className="rounded-xl p-4 transition-all duration-200 hover:border-opacity-60"
       style={{
         backgroundColor: "var(--color-bg-card)",
-        border: `1px solid ${ACCENT}22`,
+        border: `1px solid color-mix(in srgb, ${ACCENT} 13%, transparent)`,
       }}
     >
       <div className="flex items-center gap-2 mb-2">

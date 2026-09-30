@@ -56,7 +56,7 @@ export default function EnsembleCard({
         <div
           className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-lg"
           style={{
-            backgroundColor: `${ACCENT}20`,
+            backgroundColor: `color-mix(in srgb, ${ACCENT} 12%, transparent)`,
           }}
         >
           {ensemble.coverPhoto ? (

@@ -17,6 +17,7 @@ import EmptyState from "@/components/EmptyState";
 import UserPanel from "@/components/UserPanel";
 import { auth } from "@/lib/auth";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
+import { showUndoToast } from "@/lib/undo-toast";
 
 const ACCENT = "var(--color-accent-prepare)";
 
@@ -50,6 +51,7 @@ export default function PreparePage() {
     updateItem,
     toggleCompleted,
     unselectItem,
+    restorePackingSelection,
     deleteCatalogItem,
     selectExistingItem,
     getItemById,
@@ -148,15 +150,16 @@ export default function PreparePage() {
             <button
               key={tab.id}
               onClick={() => togglePackingTab(tab.id)}
+              aria-pressed={isActive}
               className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium
                          transition-all duration-200 cursor-pointer text-left"
               style={{
                 color: isActive ? ACCENT : "var(--color-text-muted)",
-                backgroundColor: isActive ? `${ACCENT}15` : "transparent",
+                backgroundColor: isActive ? `color-mix(in srgb, ${ACCENT} 8%, transparent)` : "transparent",
                 borderLeft: isActive ? `3px solid ${ACCENT}` : "3px solid transparent",
               }}
             >
-              <span>{tab.icon}</span>
+              <span aria-hidden="true">{tab.icon}</span>
               <span className="flex-1">{tab.label}</span>
               {total > 0 && (
                 <span
@@ -325,7 +328,7 @@ export default function PreparePage() {
                                  cursor-pointer hover:bg-white/5 transition-colors text-left"
                       style={{ color: "var(--color-text-primary)" }}
                     >
-                      <span>{tab.icon}</span>
+                      <span aria-hidden="true">{tab.icon}</span>
                       <span>{tab.label}</span>
                     </button>
                   );
@@ -361,9 +364,15 @@ export default function PreparePage() {
           }
         }}
         onUnselectFromTrip={async () => {
-          if (editingPackingItemId) {
-            await unselectItem(editingPackingItemId);
-            setEditingPackingItemId(null);
+          if (!editingPackingItemId) return;
+          const item = await getItemById(editingPackingItemId);
+          const removed = await unselectItem(editingPackingItemId);
+          setEditingPackingItemId(null);
+          if (removed) {
+            showUndoToast(
+              `Removed “${item?.name ?? "item"}” from this trip`,
+              () => restorePackingSelection(removed),
+            );
           }
         }}
         onDeleteForever={async () => {

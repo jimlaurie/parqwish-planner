@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { PackingItemWithStatus } from "@/hooks/use-packing-items";
-import { TICKET_COLORS } from "@/lib/constants";
+import { TICKET_COLORS, ticketTitle } from "@/lib/constants";
 import UserBadge from "@/components/UserBadge";
 
 interface PackingCardProps {
@@ -297,7 +297,8 @@ export default function PackingCard({
             backgroundColor: priorityColor.bg,
             color: priorityColor.border,
           }}
-          title={priorityColor.label}
+          title={ticketTitle(item.priority)}
+          aria-label={ticketTitle(item.priority)}
         >
           {item.priority}
         </div>

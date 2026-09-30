@@ -519,6 +519,8 @@ export default function CatalogBrowser() {
         <div
           className="flex border-b"
           style={{ borderColor: "var(--color-border-subtle)" }}
+          role="tablist"
+          aria-label="Park catalog categories"
         >
           {TABS.map((tab) => {
             const count = items.filter((i) => i.type === tab.id).length;
@@ -527,6 +529,8 @@ export default function CatalogBrowser() {
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setSelectedId(null); setSearchQuery(""); setSelectedParks(new Set()); }}
+                role="tab"
+                aria-selected={isActive}
                 className="flex-1 flex flex-col items-center py-2.5 text-xs font-medium
                            cursor-pointer transition-all duration-150"
                 style={{
@@ -537,7 +541,7 @@ export default function CatalogBrowser() {
                     : "transparent",
                 }}
               >
-                <span className="text-base leading-none mb-0.5">{tab.icon}</span>
+                <span className="text-base leading-none mb-0.5" aria-hidden="true">{tab.icon}</span>
                 <span>{tab.label}</span>
                 <span
                   className="text-[9px] mt-0.5"
@@ -570,11 +574,12 @@ export default function CatalogBrowser() {
         {/* List toggle — list itself collapses by default */}
         <button
           onClick={() => { setExpanded(!expanded); setSelectedId(null); }}
+          aria-expanded={expanded}
           className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold cursor-pointer
                      transition-colors hover:opacity-80 border-t"
           style={{ color: ACCENT, borderColor: "var(--color-border-subtle)" }}
         >
-          <span>{expanded ? "▼" : "▶"}</span>
+          <span aria-hidden="true">{expanded ? "▼" : "▶"}</span>
           <span>{expanded ? "Hide results" : "Show results"}</span>
           <span className="text-[10px]" style={{ color: "var(--color-text-dim)" }}>
             ({filteredItems.length})

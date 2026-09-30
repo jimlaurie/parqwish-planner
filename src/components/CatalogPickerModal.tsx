@@ -203,7 +203,7 @@ export default function CatalogPickerModal({
                         >
                           <div
                             className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: `${ACCENT}20` }}
+                            style={{ backgroundColor: `color-mix(in srgb, ${ACCENT} 12%, transparent)` }}
                           >
                             {"\uD83E\uDDF3"}
                           </div>

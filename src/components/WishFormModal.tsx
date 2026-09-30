@@ -10,6 +10,7 @@ import TagSelector from "@/components/TagSelector";
 import PhotoPicker from "@/components/PhotoPicker";
 import ParkDataAutocomplete, { PARK_DATA_TYPE_TO_TAG } from "@/components/ParkDataAutocomplete";
 import ParkLandSelector from "@/components/ParkLandSelector";
+import RemoveControls from "@/components/RemoveControls";
 import { useParkData } from "@/hooks/use-park-data";
 import { PACKING_TABS } from "@/lib/constants";
 import type { ParkDataItem } from "@/lib/park-data";
@@ -81,7 +82,6 @@ export default function WishFormModal({
   const [capturedAt, setCapturedAt] = useState<string | undefined>();
   const [parkDataSearch, setParkDataSearch] = useState("");
   const [saving, setSaving] = useState(false);
-  const [deleteMode, setDeleteMode] = useState<null | "choose" | "confirm-forever">(null);
 
   const focusRef = useFocusTrap(visible, onClose);
   const { items: parkData } = useParkData();
@@ -146,7 +146,6 @@ export default function WishFormModal({
       setCapturedAt(undefined);
       setParkDataSearch("");
     }
-    setDeleteMode(null);
   }, [visible, isEditMode, loadWish]);
 
   const canSave = title.trim().length > 0 && !saving;
@@ -191,28 +190,6 @@ export default function WishFormModal({
   const handleClearParkDataLink = () => {
     setParkDataId(undefined);
     setParkDataSearch("");
-  };
-
-  const handleUnselectFromTrip = async () => {
-    if (onUnselectFromTrip) {
-      setSaving(true);
-      try {
-        await onUnselectFromTrip();
-      } finally {
-        setSaving(false);
-      }
-    }
-  };
-
-  const handleDeleteForever = async () => {
-    if (onDeleteForever) {
-      setSaving(true);
-      try {
-        await onDeleteForever();
-      } finally {
-        setSaving(false);
-      }
-    }
   };
 
   const handlePaste = async () => {
@@ -520,7 +497,7 @@ export default function WishFormModal({
                   className="block text-sm font-medium mb-1.5"
                   style={{ color: "var(--color-text-secondary)" }}
                 >
-                  Priority
+                  Priority ticket
                 </label>
                 <PriorityPicker value={priority} onChange={setPriority} />
               </div>
@@ -566,90 +543,12 @@ export default function WishFormModal({
               </button>
 
               <div className="flex items-center gap-2">
-                {/* Delete (edit mode only) — dual delete */}
-                {isEditMode && (onUnselectFromTrip || onDeleteForever) && (
-                  <>
-                    {deleteMode === "choose" && (
-                      <div className="flex items-center gap-1.5">
-                        {onUnselectFromTrip && (
-                          <button
-                            onClick={handleUnselectFromTrip}
-                            disabled={saving}
-                            className="px-3 py-2 rounded-full text-xs font-medium cursor-pointer
-                                       transition-colors duration-200"
-                            style={{
-                              backgroundColor: "color-mix(in srgb, var(--color-error) 10%, transparent)",
-                              color: "var(--color-error)",
-                            }}
-                          >
-                            This trip
-                          </button>
-                        )}
-                        {onDeleteForever && (
-                          <button
-                            onClick={() => setDeleteMode("confirm-forever")}
-                            disabled={saving}
-                            className="px-3 py-2 rounded-full text-xs font-medium cursor-pointer
-                                       transition-colors duration-200"
-                            style={{
-                              backgroundColor: "color-mix(in srgb, var(--color-error) 15%, transparent)",
-                              color: "var(--color-error)",
-                            }}
-                          >
-                            Forever
-                          </button>
-                        )}
-                        <button
-                          onClick={() => setDeleteMode(null)}
-                          className="px-2 py-2 rounded-full text-xs font-medium cursor-pointer
-                                     transition-colors duration-200 hover:bg-white/5"
-                          style={{ color: "var(--color-text-muted)" }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                    {deleteMode === "confirm-forever" && (
-                      <div className="flex items-center gap-1.5">
-                        <span
-                          className="text-xs"
-                          style={{ color: "var(--color-text-muted)" }}
-                        >
-                          Delete from all trips?
-                        </span>
-                        <button
-                          onClick={handleDeleteForever}
-                          disabled={saving}
-                          className="px-3 py-2 rounded-full text-xs font-medium cursor-pointer
-                                     transition-colors duration-200"
-                          style={{
-                            backgroundColor: "color-mix(in srgb, var(--color-error) 15%, transparent)",
-                            color: "var(--color-error)",
-                          }}
-                        >
-                          Yes, delete
-                        </button>
-                        <button
-                          onClick={() => setDeleteMode("choose")}
-                          className="px-2 py-2 rounded-full text-xs font-medium cursor-pointer
-                                     transition-colors duration-200 hover:bg-white/5"
-                          style={{ color: "var(--color-text-muted)" }}
-                        >
-                          No
-                        </button>
-                      </div>
-                    )}
-                    {deleteMode === null && (
-                      <button
-                        onClick={() => setDeleteMode("choose")}
-                        className="px-3 py-2 rounded-full text-xs font-medium cursor-pointer
-                                   transition-colors duration-200 hover:bg-white/5"
-                        style={{ color: "var(--color-error)" }}
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </>
+                {isEditMode && (
+                  <RemoveControls
+                    onRemoveFromTrip={onUnselectFromTrip}
+                    onDeleteForever={onDeleteForever}
+                    disabled={saving}
+                  />
                 )}
 
                 {/* Save */}

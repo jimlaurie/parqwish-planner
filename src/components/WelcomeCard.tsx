@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { marketingUrl } from "@/lib/marketing-links";
+import { IOS_APP_STORE_URL, marketingUrl } from "@/lib/marketing-links";
 
 interface WelcomeCardProps {
   onCreateTrip: () => void;
@@ -17,7 +17,7 @@ const FEATURES = [
   { icon: "📋", text: "Build wish lists and packing lists before you go" },
   { icon: "🗓️", text: "Plan your itinerary on a big screen" },
   { icon: "📊", text: "Review trip stats and memories after your visit" },
-  { icon: "🔄", text: "Sync data to and from the mobile app via file export" },
+  { icon: "🔄", text: "Sync with the ParQwish Pal iOS app and your travel group" },
 ];
 
 export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
@@ -210,18 +210,36 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
             lineHeight: "var(--leading-relaxed)",
           }}
         >
-          New to ParQwish? The iOS companion app — in-park wait times, GPS
-          trail recording, and real-time scheduling — is in App Store review
-          now. Check back soon, or watch{" "}
-          <Link
-            href={marketingUrl("/blog")}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "var(--color-gold)", textDecoration: "none" }}
-          >
-            the blog
-          </Link>{" "}
-          for the announcement.
+          {IOS_APP_STORE_URL ? (
+            <>
+              New to ParQwish? Take the plan into the park with the iOS app,
+              ParQwish Pal: live wait times, GPS trail recording, and your day
+              at a glance.{" "}
+              <Link
+                href={IOS_APP_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "var(--color-gold)", textDecoration: "none" }}
+              >
+                Get it on the App Store
+              </Link>
+            </>
+          ) : (
+            <>
+              New to ParQwish? The iOS companion app — in-park wait times, GPS
+              trail recording, and real-time scheduling — is in App Store review
+              now. Check back soon, or watch{" "}
+              <Link
+                href={marketingUrl("/blog")}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "var(--color-gold)", textDecoration: "none" }}
+              >
+                the blog
+              </Link>{" "}
+              for the announcement.
+            </>
+          )}
         </p>
       </div>
     </div>

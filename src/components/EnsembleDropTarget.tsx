@@ -25,7 +25,7 @@ export default function EnsembleDropTarget({
       className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer
                  transition-all duration-150"
       style={{
-        backgroundColor: isOver ? `${ACCENT}25` : "transparent",
+        backgroundColor: isOver ? `color-mix(in srgb, ${ACCENT} 15%, transparent)` : "transparent",
         border: isOver ? `2px dashed ${ACCENT}` : "2px solid transparent",
       }}
     >

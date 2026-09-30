@@ -34,6 +34,9 @@ export default function CreateTripModal({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isTemplate, setIsTemplate] = useState(false);
+  // Template creation is a power-user option, tucked behind "More options"
+  // so a first-time user sees only name + dates.
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -73,6 +76,7 @@ export default function CreateTripModal({
     setStartDate("");
     setEndDate("");
     setIsTemplate(false);
+    setShowMoreOptions(false);
     setSelectedTemplateId("");
   };
 
@@ -138,37 +142,6 @@ export default function CreateTripModal({
 
             {/* Form */}
             <div className="flex flex-col gap-4">
-              {/* Template toggle */}
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsTemplate(!isTemplate);
-                    if (!isTemplate) {
-                      setSelectedTemplateId("");
-                    }
-                  }}
-                  role="switch"
-                  aria-checked={isTemplate}
-                  aria-label="Create as template (no dates)"
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer ${
-                    isTemplate ? "bg-[var(--color-gold)]" : "bg-white/20"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-200 ${
-                      isTemplate ? "translate-x-5" : ""
-                    }`}
-                  />
-                </button>
-                <span
-                  className="text-sm"
-                  style={{ color: "var(--color-text-secondary)" }}
-                >
-                  Create as template (no dates)
-                </span>
-              </div>
-
               {/* Create from template dropdown */}
               {!isTemplate && templates.length > 0 && onCreateFromTemplate && (
                 <div>
@@ -219,7 +192,7 @@ export default function CreateTripModal({
 
               {/* Dates — only shown for non-templates */}
               {!isTemplate && (
-                <>
+                <div className="grid grid-cols-2 gap-3">
                   {/* Start Date */}
                   <div>
                     <label
@@ -231,7 +204,13 @@ export default function CreateTripModal({
                     <input
                       type="date"
                       value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
+                      onChange={(e) => {
+                        const next = e.target.value;
+                        setStartDate(next);
+                        // Default the end date to the start date (a one-day
+                        // trip) and keep it from sitting before the start.
+                        if (next && (!endDate || endDate < next)) setEndDate(next);
+                      }}
                       className={inputClass}
                       style={inputStyle}
                     />
@@ -254,8 +233,55 @@ export default function CreateTripModal({
                       style={inputStyle}
                     />
                   </div>
-                </>
+                </div>
               )}
+
+              {/* More options — template creation */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowMoreOptions((v) => !v)}
+                  aria-expanded={showMoreOptions}
+                  className="text-xs cursor-pointer hover:underline"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  {showMoreOptions ? "\u25BE" : "\u25B8"} More options
+                </button>
+                {showMoreOptions && (
+                  <div className="mt-3">
+                  {/* Template toggle */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsTemplate(!isTemplate);
+                        if (!isTemplate) {
+                          setSelectedTemplateId("");
+                        }
+                      }}
+                      role="switch"
+                      aria-checked={isTemplate}
+                      aria-label="Save as a reusable template (no dates)"
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer ${
+                        isTemplate ? "bg-[var(--color-gold)]" : "bg-white/20"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-200 ${
+                          isTemplate ? "translate-x-5" : ""
+                        }`}
+                      />
+                    </button>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--color-text-secondary)" }}
+                    >
+                      Save as a reusable template (no dates)
+                    </span>
+                  </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Actions */}

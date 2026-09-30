@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { motion } from "framer-motion";
 import type { PackingItemWithStatus } from "@/hooks/use-packing-items";
 import { getFirstThumbnail, getPhotos, getPhotoCount } from "@/lib/image-utils";
-import { TICKET_COLORS, PACKING_TABS } from "@/lib/constants";
+import { TICKET_COLORS, PACKING_TABS, ticketTitle } from "@/lib/constants";
 
 // ==================== TYPES ====================
 
@@ -135,7 +135,8 @@ export default function CatalogGridCard({
             backgroundColor: priorityColor.bg,
             color: priorityColor.border,
           }}
-          title={priorityColor.label}
+          title={ticketTitle(item.priority)}
+          aria-label={ticketTitle(item.priority)}
         >
           {item.priority}
         </span>
@@ -163,7 +164,7 @@ export default function CatalogGridCard({
         <span
           className="text-[11px] px-2 py-0.5 rounded-full self-start"
           style={{
-            backgroundColor: `${ACCENT}15`,
+            backgroundColor: `color-mix(in srgb, ${ACCENT} 8%, transparent)`,
             color: ACCENT,
           }}
         >

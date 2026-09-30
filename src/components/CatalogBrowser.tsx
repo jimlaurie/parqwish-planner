@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParkData } from "@/hooks/use-park-data";
 import { useTripWishes } from "@/hooks/use-trip-wishes";
-import { PARK_DATA_TYPE_TO_TAG } from "@/lib/park-data";
+import { PARK_DATA_TYPE_TO_TAG, getRideReliabilityStats, getWaitTimeStats } from "@/lib/park-data";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
+import { waitColor } from "@/components/publish/waitTimeColors";
 
 const SCHEDULE_TIP_SEEN_KEY = "parqwish_seen_schedule_tip";
 
@@ -32,6 +33,127 @@ const TABS: Tab[] = [
 // Matches PARK_LABELS values (web/src/lib/park-data.ts) — the exact strings
 // item.park holds. Unmatched park names sort last rather than being dropped.
 const PARK_DISPLAY_ORDER = ["Disneyland", "California Adventure", "Downtown Disney", "Hotels", "Disneyland Resort"];
+
+// ==================== ROW FACTS ====================
+// The at-a-glance details under each catalog row — what someone would
+// otherwise look up elsewhere before deciding whether to add it.
+
+/** Historical wait/reliability for one ride, from the nightly BigQuery stats. */
+interface RideInsight {
+  weekdayWait?: number;
+  weekendWait?: number;
+  breakdownPct?: number;
+}
+
+/** A ride down on at least this share of its open days gets an "Often down"
+ *  flag. Breakdowns of 10+ minutes are common (the median ride has one on
+ *  ~40% of days), so only the genuinely unreliable end is worth calling out. */
+const OFTEN_DOWN_PCT = 70;
+
+type ChipTone = "neutral" | "info" | "warning";
+
+interface RowChip {
+  key: string;
+  label: string;
+  tone?: ChipTone;
+  title?: string;
+  dotColor?: string;
+}
+
+function typicalWait(insight?: RideInsight): number | undefined {
+  const waits = [insight?.weekdayWait, insight?.weekendWait].filter((w): w is number => w != null);
+  if (waits.length === 0) return undefined;
+  // Nearest 5 minutes: a 90-day median doesn't justify "~23 min". The chip's
+  // tooltip keeps the exact weekday/weekend medians.
+  const avg = waits.reduce((a, b) => a + b, 0) / waits.length;
+  return Math.max(5, Math.round(avg / 5) * 5);
+}
+
+function heightInches(item: ParkDataItem): number | undefined {
+  // 0 in either field means "no minimum height", not "0 inches".
+  if (item.heightCm != null && item.heightCm > 0) return Math.round(item.heightCm / 2.54);
+  const parsed = item.heightRequirement != null ? parseInt(String(item.heightRequirement), 10) : NaN;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+function rideChips(item: ParkDataItem, insight?: RideInsight): RowChip[] {
+  const chips: RowChip[] = [];
+  const wait = typicalWait(insight);
+  if (wait != null) {
+    chips.push({
+      key: "wait",
+      label: wait <= 5 ? "Usually a short wait" : `~${wait} min typical`,
+      dotColor: waitColor(wait),
+      title: `Median standby wait over the last 90 days — weekdays ${insight?.weekdayWait ?? "–"} min, weekends ${insight?.weekendWait ?? "–"} min`,
+    });
+  }
+  const inches = heightInches(item);
+  if (inches != null) chips.push({ key: "height", label: `${inches}\u2033+`, title: `Minimum height ${inches} inches` });
+  if (item.hasLL) chips.push({ key: "ll", label: "\u26A1 Lightning Lane", tone: "info" });
+  if (insight?.breakdownPct != null && insight.breakdownPct >= OFTEN_DOWN_PCT) {
+    chips.push({
+      key: "down",
+      label: "Often down",
+      tone: "warning",
+      title: `Had a breakdown of 10+ minutes on ${Math.round(insight.breakdownPct)}% of the days it was open (last 90 days)`,
+    });
+  }
+  return chips;
+}
+
+/** Park data mixes "fireworks" and "Gift Shop" — normalize the first letter. */
+function capFirst(text: string): string {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+}
+
+function otherChips(item: ParkDataItem): RowChip[] {
+  const chips: RowChip[] = [];
+  if (item.type === "show") {
+    if (item.showTypes?.length) chips.push({ key: "stype", label: capFirst(item.showTypes[0]) });
+    if (item.duration != null) chips.push({ key: "dur", label: `${item.duration} min` });
+  } else if (item.type === "dining") {
+    if (item.diningType) chips.push({ key: "dtype", label: capFirst(item.diningType) });
+    if (item.requiresReservations ?? item.reservations) chips.push({ key: "res", label: "Reservations", tone: "info" });
+  } else if (item.type === "shop") {
+    if (item.shopType) chips.push({ key: "shtype", label: capFirst(item.shopType) });
+  } else if (item.type === "place" && item.category) {
+    chips.push({ key: "cat", label: capFirst(item.category) });
+  }
+  return chips;
+}
+
+// Theme-aware accents rather than --color-info/--color-warning: those two are
+// fixed hexes (a dark blue that's hard to read on the night theme, and the
+// same gold as the Plan accent), while these adjust for day/night.
+const CHIP_TONES: Record<ChipTone, { bg: string; fg: string }> = {
+  neutral: { bg: "var(--color-surface-raised)", fg: "var(--color-text-secondary)" },
+  info: { bg: "color-mix(in srgb, var(--color-accent-publish) 16%, transparent)", fg: "var(--color-accent-publish)" },
+  warning: { bg: "color-mix(in srgb, var(--color-accent-preview) 16%, transparent)", fg: "var(--color-accent-preview)" },
+};
+
+function RowChips({ chips }: { chips: RowChip[] }) {
+  if (chips.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-1 mt-1">
+      {chips.map((c) => {
+        const tone = CHIP_TONES[c.tone ?? "neutral"];
+        return (
+          <span
+            key={c.key}
+            title={c.title}
+            className="inline-flex items-center gap-1 text-[10px] leading-none px-1.5 py-1 rounded"
+            style={{ backgroundColor: tone.bg, color: tone.fg }}
+          >
+            {c.dotColor && (
+              <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c.dotColor }} />
+            )}
+            {c.label}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 // ==================== DETAIL PANEL ====================
 
@@ -250,8 +372,9 @@ function ItemDetail({ item }: {
 
 // ==================== LIST ROW ====================
 
-function CatalogRow({ item, alreadyAdded, selected, pending, onSelect, onAdd, onRemove }: {
+function CatalogRow({ item, insight, alreadyAdded, selected, pending, onSelect, onAdd, onRemove }: {
   item: ParkDataItem;
+  insight?: RideInsight;
   alreadyAdded: boolean;
   selected: boolean;
   pending: boolean;
@@ -304,6 +427,7 @@ function CatalogRow({ item, alreadyAdded, selected, pending, onSelect, onAdd, on
               </span>
             )}
           </p>
+          <RowChips chips={item.type === "ride" ? rideChips(item, insight) : otherChips(item)} />
         </div>
 
         {/* Right side: Plan button + expand chevron */}
@@ -395,6 +519,27 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
   const [showScheduleTip, setShowScheduleTip] = useState(false);
   const [parksExpanded, setParksExpanded] = useState(false);
   const [selectedParks, setSelectedParks] = useState<Set<string>>(new Set());
+  const [rideSort, setRideSort] = useState<"az" | "wait">("az");
+  const [insights, setInsights] = useState<Map<string, RideInsight>>(new Map());
+
+  // Historical wait + reliability stats (cached 24h by park-data.ts). Rows
+  // simply render without those chips until this resolves, or if either
+  // file is unavailable.
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getWaitTimeStats(), getRideReliabilityStats()]).then(([waits, reliability]) => {
+      if (cancelled) return;
+      const map = new Map<string, RideInsight>();
+      for (const [id, r] of Object.entries(waits?.rides ?? {})) {
+        map.set(id, { weekdayWait: r.weekday?.medianWaitMinutes, weekendWait: r.weekend?.medianWaitMinutes });
+      }
+      for (const [id, r] of Object.entries(reliability?.rides ?? {})) {
+        map.set(id, { ...map.get(id), breakdownPct: r.oddsOfBreakdownPct });
+      }
+      setInsights(map);
+    }).catch((err) => console.error("[CatalogBrowser] stats load failed:", err));
+    return () => { cancelled = true; };
+  }, []);
 
   // Map parkDataId → wish.id so we can unselect by wish ID
   const parkDataIdToWishId = useMemo(() => {
@@ -457,8 +602,13 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
       if (!groups[item.park]) groups[item.park] = [];
       groups[item.park].push(item);
     }
+    if (activeTab === "ride" && rideSort === "wait") {
+      // Shortest typical wait first; rides with no wait history go last.
+      const key = (item: ParkDataItem) => typicalWait(insights.get(item.id)) ?? Infinity;
+      for (const list of Object.values(groups)) list.sort((a, b) => key(a) - key(b) || a.name.localeCompare(b.name));
+    }
     return groups;
-  }, [filteredItems]);
+  }, [filteredItems, activeTab, rideSort, insights]);
 
   const withPending = async (itemId: string, op: () => Promise<void>) => {
     setPendingIds((prev) => new Set(prev).add(itemId));
@@ -584,6 +734,32 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           />
         </div>
 
+        {/* Ride sort — alphabetical, or shortest typical wait first */}
+        {activeTab === "ride" && expanded && insights.size > 0 && (
+          <div className="flex items-center gap-1.5 px-3 pb-2 text-[10px]" role="group" aria-label="Sort rides">
+            <span style={{ color: "var(--color-text-dim)" }}>Sort:</span>
+            {([["az", "A\u2013Z"], ["wait", "Shortest typical wait"]] as const).map(([id, label]) => {
+              const active = rideSort === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setRideSort(id)}
+                  aria-pressed={active}
+                  className="px-2 py-0.5 rounded-full cursor-pointer transition-colors"
+                  style={{
+                    backgroundColor: active ? `color-mix(in srgb, ${ACCENT} 18%, transparent)` : "transparent",
+                    color: active ? ACCENT : "var(--color-text-muted)",
+                    border: `1px solid ${active ? ACCENT : "var(--color-border-subtle)"}`,
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* List toggle — list itself collapses by default (inline only;
             the panel always shows results) */}
         {!isPanel && <button
@@ -678,6 +854,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
                       <CatalogRow
                         key={item.id}
                         item={item}
+                        insight={insights.get(item.id)}
                         alreadyAdded={addedParkDataIds.has(item.id)}
                         selected={selectedId === item.id}
                         pending={pendingIds.has(item.id)}

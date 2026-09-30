@@ -500,7 +500,7 @@ body {
 }
 
 /* ==================== MOBILE PHASE BAR ====================
-   Height of TopNavBar's fixed bottom tab bar on phones (0 on md+, where the
+   Height of TopNavBar's fixed bottom tab bar on phones and tablets (0 on lg+, where the
    phases live in the top bar instead). Anything anchored to the bottom of
    the viewport — the (app) layout's <main> padding, fixed-height map pages,
    the sidebar's floating button, the install banner, the undo toast — offsets
@@ -508,7 +508,7 @@ body {
 :root {
   --mobile-tabbar-h: calc(3.5rem + env(safe-area-inset-bottom));
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   :root {
     --mobile-tabbar-h: 0px;
   }

@@ -370,11 +370,24 @@ function CatalogRow({ item, alreadyAdded, selected, pending, onSelect, onAdd, on
 
 // ==================== MAIN COMPONENT ====================
 
-export default function CatalogBrowser() {
+interface CatalogBrowserProps {
+  /**
+   * "inline" (default): a collapsible block above the wish list, results
+   * hidden until "Show results" is tapped — used on narrow screens.
+   * "panel": the Plan page's right-hand column on wide screens — results are
+   * always visible and the list fills the available height, scrolling on its
+   * own so the wish list beside it stays put.
+   */
+  variant?: "inline" | "panel";
+}
+
+export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserProps) {
+  const isPanel = variant === "panel";
   const { items, loading } = useParkData();
   const { allWishes, addOrSelectWish, unselectWish } = useTripWishes();
 
-  const [expanded, setExpanded] = useState(false);
+  const [expandedState, setExpanded] = useState(false);
+  const expanded = isPanel || expandedState;
   const [activeTab, setActiveTab] = useState<TabType>("ride");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -496,20 +509,20 @@ export default function CatalogBrowser() {
   if (loading) return null;
 
   return (
-    <div className="mb-6">
+    <div className={isPanel ? "flex flex-col h-full min-h-0" : "mb-6"}>
       {/* Heading */}
       <div
-        className="flex items-center gap-2 text-sm font-semibold mb-2"
+        className="flex items-center gap-2 text-sm font-semibold mb-2 shrink-0"
         style={{ color: ACCENT }}
       >
-        <span>🏰 Browse Park Catalog</span>
+        <span>🏰 {isPanel ? "Add from the Park Catalog" : "Browse Park Catalog"}</span>
         <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>
           ({totalCount})
         </span>
       </div>
 
       <div
-        className="rounded-xl border"
+        className={`rounded-xl border ${isPanel ? "flex flex-col flex-1 min-h-0" : ""}`}
         style={{
           backgroundColor: "var(--color-bg-card)",
           borderColor: "var(--color-border-subtle)",
@@ -571,8 +584,9 @@ export default function CatalogBrowser() {
           />
         </div>
 
-        {/* List toggle — list itself collapses by default */}
-        <button
+        {/* List toggle — list itself collapses by default (inline only;
+            the panel always shows results) */}
+        {!isPanel && <button
           onClick={() => { setExpanded(!expanded); setSelectedId(null); }}
           aria-expanded={expanded}
           className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold cursor-pointer
@@ -584,7 +598,7 @@ export default function CatalogBrowser() {
           <span className="text-[10px]" style={{ color: "var(--color-text-dim)" }}>
             ({filteredItems.length})
           </span>
-        </button>
+        </button>}
 
         {expanded && availableParks.length > 1 && (
           <div className="border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
@@ -639,7 +653,7 @@ export default function CatalogBrowser() {
         )}
 
         {expanded && (
-          <div className="px-3 pb-3 max-h-[480px] overflow-y-auto flex flex-col gap-4">
+          <div className={`px-3 pb-3 overflow-y-auto flex flex-col gap-4 ${isPanel ? "flex-1 min-h-0 pt-1" : "max-h-[480px]"}`}>
             {Object.entries(groupedByPark).length === 0 ? (
               <p className="text-xs text-center py-4" style={{ color: "var(--color-text-dim)" }}>
                 No results for &ldquo;{searchQuery}&rdquo;

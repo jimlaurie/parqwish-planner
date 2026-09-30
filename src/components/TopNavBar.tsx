@@ -18,9 +18,9 @@ import { marketingUrl } from "@/lib/marketing-links";
 // sync — which is why it gets an explicit hint rather than being left to
 // read as "a game" or "an in-park screen".
 //
-// Desktop (md+): one top bar — logo/trip, phases + Catalog + Help menu,
+// Desktop (lg+, 1024px): one top bar — logo/trip, phases + Catalog + Help menu,
 // sync status + theme toggle.
-// Phone (<md): the top bar keeps logo/trip, a "More" menu (Catalog + help
+// Phone and tablet (<lg): the top bar keeps logo/trip, a "More" menu (Catalog + help
 // links) and the toggles;
 // the phases move to a fixed bottom tab bar (MobilePhaseBar) instead of
 // wrapping the top bar onto two rows. The (app) layout pads <main> so page
@@ -193,7 +193,7 @@ function MobilePhaseBar({ activePhase, hasTrip }: { activePhase: NavPhase; hasTr
   return (
     <nav
       aria-label="Trip phases"
-      className="md:hidden fixed inset-x-0 bottom-0 z-40 backdrop-blur-md"
+      className="lg:hidden fixed inset-x-0 bottom-0 z-40 backdrop-blur-md"
       style={{
         backgroundColor: "var(--color-nav-bg)",
         borderTop: "1px solid var(--color-border-subtle)",
@@ -266,7 +266,7 @@ export default function TopNavBar() {
         <div className="max-w-7xl mx-auto px-3 md:px-4">
           <div className="flex items-center gap-2 md:gap-4 h-14">
             {/* LEFT: Logo + trip info */}
-            <div className="flex items-center gap-2 min-w-0 shrink md:shrink-0">
+            <div className="flex items-center gap-2 min-w-0 shrink lg:shrink-0">
               <Link href="/" aria-label="ParQwish home" className="shrink-0">
                 <Image
                   src="/images/parqwish-logo.png"
@@ -286,9 +286,9 @@ export default function TopNavBar() {
                   >
                     {currentTrip.name}
                   </span>
-                  {/* Dates are dropped on phones to leave the name room. */}
+                  {/* Dates are dropped below lg to leave the name room. */}
                   {currentTrip.startDate && (
-                    <span className="hidden md:inline text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
+                    <span className="hidden lg:inline text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
                       {formatDateRange(currentTrip.startDate, currentTrip.endDate)}
                     </span>
                   )}
@@ -297,7 +297,7 @@ export default function TopNavBar() {
             </div>
 
             {/* CENTER (desktop): phases, then Catalog + Help after a divider */}
-            <div className="hidden md:flex flex-1 items-center justify-center gap-1">
+            <div className="hidden lg:flex flex-1 items-center justify-center gap-1">
               {PHASE_LINKS.map((link) => (
                 <TopLink
                   key={link.id}
@@ -312,8 +312,8 @@ export default function TopNavBar() {
             </div>
 
             {/* RIGHT: (phone) More menu, then sync status + theme toggle */}
-            <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto md:ml-0">
-              <div className="md:hidden">
+            <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto lg:ml-0">
+              <div className="lg:hidden">
                 <HelpMenu label="More" includeCatalog />
               </div>
               <SyncStatusIndicator />

@@ -7,6 +7,7 @@ import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { useTripWishes } from "@/hooks/use-trip-wishes";
 import { useUsers } from "@/hooks/use-users";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { WISH_TAGS } from "@/lib/constants";
 import SidebarLayout from "@/components/SidebarLayout";
 import PlanHeader from "@/components/PlanHeader";
@@ -45,6 +46,10 @@ export default function PlanPage() {
   // not just accounts with multiple local Trip Users — see owner-badge.ts.
   const showUserBadges = users.length > 1 || Object.keys(currentTrip?.members ?? {}).length > 1;
   const myUid = auth.currentUser?.uid;
+  // Wide screens get a two-column layout: the trip's plan on the left and
+  // the park catalog pinned open on the right. Narrow screens keep the
+  // catalog as a collapsible block above the list.
+  const isWide = useMediaQuery("(min-width: 1280px)");
   const {
     wishes,
     stats,
@@ -210,125 +215,135 @@ export default function PlanPage() {
 
   return (
     <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
-      <div className="px-6 py-8 max-w-2xl">
+      <div className="px-6 py-8 max-w-6xl">
         {/* Header */}
         <PlanHeader trip={currentTrip} stats={stats} />
 
-        {/* Park Catalog Browser */}
-        <CatalogBrowser />
+        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] xl:gap-8 xl:items-start">
+          {/* ==================== LEFT: THE TRIP'S PLAN ==================== */}
+          <div className="min-w-0">
+            {/* Narrow screens: catalog sits above the list */}
+            {!isWide && <CatalogBrowser />}
 
-        {/* Wish List */}
-        {!loading && wishes.length === 0 && stats.total === 0 && (
-          <EmptyState
-            icon={"\u2B50"}
-            title="No wishes yet"
-            description="Start collecting ideas for your trip. Add rides, restaurants, shows, and anything else you want to experience."
-            actionLabel="+ Add Wish"
-            onAction={() => setShowAddWishModal(true)}
-          />
-        )}
-
-        {!loading && wishes.length === 0 && stats.total > 0 && (
-          <EmptyState
-            icon={"\u{1F50D}"}
-            title="No matches"
-            description="No wishes match your current filters. Try adjusting your search or tag selection."
-          />
-        )}
-
-        {wishes.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <AnimatePresence mode="popLayout">
-              {wishes.map((wish) => {
-                const owner = showUserBadges
-                  ? resolveOwnerBadge(wish, { userMap, members: currentTrip?.members, myUid })
-                  : undefined;
-                return (
-                  <WishCard
-                    key={wish.id}
-                    wish={wish}
-                    onToggleCompleted={toggleCompleted}
-                    onEdit={setEditingWishId}
-                    userName={owner?.name}
-                    userColor={owner?.color}
-                  />
-                );
-              })}
-            </AnimatePresence>
-
-            <p
-              className="text-xs text-center mt-3"
-              style={{ color: "var(--color-text-dim)" }}
-            >
-              Tap any wish to edit
-            </p>
-          </div>
-        )}
-
-        {/* Inline Add Buttons */}
-        <div className="flex gap-2 mt-4 justify-center relative">
-          <button
-            onClick={handleAddNew}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold
-                       cursor-pointer transition-all duration-150 hover:brightness-110"
-            style={{
-              backgroundColor: ACCENT,
-              color: "var(--color-bg-deep)",
-            }}
-          >
-            + Add New
-          </button>
-          <button
-            onClick={() => setShowWishCatalogPicker(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold
-                       cursor-pointer transition-all duration-150 hover:brightness-110"
-            style={{
-              backgroundColor: "var(--color-bg-card)",
-              color: ACCENT,
-              border: `2px solid ${ACCENT}`,
-            }}
-          >
-            From Catalog
-          </button>
-
-          {/* Group picker popover */}
-          {showGroupPicker && (
-            <>
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setShowGroupPicker(false)}
-              />
-              <div
-                className="absolute bottom-full left-0 mb-2 z-50 rounded-xl shadow-lg p-2 min-w-[160px]"
+            {/* Toolbar — the two ways to add something that isn't in the park catalog */}
+            <div className="flex flex-wrap items-center gap-2 mb-3 relative">
+              <h2 className="text-sm font-semibold flex-1 whitespace-nowrap" style={{ color: "var(--color-text-secondary)" }}>
+                Your wishes for this trip
+              </h2>
+              <button
+                onClick={() => setShowWishCatalogPicker(true)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer
+                           transition-all duration-150 hover:brightness-110"
                 style={{
-                  backgroundColor: "var(--color-bg-card)",
-                  border: "1px solid var(--color-border-subtle)",
+                  color: ACCENT,
+                  border: `1px solid color-mix(in srgb, ${ACCENT} 50%, transparent)`,
                 }}
+                title="Reuse a wish you saved on an earlier trip"
               >
+                My saved wishes
+              </button>
+              <button
+                onClick={handleAddNew}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer
+                           transition-all duration-150 hover:brightness-110"
+                style={{ backgroundColor: ACCENT, color: "var(--color-bg-deep)" }}
+              >
+                + Custom wish
+              </button>
+
+              {/* Group picker popover */}
+              {showGroupPicker && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowGroupPicker(false)}
+                  />
+                  <div
+                    className="absolute top-full right-0 mt-2 z-50 rounded-xl shadow-lg p-2 min-w-[160px]"
+                    style={{
+                      backgroundColor: "var(--color-bg-card)",
+                      border: "1px solid var(--color-border-subtle)",
+                    }}
+                  >
+                    <p
+                      className="text-xs px-2 py-1 mb-1"
+                      style={{ color: "var(--color-text-dim)" }}
+                    >
+                      Add to which group?
+                    </p>
+                    {wishFilters.selectedTags.map((tagId) => {
+                      const tag = WISH_TAGS.find((t) => t.id === tagId);
+                      if (!tag) return null;
+                      return (
+                        <button
+                          key={tagId}
+                          onClick={() => handleGroupSelected(tagId)}
+                          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm
+                                     cursor-pointer hover:bg-white/5 transition-colors text-left"
+                          style={{ color: "var(--color-text-primary)" }}
+                        >
+                          <span aria-hidden="true">{tag.icon}</span>
+                          <span>{tag.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Wish List */}
+            {!loading && wishes.length === 0 && stats.total === 0 && (
+              <EmptyState
+                icon={"\u2B50"}
+                title="No wishes yet"
+                description={`Pick rides, shows, and dining from the park catalog ${isWide ? "on the right" : "above"}, or add a custom wish for anything else you want to do.`}
+              />
+            )}
+
+            {!loading && wishes.length === 0 && stats.total > 0 && (
+              <EmptyState
+                icon={"\u{1F50D}"}
+                title="No matches"
+                description="No wishes match your current filters. Try adjusting your search or tag selection."
+              />
+            )}
+
+            {wishes.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <AnimatePresence mode="popLayout">
+                  {wishes.map((wish) => {
+                    const owner = showUserBadges
+                      ? resolveOwnerBadge(wish, { userMap, members: currentTrip?.members, myUid })
+                      : undefined;
+                    return (
+                      <WishCard
+                        key={wish.id}
+                        wish={wish}
+                        onToggleCompleted={toggleCompleted}
+                        onEdit={setEditingWishId}
+                        userName={owner?.name}
+                        userColor={owner?.color}
+                      />
+                    );
+                  })}
+                </AnimatePresence>
+
                 <p
-                  className="text-xs px-2 py-1 mb-1"
+                  className="text-xs text-center mt-3"
                   style={{ color: "var(--color-text-dim)" }}
                 >
-                  Add to which group?
+                  Tap any wish to edit
                 </p>
-                {wishFilters.selectedTags.map((tagId) => {
-                  const tag = WISH_TAGS.find((t) => t.id === tagId);
-                  if (!tag) return null;
-                  return (
-                    <button
-                      key={tagId}
-                      onClick={() => handleGroupSelected(tagId)}
-                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm
-                                 cursor-pointer hover:bg-white/5 transition-colors text-left"
-                      style={{ color: "var(--color-text-primary)" }}
-                    >
-                      <span aria-hidden="true">{tag.icon}</span>
-                      <span>{tag.label}</span>
-                    </button>
-                  );
-                })}
               </div>
-            </>
+            )}
+          </div>
+
+          {/* ==================== RIGHT: PARK CATALOG (wide screens) ==================== */}
+          {isWide && (
+            <aside className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
+              <CatalogBrowser variant="panel" />
+            </aside>
           )}
         </div>
       </div>

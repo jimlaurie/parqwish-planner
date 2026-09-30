@@ -15,6 +15,10 @@ import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { useDayItems } from "@/hooks/use-day-items";
 import { usePlayPool, type PoolItem, POOL_TYPE_TO_DAY_ITEM_TYPE } from "@/hooks/use-play-pool";
+import { useTripWishes } from "@/hooks/use-trip-wishes";
+import { PARK_DATA_TYPE_TO_TAG, type ParkDataItem } from "@/lib/park-data";
+import type { CatalogSelection } from "@/components/play/CatalogPicker";
+import type { DayItemType } from "@shared/types/day-item";
 import { useUsers } from "@/hooks/use-users";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { auth } from "@/lib/auth";
@@ -28,6 +32,14 @@ import DayItemEditModal from "@/components/play/DayItemEditModal";
 import AddDayItemModal from "@/components/play/AddDayItemModal";
 
 type MobileTab = "pool" | "timeline";
+
+const CATALOG_TYPE_TO_DAY_ITEM_TYPE: Record<ParkDataItem["type"], DayItemType> = {
+  ride: "ride",
+  show: "show",
+  dining: "dining",
+  shop: "shopping",
+  place: "place",
+};
 
 export default function PreviewPage() {
   const router = useRouter();
@@ -61,6 +73,69 @@ export default function PreviewPage() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [activeDragPoolItem, setActiveDragPoolItem] = useState<PoolItem | null>(null);
   const [activeDragDayItem, setActiveDragDayItem] = useState<DayItemRecord | null>(null);
+
+  const { allWishes, addOrSelectWish, addWish } = useTripWishes();
+
+  // Park-data ids already on the plan — marked "In plan" in the Add to Day
+  // modal's catalog view.
+  const plannedParkDataIds = useMemo(
+    () => new Set(allWishes.map((w) => w.parkDataId).filter((id): id is string => !!id)),
+    [allWishes]
+  );
+
+  // Add to Day → Park catalog: put the pick on the trip's plan (reusing an
+  // existing wish for the same catalog item), then on the timeline — the
+  // same two steps as adding it on the Plan page and scheduling it here.
+  const handleAddFromCatalog = useCallback(
+    async (selection: CatalogSelection, scheduledTime?: string) => {
+      if (selection.kind === "catalog") {
+        const item = selection.item;
+        const wishId = await addOrSelectWish({
+          title: item.name,
+          tags: [PARK_DATA_TYPE_TO_TAG[item.type]],
+          priority: "B",
+          parkDataId: item.id,
+          parkDataName: item.name,
+          park: item.park,
+          land: item.land,
+        });
+        if (!wishId) return;
+        await addItem({
+          title: item.name,
+          itemType: CATALOG_TYPE_TO_DAY_ITEM_TYPE[item.type],
+          scheduledTime,
+          park: item.park,
+          land: item.land,
+          parkDataId: item.id,
+          priority: "B",
+          sourceId: wishId,
+        });
+      } else {
+        const { name, point } = selection;
+        const wishId = await addWish({
+          title: name,
+          tags: ["place"],
+          priority: "B",
+          park: point.parkLand?.park,
+          land: point.parkLand?.land,
+          latitude: point.lat,
+          longitude: point.lng,
+        });
+        if (!wishId) return;
+        await addItem({
+          title: name,
+          itemType: "place",
+          scheduledTime,
+          park: point.parkLand?.park,
+          land: point.parkLand?.land,
+          priority: "B",
+          sourceId: wishId,
+        });
+      }
+      setAddModalVisible(false);
+    },
+    [addOrSelectWish, addWish, addItem]
+  );
 
   // Derive editing item reactively from useDayItems
   const editingItem = useMemo(
@@ -327,6 +402,8 @@ export default function PreviewPage() {
         poolItems={poolItems}
         onAdd={async (params) => { await addItem(params); setAddModalVisible(false); }}
         onClose={() => setAddModalVisible(false)}
+        onAddFromCatalog={handleAddFromCatalog}
+        plannedParkDataIds={plannedParkDataIds}
       />
     </DndContext>
   );

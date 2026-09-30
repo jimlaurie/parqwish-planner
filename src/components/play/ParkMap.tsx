@@ -14,7 +14,8 @@ import type { GeoJsonObject } from "geojson";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useAppStore } from "@/lib/store";
-import type { DayItemRecord } from "@/lib/db";
+import db, { type DayItemRecord } from "@/lib/db";
+import { useLiveQuery } from "dexie-react-hooks";
 import { getAttractionCoords, type AttractionCoord, type CoordMaps } from "@/lib/park-data";
 import ResortMask from "@/components/map/ResortMask";
 import {
@@ -214,9 +215,26 @@ export default function ParkMap({ items }: ParkMapProps) {
     return highlightedLand;
   }, [highlightedLand]);
 
-  // Coord lookup: parkDataId first (exact), then name match, then fuzzy
+  // Custom Places pinned on the map (Add to Day → Park catalog → Pin a new
+  // place) keep their coordinates on the wish; a timeline item links back
+  // to that wish through sourceId.
+  const pinnedWishes = useLiveQuery(
+    () => db.wishes.filter((w) => w.latitude != null && w.longitude != null).toArray(),
+    []
+  );
+  const pinnedById = useMemo(() => {
+    const map = new Map<string, { latitude: number; longitude: number }>();
+    for (const w of pinnedWishes ?? []) map.set(w.id, { latitude: w.latitude!, longitude: w.longitude! });
+    return map;
+  }, [pinnedWishes]);
+
+  // Coord lookup: pinned custom place, then parkDataId (exact), then name
+  // match, then fuzzy
   const findCoord = useCallback(
     (item: DayItemRecord): AttractionCoord | undefined => {
+      // 0. A custom place's own pin — never guess these by name
+      const pinned = item.sourceId ? pinnedById.get(item.sourceId) : undefined;
+      if (pinned) return { ...pinned, land: item.land ?? "" };
       // 1. Direct ID lookup (most reliable — from wish's parkDataId)
       if (item.parkDataId && coordMaps.byId[item.parkDataId]) {
         return coordMaps.byId[item.parkDataId];
@@ -238,7 +256,7 @@ export default function ParkMap({ items }: ParkMapProps) {
       }
       return undefined;
     },
-    [coordMaps]
+    [coordMaps, pinnedById]
   );
 
   // Split items into those with exact coords vs land-only

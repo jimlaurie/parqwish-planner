@@ -28,6 +28,9 @@ export interface WishFormData {
   park?: string;
   land?: string;
   maxWaitTime?: number;
+  /** Pinned location for a custom Place (Preview "Add to Day" map picker). */
+  latitude?: number;
+  longitude?: number;
 }
 
 interface WishFormModalProps {

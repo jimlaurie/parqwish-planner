@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { PoolItem, PoolSourceType } from "@/hooks/use-play-pool";
 import { POOL_TYPE_TO_DAY_ITEM_TYPE } from "@/hooks/use-play-pool";
 import type { AddDayItemParams } from "@/hooks/use-day-items";
+import CatalogPicker, { type CatalogSelection } from "./CatalogPicker";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -15,7 +16,17 @@ interface AddDayItemModalProps {
   poolItems: PoolItem[];
   onAdd: (params: AddDayItemParams) => Promise<void>;
   onClose: () => void;
+  /**
+   * Adds a Park-catalog pick (or a newly pinned Place) to the trip's plan and
+   * then to the timeline. When provided, the modal shows a "My plan / Park
+   * catalog" switch so users don't have to detour through the Plan page.
+   */
+  onAddFromCatalog?: (selection: CatalogSelection, scheduledTime?: string) => Promise<void>;
+  /** Park-data ids already on the plan, marked "In plan" in the catalog list. */
+  plannedParkDataIds?: Set<string>;
 }
+
+type ItemSource = "plan" | "catalog";
 
 type TabId = PoolSourceType | "custom";
 
@@ -63,6 +74,8 @@ export default function AddDayItemModal({
   poolItems,
   onAdd,
   onClose,
+  onAddFromCatalog,
+  plannedParkDataIds,
 }: AddDayItemModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("wish");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -71,6 +84,10 @@ export default function AddDayItemModal({
   const [timeH, setTimeH] = useState(9);
   const [timeM, setTimeM] = useState(0);
   const [timeInput, setTimeInput] = useState("09:00");
+  const [source, setSource] = useState<ItemSource>("plan");
+  const [catalogSelection, setCatalogSelection] = useState<CatalogSelection | null>(null);
+  const [adding, setAdding] = useState(false);
+  const showCatalog = !!onAddFromCatalog && source === "catalog";
 
   // Reset on open
   useEffect(() => {
@@ -78,6 +95,9 @@ export default function AddDayItemModal({
     setActiveTab("wish");
     setSelectedId(null);
     setCustomName("");
+    setCatalogSelection(null);
+    // Start in the catalog when the plan has nothing to offer yet.
+    setSource(onAddFromCatalog && poolItems.length === 0 ? "catalog" : "plan");
     if (initialTime) {
       const { h, m } = parseHHMM(initialTime);
       setTimeH(h); setTimeM(m);
@@ -88,6 +108,7 @@ export default function AddDayItemModal({
       setTimeInput("09:00");
       setIsAnytime(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, initialTime]);
 
   const tabItems = activeTab === "custom" ? [] : poolItems.filter((p) => p.sourceType === activeTab);
@@ -119,6 +140,17 @@ export default function AddDayItemModal({
   const handleAdd = useCallback(async () => {
     const scheduledTime = isAnytime ? undefined : formatHHMM(timeH, timeM);
 
+    if (showCatalog) {
+      if (!catalogSelection || !onAddFromCatalog || adding) return;
+      setAdding(true);
+      try {
+        await onAddFromCatalog(catalogSelection, scheduledTime);
+      } finally {
+        setAdding(false);
+      }
+      return;
+    }
+
     if (activeTab === "custom") {
       const name = customName.trim();
       if (!name) return;
@@ -145,9 +177,12 @@ export default function AddDayItemModal({
       priority:    poolItem.priority,
       sourceId:    poolItem.id,
     });
-  }, [activeTab, selectedId, customName, isAnytime, timeH, timeM, poolItems, onAdd]);
+  }, [activeTab, selectedId, customName, isAnytime, timeH, timeM, poolItems, onAdd,
+      showCatalog, catalogSelection, onAddFromCatalog, adding]);
 
-  const canConfirm = activeTab === "custom" ? customName.trim().length > 0 : selectedId !== null;
+  const canConfirm = showCatalog
+    ? catalogSelection !== null && !adding
+    : activeTab === "custom" ? customName.trim().length > 0 : selectedId !== null;
 
   if (!visible) return null;
 
@@ -158,7 +193,7 @@ export default function AddDayItemModal({
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        className="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl"
         style={{
           backgroundColor: "var(--color-bg-card)",
           border: "1px solid var(--color-border-default)",
@@ -260,6 +295,42 @@ export default function AddDayItemModal({
           )}
         </div>
 
+        {/* Source switch — the trip's plan, or anything in the park catalog */}
+        {onAddFromCatalog && (
+          <div className="px-4 pt-3 pb-2 shrink-0" role="group" aria-label="Add from">
+            <div className="flex p-0.5 rounded-lg" style={{ backgroundColor: "var(--color-surface-sunken)" }}>
+              {([["plan", "My plan"], ["catalog", "Park catalog"]] as const).map(([id, label]) => {
+                const active = source === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => { setSource(id); setCatalogSelection(null); setSelectedId(null); }}
+                    aria-pressed={active}
+                    className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-colors"
+                    style={{
+                      backgroundColor: active ? `color-mix(in srgb, ${ACCENT} 20%, transparent)` : "transparent",
+                      color: active ? ACCENT : "var(--color-text-dim)",
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            {source === "catalog" && (
+              <p className="text-[10px] mt-1.5" style={{ color: "var(--color-text-dim)" }}>
+                Also adds it to this trip&rsquo;s plan.
+              </p>
+            )}
+          </div>
+        )}
+
+        {showCatalog ? (
+          <CatalogPicker
+            plannedParkDataIds={plannedParkDataIds ?? new Set()}
+            onSelectionChange={setCatalogSelection}
+          />
+        ) : (<>
         {/* Type Tabs */}
         <div
           className="flex shrink-0 overflow-x-auto"
@@ -375,6 +446,8 @@ export default function AddDayItemModal({
           )}
         </div>
 
+        </>)}
+
         {/* Footer */}
         <div
           className="flex gap-2 px-4 py-3 shrink-0"
@@ -397,7 +470,7 @@ export default function AddDayItemModal({
               cursor: canConfirm ? "pointer" : "not-allowed",
             }}
           >
-            {isAnytime ? "Add to Anytime" : "Add to Timeline"}
+            {adding ? "Adding…" : isAnytime ? "Add to Anytime" : "Add to Timeline"}
           </button>
         </div>
       </div>

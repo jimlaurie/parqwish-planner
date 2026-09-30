@@ -150,6 +150,8 @@ export function useTripWishes() {
         park: data.park,
         land: data.land,
         maxWaitTime: data.maxWaitTime,
+        latitude: data.latitude,
+        longitude: data.longitude,
         sourceType: "app",
         createdAt: now,
         updatedAt: now,

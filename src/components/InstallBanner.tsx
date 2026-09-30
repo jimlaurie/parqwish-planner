@@ -46,8 +46,9 @@ export default function InstallBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 px-4 py-3 backdrop-blur-md"
+      className="fixed left-0 right-0 px-4 py-3 backdrop-blur-md"
       style={{
+        bottom: "var(--mobile-tabbar-h)",
         zIndex: "var(--z-overlay)",
         background: "var(--color-bg-card)",
         borderTop: "1px solid color-mix(in srgb, var(--color-gold) 30%, transparent)",

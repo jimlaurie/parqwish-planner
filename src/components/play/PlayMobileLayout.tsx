@@ -51,7 +51,7 @@ export default function PlayMobileLayout({
   onQuickSchedule,
 }: PlayMobileLayoutProps) {
   return (
-    <div className="w-full flex flex-col" style={{ height: "calc(100vh - 200px)" }}>
+    <div className="w-full flex flex-col" style={{ height: "calc(100vh - 200px - var(--mobile-tabbar-h))" }}>
       {/* SVG Park Map — always visible */}
       <div className="flex-shrink-0 mb-3">
         <MiniParkMap items={items} />

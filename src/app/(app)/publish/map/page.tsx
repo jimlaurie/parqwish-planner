@@ -278,14 +278,14 @@ export default function TripMapPage() {
 
   if (!currentTrip) {
     return (
-      <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center">
+      <div className="h-[calc(100vh-3.5rem-var(--mobile-tabbar-h))] flex items-center justify-center">
         <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</span>
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
+    <div className="h-[calc(100vh-3.5rem-var(--mobile-tabbar-h))] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 shrink-0"
            style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>

@@ -173,7 +173,7 @@ export default function WaitTimeHeatMapPage() {
   }, [stats, coordMaps, dayType, hourFilter]);
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
+    <div className="h-[calc(100vh-3.5rem-var(--mobile-tabbar-h))] flex flex-col overflow-hidden" style={{ backgroundColor: "var(--color-bg-deep)" }}>
       {/* Header */}
       <div className="flex flex-col gap-2 px-4 py-3 shrink-0"
            style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>

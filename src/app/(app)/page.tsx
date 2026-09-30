@@ -17,7 +17,7 @@ import db from "@/lib/db";
 
 // ==================== TYPES ====================
 
-type Phase = "plan" | "prepare" | "preview" | "play";
+type Phase = "plan" | "prepare" | "preview" | "play" | "publish";
 
 interface PortalConfig {
   phase: Phase;
@@ -32,7 +32,10 @@ const PORTALS: PortalConfig[] = [
   { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg" },
   { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg" },
   { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg" },
-  { phase: "play", href: "/play", label: "Play", description: "Transfer data between devices", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg" },
+  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg" },
+  // Stand-in image: a crop of the title banner's Main Street Station clock
+  // tower, until a dedicated Publish photo exists.
+  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg" },
 ];
 
 // ==================== COMPONENT ====================
@@ -105,6 +108,7 @@ export default function Home() {
     prepare: packingCounts ?? 0,
     preview: itineraryCounts ?? 0,
     play: 0,
+    publish: 0,
   };
 
   const editingTrip = editingTripId
@@ -165,7 +169,7 @@ export default function Home() {
             alt={label}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 50vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
           />
           {/* Gradient overlay for text readability */}
           <div
@@ -258,7 +262,7 @@ export default function Home() {
       <div className="flex flex-col items-center px-4 py-6">
         {/* Title Banner */}
         <div
-          className="relative w-full max-w-4xl rounded-2xl overflow-hidden mb-8"
+          className="relative w-full max-w-5xl rounded-2xl overflow-hidden mb-8"
           // Same clipped-rounded-image repaint issue as the portal cards
           // (see willChange below) -- promote to its own layer so nearby
           // animations (e.g. the Edit Trip modal's full-screen backdrop
@@ -308,9 +312,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Portal cards — 4 in a row */}
-        <div className="w-full max-w-4xl mx-auto mb-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Portal cards — the five trip phases, in journey order */}
+        <div className="w-full max-w-5xl mx-auto mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {PORTALS.map(renderPortalCard)}
           </div>
         </div>
@@ -328,18 +332,6 @@ export default function Home() {
             }}
           >
             Catalog
-          </Link>
-          <Link
-            href="/publish"
-            className="px-6 py-3 rounded-full border-2 font-semibold
-                       transition-colors duration-200
-                       hover:bg-[var(--color-accent-publish)] hover:text-[var(--color-bg-deep)]"
-            style={{
-              borderColor: "var(--color-accent-publish)",
-              color: "var(--color-accent-publish)",
-            }}
-          >
-            Publish
           </Link>
         </div>
       </div>

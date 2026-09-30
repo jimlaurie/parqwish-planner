@@ -636,7 +636,8 @@ export default function PlayPage() {
             className="text-sm"
             style={{ color: "var(--color-text-secondary)" }}
           >
-            Transfer data between devices, manage your catalog, and handle templates.
+            The handoff to the park: send your plan to your phone, keep your
+            travel group in sync, and back up or move your catalog and templates.
           </p>
         </div>
 

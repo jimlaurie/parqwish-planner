@@ -13,7 +13,7 @@ export default function AppGroupLayout({
     <>
       <AppInit />
       <TopNavBar />
-      <main id="main-content">{children}</main>
+      <main id="main-content" style={{ paddingBottom: "var(--mobile-tabbar-h)" }}>{children}</main>
       <UpdateBanner />
       <UndoToastHost />
       <InstallBanner />

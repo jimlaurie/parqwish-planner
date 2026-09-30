@@ -53,9 +53,10 @@ export default function SidebarLayout({
 
       {/* Mobile hamburger button */}
       <button
-        className="fixed bottom-4 left-4 z-50 md:hidden w-12 h-12 rounded-full
+        className="fixed left-4 z-50 md:hidden w-12 h-12 rounded-full
                    flex items-center justify-center shadow-lg cursor-pointer"
         style={{
+          bottom: "calc(var(--mobile-tabbar-h) + 1rem)",
           backgroundColor: "var(--color-gold)",
           color: "var(--color-bg-deep)",
         }}
@@ -75,8 +76,9 @@ export default function SidebarLayout({
             aria-hidden="true"
           />
           <aside
-            className="fixed left-0 top-14 bottom-0 z-40 md:hidden overflow-y-auto"
+            className="fixed left-0 top-14 z-40 md:hidden overflow-y-auto"
             style={{
+              bottom: "var(--mobile-tabbar-h)",
               width: sidebarWidth,
               backgroundColor: "var(--color-bg-deep)",
               borderRight: "1px solid var(--color-border-subtle)",

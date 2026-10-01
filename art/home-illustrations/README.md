@@ -24,8 +24,9 @@ Both of these are free and save SVG files.
 
 - **Figma** (recommended to start): works in a web browser, or as a Mac app, at figma.com. The free Starter plan is plenty. It's the easiest to learn, with lots of beginner videos. Search YouTube for "Figma for beginners".
 - **Inkscape**: a free Mac app from inkscape.org. SVG is its own file format, so nothing gets converted on the way in or out. It's more old-fashioned to learn, but very capable.
+- **Pixelmator Pro** (Apple, part of Apple Creator Studio): tested with version 4.4. It keeps the layer names and the line strokes, so it works with the import as-is.
 
-If you're unsure, start with Figma. Switching later is fine, because both use the same files.
+If you're unsure, start with Figma. Switching later is fine, because all three open and save the same files.
 
 ## The three rules
 
@@ -46,6 +47,10 @@ If you're unsure, start with Figma. Switching later is fine, because both use th
 2. Open *Layer → Layers and Objects* to see the layer names.
 3. To load the palette, copy `palette.gpl` into Inkscape's palettes folder (*Edit → Preferences → System → User palettes*, then *Open*), restart Inkscape, and pick "ParQwish Illustrations" from the palette menu at the bottom of the window.
 
+**Pixelmator Pro**
+1. *File → Open* the `.svg` file. Each shape and group shows in the Layers sidebar with its name.
+2. For colors, open `palette.svg` too and pick from its swatches with the color picker's eyedropper. Or type a hex code from the [Colors](#colors) table into the color picker.
+
 ## Saving it back
 
 **Figma**
@@ -57,6 +62,10 @@ If you're unsure, start with Figma. Switching later is fine, because both use th
 **Inkscape**
 1. *File → Save As…*
 2. Choose **Plain SVG** as the format, and save over the original file with the same name.
+
+**Pixelmator Pro**
+1. *File → Export…* and choose **SVG**.
+2. Save over the original file in this folder with the same name. Or save it somewhere else, like your Desktop, and ask Claude to do a trial import first.
 
 Then tell Claude "I've updated plan.svg" (or whichever), and it'll import it and show you the result.
 

@@ -98,6 +98,16 @@ function namesPlugin(orderedNames) {
   };
 }
 
+/**
+ * A single straight segment ("M x y L x y") has no area, so its fill never
+ * shows — but Pixelmator Pro writes fill="#000000" on every stroked line,
+ * which would otherwise warn as an off-palette color on each import.
+ */
+export function isBareLine(node) {
+  if (node.name === "line") return true;
+  return node.name === "path" && /^\s*M[\d.\s,-]+L[\d.\s,-]+$/i.test(node.attributes.d ?? "");
+}
+
 /** Pass 2: palette colors → theme tokens (as style, since attributes can't hold var()). */
 function colorsPlugin(unknown) {
   const convert = (value) => {
@@ -110,6 +120,7 @@ function colorsPlugin(unknown) {
     fn: () => ({
       element: {
         enter(node) {
+          if (isBareLine(node) && node.attributes.fill !== undefined) node.attributes.fill = "none";
           for (const prop of COLOR_PROPS) {
             const value = node.attributes[prop];
             if (value === undefined) continue;

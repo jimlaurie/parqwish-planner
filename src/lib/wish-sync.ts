@@ -323,12 +323,19 @@ export async function createSharedTrip(trip: Trip, uid: string, displayName?: st
     [uid]: { role: "owner", joinedAt: new Date().toISOString(), ...(displayName ? { displayName } : {}) },
   };
 
-  await setDoc(sharedTripDocRef(trip.id), {
-    id: trip.id,
-    encryptedPayload,
-    updatedAt: new Date().toISOString(),
-    members,
-  });
+  try {
+    await setDoc(sharedTripDocRef(trip.id), {
+      id: trip.id,
+      encryptedPayload,
+      updatedAt: new Date().toISOString(),
+      members,
+    });
+  } catch (err) {
+    // Most often: a cloud copy already exists under another owner. Don't
+    // leave this attempt's key cached as if it were the trip's real key.
+    _tripKeyCache.delete(trip.id);
+    throw err;
+  }
   await setDoc(keyWrapDocRef(trip.id, uid), {
     wrappedKey,
     updatedAt: new Date().toISOString(),
@@ -1639,7 +1646,15 @@ async function startTripCollaboration(uid: string, canOwnTrips: boolean): Promis
   const wishById = new Map(wishes.map(w => [w.id, w]));
   const packingItemById = new Map(packingItems.map(p => [p.id, p]));
 
-  const tripPushes = trips.flatMap(t => (t.members ? [pushTrip(t, uid)] : canOwnTrips ? [createSharedTrip(t, uid)] : []));
+  const tripPushes = trips.flatMap(t => {
+    if (t.members?.[uid]) return [pushTrip(t, uid)];
+    // Never uploaded, or uploaded under a different identity on this device
+    // (e.g. an anonymous session before signing in with Apple). Claiming it
+    // only succeeds when no cloud copy exists: Firestore rules refuse to
+    // overwrite a trip someone else owns, so a trip you were removed from is
+    // never re-created as yours.
+    return canOwnTrips ? [createSharedTrip(t, uid)] : [];
+  });
   await Promise.allSettled([
     ...tripPushes,
     ...selections.map(s => pushSelection(s, uid)),

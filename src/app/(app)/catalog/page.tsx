@@ -22,6 +22,9 @@ import SidebarLayout from "@/components/SidebarLayout";
 import WishCard from "@/components/WishCard";
 import PackingCard from "@/components/PackingCard";
 import CatalogGridCard from "@/components/CatalogGridCard";
+import CatalogListRow from "@/components/CatalogListRow";
+import SubcategoryChips from "@/components/SubcategoryChips";
+import { matchesSubcategory, subcategoriesFor, toggleSubcategory, type SubcategoryFilter } from "@/lib/packing-subcategories";
 import CatalogContextMenu from "@/components/CatalogContextMenu";
 import UserPanel from "@/components/UserPanel";
 import EnsembleCard from "@/components/EnsembleCard";
@@ -40,7 +43,7 @@ import type { WishWithStatus } from "@/hooks/use-trip-wishes";
 import type { PackingItemWithStatus } from "@/hooks/use-packing-items";
 import { addDayItemsBatch, type AddDayItemParams } from "@/hooks/use-day-items";
 import type { DayItemType } from "@shared/types/day-item";
-import { PACKING_TABS, PRIORITY_SORT_ORDER } from "@/lib/constants";
+import { PACKING_TABS, PRIORITY_SORT_ORDER, WISH_TAGS } from "@/lib/constants";
 import db from "@/lib/db";
 import PhotoGalleryTab from "@/components/catalog/PhotoGalleryTab";
 
@@ -108,12 +111,15 @@ export default function CatalogPage() {
     addEnsembleToTrip,
   } = useEnsembles();
 
-  const { currentTripId, currentUserId, activeUserFilter, selectedPlayDate } = useAppStore();
+  const { currentTripId, currentUserId, activeUserFilter, selectedPlayDate, catalogView, setCatalogView } = useAppStore();
   const { currentTrip } = useTrips();
 
   const [activeTab, setActiveTab] = useState<CatalogTab>("outfit");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<CatalogSortOption>("priority");
+  // Second filter level: sub-categories per packing type, and tags for wishes
+  const [subcategories, setSubcategories] = useState<SubcategoryFilter>({});
+  const [wishTagFilter, setWishTagFilter] = useState<string[]>([]);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showBulkAddModal, setShowBulkAddModal] = useState(false);
@@ -200,8 +206,11 @@ export default function CatalogPage() {
           (w.land && w.land.toLowerCase().includes(q))
       );
     }
+    if (wishTagFilter.length > 0) {
+      items = items.filter((w) => w.tags.some((t) => wishTagFilter.includes(t)));
+    }
     return sortCatalogItems(items, sortBy);
-  }, [wishes, search, activeUserFilter, sortBy]);
+  }, [wishes, search, activeUserFilter, sortBy, wishTagFilter]);
 
   const filteredPacking = useMemo(() => {
     if (isWishesTab || isEnsemblesTab || isPhotosTab) return [];
@@ -226,8 +235,33 @@ export default function CatalogPage() {
         items = items.filter((item) => memberIds.has(item.id));
       }
     }
+    items = items.filter((item) => matchesSubcategory(item, subcategories));
     return sortCatalogItems(items, sortBy);
-  }, [isWishesTab, isEnsemblesTab, isPhotosTab, activeTab, getPackingByType, search, selectedEnsembleId, ensembles, activeUserFilter, sortBy]);
+  }, [isWishesTab, isEnsemblesTab, isPhotosTab, activeTab, getPackingByType, search, selectedEnsembleId, ensembles, activeUserFilter, sortBy, subcategories]);
+
+  // Chips for the second filter level on the active tab
+  const subcategoryChips = useMemo(() => {
+    if (isWishesTab) {
+      const used = new Set(wishes.flatMap((w) => w.tags));
+      const tags = WISH_TAGS.filter((t) => used.has(t.id));
+      return {
+        options: tags.map((t) => t.id),
+        labels: Object.fromEntries(tags.map((t) => [t.id, `${t.icon} ${t.label}`])),
+        selected: wishTagFilter,
+        onToggle: (id: string) => setWishTagFilter((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id])),
+        onClear: () => setWishTagFilter([]),
+      };
+    }
+    if (isEnsemblesTab || isPhotosTab) return null;
+    const type = activeTab as PackingType;
+    return {
+      options: subcategoriesFor(type, getPackingByType(type)),
+      labels: undefined,
+      selected: subcategories[type] ?? [],
+      onToggle: (c: string) => setSubcategories((f) => toggleSubcategory(f, type, c)),
+      onClear: () => setSubcategories((f) => ({ ...f, [type]: undefined })),
+    };
+  }, [isWishesTab, isEnsemblesTab, isPhotosTab, activeTab, wishes, wishTagFilter, getPackingByType, subcategories]);
 
   // ==================== SELECT MODE / BULK ADD TO DAY ====================
 
@@ -711,6 +745,19 @@ export default function CatalogPage() {
           {/* Creator/owner filter — every tab */}
           <UserFilterBar />
 
+          {/* Sub-category (packing) or tag (wishes) filter */}
+          {subcategoryChips && (
+            <SubcategoryChips
+              accent={accent}
+              className="mb-3"
+              options={subcategoryChips.options}
+              labels={subcategoryChips.labels}
+              selected={subcategoryChips.selected}
+              onToggle={subcategoryChips.onToggle}
+              onClear={subcategoryChips.onClear}
+            />
+          )}
+
           {/* Sort control + Select mode — wishes/packing tabs only (ensembles have their own ordering) */}
           {!isEnsemblesTab && (
             <div className="mb-3 flex items-center justify-between gap-2 flex-wrap">
@@ -735,6 +782,26 @@ export default function CatalogPage() {
                   ))}
                 </div>
               </div>
+              <div className="flex items-center gap-2">
+              {isGridTab && (
+                <div className="flex rounded-lg overflow-hidden" role="group" aria-label="View" style={{ border: "1px solid var(--color-border-subtle)" }}>
+                  {(["gallery", "list"] as const).map((view) => (
+                    <button
+                      key={view}
+                      onClick={() => setCatalogView(view)}
+                      aria-pressed={catalogView === view}
+                      title={view === "gallery" ? "Gallery view" : "List view"}
+                      className="px-2.5 py-1 text-xs font-medium cursor-pointer transition-colors duration-150"
+                      style={{
+                        backgroundColor: catalogView === view ? `color-mix(in srgb, ${accent} 14%, transparent)` : "transparent",
+                        color: catalogView === view ? accent : "var(--color-text-dim)",
+                      }}
+                    >
+                      {view === "gallery" ? "▦ Gallery" : "☰ List"}
+                    </button>
+                  ))}
+                </div>
+              )}
               <button
                 onClick={() => setSelectMode((v) => !v)}
                 className="px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer transition-colors duration-150"
@@ -746,6 +813,7 @@ export default function CatalogPage() {
               >
                 {selectMode ? "Cancel" : "Select"}
               </button>
+              </div>
             </div>
           )}
 
@@ -791,7 +859,7 @@ export default function CatalogPage() {
               className="text-xs"
               style={{ color: "var(--color-text-dim)" }}
             >
-              {search
+              {itemCount !== totalCount
                 ? `${itemCount} of ${totalCount} ${tabConfig.label.toLowerCase()}`
                 : `${totalCount} ${tabConfig.label.toLowerCase()}`}
             </span>
@@ -929,7 +997,33 @@ export default function CatalogPage() {
           )}
 
           {/* Item Grid/List */}
-          {isGridTab ? (
+          {isGridTab && catalogView === "list" ? (
+            // ==================== LIST VIEW (Outfits/Equipment/Sundries/Shopping) ====================
+            <div className="flex flex-col gap-2">
+              <AnimatePresence mode="popLayout">
+                {packingCardsData.length > 0 ? (
+                  packingCardsData.map((item) => (
+                    <CatalogListRow
+                      key={item.id}
+                      item={item}
+                      onEdit={handleEditPacking}
+                      onContextMenu={handleCardContextMenu}
+                      selectMode={selectMode}
+                      selected={selectedIds.has(item.id)}
+                      onToggleSelect={toggleSelectItem}
+                    />
+                  ))
+                ) : (
+                  <EmptyCatalog
+                    icon={tabConfig.icon}
+                    label={tabConfig.label.toLowerCase()}
+                    onAdd={handleAddPacking}
+                    accent="var(--color-accent-prepare)"
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+          ) : isGridTab ? (
             // ==================== GRID VIEW (Outfits & Shopping) ====================
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <AnimatePresence mode="popLayout">

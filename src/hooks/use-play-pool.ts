@@ -12,9 +12,16 @@ import type { DayItemType } from "@shared/types/day-item";
 
 export type PoolSourceType = "wish" | "ride" | "place" | "dining" | "shopping" | "outfit" | "equipment" | "sundry";
 
+/** Which Available Items section an item is listed under. Display only —
+ *  scheduling still goes by sourceType, so a show or dining *wish* is still
+ *  scheduled as a wish (which is what ParQwish Pal expects when it marks
+ *  the wish done), it's just listed with the other shows / dining. */
+export type PoolGroup = PoolSourceType | "show";
+
 export interface PoolItem {
   id: string;
   sourceType: PoolSourceType;
+  group: PoolGroup;
   title: string;
   subtitle?: string;
   park?: string;
@@ -38,6 +45,20 @@ export const POOL_TYPE_TO_DAY_ITEM_TYPE: Record<PoolSourceType, DayItemType> = {
   equipment: "equipment",
   sundry: "sundry",
 };
+
+// Wish tag → Available Items section, in precedence order (a wish tagged
+// both Rides and Dining lists under Rides).
+const WISH_TAG_GROUPS: [string, PoolGroup][] = [
+  ["rides", "ride"], ["shows", "show"], ["eats", "dining"], ["shopping", "shopping"], ["place", "place"],
+];
+
+function wishGroup(tags: string[] | undefined): PoolGroup {
+  return WISH_TAG_GROUPS.find(([tag]) => tags?.includes(tag))?.[1] ?? "wish";
+}
+
+// Packing types whose "completed" means *packed*, not *done* — a packed
+// sunscreen or jacket still belongs in the pool so it can be scheduled.
+const PACKED_NOT_DONE = new Set(["outfit", "equipment", "sundry"]);
 
 // ==================== HOOK ====================
 
@@ -134,6 +155,7 @@ export function usePlayPool(date: string | null) {
       pool.push({
         id: wish.id,
         sourceType: isRide ? "ride" : isPlace ? "place" : "wish",
+        group: wishGroup(wish.tags),
         title: wish.title,
         subtitle: wish.land ? `${wish.park ?? ""} · ${wish.land}`.trim() : undefined,
         park: wish.park,
@@ -149,7 +171,7 @@ export function usePlayPool(date: string | null) {
     // types ever linked to a real park location); outfits/equipment/
     // sundries fall back to their packing category as the subtitle.
     for (const item of tripPacking ?? []) {
-      if (item.completed) continue;
+      if (item.completed && !PACKED_NOT_DONE.has(item.type)) continue;
 
       const tabDef = PACKING_TABS.find((t) => t.id === item.type);
       const icon = tabDef?.icon ?? "🎒";
@@ -167,6 +189,7 @@ export function usePlayPool(date: string | null) {
       pool.push({
         id: item.id,
         sourceType: item.type,
+        group: item.type,
         title: item.name,
         subtitle: resolvedLand
           ? `${resolvedPark ?? ""} · ${resolvedLand}`.trim()

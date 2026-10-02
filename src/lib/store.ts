@@ -89,6 +89,11 @@ interface AppState {
   cloudSyncEnabled: boolean;
   setCloudSyncEnabled: (enabled: boolean) => void;
 
+  // Catalog page: gallery cards or list rows for Outfits/Equipment/Sundries/
+  // Shopping (persisted — it's a viewing preference)
+  catalogView: "gallery" | "list";
+  setCatalogView: (view: "gallery" | "list") => void;
+
   // Session-only: true while sync's first download of this account's trips
   // is still running, so Home shows "Restoring your trips…" instead of the
   // first-visit Welcome screen on a device that just signed in.
@@ -270,6 +275,9 @@ export const useAppStore = create<AppState>()(
       cloudSyncEnabled: false,
       setCloudSyncEnabled: (enabled) => set({ cloudSyncEnabled: enabled }),
 
+      catalogView: "gallery",
+      setCatalogView: (view) => set({ catalogView: view }),
+
       tripsRestoring: false,
       setTripsRestoring: (restoring) => set({ tripsRestoring: restoring }),
 
@@ -318,6 +326,7 @@ export const useAppStore = create<AppState>()(
         portalOpened: state.portalOpened,
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
+        catalogView: state.catalogView,
       }),
     }
   )

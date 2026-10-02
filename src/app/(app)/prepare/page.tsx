@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
+import { useLiveQuery } from "dexie-react-hooks";
+import db from "@/lib/db";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { usePackingItems } from "@/hooks/use-packing-items";
@@ -13,6 +16,9 @@ import PrepareHeader from "@/components/PrepareHeader";
 import PackingCard from "@/components/PackingCard";
 import PackingFormModal from "@/components/PackingFormModal";
 import CatalogPickerModal from "@/components/CatalogPickerModal";
+import PackingCatalogPanel from "@/components/PackingCatalogPanel";
+import SubcategoryChips from "@/components/SubcategoryChips";
+import { matchesSubcategory, subcategoriesFor, toggleSubcategory, type SubcategoryFilter } from "@/lib/packing-subcategories";
 import EmptyState from "@/components/EmptyState";
 import UserPanel from "@/components/UserPanel";
 import { auth } from "@/lib/auth";
@@ -60,6 +66,16 @@ export default function PreparePage() {
 
   // Multi-group add popover state
   const [showGroupPicker, setShowGroupPicker] = useState(false);
+
+  // Second filter level: sub-categories within each chosen category. Drives
+  // both the trip list and (on wide screens) the catalog column.
+  const [subcategories, setSubcategories] = useState<SubcategoryFilter>({});
+  const isWide = useMediaQuery("(min-width: 1280px)");
+  const allPackingItems = useLiveQuery(() => db.packingItems.toArray(), []);
+  const visibleItems = useMemo(
+    () => items.filter((item) => matchesSubcategory(item, subcategories)),
+    [items, subcategories]
+  );
 
   const primaryTab = activePackingTabs[0];
   const editingItemType = useMemo(() => {
@@ -147,11 +163,11 @@ export default function PreparePage() {
           const completed = stats.byType[tab.id]?.completed ?? 0;
 
           return (
+            <div key={tab.id}>
             <button
-              key={tab.id}
               onClick={() => togglePackingTab(tab.id)}
               aria-pressed={isActive}
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium
                          transition-all duration-200 cursor-pointer text-left"
               style={{
                 color: isActive ? ACCENT : "var(--color-text-muted)",
@@ -173,6 +189,17 @@ export default function PreparePage() {
                 </span>
               )}
             </button>
+            {isActive && (
+              <SubcategoryChips
+                accent={ACCENT}
+                className="pl-9 pr-2 pt-1 pb-2"
+                options={subcategoriesFor(tab.id, allPackingItems ?? [])}
+                selected={subcategories[tab.id] ?? []}
+                onToggle={(category) => setSubcategories((f) => toggleSubcategory(f, tab.id, category))}
+                onClear={() => setSubcategories((f) => ({ ...f, [tab.id]: undefined }))}
+              />
+            )}
+            </div>
           );
         })}
       </nav>
@@ -213,7 +240,9 @@ export default function PreparePage() {
 
   return (
     <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
-      <div className="px-6 py-8 max-w-2xl">
+      <div className="px-6 py-8">
+        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] xl:gap-8 xl:items-start">
+        <div className="max-w-2xl xl:max-w-none">
         {/* Header with progress */}
         <PrepareHeader trip={currentTrip} stats={stats} />
 
@@ -242,10 +271,18 @@ export default function PreparePage() {
           />
         )}
 
-        {items.length > 0 && (
+        {items.length > 0 && visibleItems.length === 0 && (
+          <EmptyState
+            icon={"\u{1F50D}"}
+            title="Nothing in these sub-categories"
+            description="Clear the sub-category filter on the left to see everything."
+          />
+        )}
+
+        {visibleItems.length > 0 && (
           <div className="flex flex-col gap-2">
             <AnimatePresence mode="popLayout">
-              {items.map((item) => {
+              {visibleItems.map((item) => {
                 const owner = showUserBadges
                   ? resolveOwnerBadge(item, { userMap, members: currentTrip?.members, myUid })
                   : undefined;
@@ -284,6 +321,7 @@ export default function PreparePage() {
           >
             + Add New
           </button>
+          {!isWide && (
           <button
             onClick={() => setShowCatalogPicker(true)}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold
@@ -296,6 +334,7 @@ export default function PreparePage() {
           >
             From Catalog
           </button>
+          )}
 
           {/* Group picker popover */}
           {showGroupPicker && (
@@ -336,6 +375,26 @@ export default function PreparePage() {
               </div>
             </>
           )}
+        </div>
+        </div>
+
+        {/* ==================== RIGHT: YOUR CATALOG (wide screens) ==================== */}
+        {isWide && (
+          <aside className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
+            <PackingCatalogPanel
+              types={activePackingTabs}
+              subcategories={subcategories}
+              onAdd={selectExistingItem}
+              onRemove={async (itemId) => {
+                const item = await getItemById(itemId);
+                const removed = await unselectItem(itemId);
+                if (removed) {
+                  showUndoToast(`Removed “${item?.name ?? "item"}” from this trip`, () => restorePackingSelection(removed));
+                }
+              }}
+            />
+          </aside>
+        )}
         </div>
       </div>
 

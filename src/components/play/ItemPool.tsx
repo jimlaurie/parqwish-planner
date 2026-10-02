@@ -22,13 +22,14 @@ interface GroupConfig {
 
 const GROUPS: GroupConfig[] = [
   { key: "ride", label: "Rides", icon: "\uD83C\uDFA2" },
-  { key: "wish", label: "Wishes", icon: "\u2B50" },
-  { key: "place", label: "Places", icon: "\uD83D\uDCCD" },
+  { key: "show", label: "Shows", icon: "\uD83C\uDFAD" },
   { key: "dining", label: "Dining", icon: "\uD83C\uDF7D\uFE0F" },
   { key: "shopping", label: "Shopping", icon: "\uD83D\uDECD\uFE0F" },
+  { key: "place", label: "Places", icon: "\uD83D\uDCCD" },
   { key: "outfit", label: "Outfits", icon: "\uD83D\uDC57" },
   { key: "equipment", label: "Equipment", icon: "\uD83C\uDF92" },
   { key: "sundry", label: "Sundries", icon: "\uD83E\uDDF4" },
+  { key: "wish", label: "Other wishes", icon: "\u2B50" },
 ];
 
 export default function ItemPool({ poolItems, loading, onScheduleReservation, onQuickSchedule }: ItemPoolProps) {
@@ -48,7 +49,7 @@ export default function ItemPool({ poolItems, loading, onScheduleReservation, on
   const grouped = useMemo(() => {
     const result: Record<string, PoolItem[]> = {};
     for (const group of GROUPS) {
-      result[group.key] = filteredItems.filter((i) => i.sourceType === group.key);
+      result[group.key] = filteredItems.filter((i) => i.group === group.key);
     }
     return result;
   }, [filteredItems]);

@@ -42,7 +42,7 @@ const PORTALS: PortalConfig[] = [
 
 export default function Home() {
   const router = useRouter();
-  const { currentTripId, setCurrentTripId, showTripModal, setShowTripModal } =
+  const { currentTripId, setCurrentTripId, showTripModal, setShowTripModal, tripsRestoring } =
     useAppStore();
   const [editingTripId, setEditingTripId] = useState<string | null>(null);
   const {
@@ -246,6 +246,16 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
         <div className="w-8 h-8 border-2 border-[var(--color-gold)] border-t-transparent rounded-full animate-spin" />
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading trips...</p>
+      </div>
+    );
+  }
+
+  // Just signed in on this device — trips are still downloading
+  if (!loading && trips.length === 0 && tripsRestoring) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+        <div className="w-8 h-8 border-2 border-[var(--color-gold)] border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Restoring your trips from your other devices…</p>
       </div>
     );
   }

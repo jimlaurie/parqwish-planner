@@ -89,6 +89,12 @@ interface AppState {
   cloudSyncEnabled: boolean;
   setCloudSyncEnabled: (enabled: boolean) => void;
 
+  // Session-only: true while sync's first download of this account's trips
+  // is still running, so Home shows "Restoring your trips…" instead of the
+  // first-visit Welcome screen on a device that just signed in.
+  tripsRestoring: boolean;
+  setTripsRestoring: (restoring: boolean) => void;
+
   // Play phase
   selectedPlayDate: string | null;
   setSelectedPlayDate: (date: string | null) => void;
@@ -264,6 +270,9 @@ export const useAppStore = create<AppState>()(
       cloudSyncEnabled: false,
       setCloudSyncEnabled: (enabled) => set({ cloudSyncEnabled: enabled }),
 
+      tripsRestoring: false,
+      setTripsRestoring: (restoring) => set({ tripsRestoring: restoring }),
+
       // Play phase
       selectedPlayDate: null,
       setSelectedPlayDate: (date) => set({ selectedPlayDate: date }),
@@ -310,10 +319,17 @@ export const useAppStore = create<AppState>()(
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
       }),
-      onRehydrateStorage: () => () => {
-        // Called after state is rehydrated from localStorage
-        useAppStore.setState({ _hasHydrated: true });
-      },
     }
   )
 );
+
+// _hasHydrated tells pages the persisted selection (currentTripId etc.) has
+// been read. localStorage is synchronous, so that read happens inside
+// create() above, before `useAppStore` exists — an onRehydrateStorage
+// callback that sets the flag through useAppStore throws there, persist
+// swallows the error, and the flag stayed false forever. That silently
+// disabled every page's "no trip selected → go Home" redirect, leaving
+// them on "Loading trip..." for good. persist's own API works at any time.
+const markHydrated = () => useAppStore.setState({ _hasHydrated: true });
+if (useAppStore.persist.hasHydrated()) markHydrated();
+else useAppStore.persist.onFinishHydration(markHydrated);

@@ -1618,13 +1618,14 @@ export async function pullAllTripContent(uid: string, tripIds: string[]): Promis
  * startSync() (full) and startCollaboratorSync() (trip content only, for
  * non-Apple members participating in someone else's trip).
  */
-async function startTripCollaboration(uid: string, canOwnTrips: boolean): Promise<void> {
+async function startTripCollaboration(uid: string, canOwnTrips: boolean, onPulled?: () => void): Promise<void> {
   const tripIds = await pullSharedTrips(uid).catch((err) => {
     console.error("[wish-sync] pullSharedTrips failed:", err);
     return [] as string[];
   });
   const pullContent = await Promise.allSettled([pullAllTripContent(uid, tripIds)]);
   console.log("[wish-sync] pull — sharedTrips:", tripIds.length, "content:", pullContent[0].status);
+  onPulled?.();
 
   // Push everything local so nothing added while offline is lost.
   // A trip missing `members` predates this sync model — create it fresh
@@ -1681,7 +1682,13 @@ async function startTripCollaboration(uid: string, canOwnTrips: boolean): Promis
  * (Apple-only) plus every shared trip it belongs to. Safe to call multiple
  * times — tears down previous listeners first.
  */
-export async function startSync(): Promise<void> {
+export interface StartSyncOptions {
+  /** Called once this account's trips have been downloaded (before the
+   *  slower upload sweep), so the UI can stop showing "Restoring…". */
+  onPulled?: () => void;
+}
+
+export async function startSync(options: StartSyncOptions = {}): Promise<void> {
   const user = auth.currentUser;
   if (!user || !isSyncEnabled(user)) {
     console.log("[wish-sync] startSync skipped — no sync-enabled user");
@@ -1712,7 +1719,7 @@ export async function startSync(): Promise<void> {
   ]);
   console.log(`[wish-sync] pushed ${wishes.length} wishes, ${packingItems.length} packingItems, ${tripUsers.length} tripUsers`);
 
-  await startTripCollaboration(uid, true);
+  await startTripCollaboration(uid, true, options.onPulled);
 
   _unsubscribeWishes       = subscribeToWishes(uid);
   _unsubscribePackingItems = subscribeToPackingItems(uid);
@@ -1726,20 +1733,20 @@ export async function startSync(): Promise<void> {
  * wish/packing catalog. If this account IS Apple-verified, defers entirely
  * to startSync(), which already covers everything here.
  */
-export async function startCollaboratorSync(): Promise<void> {
+export async function startCollaboratorSync(options: StartSyncOptions = {}): Promise<void> {
   const user = auth.currentUser;
   if (!user) {
     console.log("[wish-sync] startCollaboratorSync skipped — no user");
     return;
   }
   if (isSyncEnabled(user)) {
-    await startSync();
+    await startSync(options);
     return;
   }
 
   console.log("[wish-sync] startCollaboratorSync starting for uid tail:", user.uid.slice(-8));
   stopSync();
-  await startTripCollaboration(user.uid, false);
+  await startTripCollaboration(user.uid, false, options.onPulled);
   console.log("[wish-sync] collaborator listeners started");
 }
 

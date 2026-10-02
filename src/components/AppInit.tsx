@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { localToday, resolveTripSelection } from "@/lib/trip-selection";
 import { useUserInit } from "@/hooks/use-user-init";
 import db from "@/lib/db";
 import { ensureAuth, onAuthChanged, isSyncEnabled, canCollaborate, auth } from "@/lib/auth";
@@ -252,6 +254,8 @@ function useVersionCheck() {
 
 // ==================== SYNC INIT ====================
 
+const RESTORE_TIMEOUT_MS = 15_000;
+
 function useSyncInit() {
   const cloudSyncEnabled = useAppStore((s) => s.cloudSyncEnabled);
 
@@ -272,15 +276,23 @@ function useSyncInit() {
     // anonymous session — e.g. someone who joined a trip via /join without
     // ever signing in with Apple) still needs shared-trip content to keep
     // syncing on return visits, just not the personal catalog.
+    // While the first download runs, Home shows "Restoring your trips…"
+    // instead of the Welcome screen; cleared on download, failure, or a
+    // safety timeout so a stalled connection can't leave it up forever.
+    const { setTripsRestoring } = useAppStore.getState();
+    const restore = (start: (o: { onPulled: () => void }) => Promise<void>, label: string) => {
+      setTripsRestoring(true);
+      const done = () => setTripsRestoring(false);
+      const timeout = setTimeout(done, RESTORE_TIMEOUT_MS);
+      start({ onPulled: done })
+        .catch((err) => console.warn(`[AppInit] ${label} start failed:`, err))
+        .finally(() => { clearTimeout(timeout); done(); });
+    };
     const unsub = onAuthChanged((user) => {
       if (user && isSyncEnabled(user)) {
-        startSync().catch((err) =>
-          console.warn("[AppInit] Sync start failed:", err)
-        );
+        restore(startSync, "Sync");
       } else if (user && canCollaborate(user)) {
-        startCollaboratorSync().catch((err) =>
-          console.warn("[AppInit] Collaborator sync start failed:", err)
-        );
+        restore(startCollaboratorSync, "Collaborator sync");
       } else {
         stopSync();
       }
@@ -291,6 +303,26 @@ function useSyncInit() {
       stopSync();
     };
   }, [cloudSyncEnabled]);
+}
+
+// ==================== TRIP SELECTION ====================
+
+/**
+ * Keeps currentTripId pointing at a trip that's actually on this device
+ * (see trip-selection.ts), and picks one when nothing is selected — e.g. a
+ * fresh browser whose trips just arrived through sync.
+ */
+function useTripSelection() {
+  const hydrated = useAppStore((s) => s._hasHydrated);
+  const currentTripId = useAppStore((s) => s.currentTripId);
+  const setCurrentTripId = useAppStore((s) => s.setCurrentTripId);
+  const trips = useLiveQuery(() => db.trips.toArray());
+
+  useEffect(() => {
+    if (!hydrated || !trips) return;
+    const next = resolveTripSelection(currentTripId, trips, localToday());
+    if (next !== currentTripId) setCurrentTripId(next);
+  }, [hydrated, trips, currentTripId, setCurrentTripId]);
 }
 
 // ==================== APP INIT ====================
@@ -304,6 +336,7 @@ export default function AppInit() {
   useUserInit();
   useCacheBuster();
   useSyncInit();
+  useTripSelection();
   useFocusPull();
   useVersionCheck();
   return null;

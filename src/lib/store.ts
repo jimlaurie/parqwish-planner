@@ -330,6 +330,8 @@ export const useAppStore = create<AppState>()(
 // swallows the error, and the flag stayed false forever. That silently
 // disabled every page's "no trip selected → go Home" redirect, leaving
 // them on "Loading trip..." for good. persist's own API works at any time.
+// (persist isn't attached during the static build's server render, where
+// there's no localStorage — hence the optional chaining.)
 const markHydrated = () => useAppStore.setState({ _hasHydrated: true });
-if (useAppStore.persist.hasHydrated()) markHydrated();
-else useAppStore.persist.onFinishHydration(markHydrated);
+if (useAppStore.persist?.hasHydrated()) markHydrated();
+else useAppStore.persist?.onFinishHydration(markHydrated);

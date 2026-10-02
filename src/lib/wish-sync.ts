@@ -1611,7 +1611,7 @@ export async function pullAllTripContent(uid: string, tripIds: string[]): Promis
  * startSync() (full) and startCollaboratorSync() (trip content only, for
  * non-Apple members participating in someone else's trip).
  */
-async function startTripCollaboration(uid: string): Promise<void> {
+async function startTripCollaboration(uid: string, canOwnTrips: boolean): Promise<void> {
   const tripIds = await pullSharedTrips(uid).catch((err) => {
     console.error("[wish-sync] pullSharedTrips failed:", err);
     return [] as string[];
@@ -1622,7 +1622,12 @@ async function startTripCollaboration(uid: string): Promise<void> {
   // Push everything local so nothing added while offline is lost.
   // A trip missing `members` predates this sync model — create it fresh
   // (generates its key + owner membership) instead of pushing content-only.
-  // For a non-owner this fails safely (permission-denied, caught below).
+  // Only an Apple-signed-in account may own a trip (see auth.ts): a guest or
+  // anonymous session pushes content for trips it already belongs to, but
+  // never uploads its own local trips as new shared trips — otherwise every
+  // device that turned sync on before signing in with Apple left behind a
+  // cloud copy owned by a throwaway anonymous account. For a non-owner the
+  // remaining pushes fail safely (permission-denied, caught below).
   const [trips, selections, dayItems, packingSelections, wishes, packingItems] = await Promise.all([
     db.trips.toArray(),
     db.tripWishSelections.toArray(),
@@ -1634,8 +1639,9 @@ async function startTripCollaboration(uid: string): Promise<void> {
   const wishById = new Map(wishes.map(w => [w.id, w]));
   const packingItemById = new Map(packingItems.map(p => [p.id, p]));
 
+  const tripPushes = trips.flatMap(t => (t.members ? [pushTrip(t, uid)] : canOwnTrips ? [createSharedTrip(t, uid)] : []));
   await Promise.allSettled([
-    ...trips.map(t => (t.members ? pushTrip(t, uid) : createSharedTrip(t, uid))),
+    ...tripPushes,
     ...selections.map(s => pushSelection(s, uid)),
     ...selections.flatMap(s => {
       const wish = wishById.get(s.wishId);
@@ -1648,7 +1654,7 @@ async function startTripCollaboration(uid: string): Promise<void> {
       return item ? [pushPackingItemMirror(ps.tripId, item, uid)] : [];
     }),
   ]);
-  console.log(`[wish-sync] pushed ${trips.length} trips, ${selections.length} selections, ${dayItems.length} dayItems, ${packingSelections.length} packingSelections`);
+  console.log(`[wish-sync] pushed ${tripPushes.length} of ${trips.length} trips, ${selections.length} selections, ${dayItems.length} dayItems, ${packingSelections.length} packingSelections`);
 
   // subscribeToSharedTrips manages per-trip content listeners (selections,
   // day items, mirrors) internally as this account's membership changes.
@@ -1691,7 +1697,7 @@ export async function startSync(): Promise<void> {
   ]);
   console.log(`[wish-sync] pushed ${wishes.length} wishes, ${packingItems.length} packingItems, ${tripUsers.length} tripUsers`);
 
-  await startTripCollaboration(uid);
+  await startTripCollaboration(uid, true);
 
   _unsubscribeWishes       = subscribeToWishes(uid);
   _unsubscribePackingItems = subscribeToPackingItems(uid);
@@ -1718,7 +1724,7 @@ export async function startCollaboratorSync(): Promise<void> {
 
   console.log("[wish-sync] startCollaboratorSync starting for uid tail:", user.uid.slice(-8));
   stopSync();
-  await startTripCollaboration(user.uid);
+  await startTripCollaboration(user.uid, false);
   console.log("[wish-sync] collaborator listeners started");
 }
 

@@ -5,12 +5,18 @@
  * sync status at a glance. Mirrors the same state SyncPanel computes
  * (web/src/components/SyncPanel.tsx) and links there since that's where
  * opt-in/sign-in actually happens.
+ *
+ * Green "Sync" means signed in with Apple — this device's trips and catalog
+ * sync with your other devices. Every device also has an automatic
+ * anonymous session, and Google/email sessions exist for collaborators;
+ * those only sync shared trips someone else invited you to, so they get
+ * their own states instead of the green "everything syncs" one.
  */
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { User } from "firebase/auth";
-import { onAuthChanged, isSyncEnabled, canCollaborate } from "@/lib/auth";
+import { onAuthChanged, isSyncEnabled, hasDurableIdentity } from "@/lib/auth";
 import { useAppStore } from "@/lib/store";
 
 export default function SyncStatusIndicator() {
@@ -34,26 +40,29 @@ export default function SyncStatusIndicator() {
     });
   }, [cloudSyncEnabled]);
 
-  const active = cloudSyncEnabled && authChecked && !!user && (isSyncEnabled(user) || canCollaborate(user));
   const checking = cloudSyncEnabled && !authChecked;
+  const apple = cloudSyncEnabled && authChecked && isSyncEnabled(user);
+  const tripsOnly = cloudSyncEnabled && authChecked && !apple && hasDurableIdentity(user);
 
-  const color = !cloudSyncEnabled
+  const color = !cloudSyncEnabled || checking
     ? "var(--color-text-dim)"
-    : checking
-    ? "var(--color-text-dim)"
-    : active
+    : apple
     ? "var(--color-success)"
+    : tripsOnly
+    ? "var(--color-info)"
     : "var(--color-warning)";
 
   const label = !cloudSyncEnabled
     ? "Cloud sync is off"
     : checking
     ? "Checking sync status…"
-    : active
-    ? "Cloud sync active"
-    : "Cloud sync on — not signed in";
+    : apple
+    ? "Cloud sync active — this device is signed in with Apple"
+    : tripsOnly
+    ? "Syncing trips you were invited to. Sign in with Apple on the Play page to sync your own trips across devices."
+    : "Cloud sync is on, but this device isn't signed in with Apple, so its trips aren't syncing. Tap to sign in.";
 
-  const shortLabel = !cloudSyncEnabled ? "Sync off" : checking ? "Sync" : active ? "Sync" : "Sign in";
+  const shortLabel = !cloudSyncEnabled ? "Sync off" : checking ? "Sync" : apple ? "Sync" : tripsOnly ? "Shared trips" : "Sign in";
 
   return (
     <Link

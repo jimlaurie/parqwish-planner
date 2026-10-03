@@ -10,6 +10,13 @@ import TripSidebar from "@/components/TripSidebar";
 import CreateTripModal from "@/components/CreateTripModal";
 import EditTripModal from "@/components/EditTripModal";
 import WelcomeCard from "@/components/WelcomeCard";
+import HomeBanner from "@/components/home/HomeBanner";
+import { IlloScene, type IlloArtData } from "@/components/home/illustrations/illo";
+import planArt from "@/components/home/illustrations/generated/plan";
+import previewArt from "@/components/home/illustrations/generated/preview";
+import prepareArt from "@/components/home/illustrations/generated/prepare";
+import playArt from "@/components/home/illustrations/generated/play";
+import publishArt from "@/components/home/illustrations/generated/publish";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
@@ -26,16 +33,18 @@ interface PortalConfig {
   description: string;
   accent: string;
   image: string;
+  /** Animated illustration shown instead of the photo. */
+  art?: IlloArtData;
 }
 
 const PORTALS: PortalConfig[] = [
-  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg" },
-  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg" },
-  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg" },
-  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg" },
+  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg", art: planArt },
+  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", art: previewArt },
+  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg", art: prepareArt },
+  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg", art: playArt },
   // Stand-in image: a crop of the title banner's Main Street Station clock
   // tower, until a dedicated Publish photo exists.
-  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg" },
+  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg", art: publishArt },
 ];
 
 // ==================== COMPONENT ====================
@@ -137,7 +146,7 @@ export default function Home() {
   // ==================== RENDER PORTAL CARD ====================
 
   const renderPortalCard = (config: PortalConfig) => {
-    const { phase, href, label, description, accent, image } = config;
+    const { phase, href, label, description, accent, image, art } = config;
     const disabled = !currentTripId;
     const badge = badgeCounts[phase];
 
@@ -173,20 +182,26 @@ export default function Home() {
       >
         {/* Portal image */}
         <div className="relative aspect-[3/4] overflow-hidden">
-          <Image
-            src={image}
-            alt={label}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-          />
-          {/* Gradient overlay for text readability */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(to bottom, transparent 50%, color-mix(in srgb, ${accent} 19%, transparent) 100%)`,
-            }}
-          />
+          {art ? (
+            <IlloScene art={art} />
+          ) : (
+            <>
+              <Image
+                src={image}
+                alt={label}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+              />
+              {/* Gradient overlay for text readability */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(to bottom, transparent 50%, color-mix(in srgb, ${accent} 19%, transparent) 100%)`,
+                }}
+              />
+            </>
+          )}
           {/* Badge */}
           {badge > 0 && !disabled && (
             <div
@@ -279,57 +294,7 @@ export default function Home() {
   return (
     <SidebarLayout sidebar={sidebar}>
       <div className="flex flex-col items-center px-4 py-6">
-        {/* Title Banner */}
-        <div
-          className="relative w-full max-w-5xl rounded-2xl overflow-hidden mb-8"
-          // Same clipped-rounded-image repaint issue as the portal cards
-          // (see willChange below) -- promote to its own layer so nearby
-          // animations (e.g. the Edit Trip modal's full-screen backdrop
-          // fade) don't force this to repaint every frame.
-          style={{ minHeight: 160, willChange: "transform" }}
-        >
-          {/* Background image */}
-          <Image
-            src="/images/title-background.jpg"
-            alt="Disneyland entrance"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 800px"
-            priority
-          />
-          {/* Dark overlay for text readability — fixed at 55% so text is always legible */}
-          <div className="absolute inset-0 bg-black/55" />
-          {/* Logo + subtitle */}
-          <div className="relative z-10 flex flex-col items-center justify-center py-8 px-4">
-            <Image
-              src="/images/parqwish-logo.png"
-              alt="ParQwish"
-              width={400}
-              height={100}
-              className="h-16 md:h-20 w-auto mb-2"
-              style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.7))" }}
-              priority
-            />
-            <p
-              className="text-sm md:text-lg text-center tracking-widest uppercase font-semibold"
-              style={{
-                color: "#FFD700",
-                textShadow: "0 1px 3px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7)",
-              }}
-            >
-              Planner
-            </p>
-            <p
-              className="text-xs md:text-sm text-center mt-1"
-              style={{
-                color: "rgba(255,255,255,0.95)",
-                textShadow: "0 1px 4px rgba(0,0,0,0.8)",
-              }}
-            >
-              Your Disneyland Resort Companion
-            </p>
-          </div>
-        </div>
+        <HomeBanner />
 
         {/* Portal cards — the five trip phases, in journey order */}
         <div className="w-full max-w-5xl mx-auto mb-8">

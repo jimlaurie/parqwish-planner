@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <title>Play — out in the park taking photos</title>
+  <g id="outdoors">
+    <rect id="sky" width="300" height="400" fill="#BFE3DD"/>
+    <path id="pennant-string" d="M0 36 Q150 110 300 36" fill="none" stroke="#2B2D42" stroke-width="1.5"/>
+    <g id="pennants">
+      <path d="M12 44.3 L34 45.3 L23 66.3 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54 58.2 L76 59.2 L65 80.2 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M96 68.7 L118 69.7 L107 90.7 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M138 73.7 L160 74.7 L149 95.7 Z" fill="#E07A3F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M180 72.3 L202 73.3 L191 94.3 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M222 64.8 L244 65.8 L233 86.8 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M264 52.5 L286 53.5 L275 74.5 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    </g>
+    <path id="wheel-stand" d="M226 330 L254 196 L282 330" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <g id="ferris-wheel">
+      <circle cx="254" cy="196" r="38" fill="none" stroke="#2B2D42" stroke-width="2.5"/>
+      <line x1="254" y1="196" x2="292" y2="196" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="292" cy="196" r="6" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="280.9" y2="222.9" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="280.9" cy="222.9" r="6" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="254" y2="234" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="254" cy="234" r="6" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="227.1" y2="222.9" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="227.1" cy="222.9" r="6" fill="#E07A3F" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="216" y2="196" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="216" cy="196" r="6" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="227.1" y2="169.1" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="227.1" cy="169.1" r="6" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="254" y2="158" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="254" cy="158" r="6" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5"/>
+      <line x1="254" y1="196" x2="280.9" y2="169.1" stroke="#2B2D42" stroke-width="1.2"/>
+      <circle cx="280.9" cy="169.1" r="6" fill="#E07A3F" stroke="#2B2D42" stroke-width="1.5"/>
+    </g>
+    <circle id="wheel-hub" cx="254" cy="196" r="4" fill="#2B2D42"/>
+    <rect id="grass" y="330" width="300" height="70" fill="#7FA97C"/>
+    <path id="walkway" d="M104 400 L140 330 L196 330 L254 400 Z" fill="#D8C29C"/>
+    <line id="horizon" x1="0" y1="330" x2="300" y2="330" stroke="#2B2D42" stroke-width="3"/>
+  </g>
+  <g id="palm">
+    <path d="M34 332 Q30 260 50 206" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
+    <path d="M50 206 Q30 190 10 208 M50 206 Q40 180 22 178 M50 206 Q62 180 80 182 M50 206 Q72 196 88 214 M50 206 Q56 222 60 236" fill="none" stroke="#2F9C95" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g id="balloon">
+    <path d="M82 146 Q86 170 78 200" fill="none" stroke="#2B2D42" stroke-width="1.5"/>
+    <ellipse cx="82" cy="126" rx="15" ry="19" fill="#D9573F" stroke="#2B2D42" stroke-width="2.5"/>
+    <path d="M78 145 L86 145 L82 150 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5"/>
+  </g>
+  <g id="character">
+    <line id="leg-back" x1="120" y1="290" x2="108" y2="336" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
+    <line id="leg-front" x1="138" y1="290" x2="152" y2="336" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
+    <ellipse id="shoe-back" cx="106" cy="337" rx="9" ry="4" fill="#2B2D42"/>
+    <ellipse id="shoe-front" cx="158" cy="337" rx="9" ry="4" fill="#2B2D42"/>
+    <path id="body" d="M108 294 L114 230 Q128 220 144 230 L150 294 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle id="face" cx="130" cy="206" r="16" fill="#EFC29C" stroke="#2B2D42" stroke-width="2.5"/>
+    <path id="hair" d="M114 204 Q114 186 132 187 Q146 189 146 200 Q134 194 122 202 Z" fill="#2B2D42"/>
+    <circle id="eye" cx="139" cy="206" r="2" fill="#2B2D42"/>
+    <path id="camera-arm" d="M140 238 L156 218" stroke="#D9573F" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <g id="camera">
+      <rect x="148" y="196" width="26" height="18" rx="3" fill="#2B2D42"/>
+      <rect x="152" y="192" width="8" height="5" rx="1" fill="#2B2D42"/>
+      <circle cx="163" cy="205" r="6" fill="#FFF9EC" stroke="#2F9C95" stroke-width="2.5"/>
+    </g>
+  </g>
+  <g id="flash-layer">
+    <g id="flash">
+      <line x1="182" y1="190" x2="198" y2="190" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="188.2" y2="196.2" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="182" y2="206" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="175.8" y2="196.2" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="166" y2="190" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="175.8" y2="183.8" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="182" y2="174" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="182" y1="190" x2="188.2" y2="183.8" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="182" cy="190" r="2.2" fill="#E3A93A"/>
+    </g>
+  </g>
+  <g id="photos">
+    <g id="photo-1" transform="rotate(-10 140 116)">
+      <rect x="126" y="100" width="28" height="32" rx="2" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+      <rect x="130" y="104" width="20" height="18" fill="#2F9C95"/>
+    </g>
+    <g id="photo-2" transform="rotate(6 178 106)">
+      <rect x="164" y="90" width="28" height="32" rx="2" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+      <rect x="168" y="94" width="20" height="18" fill="#D9573F"/>
+    </g>
+    <g id="photo-3" transform="rotate(-4 214 120)">
+      <rect x="200" y="104" width="28" height="32" rx="2" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+      <rect x="204" y="108" width="20" height="18" fill="#E3A93A"/>
+    </g>
+  </g>
+</svg>

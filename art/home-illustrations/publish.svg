@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <title>Publish — putting the trip recap together on a computer</title>
+  <g id="room">
+    <rect id="wall" width="300" height="400" fill="#F1E6CF"/>
+    <rect id="floor" y="350" width="300" height="50" fill="#D8C29C"/>
+    <line id="baseboard" x1="0" y1="350" x2="300" y2="350" stroke="#2B2D42" stroke-width="3"/>
+  </g>
+  <g id="wall-art">
+    <rect id="frame" x="40" y="56" width="74" height="56" rx="3" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <path id="frame-picture" d="M48 104 L66 80 L78 94 L88 84 L106 104 Z" fill="#7FA97C"/>
+    <circle id="frame-sun" cx="96" cy="72" r="6" fill="#E3A93A"/>
+  </g>
+  <g id="decorations">
+    <g id="starburst">
+      <line x1="250" y1="96" x2="268" y2="96" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="257" y2="103" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="250" y2="114" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="243" y2="103" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="232" y2="96" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="243" y2="89" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="250" y2="78" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="250" y1="96" x2="257" y2="89" stroke="#E3A93A" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="250" cy="96" r="2.5" fill="#E3A93A"/>
+    </g>
+    <path id="sparkle" d="M150 35 Q151.5 40.5 157 42 Q151.5 43.5 150 49 Q148.5 43.5 143 42 Q148.5 40.5 150 35 Z" fill="#E3A93A"/>
+  </g>
+  <g id="desk">
+    <line x1="126" y1="284" x2="116" y2="350" stroke="#2B2D42" stroke-width="4" stroke-linecap="round"/>
+    <line x1="274" y1="284" x2="284" y2="350" stroke="#2B2D42" stroke-width="4" stroke-linecap="round"/>
+    <rect x="108" y="272" width="184" height="12" rx="3" fill="#E07A3F" stroke="#2B2D42" stroke-width="2.5"/>
+  </g>
+  <g id="computer">
+    <path id="monitor-stand" d="M206 256 L232 256 L238 272 L200 272 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect id="monitor" x="156" y="150" width="130" height="108" rx="12" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <rect id="screen" x="166" y="158" width="110" height="80" rx="6" fill="#2B2D42"/>
+    <rect id="screen-photo-1" x="174" y="166" width="19" height="15" rx="1.5" fill="#D9573F"/>
+    <rect id="screen-photo-2" x="196" y="166" width="19" height="15" rx="1.5" fill="#2F9C95"/>
+    <rect id="screen-photo-3" x="174" y="184" width="19" height="15" rx="1.5" fill="#E3A93A"/>
+    <rect id="screen-photo-4" x="196" y="184" width="19" height="15" rx="1.5" fill="#7FA97C"/>
+    <rect id="bar-1" x="230" y="184" width="8" height="18" fill="#E3A93A"/>
+    <rect id="bar-2" x="242" y="172" width="8" height="30" fill="#2F9C95"/>
+    <rect id="bar-3" x="254" y="178" width="8" height="24" fill="#D9573F"/>
+    <path id="trail" d="M174 226 Q194 210 212 222 T264 212" fill="none" stroke="#FFF9EC" stroke-width="2" stroke-linecap="round"/>
+    <circle id="knob-1" cx="262" cy="248" r="3.5" fill="#D9573F"/>
+    <circle id="knob-2" cx="274" cy="248" r="3.5" fill="#2F9C95"/>
+  </g>
+  <g id="desk-top">
+    <rect id="keyboard" x="120" y="264" width="64" height="8" rx="2" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+  </g>
+  <g id="character">
+    <rect id="leg-back" x="62" y="288" width="8" height="60" fill="#2B2D42"/>
+    <rect id="leg-front" x="80" y="288" width="8" height="60" fill="#2B2D42"/>
+    <ellipse id="shoe-back" cx="70" cy="349" rx="10" ry="4" fill="#2B2D42"/>
+    <ellipse id="shoe-front" cx="90" cy="349" rx="10" ry="4" fill="#2B2D42"/>
+    <path id="arm-back" d="M58 236 L46 276" stroke="#2F9C95" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path id="body" d="M54 292 L60 228 Q74 218 90 228 L96 292 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle id="face" cx="76" cy="204" r="16" fill="#EFC29C" stroke="#2B2D42" stroke-width="2.5"/>
+    <path id="hair" d="M60 202 Q60 184 78 185 Q92 187 92 198 Q80 192 68 200 Z" fill="#2B2D42"/>
+    <circle id="eye" cx="85" cy="204" r="2" fill="#2B2D42"/>
+    <g id="typing-arm">
+      <path d="M88 240 L122 262" stroke="#2F9C95" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <circle cx="124" cy="263" r="4.5" fill="#EFC29C" stroke="#2B2D42" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

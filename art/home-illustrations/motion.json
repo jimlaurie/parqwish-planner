@@ -1,0 +1,61 @@
+{
+  "_about": "Which layers move, and how. Layer names must match the SVG's ids (Figma layer names / Inkscape layer labels). 'match' applies to every layer whose name starts with it, in drawing order, each 'stagger' seconds after the last. Times are in seconds. See README.md.",
+  "banner": {
+    "label": "A mid-century skyline with a rocket, palm trees, a pavilion and a Ferris wheel",
+    "align": "xMidYMax slice",
+    "nightOnly": ["stars"],
+    "motion": [
+      { "id": "ferris-wheel", "anim": "spin", "duration": 90 }
+    ]
+  },
+  "plan": {
+    "label": "Someone at a desk writing a wish list, dreaming of a rocket ride, a Ferris wheel and an ice cream",
+    "motion": [
+      { "id": "writing-arm", "anim": "tap", "delay": 0.2, "duration": 0.5, "repeat": 4, "rotate": -6, "origin": "0% 0%" },
+      { "match": "list-line-", "anim": "draw", "delay": 0.3, "stagger": 0.35, "duration": 0.35 },
+      { "match": "list-star-", "anim": "pop", "delay": 0.5, "stagger": 0.35, "duration": 0.3 },
+      { "id": "bubble", "anim": "pop", "delay": 0.2, "duration": 0.4, "origin": "0% 100%" },
+      { "match": "wish-", "anim": "pop", "delay": 0.7, "stagger": 0.35, "duration": 0.35 },
+      { "id": "starburst", "anim": "pop", "delay": 1.9, "duration": 0.5 }
+    ]
+  },
+  "preview": {
+    "label": "Someone at a wall map, marking the day's route and filling in a calendar",
+    "motion": [
+      { "id": "route", "anim": "draw", "delay": 0.3, "duration": 1.7 },
+      { "match": "pin-", "anim": "drop", "delay": 0.9, "stagger": 0.5, "duration": 0.5 },
+      { "match": "cell-", "anim": "pop", "delay": 0.4, "stagger": 0.14, "duration": 0.25 },
+      { "id": "pointer-arm", "anim": "tap", "delay": 0.5, "duration": 1.4, "rotate": -14, "origin": "0% 100%" },
+      { "id": "starburst", "anim": "pop", "delay": 1.9, "duration": 0.5 }
+    ]
+  },
+  "prepare": {
+    "label": "Someone packing a suitcase in front of an open wardrobe",
+    "motion": [
+      { "id": "packing-arm", "anim": "tap", "delay": 0.2, "duration": 1.6, "rotate": 12, "origin": "0% 0%" },
+      { "match": "packed-", "anim": "drop", "delay": 0.4, "stagger": 0.45, "duration": 0.5 },
+      { "id": "luggage-tag", "anim": "swing", "delay": 1.7, "duration": 0.8, "origin": "0% 0%" },
+      { "id": "starburst", "anim": "pop", "delay": 1.9, "duration": 0.5 }
+    ]
+  },
+  "play": {
+    "label": "Someone out in the park taking photos, with pennants, a balloon and a Ferris wheel",
+    "motion": [
+      { "id": "character", "anim": "bob", "delay": 0, "duration": 0.6, "repeat": 3 },
+      { "id": "flash", "anim": "flash", "delay": 0.5, "duration": 0.5, "repeat": 2 },
+      { "match": "photo-", "anim": "pop", "delay": 0.8, "stagger": 0.4, "duration": 0.4 },
+      { "id": "balloon", "anim": "float", "delay": 0.2, "duration": 1.6 },
+      { "id": "ferris-wheel", "anim": "spin", "duration": 40 }
+    ]
+  },
+  "publish": {
+    "label": "Someone at a retro computer putting together a trip recap with photos, charts and a map trail",
+    "motion": [
+      { "id": "typing-arm", "anim": "tap", "delay": 0.2, "duration": 0.4, "repeat": 4, "rotate": 6, "origin": "0% 0%" },
+      { "match": "screen-photo-", "anim": "pop", "delay": 0.3, "stagger": 0.2, "duration": 0.3 },
+      { "match": "bar-", "anim": "grow", "delay": 0.9, "stagger": 0.2, "duration": 0.4, "origin": "50% 100%" },
+      { "id": "trail", "anim": "draw", "delay": 1.2, "duration": 0.8 },
+      { "id": "starburst", "anim": "pop", "delay": 1.9, "duration": 0.5 }
+    ]
+  }
+}

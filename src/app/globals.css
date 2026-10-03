@@ -176,6 +176,23 @@
   --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55);
   --shadow-focus: 0 0 0 3px rgba(255, 215, 0, 0.35);
 
+  /* Mid-century illustration palette (Home cards + banner) — night */
+  --illo-sky: #1F3A4D;
+  --illo-sky-2: #2C4F5F;
+  --illo-wall: #243F4C;
+  --illo-floor: #1A2F3A;
+  --illo-paper: #EADFC4;
+  --illo-ink: #10202A;
+  --illo-teal: #4FB3A9;
+  --illo-orange: #E8833A;
+  --illo-mustard: #E9B949;
+  --illo-coral: #E2654F;
+  --illo-sage: #7FA88A;
+  --illo-skin: #E8B98F;
+  --illo-orb: #EADFC4;
+  --illo-star: #F6E7B0;
+  --illo-star-opacity: 1;
+
   /* Overlay backdrop for modals */
   --color-overlay: rgba(0, 0, 0, 0.65);
 }
@@ -224,6 +241,23 @@
   --shadow-lg: 0 12px 24px rgba(16, 24, 40, 0.1), 0 4px 8px rgba(16, 24, 40, 0.05);
   --shadow-xl: 0 24px 48px rgba(16, 24, 40, 0.14), 0 8px 16px rgba(16, 24, 40, 0.06);
   --shadow-focus: 0 0 0 3px rgba(153, 101, 21, 0.3);
+
+  /* Mid-century illustration palette (Home cards + banner) — day */
+  --illo-sky: #BFE3DD;
+  --illo-sky-2: #E9D3A3;
+  --illo-wall: #F1E6CF;
+  --illo-floor: #D8C29C;
+  --illo-paper: #FFF9EC;
+  --illo-ink: #2B2D42;
+  --illo-teal: #2F9C95;
+  --illo-orange: #E07A3F;
+  --illo-mustard: #E3A93A;
+  --illo-coral: #D9573F;
+  --illo-sage: #7FA97C;
+  --illo-skin: #EFC29C;
+  --illo-orb: #F4B942;
+  --illo-star: #FFFFFF;
+  --illo-star-opacity: 0;
 
   /* Overlay backdrop for modals */
   --color-overlay: rgba(28, 28, 40, 0.45);
@@ -512,4 +546,54 @@ body {
   :root {
     --mobile-tabbar-h: 0px;
   }
+}
+
+/* ==================== HOME ILLUSTRATIONS ==================== */
+/* Motion for the Home page's illustrated scenes. The anim-* classes and
+   their timing (--d delay, --t duration, --n repeats, --r rotation, --ox/--oy
+   pivot) are baked into the art by scripts/import-illustrations.mjs from
+   art/home-illustrations/motion.json. .illo-animate is only present when
+   motion is allowed; without it every scene shows its finished frame. */
+.illo svg { display: block; width: 100%; height: 100%; }
+.illo .anim { transform-box: fill-box; transform-origin: var(--ox, 50%) var(--oy, 50%); }
+.illo .anim-flash { opacity: 0; }
+
+.illo-animate .anim {
+  animation-duration: var(--t, 0.6s);
+  animation-delay: var(--d, 0s);
+  animation-iteration-count: var(--n, 1);
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+.illo-animate .anim-draw :is(path, line, polyline, polygon, circle, ellipse, rect) {
+  stroke-dasharray: 1;
+  animation: illo-draw var(--t, 1s) ease-in-out var(--d, 0s) both;
+}
+.illo-animate .anim-drop { animation-name: illo-drop; animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1); }
+.illo-animate .anim-pop { animation-name: illo-pop; animation-timing-function: cubic-bezier(0.3, 1.6, 0.5, 1); }
+.illo-animate .anim-fade { animation-name: illo-fade; }
+.illo-animate .anim-tap { animation-name: illo-tap; animation-timing-function: ease-in-out; }
+.illo-animate .anim-swing { animation-name: illo-swing; animation-timing-function: ease-in-out; }
+.illo-animate .anim-grow { animation-name: illo-grow; }
+.illo-animate .anim-flash { animation-name: illo-flash; }
+.illo-animate .anim-bob { animation-name: illo-bob; animation-timing-function: ease-in-out; }
+.illo-animate .anim-float { animation-name: illo-float; animation-timing-function: ease-out; }
+.illo-animate .anim-spin { animation: illo-spin var(--t, 60s) linear infinite; }
+
+@keyframes illo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes illo-drop { from { transform: translateY(-36px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes illo-pop { from { transform: scale(0); } to { transform: none; } }
+@keyframes illo-fade { from { opacity: 0; } }
+@keyframes illo-tap { 0%, 50%, 100% { transform: none; } 25%, 75% { transform: rotate(var(--r, -12deg)); } }
+@keyframes illo-swing { 0% { transform: rotate(25deg); } 40% { transform: rotate(-12deg); } 70% { transform: rotate(6deg); } 100% { transform: none; } }
+@keyframes illo-grow { from { transform: scaleY(0); } }
+@keyframes illo-flash { 0% { opacity: 0; transform: scale(0.4); } 30% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(1.3); } }
+@keyframes illo-bob { 0%, 100% { transform: none; } 50% { transform: translateY(-5px); } }
+@keyframes illo-float { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes illo-spin { to { transform: rotate(360deg); } }
+
+/* Before hydration the markup always carries .illo-animate; this keeps
+   reduced-motion viewers from seeing a frame of motion in that window. */
+@media (prefers-reduced-motion: reduce) {
+  .illo-animate:not(.illo-force) * { animation: none !important; }
 }

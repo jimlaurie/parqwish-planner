@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import { tripCountdown, type CountdownTrip } from "@/lib/trip-countdown";
 import ThemeToggle from "@/components/ThemeToggle";
 import SyncStatusIndicator from "@/components/SyncStatusIndicator";
 import { marketingUrl } from "@/lib/marketing-links";
@@ -286,10 +287,12 @@ export default function TopNavBar() {
                   >
                     {currentTrip.name}
                   </span>
-                  {/* Dates are dropped below lg to leave the name room. */}
+                  {/* Dates are dropped below lg to leave the name room; the
+                      countdown stays, since it's the more useful of the two. */}
                   {currentTrip.startDate && (
-                    <span className="hidden lg:inline text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
-                      {formatDateRange(currentTrip.startDate, currentTrip.endDate)}
+                    <span className="flex items-center gap-1.5 text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
+                      <span className="hidden lg:inline">{formatDateRange(currentTrip.startDate, currentTrip.endDate)}</span>
+                      <TripCountdownPill trip={currentTrip} />
                     </span>
                   )}
                 </div>
@@ -325,5 +328,23 @@ export default function TopNavBar() {
 
       <MobilePhaseBar activePhase={activePhase} hasTrip={hasTrip} />
     </>
+  );
+}
+
+// ==================== TRIP COUNTDOWN PILL ====================
+
+function TripCountdownPill({ trip }: { trip: CountdownTrip }) {
+  const status = tripCountdown(trip);
+  if (!status) return null;
+  return (
+    <span
+      className="px-1.5 py-px rounded-full font-semibold"
+      style={{
+        color: "var(--color-gold)",
+        backgroundColor: "color-mix(in srgb, var(--color-gold) 15%, transparent)",
+      }}
+    >
+      {status}
+    </span>
   );
 }

@@ -9,6 +9,7 @@ import { ensureAuth, onAuthChanged, isSyncEnabled, canCollaborate, auth } from "
 import { startSync, startCollaboratorSync, stopSync, pullWishes, pullSharedTrips, pullAllTripContent, pushWish, pushPackingItem } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
 import { cleanUpDiningDuplicates } from "@/lib/dining-duplicates";
+import { migratePackingCategories } from "@/lib/category-migration";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "0";
 
@@ -306,33 +307,32 @@ function useSyncInit() {
   }, [cloudSyncEnabled]);
 }
 
-// ==================== DINING DUPLICATE CLEANUP ====================
-// One-time removal of duplicate dining items left by the pre-6.0.50 import
-// bug (see dining-duplicates.ts). With cloud sync on, it waits until the
-// account is known and the first download has finished, so the removals
-// reach the cloud too and the next pull can't bring the copies back.
-const DINING_CLEANUP_KEY = "parqwish:diningDupCleanup:v1";
+// ==================== ONE-TIME DATA REPAIRS ====================
+// Each runs once per device, remembered by its localStorage key. With cloud
+// sync on, it waits until the account is known and the first download has
+// finished, so its changes reach the cloud too and the next pull can't
+// undo them. A failed run is retried on the next load.
 
-function useDiningDuplicateCleanup() {
+function useRunOnceAfterFirstSync(key: string, label: string, task: () => Promise<number>) {
   const hydrated = useAppStore((s) => s._hasHydrated);
   const cloudSyncEnabled = useAppStore((s) => s.cloudSyncEnabled);
 
   useEffect(() => {
     if (!hydrated || typeof indexedDB === "undefined") return;
     try {
-      if (localStorage.getItem(DINING_CLEANUP_KEY)) return;
+      if (localStorage.getItem(key)) return;
     } catch {
       return; // localStorage blocked: no way to remember it ran
     }
     let cancelled = false;
     const run = () => {
       if (cancelled) return;
-      cleanUpDiningDuplicates()
-        .then((removed) => {
-          localStorage.setItem(DINING_CLEANUP_KEY, "done");
-          if (removed > 0) console.log(`[AppInit] Removed ${removed} duplicate dining item(s)`);
+      task()
+        .then((changed) => {
+          localStorage.setItem(key, "done");
+          if (changed > 0) console.log(`[AppInit] ${label}: ${changed} item(s) updated`);
         })
-        .catch((err) => console.error("[AppInit] Dining duplicate cleanup failed:", err)); // retry next load
+        .catch((err) => console.error(`[AppInit] ${label} failed:`, err));
     };
     if (!cloudSyncEnabled) {
       run();
@@ -351,7 +351,19 @@ function useDiningDuplicateCleanup() {
       });
     });
     return () => { cancelled = true; unsubAuth(); unsubStore?.(); };
-  }, [hydrated, cloudSyncEnabled]);
+    // `task` is a module-level function, stable for the app's lifetime
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, cloudSyncEnabled, key, label]);
+}
+
+/** Duplicate dining items left by the pre-6.0.50 import bug (dining-duplicates.ts). */
+function useDiningDuplicateCleanup() {
+  useRunOnceAfterFirstSync("parqwish:diningDupCleanup:v1", "Dining duplicate cleanup", cleanUpDiningDuplicates);
+}
+
+/** Rename packing items to the sub-category list shared with Pal (category-migration.ts). */
+function usePackingCategoryMigration() {
+  useRunOnceAfterFirstSync("parqwish:packingCategories:v1", "Packing category rename", migratePackingCategories);
 }
 
 // ==================== TRIP SELECTION ====================
@@ -386,6 +398,7 @@ export default function AppInit() {
   useCacheBuster();
   useSyncInit();
   useDiningDuplicateCleanup();
+  usePackingCategoryMigration();
   useTripSelection();
   useFocusPull();
   useVersionCheck();

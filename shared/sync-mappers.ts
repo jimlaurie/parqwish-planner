@@ -208,7 +208,7 @@ export function toSyncPackingItem(
   return {
     id: input.id,
     name: input.name,
-    category: input.category || "Custom",
+    category: input.category || "Other",
     priority: input.priority || DEFAULT_PRIORITY,
     completed: input.completed ?? input.packed ?? false,
     completedAt: input.completedAt,
@@ -224,7 +224,7 @@ export function toSyncShoppingItem(
   return {
     id: input.id,
     name: input.name,
-    category: input.category || "Custom",
+    category: input.category || "Other",
     priority: input.priority || DEFAULT_PRIORITY,
     completed: input.purchased ?? input.completed ?? input.packed ?? false,
     completedAt: input.completedAt,

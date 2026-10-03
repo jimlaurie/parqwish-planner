@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { ScheduledEventRecord } from "@shared/types/scheduled-event";
 import type { DayItemRecord } from "@shared/types/day-item";
+import { normalizePackingCategory } from "@shared/constants/packing";
 
 // ==================== TYPE DEFINITIONS ====================
 // Core types from shared data layer
@@ -730,6 +731,20 @@ db.version(23).stores({
   dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
   photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
   tripPhotos: "id, tripId, date, [tripId+date]",
+});
+
+// ==================== PACKING SUB-CATEGORIES ====================
+// Every packing-item write — edits, file imports, cloud pulls — stores the
+// sub-category under its current shared name (see PACKING_CATEGORIES), so
+// older names sent by an out-of-date ParQwish Pal never reappear here.
+db.packingItems.hook("creating", (_key, item) => {
+  item.category = normalizePackingCategory(item.type, item.category);
+});
+db.packingItems.hook("updating", (mods: Partial<PackingItem>, _key, item) => {
+  if (!("category" in mods) && !("type" in mods)) return undefined;
+  const category = "category" in mods ? mods.category : item.category;
+  const normalized = normalizePackingCategory(mods.type ?? item.type, category);
+  return normalized === category ? undefined : { category: normalized };
 });
 
 // Without this, an already-open tab (e.g. left open from before a schema

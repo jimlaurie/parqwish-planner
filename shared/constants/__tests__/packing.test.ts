@@ -1,6 +1,6 @@
 // ==================== PACKING CONSTANTS TESTS ====================
 
-import { PACKING_TABS, PACKING_CATEGORIES, getPackingTab } from '../packing';
+import { PACKING_TABS, PACKING_CATEGORIES, getPackingTab, normalizePackingCategory } from '../packing';
 import type { PackingType } from '../../types/packing';
 
 describe('PACKING_TABS', () => {
@@ -68,5 +68,43 @@ describe('getPackingTab', () => {
 
   it('returns undefined for unknown type', () => {
     expect(getPackingTab('nonexistent' as PackingType)).toBeUndefined();
+  });
+});
+
+describe('normalizePackingCategory', () => {
+  it('keeps Accessories and Ears & Headwear as separate shopping sub-categories', () => {
+    expect(PACKING_CATEGORIES.shopping).toContain('Accessories');
+    expect(PACKING_CATEGORIES.shopping).toContain('Ears & Headwear');
+    expect(PACKING_CATEGORIES.shopping).toContain('Clothing');
+  });
+
+  it('translates the old Planner and Pal names', () => {
+    expect(normalizePackingCategory('shopping', 'Apparel')).toBe('Clothing');
+    expect(normalizePackingCategory('shopping', 'Clothing & Accessories')).toBe('Clothing');
+    expect(normalizePackingCategory('shopping', 'Home Decor')).toBe('Home & Decor');
+    expect(normalizePackingCategory('outfit', 'Dapper Day')).toBe('Themed');
+    expect(normalizePackingCategory('equipment', 'Tech')).toBe('Electronics');
+    expect(normalizePackingCategory('sundry', 'Food')).toBe('Snacks');
+    expect(normalizePackingCategory('sundry', 'Custom')).toBe('Other');
+  });
+
+  it('only translates names within their own type', () => {
+    expect(normalizePackingCategory('outfit', 'Accessories')).toBe('Accessories');
+    expect(normalizePackingCategory('shopping', 'Accessories')).toBe('Accessories');
+    expect(normalizePackingCategory('equipment', 'Accessories')).toBe('Comfort');
+  });
+
+  it('defaults blank to Other and keeps unknown names', () => {
+    expect(normalizePackingCategory('shopping', undefined)).toBe('Other');
+    expect(normalizePackingCategory('shopping', '  ')).toBe('Other');
+    expect(normalizePackingCategory('shopping', 'Holiday')).toBe('Holiday');
+  });
+
+  it('every current name maps to itself', () => {
+    for (const [type, categories] of Object.entries(PACKING_CATEGORIES)) {
+      for (const cat of categories) {
+        expect(normalizePackingCategory(type as keyof typeof PACKING_CATEGORIES, cat)).toBe(cat);
+      }
+    }
   });
 });

@@ -330,9 +330,9 @@ describe("toSyncPackingItem", () => {
     expect(result.completed).toBe(false);
   });
 
-  test("defaults category to Custom", () => {
+  test("defaults category to Other", () => {
     const result = toSyncPackingItem({ id: "o1", name: "Test" }, "2026-01-01");
-    expect(result.category).toBe("Custom");
+    expect(result.category).toBe("Other");
   });
 });
 

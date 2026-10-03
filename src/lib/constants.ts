@@ -12,7 +12,7 @@ export { TICKET_PRIORITIES, TICKET_COLORS, TICKET_EXPLAINER, ticketTitle, PRIORI
 
 // Packing
 export type { PackingTabConfig } from "@shared/constants/packing";
-export { PACKING_TABS, PACKING_CATEGORIES, getPackingTab } from "@shared/constants/packing";
+export { PACKING_TABS, PACKING_CATEGORIES, DEFAULT_PACKING_CATEGORY, getPackingTab, normalizePackingCategory } from "@shared/constants/packing";
 
 // Common types
 export type { Priority, ParkKey } from "@shared/types/common";

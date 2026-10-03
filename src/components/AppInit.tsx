@@ -8,6 +8,7 @@ import db from "@/lib/db";
 import { ensureAuth, onAuthChanged, isSyncEnabled, canCollaborate, auth } from "@/lib/auth";
 import { startSync, startCollaboratorSync, stopSync, pullWishes, pullSharedTrips, pullAllTripContent, pushWish, pushPackingItem } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
+import { cleanUpDiningDuplicates } from "@/lib/dining-duplicates";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "0";
 
@@ -305,6 +306,54 @@ function useSyncInit() {
   }, [cloudSyncEnabled]);
 }
 
+// ==================== DINING DUPLICATE CLEANUP ====================
+// One-time removal of duplicate dining items left by the pre-6.0.50 import
+// bug (see dining-duplicates.ts). With cloud sync on, it waits until the
+// account is known and the first download has finished, so the removals
+// reach the cloud too and the next pull can't bring the copies back.
+const DINING_CLEANUP_KEY = "parqwish:diningDupCleanup:v1";
+
+function useDiningDuplicateCleanup() {
+  const hydrated = useAppStore((s) => s._hasHydrated);
+  const cloudSyncEnabled = useAppStore((s) => s.cloudSyncEnabled);
+
+  useEffect(() => {
+    if (!hydrated || typeof indexedDB === "undefined") return;
+    try {
+      if (localStorage.getItem(DINING_CLEANUP_KEY)) return;
+    } catch {
+      return; // localStorage blocked: no way to remember it ran
+    }
+    let cancelled = false;
+    const run = () => {
+      if (cancelled) return;
+      cleanUpDiningDuplicates()
+        .then((removed) => {
+          localStorage.setItem(DINING_CLEANUP_KEY, "done");
+          if (removed > 0) console.log(`[AppInit] Removed ${removed} duplicate dining item(s)`);
+        })
+        .catch((err) => console.error("[AppInit] Dining duplicate cleanup failed:", err)); // retry next load
+    };
+    if (!cloudSyncEnabled) {
+      run();
+      return () => { cancelled = true; };
+    }
+    // useSyncInit's auth listener (registered first) flags tripsRestoring
+    // synchronously when it starts a download; wait for that to clear.
+    let unsubStore: (() => void) | undefined;
+    const unsubAuth = onAuthChanged(() => {
+      unsubAuth();
+      if (!useAppStore.getState().tripsRestoring) return run();
+      unsubStore = useAppStore.subscribe((s) => {
+        if (s.tripsRestoring) return;
+        unsubStore?.();
+        run();
+      });
+    });
+    return () => { cancelled = true; unsubAuth(); unsubStore?.(); };
+  }, [hydrated, cloudSyncEnabled]);
+}
+
 // ==================== TRIP SELECTION ====================
 
 /**
@@ -336,6 +385,7 @@ export default function AppInit() {
   useUserInit();
   useCacheBuster();
   useSyncInit();
+  useDiningDuplicateCleanup();
   useTripSelection();
   useFocusPull();
   useVersionCheck();

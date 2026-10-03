@@ -751,11 +751,45 @@ async function importShows(
   return { count, idMap };
 }
 
+/** Lookups for matching incoming dining against wishes already on this
+ *  device — dining is exported from dining *wishes* as well as dining
+ *  packing items (see pwaToSyncPayload), so both have to be checked. */
+interface DiningWishLookup {
+  byParkDataId: Map<string, string>;
+  byName: Map<string, string>;
+  ids: Set<string>;
+}
+
+/** An existing dining wish for this incoming item: by catalog id (with or
+ *  without the "park__" prefix — Pal may send the bare id), by the wish's
+ *  own id (unlinked wishes export that), then by name. */
+function findDiningWish(d: SyncDining, wishes: DiningWishLookup): string | undefined {
+  const prefixed = d.park ? `${normalizeParkKey(d.park)}__${d.id}` : undefined;
+  return wishes.byParkDataId.get(d.id)
+    ?? (prefixed ? wishes.byParkDataId.get(prefixed) : undefined)
+    ?? (wishes.ids.has(d.id) ? d.id : undefined)
+    ?? wishes.byName.get(d.name.toLowerCase());
+}
+
+/** Put an existing wish on this trip (if it isn't already). Returns true
+ *  when a new trip selection was added. */
+async function relinkWishToTrip(wishId: string, tripId: string, completed: boolean, now: number, userId?: string): Promise<boolean> {
+  const junctionId = `${tripId}__${wishId}`;
+  if (await db.tripWishSelections.get(junctionId)) return false;
+  await db.tripWishSelections.add({
+    id: junctionId, tripId, wishId,
+    completed, status: completed ? "completed" : "planned",
+    addedAt: now, userId,
+  });
+  return true;
+}
+
 async function importDining(
   items: SyncDining[],
   tripId: string,
   packingByKey: Map<string, string>,
   packingByParkDataId: Map<string, string>,
+  diningWishes: DiningWishLookup,
   now: number,
   userId?: string,
 ): Promise<{ count: number; idMap: Map<string, string> }> {
@@ -765,6 +799,16 @@ async function importDining(
   for (const d of items) {
     if (!hasRequiredFields(d as unknown as Record<string, unknown>, 'id', 'name')) {
       console.warn('[SyncTranslate] Skipping dining item with missing id/name');
+      continue;
+    }
+    // Already a dining *wish* here (the usual round trip: Plan → Pal →
+    // back): relink it instead of creating a duplicate packing item.
+    const wishId = !packingByParkDataId.has(d.id) && !packingByKey.has(`dining:${d.name.toLowerCase()}`)
+      ? findDiningWish(d, diningWishes)
+      : undefined;
+    if (wishId) {
+      if (await relinkWishToTrip(wishId, tripId, d.completed || false, now, userId)) count++;
+      idMap.set(d.id, wishId);
       continue;
     }
     // Dedupe by park-catalog id first, name as the fallback (see importRides).
@@ -1405,8 +1449,8 @@ export async function syncPayloadToPwa(
   const packingByKey = new Map<string, string>(
     existingPacking.map(p => [`${p.type}:${p.name.toLowerCase()}`, p.id])
   );
-  // Same idea for dining (which always imports to the packing side, see
-  // importDining) — linkedParkDataIds is an array since some packing items
+  // Same idea for dining packing items (importDining also checks dining
+  // wishes first) — linkedParkDataIds is an array since some packing items
   // (e.g. multi-shop shopping) can link more than one catalog entity.
   const packingByParkDataId = new Map<string, string>(
     existingPacking.flatMap(p => (p.linkedParkDataIds || []).map(id => [id, p.id] as [string, string]))
@@ -1416,7 +1460,12 @@ export async function syncPayloadToPwa(
   const ridesResult    = await importRides(payload.rides || [], tripId, wishByName, wishByParkDataId, now, userId);
   const placesResult   = await importPlaces(payload.places || [], tripId, wishByName, wishBySourcePlaceId, now, userId);
   const showsResult    = await importShows(payload.shows || [], tripId, wishByName, wishByParkDataId, now, userId);
-  const diningResult   = await importDining(payload.dining || [], tripId, packingByKey, packingByParkDataId, now, userId);
+  const diningWishes = {
+    byParkDataId: wishByParkDataId,
+    byName: wishByName,
+    ids: new Set(existingWishes.map((w) => w.id)),
+  };
+  const diningResult   = await importDining(payload.dining || [], tripId, packingByKey, packingByParkDataId, diningWishes, now, userId);
   const wishesResult   = await importWishes(payload.wishes || [], tripId, wishByName, now, userId);
   const packingResult  = await importPackingItems(payload, tripId, packingByKey, now, userId);
   const shoppingResult = await importShopping(payload.shopping || [], tripId, packingByKey, now, userId);

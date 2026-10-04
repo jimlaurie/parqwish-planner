@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "resorts": [
+    {
+      "id": "disneyland_resort",
+      "name": "Disneyland Resort",
+      "shortName": "DLR",
+      "timezone": "America/Los_Angeles",
+      "center": [33.808666, -117.918955],
+      "themeparksWikiId": "bfc89fd6-314d-44b4-b89e-df1a89cf991e",
+      "dataPath": "",
+      "parks": [
+        { "key": "disneyland", "name": "Disneyland", "shortName": "DL", "themeparksWikiId": "7340550b-c14d-4def-80bb-acdb51d49a66" },
+        { "key": "californiaadventure", "name": "California Adventure", "shortName": "DCA", "themeparksWikiId": "832fcd51-ea19-4e77-85c7-75d5843b127c" }
+      ],
+      "areas": [
+        { "key": "downtown", "name": "Downtown Disney", "shortName": "DTD" },
+        { "key": "grandcalifornian", "name": "Grand Californian", "shortName": "GCH" },
+        { "key": "disneyland_hotel", "name": "Disneyland Hotel", "shortName": "DLH" },
+        { "key": "pixar_place_hotel", "name": "Pixar Place Hotel", "shortName": "PPH" }
+      ],
+      "capabilities": {
+        "liveWaits": true,
+        "paidQueues": "lightning_lane",
+        "showtimes": true,
+        "drawnMap": true,
+        "collectAnalytics": true
+      },
+      "status": "live"
+    },
+    {
+      "id": "knotts",
+      "name": "Knott's Berry Farm",
+      "shortName": "KBF",
+      "timezone": "America/Los_Angeles",
+      "center": [33.845208, -118.000045],
+      "themeparksWikiId": "b1444147-b93a-4f73-b12d-28f9b1f7ec7c",
+      "dataPath": "resorts/knotts/",
+      "parks": [
+        { "key": "knotts", "name": "Knott's Berry Farm", "shortName": "KBF", "themeparksWikiId": "0a6123bb-1e8c-4b18-a2d3-2696cf2451f5" },
+        { "key": "knotts_soak_city", "name": "Knott's Soak City", "shortName": "Soak City", "themeparksWikiId": "153c584b-6957-4b26-9965-f2aaa10ab558" }
+      ],
+      "areas": [],
+      "capabilities": {
+        "liveWaits": true,
+        "paidQueues": null,
+        "showtimes": false,
+        "drawnMap": false,
+        "collectAnalytics": true
+      },
+      "status": "hidden"
+    },
+    {
+      "id": "universal_hollywood",
+      "name": "Universal Studios Hollywood",
+      "shortName": "USH",
+      "timezone": "America/Los_Angeles",
+      "center": [34.1381, -118.3534],
+      "themeparksWikiId": "9fc68f1c-3f5e-4f09-89f2-aab2cf1a0741",
+      "dataPath": "resorts/universal_hollywood/",
+      "parks": [
+        { "key": "universal_hollywood", "name": "Universal Studios Hollywood", "shortName": "USH", "themeparksWikiId": "bc4005c5-8c7e-41d7-b349-cdddf1796427" }
+      ],
+      "areas": [],
+      "capabilities": {
+        "liveWaits": true,
+        "paidQueues": null,
+        "showtimes": true,
+        "drawnMap": false,
+        "collectAnalytics": true
+      },
+      "status": "hidden"
+    }
+  ]
+}

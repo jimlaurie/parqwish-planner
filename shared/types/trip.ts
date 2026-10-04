@@ -84,6 +84,10 @@ export interface Trip extends Timestamped {
   endDate: string;            // "" for templates
   isTemplate: boolean;
   phase: TripPhase;
+  /** Resorts this trip visits (shared/constants/resorts.ts). Missing means
+   *  ["disneyland_resort"], so trips from before multi-park support keep
+   *  their meaning. Additive and optional: older apps ignore it. */
+  resortIds?: string[];
   // Travel — array-based (v15+)
   flights?: FlightLeg[];
   hotels?: HotelStay[];

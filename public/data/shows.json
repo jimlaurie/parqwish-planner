@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "18:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "18:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "20:30"
+          "end": "17:30"
         }
       ],
       "duration": 15,
@@ -322,12 +322,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "15:30",
-        "16:30",
-        "17:30",
-        "18:45",
-        "19:35",
-        "20:25"
+        "12:10",
+        "13:10",
+        "14:15",
+        "15:45",
+        "16:45",
+        "17:45"
       ],
       "types": [
         "street show"
@@ -345,12 +345,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
+        "10:30",
         "11:30",
         "12:30",
-        "13:30",
+        "14:00",
         "15:00",
-        "16:00",
-        "17:00"
+        "16:00"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -391,12 +391,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
+        "11:30",
         "12:30",
         "13:30",
-        "14:35",
-        "16:05",
-        "17:05",
-        "18:05"
+        "15:10",
+        "16:10",
+        "17:10"
       ],
       "longitude": -117.919083,
       "types": [
@@ -442,7 +442,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-03T13:00:07.472Z",
+  "lastUpdated": "2026-10-04T13:00:06.409Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -674,12 +674,9 @@
         "nighttime spectacular"
       ],
       "land": "Frontierland",
-      "times": [
-        "21:00",
-        "22:30"
-      ],
+      "times": [],
       "duration": 25,
-      "status": "operating",
+      "status": "closed",
       "name": "Fantasmic!",
       "timeRanges": [],
       "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db",
@@ -742,8 +739,7 @@
       "duration": 15,
       "times": [
         "20:55",
-        "21:55",
-        "22:55"
+        "21:55"
       ],
       "land": "Main Street U.S.A.",
       "types": [
@@ -900,8 +896,7 @@
       ],
       "longitude": -117.921242,
       "times": [
-        "20:30",
-        "22:15"
+        "20:30"
       ],
       "duration": 12,
       "status": "operating"
@@ -923,20 +918,13 @@
     },
     "bootstrappers": {
       "duration": 20,
-      "status": "operating",
+      "status": "closed",
       "land": "New Orleans Square",
       "types": [
         "street show"
       ],
       "longitude": -117.921011,
-      "times": [
-        "08:30",
-        "09:30",
-        "10:30",
-        "11:30",
-        "12:35",
-        "14:30"
-      ],
+      "times": [],
       "latitude": 33.811384,
       "name": "The Bootstrappers",
       "apiEntityId": "8160b905-b318-41be-84bf-869fb6a55b14",
@@ -1001,5 +989,5 @@
       "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-10-03T13:00:07.472Z"
+  "lastShowtimeSync": "2026-10-04T13:00:06.409Z"
 }

@@ -390,14 +390,22 @@ export default function ParkMap({ items }: ParkMapProps) {
           background: transparent !important;
           border: none !important;
         }
+        /* The tile provider's credit must stay visible (Esri's terms); kept
+           small, same as PlacePickerMap, so it doesn't crowd the map. */
+        .park-map .leaflet-control-attribution {
+          font-size: 8px;
+          line-height: 1.3;
+          padding: 0 4px;
+          border-top-left-radius: 4px;
+        }
       `}</style>
 
       <MapContainer
+        className="park-map"
         center={[RESORT_CENTER.lat, RESORT_CENTER.lng]}
         zoom={RESORT_ZOOM}
         style={{ height: "100%", width: "100%", borderRadius: "0.75rem" }}
         zoomControl={false}
-        attributionControl={false}
         ref={mapRef}
       >
         <TileLayer

@@ -214,4 +214,4 @@ Manually check any visual change in both light and dark mode — theming bugs (a
 
 ## For historical/roadmap context
 
-Feature history predating the Aug 2026 repo split (PWA Companion App build-out, Cloud Sync phases, multi-user, GPS trails, Places catalog, etc.) lives in `dland-wishes/CLAUDE.md`'s "Roadmap" section — it covers both apps together since they were one codebase until then. This repo doesn't maintain a parallel roadmap; check recent `git log` here for what's shipped since the split.
+Feature history predating the Aug 2026 repo split (PWA Companion App build-out, Cloud Sync phases, multi-user, GPS trails, Places catalog, etc.) lives in `dland-wishes/docs/changelog.md` (and what's planned in `dland-wishes/docs/roadmap.md`) — it covers both apps together since they were one codebase until then. This repo doesn't maintain a parallel roadmap; check recent `git log` here for what's shipped since the split.

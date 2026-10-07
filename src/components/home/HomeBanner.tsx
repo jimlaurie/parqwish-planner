@@ -1,9 +1,10 @@
 "use client";
 
 // ==================== HOME BANNER ====================
-// Title banner for the Home page: a generic mid-century "tomorrow-land"
-// skyline (rocket, palms, a boomerang-roofed pavilion, a Ferris wheel) —
-// deliberately not any real park, so it doesn't lean on Disney imagery —
+// Title banner for the Home page: a generic mid-century skyline at dusk
+// (a flying-saucer tower, an elevated train, palms, a wooden coaster, and
+// fireworks at night) — deliberately not any real park, so it doesn't lean
+// on Disney imagery —
 // with the logo on a sign panel. The trip countdown lives in the top bar.
 
 import Image from "next/image";
@@ -12,8 +13,8 @@ import bannerArt from "./illustrations/generated/banner";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function HomeBanner() {
-  // Phones: the skyline is a strip above the sign, anchored left so the rocket
-  // and palms stay in view. Wider screens: the sign sits over the full scene.
+  // Phones: the skyline is a strip above the sign, anchored left so the saucer
+  // tower and the train stay in view. Wider screens: the sign sits over the full scene.
   const wide = useMediaQuery("(min-width: 768px)");
   return (
     <div

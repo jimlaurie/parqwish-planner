@@ -100,8 +100,11 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 | publish | `bar-…` | each chart bar grows up from the bottom |
 | publish | `trail` | the map trail draws itself |
 | publish | `starburst` | pops at the end |
-| banner | `ferris-wheel` | turns very slowly |
-| banner | `stars` | only visible in night mode |
+| banner | `monorail-train` | glides in along the track from the left |
+| banner | `sparkle-…` | each sparkle pops in |
+| banner | `coaster-car` | teeters at the top of the first hill (pivots at its bottom middle) |
+| banner | `burst-…` | each firework bursts and fades, over and over (inside `fireworks`) |
+| banner | `stars`, `fireworks` | only visible in night mode |
 
 ### Tips for the moving parts
 

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 220" width="1000" height="220">
+  <title>Banner option B — Midway: bunting, a carousel tent, a hot-air balloon and a wooden coaster</title>
+  <g id="sky-layer">
+    <rect id="sky" width="1000" height="220" fill="#BFE3DD"/>
+    <rect id="horizon-glow" y="150" width="1000" height="70" fill="#E9D3A3" opacity="0.6"/>
+  </g>
+  <g id="stars">
+    <path id="star-1" d="M70 56 Q70.7 59.3 74 60 Q70.7 60.7 70 64 Q69.3 60.7 66 60 Q69.3 59.3 70 56 Z" fill="#FFFFFF"/>
+    <path id="star-2" d="M250 93 Q250.5 95.5 253 96 Q250.5 96.5 250 99 Q249.5 96.5 247 96 Q249.5 95.5 250 93 Z" fill="#FFFFFF"/>
+    <path id="star-3" d="M470 66 Q470.7 69.3 474 70 Q470.7 70.7 470 74 Q469.3 70.7 466 70 Q469.3 69.3 470 66 Z" fill="#FFFFFF"/>
+    <path id="star-4" d="M560 97 Q560.5 99.5 563 100 Q560.5 100.5 560 103 Q559.5 100.5 557 100 Q559.5 99.5 560 97 Z" fill="#FFFFFF"/>
+    <path id="star-5" d="M690 72 Q690.7 75.3 694 76 Q690.7 76.7 690 80 Q689.3 76.7 686 76 Q689.3 75.3 690 72 Z" fill="#FFFFFF"/>
+    <path id="star-6" d="M840 101 Q840.5 103.5 843 104 Q840.5 104.5 840 107 Q839.5 104.5 837 104 Q839.5 103.5 840 101 Z" fill="#FFFFFF"/>
+    <path id="star-7" d="M980 60 Q980.7 63.3 984 64 Q980.7 64.7 980 68 Q979.3 64.7 976 64 Q979.3 63.3 980 60 Z" fill="#FFFFFF"/>
+  </g>
+  <g id="fireworks">
+    <g id="burst-1">
+      <path d="M309.1 52 L326 52 M307.9 56.5 L322.5 65 M304.6 59.9 L313 74.5 M300 61.1 L300 78 M295.4 59.9 L287 74.5 M292.1 56.5 L277.5 65 M290.9 52 L274 52 M292.1 47.5 L277.5 39 M295.4 44.1 L287 29.5 M300 42.9 L300 26 M304.6 44.1 L313 29.5 M307.9 47.4 L322.5 39" fill="none" stroke="#E3A93A" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="300" cy="52" r="3" fill="#FFFFFF"/>
+    </g>
+    <g id="burst-2">
+      <path d="M567.7 46 L582 46 M566.7 49.9 L579.1 57 M563.9 52.7 L571 65.1 M560 53.7 L560 68 M556.1 52.7 L549 65.1 M553.3 49.9 L540.9 57 M552.3 46 L538 46 M553.3 42.2 L540.9 35 M556.1 39.3 L549 26.9 M560 38.3 L560 24 M563.9 39.3 L571 26.9 M566.7 42.1 L579.1 35" fill="none" stroke="#D9573F" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="560" cy="46" r="3" fill="#FFFFFF"/>
+    </g>
+    <g id="burst-3">
+      <path d="M769.8 58 L788 58 M768.5 62.9 L784.2 72 M764.9 66.5 L774 82.2 M760 67.8 L760 86 M755.1 66.5 L746 82.2 M751.5 62.9 L735.8 72 M750.2 58 L732 58 M751.5 53.1 L735.8 44 M755.1 49.5 L746 33.8 M760 48.2 L760 30 M764.9 49.5 L774 33.8 M768.5 53.1 L784.2 44" fill="none" stroke="#2F9C95" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="760" cy="58" r="3" fill="#FFFFFF"/>
+    </g>
+  </g>
+  <g id="clouds">
+    <path id="cloud-1" d="M300 78 q4.4 -15.4 19.8 -11 q8.8 -15.4 26.4 -6.6 q15.4 -6.6 22 8.8 q13.2 2.2 8.8 8.8 Z" fill="#FFF9EC" opacity="0.9"/>
+    <path id="cloud-2" d="M600 64 q3.6 -12.6 16.2 -9 q7.2 -12.6 21.6 -5.4 q12.6 -5.4 18 7.2 q10.8 1.8 7.2 7.2 Z" fill="#FFF9EC" opacity="0.9"/>
+    <path id="cloud-3" d="M820 40 q3.2 -11.2 14.4 -8 q6.4 -11.2 19.2 -4.8 q11.2 -4.8 16 6.4 q9.6 1.6 6.4 6.4 Z" fill="#FFF9EC" opacity="0.9"/>
+  </g>
+  <g id="hills">
+    <path d="M0 184 Q140 158 300 176 T620 170 T1000 172 V220 H0 Z" fill="#7FA97C" opacity="0.6"/>
+  </g>
+  <g id="bunting">
+    <path d="M-10 6 Q245 62 500 8" fill="none" stroke="#2B2D42" stroke-width="2"/>
+    <path d="M13.7 11 L39.2 15.8 L26.4 31.4 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M50.1 17.7 L75.6 21.7 L62.9 37.8 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M86.5 23.3 L112 26.5 L99.3 42.9 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M123 27.7 L148.5 30.2 L135.7 47 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M159.4 31.1 L184.9 32.7 L172.1 50 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M195.8 33.3 L221.3 34.2 L208.6 51.8 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M232.2 34.4 L257.8 34.5 L245 52.5 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M268.7 34.4 L294.2 33.7 L281.4 52.1 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M305.1 33.2 L330.6 31.7 L317.9 50.5 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M341.5 30.9 L367 28.7 L354.3 47.9 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M378 27.5 L403.5 24.5 L390.7 44.1 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M414.4 23 L439.9 19.2 L427.1 39.2 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M450.8 17.4 L476.3 12.8 L463.6 33.2 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M500 8 Q755 62 1010 6" fill="none" stroke="#2B2D42" stroke-width="2"/>
+    <path d="M523.7 12.8 L549.2 17.4 L536.4 33.2 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M560.1 19.2 L585.6 23 L572.9 39.2 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M596.5 24.5 L622 27.5 L609.3 44.1 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M633 28.7 L658.5 30.9 L645.7 47.9 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M669.4 31.7 L694.9 33.2 L682.1 50.5 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M705.8 33.7 L731.3 34.4 L718.6 52.1 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M742.2 34.5 L767.8 34.4 L755 52.5 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M778.7 34.2 L804.2 33.3 L791.4 51.8 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M815.1 32.7 L840.6 31.1 L827.9 50 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M851.5 30.2 L877 27.7 L864.3 47 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M888 26.5 L913.5 23.3 L900.7 42.9 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M924.4 21.7 L949.9 17.7 L937.1 37.8 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M960.8 15.8 L986.3 11 L973.6 31.4 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5" stroke-linejoin="round"/>
+  </g>
+  <g id="carousel-tent">
+    <rect x="40" y="128" width="164" height="68" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <rect x="52" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="76" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="100" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="124" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="148" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="172" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="196" y="128" width="12" height="68" fill="#D9573F"/>
+    <rect x="40" y="128" width="164" height="68" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M96 196 L96 160 Q122 146 148 160 L148 196 Z" fill="#2B2D42" opacity="0.85"/>
+    <path d="M122 52 L30 120 L53 120 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L53 120 L76 120 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L76 120 L99 120 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L99 120 L122 120 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L122 120 L145 120 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L145 120 L168 120 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L168 120 L191 120 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M122 52 L191 120 L214 120 Z" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M30 120 L214 120 M30 120 a11.5 11.5 0 0 0 23 0 M53 120 a11.5 11.5 0 0 0 23 0 M76 120 a11.5 11.5 0 0 0 23 0 M99 120 a11.5 11.5 0 0 0 23 0 M122 120 a11.5 11.5 0 0 0 23 0 M145 120 a11.5 11.5 0 0 0 23 0 M168 120 a11.5 11.5 0 0 0 23 0 M191 120 a11.5 11.5 0 0 0 23 0" fill="#E3A93A" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M122 52 L122 30" stroke="#2B2D42" stroke-width="2.5"/>
+    <path d="M122 30 L144 37 L122 44 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+  <g id="balloon">
+    <path d="M290 52 Q290 20 318 20 Q346 20 346 52 Q346 70 326 84 L310 84 Q290 70 290 52 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="2.5"/>
+    <path d="M306 22 Q298 52 312 84 M330 22 Q338 52 324 84" fill="none" stroke="#E3A93A" stroke-width="5"/>
+    <path d="M290 52 Q290 20 318 20 Q346 20 346 52 Q346 70 326 84 L310 84 Q290 70 290 52 Z" fill="none" stroke="#2B2D42" stroke-width="2.5"/>
+    <path d="M311 84 L312 96 M325 84 L324 96" stroke="#2B2D42" stroke-width="1.5"/>
+    <rect x="309" y="96" width="18" height="11" rx="2" fill="#E07A3F" stroke="#2B2D42" stroke-width="2"/>
+  </g>
+  <g id="ticket-booth">
+    <rect x="244" y="156" width="40" height="40" fill="#2F9C95" stroke="#2B2D42" stroke-width="3"/>
+    <rect x="252" y="166" width="24" height="14" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+    <path d="M238 158 L264 140 L290 158 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+  <g id="coaster">
+    <path d="M648 143.6 L648 196 M664 116.4 L664 196 M680 96.7 L680 196 M696 84.4 L696 196 M712 79.6 L712 196 M728 82.3 L728 196 M744 92.4 L744 196 M760 110 L760 196 M776 129.4 L776 196 M792 138.6 L792 196 M808 137.5 L808 196 M824 124.6 L824 196 M840 107.2 L840 196 M856 96.4 L856 196 M872 92.4 L872 196 M888 94.9 L888 196 M904 104.1 L904 196 M920 120 L920 196 M936 133.1 L936 196 M952 137.7 L952 196 M968 137.1 L968 196 M984 132.7 L984 196 M648 149.6 L664 196 M664 122.4 L680 196 M680 102.7 L696 196 M696 90.4 L712 196 M712 85.6 L728 196 M728 88.3 L744 196 M744 98.4 L760 196 M760 116 L776 196 M776 135.4 L792 196 M792 144.6 L808 196 M808 143.5 L824 196 M824 130.6 L840 196 M840 113.2 L856 196 M856 102.4 L872 196 M872 98.4 L888 196 M888 100.9 L904 196 M904 110.1 L920 196 M920 126 L936 196 M936 139.1 L952 196 M952 143.7 L968 196 M968 143.1 L984 196 " fill="none" stroke="#2B2D42" stroke-width="1.6" opacity="0.8"/>
+    <path d="M620 196 L640 160 Q700 30 760 110 Q790 156 820 130 Q870 60 920 120 Q950 156 1010 120" fill="none" stroke="#2B2D42" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M620 196 L640 160 Q700 30 760 110 Q790 156 820 130 Q870 60 920 120 Q950 156 1010 120" fill="none" stroke="#D9573F" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+  <g id="coaster-car">
+    <path d="M696 75.6 L736 71.6 L738 57.6 L702 61.6 Z" fill="#E3A93A" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="710" cy="55.6" r="5" fill="#EFC29C" stroke="#2B2D42" stroke-width="1.5"/>
+    <circle cx="724" cy="53.6" r="5" fill="#EFC29C" stroke="#2B2D42" stroke-width="1.5"/>
+    <path d="M720 49.6 L728 37.6 M708 51.6 L702 39.6" stroke="#2B2D42" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="string-lights">
+    <circle cx="364" cy="146.6" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="384" cy="151.9" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="404" cy="156.3" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="424" cy="158" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="444" cy="156.3" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="464" cy="151.9" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="484" cy="146.7" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="504" cy="142.9" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="524" cy="142.1" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="544" cy="144.7" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="564" cy="149.6" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <circle cx="584" cy="154.6" r="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="1"/>
+    <path d="M354 150 Q480 172 610 150" fill="none" stroke="#2B2D42" stroke-width="1.2"/>
+  </g>
+  <g id="ground">
+    <rect y="196" width="1000" height="24" fill="#D8C29C"/>
+    <line x1="0" y1="196" x2="1000" y2="196" stroke="#2B2D42" stroke-width="3"/>
+  </g>
+</svg>

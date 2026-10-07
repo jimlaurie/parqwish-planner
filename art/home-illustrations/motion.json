@@ -1,11 +1,14 @@
 {
   "_about": "Which layers move, and how. Layer names must match the SVG's ids (Figma layer names / Inkscape layer labels). 'match' applies to every layer whose name starts with it, in drawing order, each 'stagger' seconds after the last. Times are in seconds. See README.md.",
   "banner": {
-    "label": "A mid-century skyline with a rocket, palm trees, a pavilion and a Ferris wheel",
+    "label": "A mid-century skyline at dusk with a flying-saucer tower, an elevated train, palm trees and a wooden roller coaster",
     "align": "xMidYMax slice",
-    "nightOnly": ["stars"],
+    "nightOnly": ["stars", "fireworks"],
     "motion": [
-      { "id": "ferris-wheel", "anim": "spin", "duration": 90 }
+      { "id": "monorail-train", "anim": "glide", "delay": 0.2, "duration": 2.6, "translate": [-340, 26] },
+      { "match": "sparkle-", "anim": "pop", "delay": 0.6, "stagger": 0.25, "duration": 0.4 },
+      { "id": "coaster-car", "anim": "tap", "delay": 1.2, "duration": 1.4, "repeat": 2, "rotate": -8, "origin": "50% 100%" },
+      { "match": "burst-", "anim": "flash", "delay": 0.4, "stagger": 0.7, "duration": 2.8, "repeat": "infinite" }
     ]
   },
   "plan": {

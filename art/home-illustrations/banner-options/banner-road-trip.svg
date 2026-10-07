@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 220" width="1000" height="220">
+  <title>Banner option C — Road trip: a convertible with luggage on the desert highway, past a motel sign</title>
+  <g id="sky-layer">
+    <rect id="sky" width="1000" height="220" fill="#BFE3DD"/>
+    <rect id="horizon-glow" y="120" width="1000" height="80" fill="#E9D3A3" opacity="0.65"/>
+  </g>
+  <g id="stars">
+    <path id="star-1" d="M30 26 Q30.7 29.3 34 30 Q30.7 30.7 30 34 Q29.3 30.7 26 30 Q29.3 29.3 30 26 Z" fill="#FFFFFF"/>
+    <path id="star-2" d="M140 11 Q140.5 13.5 143 14 Q140.5 14.5 140 17 Q139.5 14.5 137 14 Q139.5 13.5 140 11 Z" fill="#FFFFFF"/>
+    <path id="star-3" d="M380 18 Q380.7 21.3 384 22 Q380.7 22.7 380 26 Q379.3 22.7 376 22 Q379.3 21.3 380 18 Z" fill="#FFFFFF"/>
+    <path id="star-4" d="M470 53 Q470.5 55.5 473 56 Q470.5 56.5 470 59 Q469.5 56.5 467 56 Q469.5 55.5 470 53 Z" fill="#FFFFFF"/>
+    <path id="star-5" d="M620 14 Q620.7 17.3 624 18 Q620.7 18.7 620 22 Q619.3 18.7 616 18 Q619.3 17.3 620 14 Z" fill="#FFFFFF"/>
+    <path id="star-6" d="M720 41 Q720.5 43.5 723 44 Q720.5 44.5 720 47 Q719.5 44.5 717 44 Q719.5 43.5 720 41 Z" fill="#FFFFFF"/>
+    <path id="star-7" d="M890 17 Q890.9 21.1 895 22 Q890.9 22.9 890 27 Q889.1 22.9 885 22 Q889.1 21.1 890 17 Z" fill="#FFFFFF"/>
+  </g>
+  <g id="sun">
+    <circle cx="560" cy="70" r="34" fill="#F4B942"/>
+  </g>
+  <g id="clouds">
+    <path id="cloud-1" d="M90 46 q4 -14 18 -10 q8 -14 24 -6 q14 -6 20 8 q12 2 8 8 Z" fill="#FFF9EC" opacity="0.9"/>
+    <path id="cloud-2" d="M690 34 q4.8 -16.8 21.6 -12 q9.6 -16.8 28.8 -7.2 q16.8 -7.2 24 9.6 q14.4 2.4 9.6 9.6 Z" fill="#FFF9EC" opacity="0.9"/>
+  </g>
+  <g id="mountains-far">
+    <path d="M0 160 L70 112 L120 140 L200 92 L290 150 L360 118 L430 150 L520 104 L600 146 L680 110 L760 150 L840 100 L930 146 L1000 120 L1000 196 L0 196 Z" fill="#7FA97C" opacity="0.5"/>
+  </g>
+  <g id="mountains-near">
+    <path d="M0 176 Q60 140 130 162 Q190 128 260 166 Q330 150 400 170 L1000 170 L1000 196 L0 196 Z M640 170 Q720 132 800 160 Q860 136 940 162 Q970 150 1000 156 L1000 170 Z" fill="#2F9C95" opacity="0.35"/>
+  </g>
+  <g id="telephone-poles">
+    <path d="M40 182 L40 96 M26 104 L54 104" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M250 182 L250 96 M236 104 L264 104" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M460 182 L460 96 M446 104 L474 104" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M670 182 L670 96 M656 104 L684 104" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M880 182 L880 96 M866 104 L894 104" fill="none" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M28 104 Q133.0 124 238 104 M52 104 Q157.0 124 262 104" fill="none" stroke="#2B2D42" stroke-width="1.2"/>
+    <path d="M238 104 Q343.0 124 448 104 M262 104 Q367.0 124 472 104" fill="none" stroke="#2B2D42" stroke-width="1.2"/>
+    <path d="M448 104 Q553.0 124 658 104 M472 104 Q577.0 124 682 104" fill="none" stroke="#2B2D42" stroke-width="1.2"/>
+    <path d="M658 104 Q763.0 124 868 104 M682 104 Q787.0 124 892 104" fill="none" stroke="#2B2D42" stroke-width="1.2"/>
+  </g>
+  <g id="birds">
+    <path d="M150 64 q5 -5 10 0 q5 -5 10 0 M178 54 q4 -4 8 0 q4 -4 8 0 M760 80 q5 -5 10 0 q5 -5 10 0" fill="none" stroke="#2B2D42" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="cacti">
+    <path d="M16 182 L16 136 Q25 126 34 136 L34 182 Z" fill="#7FA97C" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M16 161.3 L6 161.3 L6 147.5 M34 154.4 L44 154.4 L44 140.6" fill="none" stroke="#7FA97C" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M340 182 L340 148 Q347.2 140.0 354.4 148 L354.4 182 Z" fill="#7FA97C" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M340 166.7 L332.0 166.7 L332.0 156.5 M354.4 161.6 L362.4 161.6 L362.4 151.4" fill="none" stroke="#7FA97C" stroke-width="5.6000000000000005" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M612 182 L612 142 Q620.1 133.0 628.2 142 L628.2 182 Z" fill="#7FA97C" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M612 164.0 L603.0 164.0 L603.0 152.0 M628.2 158.0 L637.2 158.0 L637.2 146.0" fill="none" stroke="#7FA97C" stroke-width="6.3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="palms">
+    <g id="palm-1">
+      <path d="M118 196 Q116.2 150 112 104" fill="none" stroke="#2B2D42" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M112 104 Q100.3 91.4 88.6 99.5 M112 104 Q106.6 91.4 100.3 88.7 M112 104 Q117.4 91.4 123.7 88.7 M112 104 Q123.7 91.4 135.4 99.5 M112 104 Q125.5 91.4 138.1 117.5 M112 104 Q98.5 91.4 85.9 117.5" fill="none" stroke="#2F9C95" stroke-width="5.4" stroke-linecap="round"/>
+    </g>
+    <g id="palm-2">
+      <path d="M150 196 Q151.8 157 156 118" fill="none" stroke="#2B2D42" stroke-width="3.8" stroke-linecap="round"/>
+      <path d="M156 118 Q146.2 107.5 136.5 114.2 M156 118 Q151.5 107.5 146.2 105.2 M156 118 Q160.5 107.5 165.8 105.2 M156 118 Q165.8 107.5 175.5 114.2 M156 118 Q167.2 107.5 177.8 129.2 M156 118 Q144.8 107.5 134.2 129.2" fill="none" stroke="#2F9C95" stroke-width="4.5" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g id="road">
+    <rect y="182" width="1000" height="38" fill="#D8C29C"/>
+    <rect y="186" width="1000" height="24" fill="#2B2D42" opacity="0.85"/>
+    <path d="M0 198 L1000 198" stroke="#E3A93A" stroke-width="3" stroke-dasharray="22 16"/>
+    <line x1="0" y1="182" x2="1000" y2="182" stroke="#2B2D42" stroke-width="3"/>
+  </g>
+  <g id="car">
+    <path d="M196 186 L196 168 Q198 158 214 156 L238 154 L256 140 L290 140 L304 154 L340 156 Q356 158 358 172 L358 186 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M340 156 L362 146 L360 160 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M200 172 L356 172" stroke="#FFF9EC" stroke-width="4"/>
+    <path d="M258 142 L250 156 M262 142 L286 142" fill="none" stroke="#BFE3DD" stroke-width="3"/>
+    <circle cx="276" cy="134" r="7" fill="#EFC29C" stroke="#2B2D42" stroke-width="2"/>
+    <path d="M268 132 Q276 120 286 130" fill="#E3A93A" stroke="#2B2D42" stroke-width="1.5"/>
+    <circle cx="302" cy="136" r="6.5" fill="#EFC29C" stroke="#2B2D42" stroke-width="2"/>
+    <path d="M296 132 L318 128" stroke="#2F9C95" stroke-width="4" stroke-linecap="round"/>
+    <rect x="306" y="128" width="30" height="20" rx="3" fill="#E3A93A" stroke="#2B2D42" stroke-width="2.5"/>
+    <path d="M321 128 L321 148 M312 125 L330 125" stroke="#2B2D42" stroke-width="2"/>
+    <circle cx="226" cy="186" r="13" fill="#2B2D42"/><circle cx="226" cy="186" r="5" fill="#FFF9EC"/>
+    <circle cx="328" cy="186" r="13" fill="#2B2D42"/><circle cx="328" cy="186" r="5" fill="#FFF9EC"/>
+    <circle cx="200" cy="166" r="4" fill="#F4B942" stroke="#2B2D42" stroke-width="1.5"/>
+  </g>
+  <g id="dust">
+    <path d="M184 180 q-10 -6 -20 0 q-12 -8 -22 2" fill="none" stroke="#FFF9EC" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+  </g>
+  <g id="motel">
+    <rect x="700" y="140" width="130" height="42" fill="#F1E6CF" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M690 138 L760 122 L842 132 L838 140 L760 132 L694 146 Z" fill="#2F9C95" stroke="#2B2D42" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="708" y="152" width="14" height="30" fill="#E3A93A" stroke="#2B2D42" stroke-width="2"/>
+    <rect x="732" y="152" width="14" height="30" fill="#D9573F" stroke="#2B2D42" stroke-width="2"/>
+    <rect x="756" y="152" width="14" height="30" fill="#E3A93A" stroke="#2B2D42" stroke-width="2"/>
+    <rect x="780" y="152" width="14" height="30" fill="#D9573F" stroke="#2B2D42" stroke-width="2"/>
+    <rect x="804" y="152" width="14" height="30" fill="#E3A93A" stroke="#2B2D42" stroke-width="2"/>
+  </g>
+  <g id="googie-sign">
+    <path d="M904 182 L904 64 M932 182 L932 64" stroke="#2B2D42" stroke-width="5"/>
+    <rect x="884" y="64" width="68" height="44" rx="6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="3"/>
+    <path d="M896 78 L940 78 M896 94 L930 94" stroke="#2F9C95" stroke-width="5" stroke-linecap="round"/>
+    <path d="M974 112 L880 112 L880 100 L852 124 L880 148 L880 136 L974 136 Z" fill="#D9573F" stroke="#2B2D42" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="888" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="900" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="912" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="924" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="936" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="948" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="960" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+      <circle cx="972" cy="124" r="2.6" fill="#FFF9EC" stroke="#2B2D42" stroke-width="1"/>
+    <path id="sign-star" d="M918 20 Q921.6 36.4 938 40 Q921.6 43.6 918 60 Q914.4 43.6 898 40 Q914.4 36.4 918 20 Z" fill="#E3A93A"/>
+    <circle cx="918" cy="40" r="4" fill="#FFF9EC" stroke="#2B2D42" stroke-width="2"/>
+  </g>
+</svg>

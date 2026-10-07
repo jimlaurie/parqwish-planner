@@ -58,7 +58,7 @@ export function expandMotion(entries, orderedNames) {
   for (const entry of entries) {
     const ids = entry.match ? orderedNames.filter((name) => name.startsWith(entry.match)) : [entry.id];
     if (ids.length === 0) throw new Error(`motion.json: no layer name starts with "${entry.match}"`);
-    ids.forEach((id, i) => targets.set(id, { ...entry, delay: (entry.delay ?? 0) + i * (entry.stagger ?? 0) }));
+    ids.forEach((id, i) => targets.set(id, { ...entry, delay: Math.round(((entry.delay ?? 0) + i * (entry.stagger ?? 0)) * 1000) / 1000 }));
   }
   return targets;
 }
@@ -67,6 +67,7 @@ export function motionStyle(t) {
   const vars = [`--d:${t.delay ?? 0}s`, `--t:${t.duration ?? 0.6}s`];
   if (t.repeat) vars.push(`--n:${t.repeat}`);
   if (t.rotate !== undefined) vars.push(`--r:${t.rotate}deg`);
+  if (t.translate) vars.push(`--gx:${t.translate[0]}px`, `--gy:${t.translate[1] ?? 0}px`);
   if (t.origin) {
     const [ox, oy] = t.origin.split(/\s+/);
     vars.push(`--ox:${ox}`, `--oy:${oy}`);

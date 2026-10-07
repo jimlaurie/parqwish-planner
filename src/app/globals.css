@@ -550,7 +550,7 @@ body {
 
 /* ==================== HOME ILLUSTRATIONS ==================== */
 /* Motion for the Home page's illustrated scenes. The anim-* classes and
-   their timing (--d delay, --t duration, --n repeats, --r rotation, --ox/--oy
+   their timing (--d delay, --t duration, --n repeats, --r rotation, --gx/--gy glide start, --ox/--oy
    pivot) are baked into the art by scripts/import-illustrations.mjs from
    art/home-illustrations/motion.json. .illo-animate is only present when
    motion is allowed; without it every scene shows its finished frame. */
@@ -579,6 +579,7 @@ body {
 .illo-animate .anim-bob { animation-name: illo-bob; animation-timing-function: ease-in-out; }
 .illo-animate .anim-float { animation-name: illo-float; animation-timing-function: ease-out; }
 .illo-animate .anim-spin { animation: illo-spin var(--t, 60s) linear infinite; }
+.illo-animate .anim-glide { animation-name: illo-glide; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
 
 @keyframes illo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes illo-drop { from { transform: translateY(-36px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -591,6 +592,7 @@ body {
 @keyframes illo-bob { 0%, 100% { transform: none; } 50% { transform: translateY(-5px); } }
 @keyframes illo-float { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes illo-spin { to { transform: rotate(360deg); } }
+@keyframes illo-glide { from { transform: translate(var(--gx, -300px), var(--gy, 0px)); } to { transform: none; } }
 
 /* Before hydration the markup always carries .illo-animate; this keeps
    reduced-motion viewers from seeing a frame of motion in that window. */

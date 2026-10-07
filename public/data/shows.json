@@ -442,20 +442,16 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-05T13:00:09.669Z",
+  "lastUpdated": "2026-10-07T13:00:41.308Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "timeRanges": [],
       "name": "Pearly Band near \"it's a small world\"",
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "11:50",
-        "13:05",
-        "14:05"
-      ],
+      "times": [],
       "land": "Fantasyland",
       "types": [
         "street show"
@@ -467,19 +463,13 @@
       "apiEntityId": "95a9cde3-ff1f-40a3-8276-2477ded688f8",
       "name": "Bluey’s Best Day Ever!",
       "latitude": 33.8144,
-      "times": [
-        "11:00",
-        "12:20",
-        "13:40",
-        "15:25",
-        "16:45"
-      ],
+      "times": [],
       "longitude": -117.91855,
       "land": "Fantasyland",
       "types": [
         "theater show"
       ],
-      "status": "operating",
+      "status": "closed",
       "duration": 25
     },
     "disneyland-band-frontierland": {
@@ -514,21 +504,14 @@
       "latitude": 33.812041
     },
     "dapper-dans": {
-      "times": [
-        "11:00",
-        "12:15",
-        "13:10",
-        "14:20",
-        "16:15",
-        "17:00"
-      ],
+      "times": [],
       "types": [
         "street show",
         "character experience"
       ],
       "land": "Main Street U.S.A.",
       "longitude": -117.918962,
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
       "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
       "timeRanges": [
@@ -560,6 +543,7 @@
       "times": [
         "11:25",
         "12:15",
+        "13:05",
         "15:15",
         "16:15"
       ],
@@ -692,11 +676,9 @@
       "types": [
         "street show"
       ],
-      "times": [
-        "13:05"
-      ],
+      "times": [],
       "duration": 20,
-      "status": "operating"
+      "status": "closed"
     },
     "paint-the-night": {
       "latitude": 33.8109775,
@@ -713,17 +695,9 @@
       ]
     },
     "jambalaya-jazz": {
-      "status": "operating",
+      "status": "closed",
       "duration": 25,
-      "times": [
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:05",
-        "16:00",
-        "17:00"
-      ],
+      "times": [],
       "types": [
         "street show"
       ],
@@ -740,7 +714,8 @@
       "times": [
         "20:55",
         "21:55",
-        "22:55"
+        "22:55",
+        "23:55"
       ],
       "land": "Main Street U.S.A.",
       "types": [
@@ -840,7 +815,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "19:30"
+          "end": "22:30"
         }
       ],
       "duration": 15,
@@ -866,16 +841,9 @@
       "timeRanges": []
     },
     "storytelling-royal-theatre": {
-      "status": "operating",
+      "status": "closed",
       "duration": 25,
-      "times": [
-        "10:15",
-        "11:25",
-        "12:40",
-        "14:15",
-        "15:25",
-        "16:35"
-      ],
+      "times": [],
       "longitude": -117.919443,
       "land": "Fantasyland",
       "types": [
@@ -921,27 +889,29 @@
     },
     "bootstrappers": {
       "duration": 20,
-      "status": "closed",
+      "status": "operating",
       "land": "New Orleans Square",
       "types": [
         "street show"
       ],
       "longitude": -117.921011,
-      "times": [],
+      "times": [
+        "08:30",
+        "09:30",
+        "10:30",
+        "11:30",
+        "12:35",
+        "14:30"
+      ],
       "latitude": 33.811384,
       "name": "The Bootstrappers",
       "apiEntityId": "8160b905-b318-41be-84bf-869fb6a55b14",
       "timeRanges": []
     },
     "pearly-band-castle": {
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "09:15",
-        "10:05",
-        "11:00",
-        "15:05"
-      ],
+      "times": [],
       "types": [
         "street show"
       ],
@@ -990,5 +960,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-10-05T13:00:09.669Z"
+  "lastShowtimeSync": "2026-10-07T13:00:41.308Z"
 }

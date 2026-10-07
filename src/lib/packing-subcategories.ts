@@ -21,6 +21,27 @@ export function subcategoriesFor(type: PackingType, items: { type: PackingType; 
   return [...standard, ...custom];
 }
 
+/**
+ * Every sub-category for one type: the full standard list, in its usual
+ * order, followed by any custom ones found on items. Used by the Catalog,
+ * where the chips double as a guide to the shared list; Prepare's sidebar
+ * uses `subcategoriesFor` instead to stay short.
+ */
+export function allSubcategoriesFor(type: PackingType, items: { type: PackingType; category: string }[]): string[] {
+  const standard = PACKING_CATEGORIES[type] ?? [];
+  const custom = [...new Set(items.filter((i) => i.type === type && i.category).map((i) => i.category))]
+    .filter((c) => !standard.includes(c))
+    .sort((a, b) => a.localeCompare(b));
+  return [...standard, ...custom];
+}
+
+/** How many items use each sub-category. */
+export function countSubcategories(items: { category: string }[]): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const item of items) counts[item.category] = (counts[item.category] ?? 0) + 1;
+  return counts;
+}
+
 export function matchesSubcategory(item: { type: PackingType; category: string }, filter: SubcategoryFilter): boolean {
   const chosen = filter[item.type];
   return !chosen || chosen.length === 0 || chosen.includes(item.category);

@@ -519,41 +519,42 @@ export default function PackingFormModal({
               )}
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-between mt-6">
+            {/* Actions — on a phone, Remove/Delete wrap onto their own row
+                below Cancel and Save so Save is never pushed off-screen */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-3 mt-6">
               <button
                 onClick={onClose}
-                className="px-4 py-2 rounded-full text-sm font-medium cursor-pointer
+                className="order-1 px-4 py-2 rounded-full text-sm font-medium cursor-pointer
                            transition-colors duration-200 hover:bg-white/5"
                 style={{ color: "var(--color-text-secondary)" }}
               >
                 Cancel
               </button>
 
-              <div className="flex items-center gap-2">
-                {isEditMode && (
+              {isEditMode && (
+                <div className="order-3 basis-full flex justify-end sm:order-2 sm:basis-auto sm:ml-auto">
                   <RemoveControls
                     onRemoveFromTrip={onUnselectFromTrip}
                     onDeleteForever={onDeleteForever}
                     disabled={saving}
                   />
-                )}
+                </div>
+              )}
 
-                {/* Save */}
-                <button
-                  onClick={handleSave}
-                  disabled={!canSave}
-                  className="px-5 py-2 rounded-full text-sm font-semibold cursor-pointer
-                             transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
-                             hover:brightness-110"
-                  style={{
-                    backgroundColor: ACCENT,
-                    color: "var(--color-bg-deep)",
-                  }}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </button>
-              </div>
+              {/* Save */}
+              <button
+                onClick={handleSave}
+                disabled={!canSave}
+                className={`order-2 sm:order-3 px-5 py-2 rounded-full text-sm font-semibold cursor-pointer
+                           transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
+                           hover:brightness-110 ml-auto ${isEditMode ? "sm:ml-0" : ""}`}
+                style={{
+                  backgroundColor: ACCENT,
+                  color: "var(--color-bg-deep)",
+                }}
+              >
+                {saving ? "Saving..." : "Save"}
+              </button>
             </div>
           </motion.div>
         </motion.div>

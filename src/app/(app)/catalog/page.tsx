@@ -24,7 +24,7 @@ import PackingCard from "@/components/PackingCard";
 import CatalogGridCard from "@/components/CatalogGridCard";
 import CatalogListRow from "@/components/CatalogListRow";
 import SubcategoryChips from "@/components/SubcategoryChips";
-import { matchesSubcategory, subcategoriesFor, toggleSubcategory, type SubcategoryFilter } from "@/lib/packing-subcategories";
+import { allSubcategoriesFor, countSubcategories, matchesSubcategory, toggleSubcategory, type SubcategoryFilter } from "@/lib/packing-subcategories";
 import CatalogContextMenu from "@/components/CatalogContextMenu";
 import UserPanel from "@/components/UserPanel";
 import EnsembleCard from "@/components/EnsembleCard";
@@ -242,11 +242,13 @@ export default function CatalogPage() {
   // Chips for the second filter level on the active tab
   const subcategoryChips = useMemo(() => {
     if (isWishesTab) {
-      const used = new Set(wishes.flatMap((w) => w.tags));
-      const tags = WISH_TAGS.filter((t) => used.has(t.id));
+      // Every tag, like the packing tabs, with how many wishes carry each
+      const counts: Record<string, number> = {};
+      for (const w of wishes) for (const t of w.tags) counts[t] = (counts[t] ?? 0) + 1;
       return {
-        options: tags.map((t) => t.id),
-        labels: Object.fromEntries(tags.map((t) => [t.id, `${t.icon} ${t.label}`])),
+        options: WISH_TAGS.map((t) => t.id),
+        labels: Object.fromEntries(WISH_TAGS.map((t) => [t.id, `${t.icon} ${t.label}`])),
+        counts,
         selected: wishTagFilter,
         onToggle: (id: string) => setWishTagFilter((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id])),
         onClear: () => setWishTagFilter([]),
@@ -254,9 +256,11 @@ export default function CatalogPage() {
     }
     if (isEnsemblesTab || isPhotosTab) return null;
     const type = activeTab as PackingType;
+    const items = getPackingByType(type);
     return {
-      options: subcategoriesFor(type, getPackingByType(type)),
+      options: allSubcategoriesFor(type, items),
       labels: undefined,
+      counts: countSubcategories(items),
       selected: subcategories[type] ?? [],
       onToggle: (c: string) => setSubcategories((f) => toggleSubcategory(f, type, c)),
       onClear: () => setSubcategories((f) => ({ ...f, [type]: undefined })),
@@ -752,6 +756,7 @@ export default function CatalogPage() {
               className="mb-3"
               options={subcategoryChips.options}
               labels={subcategoryChips.labels}
+              counts={subcategoryChips.counts}
               selected={subcategoryChips.selected}
               onToggle={subcategoryChips.onToggle}
               onClear={subcategoryChips.onClear}

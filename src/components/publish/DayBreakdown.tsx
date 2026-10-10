@@ -4,18 +4,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { DayData, PublishData } from "@/hooks/use-publish-data";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
+import { formatTime12 } from "@/lib/time-format";
 
 const ACCENT = "var(--color-accent-publish)";
 const SUCCESS = "var(--color-success)";
-
-function formatTime12(time24: string): string {
-  if (!time24 || !time24.includes(":")) return "";
-  const [hh, mm] = time24.split(":").map(Number);
-  if (isNaN(hh) || isNaN(mm)) return "";
-  const period = hh >= 12 ? "PM" : "AM";
-  const hour12 = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
-  return `${hour12}:${mm.toString().padStart(2, "0")} ${period}`;
-}
 
 // ==================== DAY ACCORDION ITEM ====================
 

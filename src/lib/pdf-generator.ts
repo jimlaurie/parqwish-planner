@@ -5,6 +5,7 @@ import { getAttractionCoords, type CoordMaps } from "./park-data";
 import { LAND_COORDINATES } from "./map-data";
 import { calcDistanceMiles, calcDurationMinutes } from "./trail-geo";
 import type { TrailTimeRanges } from "@/components/publish/TrailGallery";
+import { formatTime12 } from "./time-format";
 
 // ==================== HELPERS ====================
 
@@ -21,15 +22,6 @@ const SOURCE_ICONS: Record<string, string> = {
   lightning_lane:"⚡",
   custom:        "📌",
 };
-
-function formatTime12(time24: string): string {
-  if (!time24 || !time24.includes(":")) return "";
-  const [hh, mm] = time24.split(":").map(Number);
-  if (isNaN(hh) || isNaN(mm)) return "";
-  const period  = hh >= 12 ? "PM" : "AM";
-  const hour12  = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
-  return `${hour12}:${mm.toString().padStart(2, "0")} ${period}`;
-}
 
 function formatDate(dateStr: string): string {
   const date   = new Date(dateStr + "T12:00:00");

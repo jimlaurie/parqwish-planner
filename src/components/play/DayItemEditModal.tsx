@@ -4,21 +4,13 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
+import { formatTime12 } from "@/lib/time-format";
 
 const ACCENT = "var(--color-accent-preview)";
 
 const DURATION_OPTIONS = [15, 30, 45, 60, 90, 120];
 
 // ==================== HELPERS ====================
-
-function formatTime12(time24: string): string {
-  if (!time24?.includes(":")) return "";
-  const [hh, mm] = time24.split(":").map(Number);
-  if (isNaN(hh) || isNaN(mm)) return "";
-  const period = hh >= 12 ? "PM" : "AM";
-  const hour12 = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
-  return `${hour12}:${mm.toString().padStart(2, "0")} ${period}`;
-}
 
 // ==================== TYPES ====================
 

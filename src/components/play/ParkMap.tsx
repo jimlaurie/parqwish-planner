@@ -28,6 +28,7 @@ import {
   TILE_CLASS_NAME,
   TILE_MAX_NATIVE_ZOOM,
 } from "@/lib/map-data";
+import { formatTime12 } from "@/lib/time-format";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -576,7 +577,7 @@ function AttractionPin({ data, isHovered }: { data: AttractionMarkerData; isHove
           <strong style={{ color: data.color }}>{data.item.title}</strong>
           <div style={{ fontSize: "12px", marginTop: "4px", color: "var(--color-text-secondary)" }}>
             {data.item.scheduledTime && (
-              <span>{data.item.scheduledTime}</span>
+              <span>{formatTime12(data.item.scheduledTime)}</span>
             )}
             {data.item.land && (
               <span style={{ marginLeft: data.item.scheduledTime ? "8px" : 0 }}>
@@ -635,7 +636,7 @@ function LandCircleMarker({
             <ul style={{ margin: "4px 0 0", padding: "0 0 0 16px", fontSize: "12px" }}>
               {marker.items.map((item) => (
                 <li key={item.id}>
-                  {item.scheduledTime} — {item.title}
+                  {item.scheduledTime ? `${formatTime12(item.scheduledTime)} — ` : ""}{item.title}
                   {item.completed && " \u2713"}
                 </li>
               ))}

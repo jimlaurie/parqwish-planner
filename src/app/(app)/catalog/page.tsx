@@ -519,6 +519,8 @@ export default function CatalogPage() {
     () =>
       filteredWishes.map((w) => ({
         ...w,
+        // Catalog cards aren't on a trip; the only "owner" is the catalog item's creator.
+        owners: [{ userId: w.userId ?? "user_primary" }],
         selectionId: "",
         completed: false,
         status: "idea" as const,

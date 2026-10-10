@@ -42,6 +42,7 @@ import {
 import { auth } from "./auth";
 import { pushWish, pushPackingItem } from "./wish-sync";
 import { recompressDataURL, compressDataURLMultiRes } from "./image-utils";
+import { selectionOwners } from "@shared/selection-owners";
 
 // ==================== INTERNAL TYPES ====================
 
@@ -81,7 +82,8 @@ async function gatherTripData(
     .toArray();
   if (userIds) {
     const idSet = new Set(userIds);
-    wishSelections = wishSelections.filter((ws) => idSet.has(ws.userId ?? "user_primary"));
+    // Shared selections (shared/selection-owners.ts): export if any owner was chosen.
+    wishSelections = wishSelections.filter((ws) => selectionOwners(ws).some((o) => idSet.has(o.userId)));
   }
   const wishIds = wishSelections.map((ws) => ws.wishId);
   const wishes = await db.wishes.bulkGet(wishIds);

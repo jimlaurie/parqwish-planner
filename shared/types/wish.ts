@@ -41,6 +41,17 @@ export interface Wish {
   userId?: string;      // Creator of this catalog item (default: "user_primary")
 }
 
+/**
+ * One person who wants a wish on a trip. `userId` is a Trip User id, which is
+ * only unique within one account; `authorUid` is the Firebase Auth uid of the
+ * account that person belongs to (unset = this device's own account, filled
+ * in at push time). See shared/selection-owners.ts.
+ */
+export interface SelectionOwner {
+  userId: string;
+  authorUid?: string;
+}
+
 /** Junction: links a catalog wish to a trip with per-trip state */
 export interface TripWishSelection {
   id: string;           // Deterministic: `${tripId}__${wishId}`
@@ -64,4 +75,12 @@ export interface TripWishSelection {
    * and on solo (non-collaborative) trips — falls back to trusting userId.
    */
   authorUid?: string;
+  /**
+   * Everyone on the trip who wants this wish (Oct 2026). One selection is
+   * shared: completion and status apply to all owners. When set, it is the
+   * source of truth and `userId` mirrors owners[0] for older readers (Pal
+   * build 82 and earlier ignore this field). Unset on older records: the
+   * single owner is { userId, authorUid }. Use shared/selection-owners.ts.
+   */
+  owners?: SelectionOwner[];
 }

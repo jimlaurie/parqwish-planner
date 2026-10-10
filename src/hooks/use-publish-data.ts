@@ -9,6 +9,7 @@ import db, {
 } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { useAllTripPhotos } from "@/hooks/use-all-trip-photos";
+import { selectionOwners } from "@shared/selection-owners";
 
 // ==================== TYPES ====================
 
@@ -125,7 +126,8 @@ export function usePublishData() {
     const matchesFilter = (userId: string | undefined) =>
       !filterSet || filterSet.has(userId ?? "user_primary");
 
-    const wishSelections = rawData.wishSelections.filter((s) => matchesFilter(s.userId));
+    // A wish selection can be shared by several people — keep it if any of them matches.
+    const wishSelections = rawData.wishSelections.filter((s) => selectionOwners(s).some((o) => matchesFilter(o.userId)));
     const wishIds = new Set(wishSelections.map((s) => s.wishId));
     const wishes = rawData.wishes.filter((w) => wishIds.has(w.id));
 

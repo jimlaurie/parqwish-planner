@@ -313,17 +313,19 @@ export default function PlanPage() {
               <div className="flex flex-col gap-2">
                 <AnimatePresence mode="popLayout">
                   {wishes.map((wish) => {
-                    const owner = showUserBadges
-                      ? resolveOwnerBadge(wish, { userMap, members: currentTrip?.members, myUid })
-                      : undefined;
+                    // A wish can be shared by several people on the trip — one badge each.
+                    const badges = showUserBadges
+                      ? wish.owners
+                          .map((o) => resolveOwnerBadge(o, { userMap, members: currentTrip?.members, myUid }))
+                          .filter((b): b is NonNullable<typeof b> => !!b)
+                      : [];
                     return (
                       <WishCard
                         key={wish.id}
                         wish={wish}
                         onToggleCompleted={toggleCompleted}
                         onEdit={setEditingWishId}
-                        userName={owner?.name}
-                        userColor={owner?.color}
+                        userBadges={badges}
                       />
                     );
                   })}

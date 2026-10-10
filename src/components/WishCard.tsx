@@ -13,6 +13,8 @@ interface WishCardProps {
   showCheckbox?: boolean;
   userName?: string;
   userColor?: string;
+  /** Several owner badges (a wish can be shared by several people); takes precedence over userName/userColor. */
+  userBadges?: { name: string; color: string }[];
   headerExtra?: ReactNode;
   cardStyle?: React.CSSProperties;
   selectMode?: boolean;
@@ -27,6 +29,7 @@ export default function WishCard({
   showCheckbox = true,
   userName,
   userColor,
+  userBadges,
   headerExtra,
   cardStyle,
   selectMode = false,
@@ -35,6 +38,7 @@ export default function WishCard({
 }: WishCardProps) {
   const priorityColor = TICKET_COLORS[wish.priority] ?? TICKET_COLORS.C;
   const isCompleted = wish.completed;
+  const badges = userBadges ?? (userName && userColor ? [{ name: userName, color: userColor }] : []);
 
   return (
     <motion.div
@@ -157,11 +161,11 @@ export default function WishCard({
           )}
 
           {/* User badge + Park / Land badge + Max Wait */}
-          {(userName || wish.park || wish.land || wish.maxWaitTime) && (
+          {(badges.length > 0 || wish.park || wish.land || wish.maxWaitTime) && (
             <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-              {userName && userColor && (
-                <UserBadge color={userColor} name={userName} size="sm" />
-              )}
+              {badges.map((b) => (
+                <UserBadge key={`${b.name}_${b.color}`} color={b.color} name={b.name} size="sm" />
+              ))}
               {(wish.park || wish.land) && (
                 <span
                   className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full"

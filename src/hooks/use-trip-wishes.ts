@@ -8,6 +8,8 @@ import { PRIORITY_SORT_ORDER, WISH_TAGS } from "@/lib/constants";
 import type { WishFormData } from "@/components/WishFormModal";
 import { auth, isSyncEnabled, canCollaborate } from "@/lib/auth";
 import { pushWish, deleteWishRemote, pushSelection, deleteSelectionRemote, pushWishMirror, deleteWishMirrorRemote } from "@/lib/wish-sync";
+import type { SelectionOwner } from "@shared/types/wish";
+import { selectionOwners, isLocalOwner, hasOwner, addSelectionOwner, removeSelectionOwner } from "@shared/selection-owners";
 
 // ==================== TYPES ====================
 
@@ -17,6 +19,13 @@ export interface WishWithStatus extends Wish {
   status: WishStatus;
   userId?: string;
   authorUid?: string;
+  /** Everyone on the trip who wants this wish (see shared/selection-owners.ts). */
+  owners: SelectionOwner[];
+}
+
+/** This account's uid, or undefined when signed out. */
+function myAccountUid(): string | undefined {
+  return auth.currentUser?.uid;
 }
 
 // ==================== MAIN HOOK ====================
@@ -51,6 +60,7 @@ export function useTripWishes() {
             status: sel.status,
             userId: sel.userId,
             authorUid: sel.authorUid,
+            owners: selectionOwners(sel),
           });
         }
       }
@@ -68,7 +78,8 @@ export function useTripWishes() {
     // Filter: user
     if (activeUserFilter) {
       const filterSet = new Set(activeUserFilter);
-      result = result.filter((w) => filterSet.has(w.userId ?? "user_primary"));
+      const myUid = myAccountUid();
+      result = result.filter((w) => w.owners.some((o) => isLocalOwner(o, myUid) && filterSet.has(o.userId)));
     }
 
     // Filter: completed
@@ -168,6 +179,7 @@ export function useTripWishes() {
         addedAt: now,
         updatedAt: now,
         userId: currentUserId,
+        owners: [{ userId: currentUserId }],
       };
       await db.tripWishSelections.add(selection);
 
@@ -232,19 +244,36 @@ export function useTripWishes() {
     }
   };
 
-  /** Removes the wish from the current trip only. Returns the removed
-   *  selection so the caller can offer Undo via restoreWishSelection. */
+  /** Removes the wish from the current trip for the current person. When
+   *  others on the trip also want it, only this person is taken off; the
+   *  selection itself goes only when nobody is left (or this person isn't
+   *  one of its owners, e.g. removing someone else's wish). Returns the
+   *  selection as it was, so the caller can offer Undo via restoreWishSelection. */
   const unselectWish = async (id: string): Promise<TripWishSelection | undefined> => {
     if (!currentTripId) return undefined;
     const selId = `${currentTripId}__${id}`;
-    const removed = await db.tripWishSelections.get(selId);
-    await db.tripWishSelections.delete(selId);
+    const before = await db.tripWishSelections.get(selId);
+    if (!before) return undefined;
     const user = auth.currentUser;
+    const me: SelectionOwner = { userId: currentUserId };
+    const myUid = myAccountUid();
+    const remaining = removeSelectionOwner(before, me, myUid);
+
+    if (hasOwner(before, me, myUid) && remaining.owners.length > 0) {
+      await db.tripWishSelections.update(selId, { owners: remaining.owners, userId: remaining.userId, updatedAt: Date.now() });
+      if (user && canCollaborate(user)) {
+        const updated = await db.tripWishSelections.get(selId);
+        if (updated) pushSelection(updated, user.uid).catch(() => {});
+      }
+      return before;
+    }
+
+    await db.tripWishSelections.delete(selId);
     if (user && canCollaborate(user)) {
       deleteSelectionRemote(selId, user.uid, currentTripId).catch(() => {});
       deleteWishMirrorRemote(currentTripId, id, user.uid).catch(() => {});
     }
-    return removed;
+    return before;
   };
 
   /** Undo for unselectWish: puts the exact removed selection back (same
@@ -286,20 +315,30 @@ export function useTripWishes() {
     if (!currentTripId) return;
     const selId = `${currentTripId}__${wishId}`;
     const existing = await db.tripWishSelections.get(selId);
-    if (existing) return; // already selected
+    const me: SelectionOwner = { userId: currentUserId };
+    const myUid = myAccountUid();
+    if (existing && hasOwner(existing, me, myUid)) return; // already this person's
 
     const now = Date.now();
-    const selection: TripWishSelection = {
-      id: selId,
-      tripId: currentTripId,
-      wishId,
-      completed: false,
-      status: "idea",
-      addedAt: now,
-      updatedAt: now,
-      userId: currentUserId,
-    };
-    await db.tripWishSelections.add(selection);
+    let selection: TripWishSelection;
+    if (existing) {
+      // Someone else on the trip already wants it — add this person too.
+      selection = { ...existing, ...addSelectionOwner(existing, me, myUid), updatedAt: now };
+      await db.tripWishSelections.put(selection);
+    } else {
+      selection = {
+        id: selId,
+        tripId: currentTripId,
+        wishId,
+        completed: false,
+        status: "idea",
+        addedAt: now,
+        updatedAt: now,
+        userId: currentUserId,
+        owners: [me],
+      };
+      await db.tripWishSelections.add(selection);
+    }
 
     const user = auth.currentUser;
     if (user && canCollaborate(user)) {
@@ -327,6 +366,8 @@ export function useTripWishes() {
     const parkDataId = data.parkDataId;
     const tripId = currentTripId;
     const now = Date.now();
+    const me: SelectionOwner = { userId: currentUserId };
+    const myUid = myAccountUid();
 
     const result = await db.transaction(
       "rw",
@@ -337,7 +378,13 @@ export function useTripWishes() {
         if (existing) {
           const selId = `${tripId}__${existing.id}`;
           const existingSel = await db.tripWishSelections.get(selId);
-          if (existingSel) return { resultId: existing.id, createdWish: null, selection: null };
+          if (existingSel) {
+            if (hasOwner(existingSel, me, myUid)) return { resultId: existing.id, createdWish: null, selection: null };
+            // Already on the trip for someone else — add this person too.
+            const shared: TripWishSelection = { ...existingSel, ...addSelectionOwner(existingSel, me, myUid), updatedAt: now };
+            await db.tripWishSelections.put(shared);
+            return { resultId: existing.id, createdWish: null, selection: shared };
+          }
 
           const selection: TripWishSelection = {
             id: selId,
@@ -348,6 +395,7 @@ export function useTripWishes() {
             addedAt: now,
             updatedAt: now,
             userId: currentUserId,
+            owners: [me],
           };
           await db.tripWishSelections.add(selection);
           return { resultId: existing.id, createdWish: null, selection };
@@ -383,6 +431,7 @@ export function useTripWishes() {
           addedAt: now,
           updatedAt: now,
           userId: currentUserId,
+          owners: [me],
         };
         await db.tripWishSelections.add(selection);
 

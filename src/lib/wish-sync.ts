@@ -38,6 +38,7 @@ import { auth, isSyncEnabled } from "./auth";
 import { deriveKey, encrypt, decrypt, generateRandomKey, wrapKey, unwrapKey, toBase64 } from "@shared/sync/crypto";
 import type { SyncedWishDoc, SyncedTripUser, SyncedKeyWrap } from "@shared/sync/firestore-schema";
 import type { Wish, TripWishSelection } from "@shared/types/wish";
+import { stampOwnerAccounts } from "@shared/selection-owners";
 import { INVITE_TTL_MS, type Trip, type TripMember } from "@shared/types/trip";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
@@ -677,7 +678,9 @@ export async function pushSelection(sel: TripWishSelection, uid: string): Promis
   const tripKey = await getTripKey(sel.tripId, uid);
   if (!tripKey) { console.warn("[wish-sync] pushSelection: no trip key for", sel.tripId); return; }
   // Stamped at push time (not creation) — see TripWishSelection.authorUid docs.
-  const encryptedPayload = await encrypt({ ...sel, authorUid: uid }, tripKey);
+  // Owners added on this device carry no account yet; they're this account's
+  // Trip Users, so they get this uid (shared/selection-owners.ts).
+  const encryptedPayload = await encrypt({ ...sel, owners: stampOwnerAccounts(sel.owners, uid), authorUid: uid }, tripKey);
   await setDoc(wishSelectionDocRef(sel.tripId, sel.id), {
     id: sel.id,
     encryptedPayload,

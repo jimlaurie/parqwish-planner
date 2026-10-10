@@ -6,3 +6,4 @@ export * from "./types";
 export * from "./constants";
 export * from "./sync-helpers";
 export * from "./sync-mappers";
+export * from "./selection-owners";

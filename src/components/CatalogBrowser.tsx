@@ -3,6 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParkData } from "@/hooks/use-park-data";
 import { useTripWishes } from "@/hooks/use-trip-wishes";
+import { useTrips } from "@/hooks/use-trips";
+import { useUsers } from "@/hooks/use-users";
+import { useAppStore } from "@/lib/store";
+import { auth } from "@/lib/auth";
+import { resolveOwnerBadge } from "@/lib/owner-badge";
+import { hasOwner, isSameOwner } from "@shared/selection-owners";
 import { PARK_DATA_TYPE_TO_TAG, getRideReliabilityStats, getWaitTimeStats } from "@/lib/park-data";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
@@ -372,10 +378,12 @@ function ItemDetail({ item }: {
 
 // ==================== LIST ROW ====================
 
-function CatalogRow({ item, insight, alreadyAdded, selected, pending, onSelect, onAdd, onRemove }: {
+function CatalogRow({ item, insight, alreadyAdded, wantedBy, selected, pending, onSelect, onAdd, onRemove }: {
   item: ParkDataItem;
   insight?: RideInsight;
   alreadyAdded: boolean;
+  /** Other people on the trip who already have this in their plan, e.g. "Dana, Sam". */
+  wantedBy?: string;
   selected: boolean;
   pending: boolean;
   onSelect: () => void;
@@ -428,6 +436,11 @@ function CatalogRow({ item, insight, alreadyAdded, selected, pending, onSelect, 
             )}
           </p>
           <RowChips chips={item.type === "ride" ? rideChips(item, insight) : otherChips(item)} />
+          {wantedBy && (
+            <p className="text-[10px] mt-1 truncate" style={{ color: "var(--color-text-muted)" }}>
+              {alreadyAdded ? `Also wanted by ${wantedBy}` : `${wantedBy} ${wantedBy.includes(",") ? "want" : "wants"} this`}
+            </p>
+          )}
         </div>
 
         {/* Right side: Plan button + expand chevron */}
@@ -509,6 +522,10 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
   const isPanel = variant === "panel";
   const { items, loading } = useParkData();
   const { allWishes, addOrSelectWish, unselectWish } = useTripWishes();
+  const { currentUserId } = useAppStore();
+  const { currentTrip } = useTrips();
+  const { userMap } = useUsers();
+  const myUid = auth.currentUser?.uid;
 
   const [expandedState, setExpanded] = useState(false);
   const expanded = isPanel || expandedState;
@@ -550,10 +567,24 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
     return map;
   }, [allWishes]);
 
-  const addedParkDataIds = useMemo(
-    () => new Set(parkDataIdToWishId.keys()),
-    [parkDataIdToWishId]
-  );
+  // "In Plan" is per person: a selection can be shared by several people on
+  // the trip (shared/selection-owners.ts), so check the current person is one
+  // of its owners, and list the others by name.
+  const { addedParkDataIds, wantedByParkDataId } = useMemo(() => {
+    const me = { userId: currentUserId };
+    const added = new Set<string>();
+    const wantedBy = new Map<string, string>();
+    for (const w of allWishes) {
+      if (!w.parkDataId) continue;
+      if (hasOwner(w, me, myUid)) added.add(w.parkDataId);
+      const names = w.owners
+        .filter((o) => !isSameOwner(o, me, myUid))
+        .map((o) => resolveOwnerBadge(o, { userMap, members: currentTrip?.members, myUid })?.name)
+        .filter((n): n is string => !!n);
+      if (names.length > 0) wantedBy.set(w.parkDataId, names.join(", "));
+    }
+    return { addedParkDataIds: added, wantedByParkDataId: wantedBy };
+  }, [allWishes, currentUserId, myUid, userMap, currentTrip?.members]);
 
   const tabItems = useMemo(
     () => items.filter((item) => item.type === activeTab),
@@ -856,6 +887,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
                         item={item}
                         insight={insights.get(item.id)}
                         alreadyAdded={addedParkDataIds.has(item.id)}
+                        wantedBy={wantedByParkDataId.get(item.id)}
                         selected={selectedId === item.id}
                         pending={pendingIds.has(item.id)}
                         onSelect={() => setSelectedId(selectedId === item.id ? null : item.id)}

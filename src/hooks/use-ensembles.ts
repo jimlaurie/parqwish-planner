@@ -3,6 +3,10 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type Ensemble, type PackingItem } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import type { TripPackingSelection } from "@shared/types/packing";
+import { auth, canCollaborate } from "@/lib/auth";
+import { pushPackingSelection, pushPackingItemMirror } from "@/lib/wish-sync";
+import { hasOwner, addSelectionOwner } from "@shared/selection-owners";
 
 // ==================== TYPES ====================
 
@@ -115,8 +119,11 @@ export function useEnsembles() {
   // ==================== TRIP INTEGRATION ====================
 
   /**
-   * Add all items from an ensemble to the current trip.
-   * Creates TripPackingSelection entries for each item not already in the trip.
+   * Add all items from an ensemble to the current trip, for the ensemble's
+   * owner. Items not on the trip get a new TripPackingSelection; items that
+   * someone else is already packing get the owner added to that selection
+   * (selections can be shared — shared/selection-owners.ts). Returns how many
+   * items were new to this owner.
    */
   const addEnsembleToTrip = async (ensembleId: string, tripId: string) => {
     const ensemble = await db.ensembles.get(ensembleId);
@@ -126,25 +133,47 @@ export function useEnsembles() {
       .where("tripId")
       .equals(tripId)
       .toArray();
-    const existingItemIds = new Set(existingSelections.map((s) => s.itemId));
+    const existingByItem = new Map(existingSelections.map((s) => [s.itemId, s]));
 
-    const ownerUserId = ensemble.userId ?? "user_primary";
-    const newSelections = ensemble.itemIds
-      .filter((itemId) => !existingItemIds.has(itemId))
-      .map((itemId) => ({
-        id: `${tripId}__${itemId}`,
-        tripId,
-        itemId,
-        completed: false,
-        addedAt: Date.now(),
-        userId: ownerUserId,
-      }));
-
-    if (newSelections.length > 0) {
-      await db.tripPackingSelections.bulkAdd(newSelections);
+    const owner = { userId: ensemble.userId ?? "user_primary" };
+    const myUid = auth.currentUser?.uid;
+    const now = Date.now();
+    const newSelections: TripPackingSelection[] = [];
+    const joined: TripPackingSelection[] = [];
+    for (const itemId of ensemble.itemIds) {
+      const existing = existingByItem.get(itemId);
+      if (!existing) {
+        newSelections.push({
+          id: `${tripId}__${itemId}`,
+          tripId,
+          itemId,
+          completed: false,
+          addedAt: now,
+          updatedAt: now,
+          userId: owner.userId,
+          owners: [owner],
+        });
+      } else if (!hasOwner(existing, owner, myUid)) {
+        joined.push({ ...existing, ...addSelectionOwner(existing, owner, myUid), updatedAt: now });
+      }
     }
 
-    return newSelections.length;
+    if (newSelections.length > 0) await db.tripPackingSelections.bulkAdd(newSelections);
+    if (joined.length > 0) await db.tripPackingSelections.bulkPut(joined);
+
+    // Reach the trip's other members, like single adds in use-packing-items.
+    const user = auth.currentUser;
+    if (user && canCollaborate(user)) {
+      for (const sel of [...newSelections, ...joined]) {
+        pushPackingSelection(sel, user.uid).catch((err) => console.error("[use-ensembles] selection push failed:", err));
+      }
+      const items = await db.packingItems.bulkGet(newSelections.map((s) => s.itemId));
+      for (const item of items) {
+        if (item) pushPackingItemMirror(tripId, item, user.uid).catch((err) => console.error("[use-ensembles] mirror push failed:", err));
+      }
+    }
+
+    return newSelections.length + joined.length;
   };
 
   return {

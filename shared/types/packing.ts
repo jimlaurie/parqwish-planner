@@ -1,7 +1,7 @@
 // ==================== PACKING TYPES ====================
 
 import type { Priority, Timestamped } from "./common";
-import type { PhotoSet } from "./wish";
+import type { PhotoSet, SelectionOwner } from "./wish";
 
 export type PackingType = "outfit" | "equipment" | "sundry" | "shopping" | "dining";
 
@@ -39,6 +39,8 @@ export interface TripPackingSelection {
   userId?: string;      // Owner of this selection (default: "user_primary")
   /** Firebase Auth uid of the account that pushed this selection — see TripWishSelection.authorUid (shared/types/wish.ts) for the full rationale. */
   authorUid?: string;
+  /** Everyone on the trip packing this item (Oct 2026); same rules as TripWishSelection.owners. Completion is shared. */
+  owners?: SelectionOwner[];
 }
 
 /** Ensemble — a reusable grouping of catalog items (global, not per-trip) */

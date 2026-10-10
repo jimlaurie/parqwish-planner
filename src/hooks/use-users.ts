@@ -4,7 +4,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db, { type User } from "@/lib/db";
 import { auth, isSyncEnabled } from "@/lib/auth";
 import { pushTripUser, deleteTripUserRemote } from "@/lib/wish-sync";
-import { hasOwner, removeSelectionOwner, addSelectionOwner } from "@shared/selection-owners";
+import { reassignSelectionOwner } from "@shared/selection-owners";
+import type { SelectionOwner } from "@shared/types/wish";
 
 // ==================== USER COLORS ====================
 
@@ -149,25 +150,19 @@ export function useUsers() {
 
     const user = await db.users.get(id);
 
-    // Reassign owned items to primary user. Wish selections can be shared
-    // (shared/selection-owners.ts), so the removed person may be any owner,
-    // not just the one mirrored in userId: swap them for the primary user
-    // and drop the duplicate if the primary user already wanted it too.
+    // Reassign owned items to primary user. Wish and packing selections can
+    // be shared (shared/selection-owners.ts), so the removed person may be any
+    // owner, not just the one mirrored in userId: swap them for the primary
+    // user, without a duplicate if the primary user already had it too.
     const myUid = auth.currentUser?.uid;
-    const removed = { userId: id };
-    const primary = { userId: "user_primary" };
-    await db.tripWishSelections.toCollection().modify((sel) => {
-      if (!hasOwner(sel, removed, myUid)) return;
-      const without = removeSelectionOwner(sel, removed, myUid);
-      const merged = addSelectionOwner({ owners: without.owners }, primary, myUid);
-      sel.owners = without.owners.length > 0 || sel.owners ? merged.owners : undefined;
-      sel.userId = merged.userId;
-    });
-
-    await db.tripPackingSelections
-      .where("userId")
-      .equals(id)
-      .modify({ userId: "user_primary" });
+    const reassign = (sel: { userId?: string; authorUid?: string; owners?: SelectionOwner[] }) => {
+      const next = reassignSelectionOwner(sel, id, myUid);
+      if (!next) return;
+      sel.owners = next.owners;
+      sel.userId = next.userId;
+    };
+    await db.tripWishSelections.toCollection().modify(reassign);
+    await db.tripPackingSelections.toCollection().modify(reassign);
 
     await db.dayItems
       .where("userId")

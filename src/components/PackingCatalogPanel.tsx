@@ -11,6 +11,11 @@ import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type PackingItem, type PackingType } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import { auth } from "@/lib/auth";
+import { useTrips } from "@/hooks/use-trips";
+import { useUsers } from "@/hooks/use-users";
+import { resolveOwnerBadge } from "@/lib/owner-badge";
+import { hasOwner, isSameOwner, selectionOwners } from "@shared/selection-owners";
 import { useEnsembles } from "@/hooks/use-ensembles";
 import { PACKING_TABS, TICKET_COLORS } from "@/lib/constants";
 import { matchesSubcategory, packingThumbnail, type SubcategoryFilter } from "@/lib/packing-subcategories";
@@ -24,9 +29,16 @@ interface PackingCatalogPanelProps {
   onRemove: (itemId: string) => Promise<void>;
 }
 
-/** Every catalog item of the given types, flagged if it's on this trip. */
+/**
+ * Every catalog item of the given types, flagged if the current person is
+ * packing it on this trip. A packing selection can be shared by several
+ * people (shared/selection-owners.ts), so also list who else is packing it.
+ */
 function usePackingCatalog(types: PackingType[]) {
-  const { currentTripId } = useAppStore();
+  const { currentTripId, currentUserId } = useAppStore();
+  const { currentTrip } = useTrips();
+  const { userMap } = useUsers();
+  const members = currentTrip?.members;
   const key = types.join(",");
   return useLiveQuery(async () => {
     if (!currentTripId) return [];
@@ -34,9 +46,19 @@ function usePackingCatalog(types: PackingType[]) {
       db.packingItems.where("type").anyOf(types).toArray(),
       db.tripPackingSelections.where("tripId").equals(currentTripId).toArray(),
     ]);
-    const onTrip = new Set(selections.map((s) => s.itemId));
-    return items.map((item) => ({ item, onTrip: onTrip.has(item.id) }));
-  }, [currentTripId, key]); // `key` stands in for `types` (a new array each render)
+    const me = { userId: currentUserId };
+    const myUid = auth.currentUser?.uid;
+    const byItem = new Map(selections.map((s) => [s.itemId, s]));
+    return items.map((item) => {
+      const sel = byItem.get(item.id);
+      if (!sel) return { item, onTrip: false };
+      const others = selectionOwners(sel)
+        .filter((o) => !isSameOwner(o, me, myUid))
+        .map((o) => resolveOwnerBadge(o, { userMap, members, myUid })?.name)
+        .filter((n): n is string => !!n);
+      return { item, onTrip: hasOwner(sel, me, myUid), packedBy: others.length ? others.join(", ") : undefined };
+    });
+  }, [currentTripId, currentUserId, key, userMap, members]); // `key` stands in for `types` (a new array each render)
 }
 
 export default function PackingCatalogPanel({ types, subcategories, onAdd, onRemove }: PackingCatalogPanelProps) {
@@ -86,11 +108,12 @@ export default function PackingCatalogPanel({ types, subcategories, onAdd, onRem
               {search ? "No matches." : "Nothing in your catalog for these categories yet. Items you add with + Add New are saved here for future trips."}
             </p>
           )}
-          {visible.map(({ item, onTrip }) => (
+          {visible.map(({ item, onTrip, packedBy }) => (
             <CatalogRow
               key={item.id}
               item={item}
               onTrip={onTrip}
+              packedBy={packedBy}
               pending={pendingId === item.id}
               onAdd={() => run(item.id, onAdd)}
               onRemove={() => run(item.id, onRemove)}
@@ -120,8 +143,8 @@ export function PackingThumb({ item, size = 40 }: { item: PackingItem; size?: nu
   );
 }
 
-function CatalogRow({ item, onTrip, pending, onAdd, onRemove }: {
-  item: PackingItem; onTrip: boolean; pending: boolean; onAdd: () => void; onRemove: () => void;
+function CatalogRow({ item, onTrip, packedBy, pending, onAdd, onRemove }: {
+  item: PackingItem; onTrip: boolean; packedBy?: string; pending: boolean; onAdd: () => void; onRemove: () => void;
 }) {
   const ticket = TICKET_COLORS[item.priority as keyof typeof TICKET_COLORS];
   return (
@@ -139,6 +162,11 @@ function CatalogRow({ item, onTrip, pending, onAdd, onRemove }: {
           {item.category}
           {ticket && <span className="ml-1.5 font-bold" style={{ color: ticket.border }}>· {item.priority}</span>}
         </p>
+        {packedBy && (
+          <p className="text-[10px] truncate" style={{ color: "var(--color-text-muted)" }}>
+            {onTrip ? `Also packing: ${packedBy}` : `${packedBy} ${packedBy.includes(",") ? "are" : "is"} packing this`}
+          </p>
+        )}
       </div>
       {onTrip ? (
         <div className="flex items-center gap-1 shrink-0">

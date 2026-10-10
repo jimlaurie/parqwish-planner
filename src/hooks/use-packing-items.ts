@@ -11,6 +11,8 @@ import db, {
   type DayItemRecord,
 } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import type { SelectionOwner } from "@shared/types/wish";
+import { selectionOwners, isLocalOwner, hasOwner, addSelectionOwner, removeSelectionOwner } from "@shared/selection-owners";
 import { PRIORITY_SORT_ORDER, PACKING_TABS } from "@/lib/constants";
 import { auth, isSyncEnabled, canCollaborate } from "@/lib/auth";
 import {
@@ -128,6 +130,8 @@ export interface PackingItemWithStatus extends PackingItem {
   completed: boolean;
   userId?: string;
   authorUid?: string;
+  /** Everyone on the trip packing this item (see shared/selection-owners.ts). */
+  owners: SelectionOwner[];
 }
 
 // ==================== MAIN HOOK ====================
@@ -175,6 +179,7 @@ export function usePackingItems() {
           completed: selMap.get(item.id)!.completed,
           userId: selMap.get(item.id)!.userId,
           authorUid: selMap.get(item.id)!.authorUid,
+          owners: selectionOwners(selMap.get(item.id)!),
         })) as PackingItemWithStatus[];
     },
     [selections]
@@ -190,7 +195,8 @@ export function usePackingItems() {
     // Filter: user
     if (activeUserFilter) {
       const filterSet = new Set(activeUserFilter);
-      result = result.filter((item) => filterSet.has(item.userId ?? "user_primary"));
+      const myUid = auth.currentUser?.uid;
+      result = result.filter((item) => item.owners.some((o) => isLocalOwner(o, myUid) && filterSet.has(o.userId)));
     }
 
     if (!packingShowCompleted) {
@@ -369,6 +375,7 @@ export function usePackingItems() {
       addedAt: now,
       updatedAt: now,
       userId: currentUserId,
+      owners: [{ userId: currentUserId }],
     };
 
     await db.transaction(
@@ -418,17 +425,31 @@ export function usePackingItems() {
     if (updated) syncPackingSelection(updated);
   };
 
-  /** Remove item from current trip only (catalog entry preserved) */
-  /** Removes the item from the current trip only. Returns the removed
-   *  selection so the caller can offer Undo via restorePackingSelection. */
+  /** Removes the item from the current trip for the current person (catalog
+   *  entry preserved). When others on the trip are packing it too, only this
+   *  person is taken off; the selection goes when nobody is left (or this
+   *  person isn't one of its owners). Returns the selection as it was, so the
+   *  caller can offer Undo via restorePackingSelection. */
   const unselectItem = async (itemId: string): Promise<TripPackingSelection | undefined> => {
     if (!currentTripId) return undefined;
     const selId = `${currentTripId}__${itemId}`;
-    const removed = await db.tripPackingSelections.get(selId);
+    const before = await db.tripPackingSelections.get(selId);
+    if (!before) return undefined;
+    const me: SelectionOwner = { userId: currentUserId };
+    const myUid = auth.currentUser?.uid;
+    const remaining = removeSelectionOwner(before, me, myUid);
+
+    if (hasOwner(before, me, myUid) && remaining.owners.length > 0) {
+      await db.tripPackingSelections.update(selId, { owners: remaining.owners, userId: remaining.userId, updatedAt: Date.now() });
+      const updated = await db.tripPackingSelections.get(selId);
+      if (updated) syncPackingSelection(updated);
+      return before;
+    }
+
     await db.tripPackingSelections.delete(selId);
     syncDeletePackingSelection(selId, currentTripId);
     syncDeletePackingItemMirror(currentTripId, itemId);
-    return removed;
+    return before;
   };
 
   /** Undo for unselectItem — see restoreWishSelection in use-trip-wishes. */
@@ -467,18 +488,28 @@ export function usePackingItems() {
     if (!currentTripId) return;
     const selId = `${currentTripId}__${itemId}`;
     const existing = await db.tripPackingSelections.get(selId);
-    if (existing) return;
+    const me: SelectionOwner = { userId: currentUserId };
+    const myUid = auth.currentUser?.uid;
+    if (existing && hasOwner(existing, me, myUid)) return; // already this person's
     const now = Date.now();
-    const sel: TripPackingSelection = {
-      id: selId,
-      tripId: currentTripId,
-      itemId,
-      completed: false,
-      addedAt: now,
-      updatedAt: now,
-      userId: currentUserId,
-    };
-    await db.tripPackingSelections.add(sel);
+    let sel: TripPackingSelection;
+    if (existing) {
+      // Someone else on the trip is already packing it — add this person too.
+      sel = { ...existing, ...addSelectionOwner(existing, me, myUid), updatedAt: now };
+      await db.tripPackingSelections.put(sel);
+    } else {
+      sel = {
+        id: selId,
+        tripId: currentTripId,
+        itemId,
+        completed: false,
+        addedAt: now,
+        updatedAt: now,
+        userId: currentUserId,
+        owners: [me],
+      };
+      await db.tripPackingSelections.add(sel);
+    }
     syncPackingSelection(sel);
     const item = await db.packingItems.get(itemId);
     if (item) syncPackingItemMirror(currentTripId, item);
@@ -506,20 +537,25 @@ export function usePackingItems() {
 
 // ==================== CATALOG HOOK ====================
 
-/** Returns catalog items of a given type NOT yet selected for the current trip */
+/** Returns catalog items of a given type the current person isn't yet packing for this trip
+ *  (an item someone else on the trip is packing still shows, so they can add it too). */
 export function useCatalogItems(type: PackingType) {
-  const { currentTripId } = useAppStore();
+  const { currentTripId, currentUserId } = useAppStore();
 
   const unselectedItems = useLiveQuery(
     async () => {
       if (!currentTripId) return [];
+      const me: SelectionOwner = { userId: currentUserId };
+      const myUid = auth.currentUser?.uid;
       const selectedIds = new Set(
         (
           await db.tripPackingSelections
             .where("tripId")
             .equals(currentTripId)
             .toArray()
-        ).map((s) => s.itemId)
+        )
+          .filter((s) => hasOwner(s, me, myUid))
+          .map((s) => s.itemId)
       );
       const allOfType = await db.packingItems
         .where("type")
@@ -527,7 +563,7 @@ export function useCatalogItems(type: PackingType) {
         .toArray();
       return allOfType.filter((item) => !selectedIds.has(item.id));
     },
-    [currentTripId, type]
+    [currentTripId, currentUserId, type]
   );
 
   return {

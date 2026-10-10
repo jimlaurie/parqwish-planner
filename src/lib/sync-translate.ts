@@ -96,7 +96,7 @@ async function gatherTripData(
     .toArray();
   if (userIds) {
     const idSet = new Set(userIds);
-    packingSelections = packingSelections.filter((ps) => idSet.has(ps.userId ?? "user_primary"));
+    packingSelections = packingSelections.filter((ps) => selectionOwners(ps).some((o) => idSet.has(o.userId)));
   }
   const packingIds = packingSelections.map((ps) => ps.itemId);
   const packingItems = await db.packingItems.bulkGet(packingIds);

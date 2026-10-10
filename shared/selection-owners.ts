@@ -1,5 +1,5 @@
 // ==================== TRIP WISH SELECTION OWNERS ====================
-// A trip wish selection can be wanted by several people: several Trip Users
+// A trip wish or packing selection can be wanted by several people: several Trip Users
 // on one account (the family), and Trip Users on collaborators' accounts.
 // Trip User ids ("user_primary", "user_guest_1"…) are only unique within one
 // account, so a person is the pair { userId, authorUid }. An owner with no
@@ -8,11 +8,12 @@
 //
 // Pure helpers: no I/O. Used by the Planner and, from the build after 82, Pal.
 
-import type { SelectionOwner, TripWishSelection } from "./types/wish";
+import type { SelectionOwner } from "./types/wish";
 
 export const DEFAULT_TRIP_USER_ID = "user_primary";
 
-type OwnedSelection = Pick<TripWishSelection, "userId" | "authorUid" | "owners">;
+/** Any trip selection with owners: TripWishSelection or TripPackingSelection. */
+type OwnedSelection = { userId?: string; authorUid?: string; owners?: SelectionOwner[] };
 
 /** Everyone who wants this selection, oldest first. Never empty. */
 export function selectionOwners(sel: OwnedSelection): SelectionOwner[] {
@@ -57,6 +58,24 @@ export function removeSelectionOwner(
 ): { owners: SelectionOwner[]; userId: string | undefined } {
   const next = selectionOwners(sel).filter((o) => !isSameOwner(o, owner, myUid));
   return { owners: next, userId: next[0]?.userId };
+}
+
+/**
+ * When a Trip User is removed from this account: hand their place to the
+ * primary user, without a duplicate if the primary user already had it.
+ * Returns undefined when the selection isn't theirs. Legacy selections
+ * (no owners list) stay legacy.
+ */
+export function reassignSelectionOwner(
+  sel: OwnedSelection,
+  removedUserId: string,
+  myUid?: string
+): { owners: SelectionOwner[] | undefined; userId: string } | undefined {
+  const removed = { userId: removedUserId };
+  if (!hasOwner(sel, removed, myUid)) return undefined;
+  const without = removeSelectionOwner(sel, removed, myUid);
+  const merged = addSelectionOwner({ owners: without.owners }, { userId: DEFAULT_TRIP_USER_ID }, myUid);
+  return { owners: sel.owners ? merged.owners : undefined, userId: merged.userId };
 }
 
 /** Before pushing: owners added on this device without an account get the pushing account's uid. */

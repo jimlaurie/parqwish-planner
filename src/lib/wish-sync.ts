@@ -1407,8 +1407,9 @@ function subscribeToPackingItems(uid: string): Unsubscribe {
 export async function pushPackingSelection(sel: TripPackingSelection, uid: string): Promise<void> {
   const tripKey = await getTripKey(sel.tripId, uid);
   if (!tripKey) { console.warn("[wish-sync] pushPackingSelection: no trip key for", sel.tripId); return; }
-  // Stamped at push time (not creation) — see TripWishSelection.authorUid docs.
-  const encryptedPayload = await encrypt({ ...sel, authorUid: uid }, tripKey);
+  // Stamped at push time (not creation) — see TripWishSelection.authorUid docs;
+  // owners added on this device get this account's uid (shared/selection-owners.ts).
+  const encryptedPayload = await encrypt({ ...sel, owners: stampOwnerAccounts(sel.owners, uid), authorUid: uid }, tripKey);
   await setDoc(packingSelectionDocRef(sel.tripId, sel.id), {
     id: sel.id,
     encryptedPayload,

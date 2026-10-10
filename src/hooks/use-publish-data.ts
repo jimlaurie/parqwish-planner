@@ -131,7 +131,7 @@ export function usePublishData() {
     const wishIds = new Set(wishSelections.map((s) => s.wishId));
     const wishes = rawData.wishes.filter((w) => wishIds.has(w.id));
 
-    const packingSelections = rawData.packingSelections.filter((s) => matchesFilter(s.userId));
+    const packingSelections = rawData.packingSelections.filter((s) => selectionOwners(s).some((o) => matchesFilter(o.userId)));
     const itineraryItems = rawData.itineraryItems.filter((i) => matchesFilter(i.userId));
 
     // ==================== WISH STATS ====================

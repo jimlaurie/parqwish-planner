@@ -13,6 +13,8 @@ interface PackingCardProps {
   showCheckbox?: boolean;
   userName?: string;
   userColor?: string;
+  /** Several owner badges (an item can be packed by several people); takes precedence over userName/userColor. */
+  userBadges?: { name: string; color: string }[];
   headerExtra?: ReactNode;
   cardStyle?: React.CSSProperties;
   selectMode?: boolean;
@@ -29,6 +31,7 @@ export default function PackingCard({
   showCheckbox = true,
   userName,
   userColor,
+  userBadges,
   headerExtra,
   cardStyle,
   selectMode = false,
@@ -37,6 +40,7 @@ export default function PackingCard({
 }: PackingCardProps) {
   const priorityColor = TICKET_COLORS[item.priority] ?? TICKET_COLORS.C;
   const isCompleted = item.completed;
+  const badges = userBadges ?? (userName && userColor ? [{ name: userName, color: userColor }] : []);
   const photoCount = item.photoSets?.length ?? item.photos?.length ?? 0;
   const hasPhotos =
     photoCount > 0 &&
@@ -281,10 +285,12 @@ export default function PackingCard({
             </div>
           )}
 
-          {/* User badge */}
-          {userName && userColor && (
-            <div className="mt-1">
-              <UserBadge color={userColor} name={userName} size="sm" />
+          {/* User badges — one per person packing it */}
+          {badges.length > 0 && (
+            <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+              {badges.map((b) => (
+                <UserBadge key={`${b.name}_${b.color}`} color={b.color} name={b.name} size="sm" />
+              ))}
             </div>
           )}
         </div>

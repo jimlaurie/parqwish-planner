@@ -532,6 +532,8 @@ export default function CatalogPage() {
     () =>
       filteredPacking.map((item) => ({
         ...item,
+        // Catalog cards aren't on a trip; the only "owner" is the catalog item's creator.
+        owners: [{ userId: item.userId ?? "user_primary" }],
         selectionId: "",
         completed: false,
       })),

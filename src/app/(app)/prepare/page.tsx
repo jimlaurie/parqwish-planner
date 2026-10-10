@@ -283,17 +283,19 @@ export default function PreparePage() {
           <div className="flex flex-col gap-2">
             <AnimatePresence mode="popLayout">
               {visibleItems.map((item) => {
-                const owner = showUserBadges
-                  ? resolveOwnerBadge(item, { userMap, members: currentTrip?.members, myUid })
-                  : undefined;
+                // An item can be packed by several people on the trip — one badge each.
+                const badges = showUserBadges
+                  ? item.owners
+                      .map((o) => resolveOwnerBadge(o, { userMap, members: currentTrip?.members, myUid }))
+                      .filter((b): b is NonNullable<typeof b> => !!b)
+                  : [];
                 return (
                   <PackingCard
                     key={item.id}
                     item={item}
                     onToggleCompleted={toggleCompleted}
                     onEdit={setEditingPackingItemId}
-                    userName={owner?.name}
-                    userColor={owner?.color}
+                    userBadges={badges}
                   />
                 );
               })}

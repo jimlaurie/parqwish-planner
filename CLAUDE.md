@@ -60,7 +60,6 @@ src/
 │       └── ai/               # Exploratory in-browser LLM chat (WebLLM) — not production
 ├── components/
 │   ├── home/                   # HomeBanner + illustrations/ (illo.tsx renders and replays the art; generated/ is importer output)
-│   ├── portals/                # StarCompass (trip sidebar); the four *Portal.tsx files are the retired Home illustrations, no longer imported
 │   ├── play/                   # Preview-phase sub-components (Timeline, ParkMap, DayItemCard, etc. — named for the pre-rename /play route, see "Gotchas")
 │   ├── publish/                # Publish-phase sub-components (stats, gallery, trail map, AIExportPanel)
 │   ├── catalog/, map/          # Catalog photo gallery; resort-map mask
@@ -149,7 +148,7 @@ background: `${ACCENT}20`  // broken — ACCENT is now a var(), not a hex
 **Exception — Home art:** the generated files in `src/components/home/illustrations/generated/` are importer output, not component code. The banner's palette colours become `--illo-*` tokens (day and night values in `globals.css`); the traced Home cards keep their own hex colours (they're traced pictures) and dim at night through `--illo-traced-filter`.
 
 ### State & Data
-- Zustand for UI-only state (theme, current trip/user selection, Cloud Sync toggle, catalog view). `portalOpened` is still in the store and persisted, but nothing reads it since the illustrated Home cards replaced the portals
+- Zustand for UI-only state (theme, current trip/user selection, Cloud Sync toggle, catalog view)
 - Dexie/`useLiveQuery()` for all persisted app data — no manual cache layer
 - Multi-user: `userId` on junction tables (`tripWishSelections`, `tripPackingSelections`, `dayItems`) for ownership; `activeUserFilter` in Zustand filters the UI, doesn't touch storage
 

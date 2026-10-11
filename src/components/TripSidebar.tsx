@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import StarCompass from "@/components/portals/StarCompass";
+import StarCompass from "@/components/StarCompass";
 import UserPanel from "@/components/UserPanel";
 import type { Trip } from "@/lib/db";
 

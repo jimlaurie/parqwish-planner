@@ -68,10 +68,6 @@ interface AppState {
   showCatalogPicker: boolean;
   setShowCatalogPicker: (show: boolean) => void;
 
-  // Portal states (persisted) — keyed by tripId then phase
-  portalOpened: Record<string, Record<string, boolean>>;
-  markPortalOpened: (tripId: string, phase: string) => void;
-
   // Photo exclusions for PDF (persisted) — keyed by tripId, value is set of excluded photo ids
   excludedPhotoIds: Record<string, string[]>;
   togglePhotoExclusion: (tripId: string, photoId: string) => void;
@@ -225,19 +221,6 @@ export const useAppStore = create<AppState>()(
       showCatalogPicker: false,
       setShowCatalogPicker: (show) => set({ showCatalogPicker: show }),
 
-      // Portal states
-      portalOpened: {},
-      markPortalOpened: (tripId, phase) =>
-        set((state) => ({
-          portalOpened: {
-            ...state.portalOpened,
-            [tripId]: {
-              ...(state.portalOpened[tripId] ?? {}),
-              [phase]: true,
-            },
-          },
-        })),
-
       // Photo exclusions
       excludedPhotoIds: {},
       togglePhotoExclusion: (tripId, photoId) =>
@@ -323,7 +306,6 @@ export const useAppStore = create<AppState>()(
         currentTripId: state.currentTripId,
         currentUserId: state.currentUserId,
         themePreference: state.themePreference,
-        portalOpened: state.portalOpened,
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
         catalogView: state.catalogView,

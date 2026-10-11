@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import SidebarLayout from "@/components/SidebarLayout";
 import TripSidebar from "@/components/TripSidebar";
 import CreateTripModal from "@/components/CreateTripModal";
@@ -27,19 +26,16 @@ interface PortalConfig {
   label: string;
   description: string;
   accent: string;
-  image: string;
-  /** Animated illustration shown instead of the photo, loaded on its own (the traced art is large). */
-  art?: IlloArtLoader;
+  /** Animated illustration, loaded on its own (the traced art is large). */
+  art: IlloArtLoader;
 }
 
 const PORTALS: PortalConfig[] = [
-  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg", art: () => import("@/components/home/illustrations/generated/plan") },
-  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", art: () => import("@/components/home/illustrations/generated/preview") },
-  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg", art: () => import("@/components/home/illustrations/generated/prepare") },
-  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg", art: () => import("@/components/home/illustrations/generated/play") },
-  // Stand-in image: a crop of the title banner's Main Street Station clock
-  // tower, until a dedicated Publish photo exists.
-  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg", art: () => import("@/components/home/illustrations/generated/publish") },
+  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", art: () => import("@/components/home/illustrations/generated/plan") },
+  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", art: () => import("@/components/home/illustrations/generated/preview") },
+  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", art: () => import("@/components/home/illustrations/generated/prepare") },
+  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", art: () => import("@/components/home/illustrations/generated/play") },
+  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", art: () => import("@/components/home/illustrations/generated/publish") },
 ];
 
 // ==================== COMPONENT ====================
@@ -141,7 +137,7 @@ export default function Home() {
   // ==================== RENDER PORTAL CARD ====================
 
   const renderPortalCard = (config: PortalConfig) => {
-    const { phase, href, label, description, accent, image, art } = config;
+    const { phase, href, label, description, accent, art } = config;
     const disabled = !currentTripId;
     const badge = badgeCounts[phase];
 
@@ -159,9 +155,9 @@ export default function Home() {
           cursor: disabled ? "default" : "pointer",
           // Promote to its own compositing layer so the hover scale animates
           // a cached layer instead of re-rasterizing the clipped, rounded
-          // Image content on every frame — without this, transform-animating
-          // a parent with overflow:hidden + border-radius over a next/image
-          // fill child flickers in some browsers during the hover transition.
+          // artwork on every frame — without this, transform-animating a
+          // parent with overflow:hidden + border-radius flickers in some
+          // browsers during the hover transition.
           willChange: disabled ? undefined : "transform",
         }}
         onClick={() => !disabled && handlePortalClick(phase, href)}
@@ -175,28 +171,9 @@ export default function Home() {
         whileTap={disabled ? undefined : { scale: 0.97 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        {/* Portal image */}
+        {/* Illustration */}
         <div className="relative aspect-[3/4] overflow-hidden">
-          {art ? (
-            <LazyIlloScene load={art} />
-          ) : (
-            <>
-              <Image
-                src={image}
-                alt={label}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-              />
-              {/* Gradient overlay for text readability */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to bottom, transparent 50%, color-mix(in srgb, ${accent} 19%, transparent) 100%)`,
-                }}
-              />
-            </>
-          )}
+          <LazyIlloScene load={art} />
           {/* Badge */}
           {badge > 0 && !disabled && (
             <div
@@ -213,7 +190,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Label + description below image */}
+        {/* Label + description below the illustration */}
         <div className="px-3 py-3 text-center">
           <div
             className="text-sm font-bold mb-0.5"

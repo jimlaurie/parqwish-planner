@@ -75,15 +75,17 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 
 | Scene | Layer name | What it does |
 |---|---|---|
+| banner | `ferris-wheel` | turns slowly (once every 48 seconds, pivots at its hub) |
+| banner | `gondola-…` | each car turns back the other way, so it stays upright |
 | banner | `monorail-train` | glides in along the track from the left |
 | banner | `sparkle-…` | each sparkle pops in |
 | banner | `coaster-car` | teeters at the top of the first hill (pivots at its bottom middle) |
 | banner | `burst-…` | each firework bursts and fades, over and over (inside `fireworks`) |
-| banner | `stars`, `fireworks` | only visible in night mode |
+| banner | `stars`, `fireworks`, `wheel-lights` | only visible in night mode |
 
 ### Tips for the moving parts
 
-- **Parts that tilt pivot at a point the table says** (the coaster car rocks on its bottom middle). If you redraw one, keep that point in place, or tell Claude the new pivot.
+- **Parts that tilt pivot at a point the table says** (the coaster car rocks on its bottom middle; the Ferris wheel turns on its hub, which an invisible `wheel-bounds` circle keeps at the centre of its box). If you redraw one, keep that point in place, or tell Claude the new pivot.
 - **Lines that "draw themselves"** (none in the banner today) need to stay *strokes*, not filled shapes. In Figma, don't use *Outline stroke* on them.
 - **Things that pop or drop** can be any shape. They grow from their middle, or fall from just above where they end up.
 - **Order matters for stacking.** Layers lower in the list are drawn on top. For example, the train sits above the track so it looks like it's riding on it.
@@ -103,7 +105,7 @@ The day colours are picked from the traced cards, so the banner matches them.
 | teal | `#44A48B` | the train, palm leaves |
 | orange | `#F6AF4E` | roofs and accents |
 | mustard | `#F9BE3A` | sparkles, starbursts, the title's tagline |
-| coral | `#F5765E` | the saucer, the coaster track, roofs |
+| coral | `#F5765E` | the Ferris wheel's rim, the coaster track, roofs |
 | sage | `#6AA178` | hills and bushes |
 | skin | `#FBA593` | the coaster riders |
 | orb | `#FCD05C` | the sun (it becomes the moon at night) |

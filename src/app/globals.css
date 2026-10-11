@@ -588,6 +588,8 @@ body {
 .illo-animate .anim-bob { animation-name: illo-bob; animation-timing-function: ease-in-out; }
 .illo-animate .anim-float { animation-name: illo-float; animation-timing-function: ease-out; }
 .illo-animate .anim-spin { animation: illo-spin var(--t, 60s) linear infinite; }
+/* Turns the other way at the same speed, so a Ferris wheel's cars stay upright. */
+.illo-animate .anim-counterspin { animation: illo-spin var(--t, 60s) linear infinite reverse; }
 .illo-animate .anim-glide { animation-name: illo-glide; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
 .illo-animate .anim-wipe { animation-name: illo-wipe; }
 

@@ -16,7 +16,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 
 - **Framework:** Next.js 15 (App Router, static export via `next build`)
 - **UI:** React 19, Tailwind CSS 4, Framer Motion
-- **State:** Zustand (persisted to localStorage — theme, currentTripId, currentUserId, portalOpened)
+- **State:** Zustand (persisted to localStorage — theme, currentTripId, currentUserId, Cloud Sync on/off, catalog view, excluded photos)
 - **Database:** Dexie.js v4 (IndexedDB wrapper), currently at schema v22 — local-first, no server required for core planning features
 - **Auth/Cloud:** Firebase Auth (anonymous/Apple/Google/email-link) + Firestore, opt-in only (Cloud Sync + park data catalog fetch)
 - **Maps:** Leaflet + react-leaflet (GPS trail playback), plus a hand-authored abstract SVG park map (`resort-map-svg.ts`) for Plan/Preview
@@ -35,7 +35,11 @@ npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
 npm run deploy   # bump-version.mjs (patch-bump package.json) → download-park-data.mjs
                   #   → npm run build → firebase deploy --only hosting:pwa
+npm run illustrations          # Home banner: art/home-illustrations/banner.svg → generated/banner.ts
+npm run illustrations:traced   # Home cards: art/home-illustrations/traced/*.svg → generated/<card>.ts
 ```
+
+Run `npm run deploy` only from `main`: the local `partner-demo` branch must never be deployed or pushed (see `dland-wishes/CLAUDE.md`).
 
 **`npm run deploy` doesn't commit anything it changes.** The version bump and any refreshed `public/data/*.json` files are left as uncommitted changes after a deploy — the established pattern is: commit the actual feature/fix first and push, run `npm run deploy`, then commit whatever changed as a follow-up `Bump version to X.Y.Z (deploy)` commit. Firebase project `my-tour-guide-backend`, hosting target `parqwish-app` (`firebase.json`), live at `https://parqwish-app.web.app` (custom domain `parqwish.com`).
 
@@ -43,23 +47,26 @@ npm run deploy   # bump-version.mjs (patch-bump package.json) → download-park-
 
 ```
 src/
-├── app/                      # Next.js App Router pages
-│   ├── layout.tsx            # Root layout: ThemeProvider, TopNavBar, fonts
-│   ├── page.tsx               # Home: portal cards, trip selector, WelcomeCard (no-trips state)
-│   ├── globals.css            # Design tokens, theme variables, light/dark overrides
-│   ├── plan/, prepare/, preview/, play/, publish/   # The five trip-phase pages
-│   ├── catalog/               # Browse full park-data catalog, independent of any trip
-│   ├── join/                  # Cross-account trip-collaboration invite acceptance
-│   ├── share/                 # Web Share Target landing page
-│   ├── ai/                    # Exploratory in-browser LLM chat (WebLLM) — not production
-│   └── guide/                 # User guide: workflows, feature reference, FAQ
+├── app/
+│   ├── layout.tsx            # Root layout: ThemeProvider, TopNavBar, fonts, ErrorBoundary
+│   ├── globals.css           # Design tokens, theme variables, light/dark overrides, .illo-* motion
+│   └── (app)/                # Route group holding every page
+│       ├── page.tsx          # Home: banner, five illustrated phase cards, trip sidebar, WelcomeCard (no-trips state)
+│       ├── plan/, prepare/, preview/, play/, publish/   # The five trip-phase pages
+│       ├── preview/analytics/, heat-map/, reliability/  # Wait-time Analytics gallery and its two pages
+│       ├── catalog/          # Browse full park-data catalog, independent of any trip
+│       ├── join/             # Cross-account trip-collaboration invite acceptance
+│       ├── share/            # Web Share Target landing page
+│       └── ai/               # Exploratory in-browser LLM chat (WebLLM) — not production
 ├── components/
-│   ├── portals/                # Home screen portal SVG illustrations (Plan/Prepare/Play/Publish)
+│   ├── home/                   # HomeBanner + illustrations/ (illo.tsx renders and replays the art; generated/ is importer output)
+│   ├── portals/                # StarCompass (trip sidebar); the four *Portal.tsx files are the retired Home illustrations, no longer imported
 │   ├── play/                   # Preview-phase sub-components (Timeline, ParkMap, DayItemCard, etc. — named for the pre-rename /play route, see "Gotchas")
 │   ├── publish/                # Publish-phase sub-components (stats, gallery, trail map, AIExportPanel)
-│   ├── guide/                  # Guide-specific components
+│   ├── catalog/, map/          # Catalog photo gallery; resort-map mask
 │   ├── ai/                     # WebLLMChat (exploratory)
 │   └── ...                     # WishCard, PackingCard, EditTripModal, SidebarLayout, sync UI, etc.
+│                               # (The user Guide is on parqwish.com, built from dland-wishes/marketing — not in this repo)
 ├── hooks/                     # Data-access hooks (use-trips, use-publish-data, use-day-items, etc.)
 └── lib/
     ├── db.ts                   # Dexie schema (trips, wishes, packingItems, dayItems, trails, photoMetadata, users, ensembles, syncHistory)
@@ -78,7 +85,10 @@ src/
 shared/                        # Copy of the mobile repo's shared/ — see Project Overview
 scripts/
 ├── bump-version.mjs            # Patch-bumps package.json version (run by npm run deploy)
-└── download-park-data.mjs      # Refreshes public/data/*.json from the live source
+├── download-park-data.mjs      # Refreshes public/data/*.json from the live source
+├── import-illustrations.mjs    # Home banner importer (named layers, palette → --illo-* tokens)
+└── import-traced-art.mjs       # Home card importer (traced art, moving parts by path number)
+art/home-illustrations/         # Source art + motion: banner.svg, motion.json, traced/*.svg + traced/motion.json (README.md explains both)
 public/data/                   # Checked-in park data snapshot (rides/shows/restaurants/shops/places.json) — works with zero Firebase setup
 ```
 
@@ -136,8 +146,10 @@ background: `${ACCENT}20`  // broken — ACCENT is now a var(), not a hex
 
 **Gotcha:** SVG `fill`/`stroke` attributes don't resolve CSS vars — use inline `style` instead.
 
+**Exception — Home art:** the generated files in `src/components/home/illustrations/generated/` are importer output, not component code. The banner's palette colours become `--illo-*` tokens (day and night values in `globals.css`); the traced Home cards keep their own hex colours (they're traced pictures) and dim at night through `--illo-traced-filter`.
+
 ### State & Data
-- Zustand for UI-only state (theme, current trip/user selection, portal animation state)
+- Zustand for UI-only state (theme, current trip/user selection, Cloud Sync toggle, catalog view). `portalOpened` is still in the store and persisted, but nothing reads it since the illustrated Home cards replaced the portals
 - Dexie/`useLiveQuery()` for all persisted app data — no manual cache layer
 - Multi-user: `userId` on junction tables (`tripWishSelections`, `tripPackingSelections`, `dayItems`) for ownership; `activeUserFilter` in Zustand filters the UI, doesn't touch storage
 
@@ -171,13 +183,20 @@ Manually check any visual change in both light and dark mode — theming bugs (a
 // Needed because Next.js App Router can delay useEffect-driven DOM mutations
 ```
 
-### Portal Animation State
+### Home Illustrations
 ```typescript
-// Each home-screen portal has 3 states: "closed" | "opening" | "open"
-// Tracked per trip+phase in Zustand: portalOpened[tripId][phase] = boolean
-// First click: play opening animation → mark opened → navigate
-// Subsequent clicks: navigate immediately
-// Portal SVGs use Framer Motion useAnimation() for choreographed sequences
+// Banner (HomeBanner.tsx) and the five phase cards (page.tsx) are inline SVG
+// strings from src/components/home/illustrations/generated/, rendered by
+// illo.tsx. Motion is CSS only: importers bake .anim anim-<name> classes and
+// --d/--t/--n/--r/--ox/--oy vars into the art; the keyframes are the .illo-*
+// rules in globals.css. Scenes play once on load; hover replays (2.6s cooldown).
+// Reduced motion shows the finished frame; dev builds accept ?motion=on.
+// Cards load lazily (LazyIlloScene + dynamic import) — each is 140–250 KB.
+// Never hand-edit generated/: edit art/home-illustrations/ and re-run
+//   npm run illustrations          (banner: layers matched by name)
+//   npm run illustrations:traced   (cards: traced shapes matched by path
+//     number; a re-export renumbers them, and pathCount in traced/motion.json
+//     makes the import refuse until the card is re-mapped)
 ```
 
 ### Two Independent Sync Mechanisms

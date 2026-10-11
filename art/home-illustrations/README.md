@@ -124,13 +124,13 @@ What that means for you:
 - **Re-exporting renumbers every shape.** If you change a card and export it again, save it over the file in `traced/` and ask Claude to "re-map the traced art for plan" (or whichever). The import refuses to run until that's done, so nothing breaks silently.
 - **Moving parts leave holes.** Traced art doesn't stack shapes. Where a part sits, the picture behind it has a hole. So each moving part has a "patch" in `motion.json`, a plain shape in the background colour that fills the hole while the part is hidden or moving.
 - **Night mode just dims them.** The traced colours aren't in the palette below, so the cards are darkened slightly at night instead of being recoloured.
-- **Fixes made on import.** The Preview card's heading is retyped as "Wish List" (the trace read "Wish Lit"), and the Apple logos on the Preview and Publish computers are removed. If you fix these in the art itself, tell Claude so the import's fixes can come out.
+- **Fixes made on import.** The Preview card's heading is retyped as "Wish List" (the trace read "Wish Lit"), and the Apple logos on the Preview and Publish computers are removed. The tablet on the Prepare bed is drawn on import too (it isn't in the trace). If you fix these in the art itself, tell Claude so the import's fixes can come out.
 
 | Card | What moves |
 |---|---|
 | plan | the hands type; the thought bubbles and cloud pop up; the rides appear one by one; the wish list's dots and lines fill in |
 | preview | the route draws itself stop by stop over a faint outline; the wish list's dots tick green |
-| prepare | the hanging shirts sway; the clothes drop into the suitcase |
+| prepare | the hanging shirts sway; the clothes drop into the suitcase; the packing list on the tablet ticks off |
 | play | the cloud drifts in; both cameras flash |
 | publish | "Our Day" pops up, then the ten photos, one by one |
 

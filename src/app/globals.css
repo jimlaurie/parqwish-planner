@@ -177,6 +177,8 @@
   --shadow-focus: 0 0 0 3px rgba(255, 215, 0, 0.35);
 
   /* Mid-century illustration palette (Home cards + banner) — night */
+  /* The traced Home-card art has no palette, so at night it's just dimmed. */
+  --illo-traced-filter: brightness(0.86) saturate(0.95);
   --illo-sky: #1F3A4D;
   --illo-sky-2: #2C4F5F;
   --illo-wall: #243F4C;
@@ -243,6 +245,7 @@
   --shadow-focus: 0 0 0 3px rgba(153, 101, 21, 0.3);
 
   /* Mid-century illustration palette (Home cards + banner) — day */
+  --illo-traced-filter: none;
   --illo-sky: #BFE3DD;
   --illo-sky-2: #E9D3A3;
   --illo-wall: #F1E6CF;
@@ -557,6 +560,10 @@ body {
 .illo svg { display: block; width: 100%; height: 100%; }
 .illo .anim { transform-box: fill-box; transform-origin: var(--ox, 50%) var(--oy, 50%); }
 .illo .anim-flash { opacity: 0; }
+/* Traced art (scripts/import-traced-art.mjs) pivots each moving part around
+   a point on the card, since one part can be split across several groups. */
+.illo .vb { transform-box: view-box; }
+.illo .illo-traced { filter: var(--illo-traced-filter, none); }
 
 .illo-animate .anim {
   animation-duration: var(--t, 0.6s);
@@ -580,6 +587,7 @@ body {
 .illo-animate .anim-float { animation-name: illo-float; animation-timing-function: ease-out; }
 .illo-animate .anim-spin { animation: illo-spin var(--t, 60s) linear infinite; }
 .illo-animate .anim-glide { animation-name: illo-glide; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
+.illo-animate .anim-wipe { animation-name: illo-wipe; }
 
 @keyframes illo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes illo-drop { from { transform: translateY(-36px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -592,6 +600,7 @@ body {
 @keyframes illo-bob { 0%, 100% { transform: none; } 50% { transform: translateY(-5px); } }
 @keyframes illo-float { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes illo-spin { to { transform: rotate(360deg); } }
+@keyframes illo-wipe { from { transform: scaleX(0); } }
 @keyframes illo-glide { from { transform: translate(var(--gx, -300px), var(--gy, 0px)); } to { transform: none; } }
 
 /* Before hydration the markup always carries .illo-animate; this keeps

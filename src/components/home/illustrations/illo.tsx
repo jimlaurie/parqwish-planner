@@ -15,6 +15,9 @@ export interface IlloArtData {
   svg: string;
 }
 
+/** A dynamic import of a generated scene, so large art loads in its own chunk. */
+export type IlloArtLoader = () => Promise<{ default: IlloArtData }>;
+
 type MotionMode = "still" | "animate" | "forced";
 
 /**
@@ -72,4 +75,17 @@ export function IlloScene({ art }: { art: IlloArtData }) {
       <IlloArt art={art} play={play} />
     </div>
   );
+}
+
+/** An IlloScene whose art is fetched after the page renders; the card stays blank until then. */
+export function LazyIlloScene({ load }: { load: IlloArtLoader }) {
+  const [art, setArt] = useState<IlloArtData | null>(null);
+  useEffect(() => {
+    let live = true;
+    load()
+      .then((mod) => { if (live) setArt(mod.default); })
+      .catch((err) => console.error("[Illo] Couldn't load illustration:", err));
+    return () => { live = false; };
+  }, [load]);
+  return art ? <IlloScene art={art} /> : <div className="absolute inset-0" aria-busy="true" />;
 }

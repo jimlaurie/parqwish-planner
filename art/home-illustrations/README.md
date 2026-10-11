@@ -1,6 +1,9 @@
 # Home Page Illustrations — Artist's Guide
 
-These are the drawings on the ParQwish Planner Home page: one for each trip phase, plus the skyline banner. They're first drafts. They're here so you can redraw and refine them, then hand them back.
+These are the drawings on the ParQwish Planner Home page: one card for each trip phase, plus the skyline banner.
+
+- **The five cards** (Plan, Preview, Prepare, Play, Publish) are traced artwork in `traced/`. See [Traced card art](#traced-card-art).
+- **The banner** is drawn by hand in `banner.svg`. The rest of this guide is about it.
 
 You don't need to touch any code. Edit the `.svg` files, save them back here, and ask Claude to "import the illustrations". Claude runs one command that puts your drawings in the app, keeps the animation working, and checks nothing important was lost.
 
@@ -8,11 +11,8 @@ You don't need to touch any code. Edit the `.svg` files, save them back here, an
 
 | File | What it is | Canvas |
 |---|---|---|
-| `plan.svg` | Writing a wish list, dreaming of rides | 300 × 400 |
-| `preview.svg` | Marking the day's route on a wall map | 300 × 400 |
-| `prepare.svg` | Packing a suitcase by the wardrobe | 300 × 400 |
-| `play.svg` | Out in the park taking photos | 300 × 400 |
-| `publish.svg` | Putting the trip recap together on a computer | 300 × 400 |
+| `traced/*.svg` | The five Home cards (traced, from Pixelmator Pro) | 1500 × 2000 |
+| `traced/motion.json` | Which traced shapes move, and how. Claude looks after this one. | |
 | `banner.svg` | The skyline behind the logo | 1000 × 220 |
 | `palette.gpl` | The color palette, for Inkscape | |
 | `palette.svg` | The same colors as swatches, for Figma | |
@@ -32,7 +32,7 @@ If you're unsure, start with Figma. Switching later is fine, because all three o
 
 1. **Keep the names of the moving parts.** Every shape and group has a layer name. The parts listed under [What moves](#what-moves) are found by name, so if you rename or delete one the animation can't find it. The import will tell you exactly which name went missing. Everything else you can rename, regroup, redraw or delete freely.
 2. **Use the palette colors.** The app swaps each palette color for its night-mode version automatically. Any other color stays the same at night, so it may look wrong on the dark background. The import warns you about any color that isn't in the palette.
-3. **Keep the canvas size.** Cards are 300 wide × 400 tall, and the banner is 1000 × 220. You can draw anything inside, but don't resize the canvas.
+3. **Keep the canvas size.** The banner is 1000 × 220 (traced cards are 1500 × 2000, a 3 : 4 card). You can draw anything inside, but don't resize the canvas.
 
 ## Opening a drawing
 
@@ -75,31 +75,6 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 
 | Scene | Layer name | What it does |
 |---|---|---|
-| plan | `writing-arm` | wiggles like it's writing (pivots at its top-left corner) |
-| plan | `list-line-…` | each line draws itself in |
-| plan | `list-star-…` | each star pops in |
-| plan | `bubble` | the thought bubble pops up |
-| plan | `wish-…` | each dream (rocket, wheel, cone) pops in |
-| plan | `starburst` | pops at the end |
-| preview | `route` | draws itself across the map |
-| preview | `pin-…` | each pin drops in |
-| preview | `cell-…` | each calendar square pops in |
-| preview | `pointer-arm` | taps the map (pivots at its bottom-left corner) |
-| preview | `starburst` | pops at the end |
-| prepare | `packing-arm` | lowers the folded shirt (pivots at its top-left corner) |
-| prepare | `packed-…` | each item drops into the suitcase |
-| prepare | `luggage-tag` | swings (pivots at its top-left corner) |
-| prepare | `starburst` | pops at the end |
-| play | `character` | bounces as they walk |
-| play | `flash` | the camera flash |
-| play | `photo-…` | each snapshot pops out |
-| play | `balloon` | floats up |
-| play | `ferris-wheel` | turns slowly |
-| publish | `typing-arm` | taps the keyboard (pivots at its top-left corner) |
-| publish | `screen-photo-…` | each photo pops onto the screen |
-| publish | `bar-…` | each chart bar grows up from the bottom |
-| publish | `trail` | the map trail draws itself |
-| publish | `starburst` | pops at the end |
 | banner | `monorail-train` | glides in along the track from the left |
 | banner | `sparkle-…` | each sparkle pops in |
 | banner | `coaster-car` | teeters at the top of the first hill (pivots at its bottom middle) |
@@ -108,10 +83,10 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 
 ### Tips for the moving parts
 
-- **Arms pivot at a corner of their own box.** If you redraw an arm, keep the shoulder in the corner the table says. Otherwise it will swing from the wrong place. If a new pose needs a different pivot, just tell Claude.
-- **Lines that "draw themselves"** (the route, list lines, trail) need to stay *strokes*, not filled shapes. In Figma, don't use *Outline stroke* on them.
+- **Parts that tilt pivot at a point the table says** (the coaster car rocks on its bottom middle). If you redraw one, keep that point in place, or tell Claude the new pivot.
+- **Lines that "draw themselves"** (none in the banner today) need to stay *strokes*, not filled shapes. In Figma, don't use *Outline stroke* on them.
 - **Things that pop or drop** can be any shape. They grow from their middle, or fall from just above where they end up.
-- **Order matters for stacking.** Layers lower in the list are drawn on top. For example, the suitcase front (`base`) sits above the packed items so they look like they're inside.
+- **Order matters for stacking.** Layers lower in the list are drawn on top. For example, the train sits above the track so it looks like it's riding on it.
 
 ## Colors
 
@@ -138,6 +113,25 @@ Want a new color? Ask Claude to add it to the palette, with a night-mode partner
 
 Keep the look — flat shapes, starbursts, 1950s "tomorrow" style — but not the content: no Disney characters, no castle, and no recognizable real attractions. A generic rocket or Ferris wheel is fine; a Matterhorn or Space Mountain is not.
 
+## Traced card art
+
+The five cards are traced pictures: Pixelmator Pro turns an image into a few hundred flat shapes. Those shapes have no layer names, so the moving parts are picked by **shape number** in `traced/motion.json`, not by name.
+
+What that means for you:
+
+- **Re-exporting renumbers every shape.** If you change a card and export it again, save it over the file in `traced/` and ask Claude to "re-map the traced art for plan" (or whichever). The import refuses to run until that's done, so nothing breaks silently.
+- **Moving parts leave holes.** Traced art doesn't stack shapes. Where a part sits, the picture behind it has a hole. So each moving part has a "patch" in `motion.json`, a plain shape in the background colour that fills the hole while the part is hidden or moving.
+- **Night mode just dims them.** The traced colours aren't in the palette below, so the cards are darkened slightly at night instead of being recoloured.
+- **Fixes made on import.** The Preview card's heading is retyped as "Wish List" (the trace read "Wish Lit"), and the Apple logos on the Preview and Publish computers are removed. If you fix these in the art itself, tell Claude so the import's fixes can come out.
+
+| Card | What moves |
+|---|---|
+| plan | the hands type; the thought bubbles and cloud pop up; the rides appear one by one; the wish list's dots and lines fill in |
+| preview | the route draws itself stop by stop over a faint outline; the wish list's dots tick green |
+| prepare | the hanging shirts sway; the clothes drop into the suitcase |
+| play | the cloud drifts in; both cameras flash |
+| publish | "Our Day" pops up, then the ten photos, one by one |
+
 ## For Claude: importing
 
 ```bash
@@ -145,4 +139,11 @@ npm run illustrations            # every scene
 npm run illustrations -- plan    # one scene
 ```
 
-This writes `src/components/home/illustrations/generated/*.ts`. The motion itself is the `.illo-*` CSS in `src/app/globals.css`, and `motion.json` maps layer names to animations. Missing layer names fail the import. Off-palette colors only warn.
+This writes `src/components/home/illustrations/generated/banner.ts`. The cards use their own importer:
+
+```bash
+npm run illustrations:traced            # every card
+npm run illustrations:traced -- plan    # one card
+```
+
+It writes `generated/<card>.ts`, which the Home page loads on its own (each is 140–250 KB). To re-map a card after a re-export: list each path's bounding box and colour, render the card with the candidate paths highlighted, and update `pathCount`, `groups` and the patch `inserts` in `traced/motion.json`. Check a frame with every moving part hidden, so no white holes show. The motion itself is the `.illo-*` CSS in `src/app/globals.css`, and `motion.json` maps layer names to animations. Missing layer names fail the import. Off-palette colors only warn.

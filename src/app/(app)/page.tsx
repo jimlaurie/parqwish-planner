@@ -11,12 +11,7 @@ import CreateTripModal from "@/components/CreateTripModal";
 import EditTripModal from "@/components/EditTripModal";
 import WelcomeCard from "@/components/WelcomeCard";
 import HomeBanner from "@/components/home/HomeBanner";
-import { IlloScene, type IlloArtData } from "@/components/home/illustrations/illo";
-import planArt from "@/components/home/illustrations/generated/plan";
-import previewArt from "@/components/home/illustrations/generated/preview";
-import prepareArt from "@/components/home/illustrations/generated/prepare";
-import playArt from "@/components/home/illustrations/generated/play";
-import publishArt from "@/components/home/illustrations/generated/publish";
+import { LazyIlloScene, type IlloArtLoader } from "@/components/home/illustrations/illo";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
@@ -33,18 +28,18 @@ interface PortalConfig {
   description: string;
   accent: string;
   image: string;
-  /** Animated illustration shown instead of the photo. */
-  art?: IlloArtData;
+  /** Animated illustration shown instead of the photo, loaded on its own (the traced art is large). */
+  art?: IlloArtLoader;
 }
 
 const PORTALS: PortalConfig[] = [
-  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg", art: planArt },
-  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", art: previewArt },
-  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg", art: prepareArt },
-  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg", art: playArt },
+  { phase: "plan", href: "/plan", label: "Plan", description: "Gather your wishes for your day", accent: "var(--color-accent-plan)", image: "/images/publish-portal.jpg", art: () => import("@/components/home/illustrations/generated/plan") },
+  { phase: "preview", href: "/preview", label: "Preview", description: "Your day-of guide and itinerary", accent: "var(--color-accent-preview)", image: "/images/play-portal.jpg", art: () => import("@/components/home/illustrations/generated/preview") },
+  { phase: "prepare", href: "/prepare", label: "Prepare", description: "Pack your bags and get ready", accent: "var(--color-accent-prepare)", image: "/images/prepare-portal.jpg", art: () => import("@/components/home/illustrations/generated/prepare") },
+  { phase: "play", href: "/play", label: "Play", description: "Send your plan to your phone", accent: "var(--color-accent-play)", image: "/images/plan-portal.jpg", art: () => import("@/components/home/illustrations/generated/play") },
   // Stand-in image: a crop of the title banner's Main Street Station clock
   // tower, until a dedicated Publish photo exists.
-  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg", art: publishArt },
+  { phase: "publish", href: "/publish", label: "Publish", description: "Relive the trip: photos, stats, trail", accent: "var(--color-accent-publish)", image: "/images/portal-clock-tower.jpg", art: () => import("@/components/home/illustrations/generated/publish") },
 ];
 
 // ==================== COMPONENT ====================
@@ -183,7 +178,7 @@ export default function Home() {
         {/* Portal image */}
         <div className="relative aspect-[3/4] overflow-hidden">
           {art ? (
-            <IlloScene art={art} />
+            <LazyIlloScene load={art} />
           ) : (
             <>
               <Image

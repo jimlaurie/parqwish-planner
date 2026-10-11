@@ -1,0 +1,103 @@
+{
+  "_about": "Motion for the traced Home-card art. The traced shapes have no names, so parts are picked by path number (drawing order, counting from 0, after the hidden raster). pathCount guards against a re-export, which renumbers everything. groups: which paths move together and how (anim/delay/duration/repeat/rotate/translate as in ../motion.json; origin is a pivot [x, y] on the 300x400 card, or bottom/top/left/top-left/center of the group). inserts: extra art drawn after path `after`; with `clip` it is clipped to those paths (patches that fill the hole a moving part leaves); with `group` it moves with that group. drop: paths removed. See scripts/import-traced-art.mjs.",
+  "plan": {
+    "label": "Someone at a computer writing a wish list, dreaming of a roller coaster, a carousel and a Ferris wheel",
+    "pathCount": 377,
+    "groups": [
+      {"name": "right-hand", "paths": [311, 312], "anim": "tap", "delay": 0.1, "duration": 0.45, "repeat": 4, "rotate": -1.5, "origin": [167, 297]},
+      {"name": "left-arm", "paths": [314, 315, "320-322"], "anim": "tap", "delay": 0.3, "duration": 0.45, "repeat": 4, "rotate": 1, "origin": [190, 342]},
+      {"name": "bubble-small", "paths": [376], "anim": "pop", "delay": 0.25, "duration": 0.3},
+      {"name": "bubble-mid", "paths": [5], "anim": "pop", "delay": 0.45, "duration": 0.3},
+      {"name": "bubble", "paths": ["46-48", 53, 60, 69, 72, 76, "86-89", 91, 92, 111, 112, 119, 123, "129-131", 138, 144, 146, 149, 150, 159, 164, 165, 169, 173, 176, 177, 182, 183, 188, 192, 195, 202, 208, 212, "214-216"], "anim": "pop", "delay": 0.65, "duration": 0.45, "origin": [168, 138]},
+      {"name": "wish-coaster", "paths": ["77-85", 90, 103, 156, "160-163", "166-168", "170-172", 174, 175, "178-181", "184-187", "189-191", 194, "254-259"], "anim": "pop", "delay": 1.05, "duration": 0.35, "origin": "bottom"},
+      {"name": "wish-building", "paths": ["73-75", "151-155", 157, 158, 193, "196-201", "203-207", "209-211", 213, "250-253"], "anim": "pop", "delay": 1.23, "duration": 0.35, "origin": "bottom"},
+      {"name": "wish-carousel", "paths": [64, "93-102", "104-110", "113-118", "120-122", "124-128", "132-137", "139-143", 145, 147, 148, "245-247"], "anim": "pop", "delay": 1.4100000000000001, "duration": 0.35, "origin": "bottom"},
+      {"name": "wish-wheel", "paths": ["219-244", 248, 249], "anim": "pop", "delay": 1.59, "duration": 0.35, "origin": "bottom"},
+      {"name": "wish-tent", "paths": ["49-52", "54-59", "61-63", "65-68", 70, 71, 217, 218], "anim": "pop", "delay": 1.77, "duration": 0.35, "origin": "bottom"},
+      {"name": "list-line-1", "paths": [38], "anim": "wipe", "delay": 0.35, "duration": 0.3, "origin": "left"},
+      {"name": "list-line-2", "paths": [40], "anim": "wipe", "delay": 0.6499999999999999, "duration": 0.3, "origin": "left"},
+      {"name": "list-line-3", "paths": [42], "anim": "wipe", "delay": 0.95, "duration": 0.3, "origin": "left"},
+      {"name": "list-line-4", "paths": [44], "anim": "wipe", "delay": 1.25, "duration": 0.3, "origin": "left"},
+      {"name": "list-dot-1", "paths": [39], "anim": "pop", "delay": 0.3, "duration": 0.25},
+      {"name": "list-dot-2", "paths": [41], "anim": "pop", "delay": 0.6, "duration": 0.25},
+      {"name": "list-dot-3", "paths": [43], "anim": "pop", "delay": 0.8999999999999999, "duration": 0.25},
+      {"name": "list-dot-4", "paths": [45], "anim": "pop", "delay": 1.2, "duration": 0.25}
+    ],
+    "inserts": [
+      {"after": 4, "clip": [5, "46-259", 376], "svg": "<rect width=\"155.5\" height=\"200\" fill=\"#bad8ed\"/><rect x=\"155.5\" width=\"60\" height=\"200\" fill=\"#74a5cc\"/>", "_note": "wall behind the cloud and thought bubbles"},
+      {"after": 46, "group": "bubble", "clip": ["47-259"], "svg": "<rect x=\"40\" y=\"40\" width=\"140\" height=\"54\" fill=\"#a6d8f6\"/><rect x=\"40\" y=\"94\" width=\"140\" height=\"14\" fill=\"#2a8458\"/><rect x=\"40\" y=\"108\" width=\"140\" height=\"22\" fill=\"#78b36d\"/>", "_note": "sky, trees and grass behind the rides"}
+    ]
+  },
+  "preview": {
+    "label": "A family at a computer planning their route on a park map, with a wish list pinned to the wall",
+    "pathCount": 319,
+    "drop": [23, 28, "67-74", 318],
+    "groups": [
+      {"name": "pin-1", "paths": [249, 250], "anim": "pop", "delay": 0.2, "duration": 0.3},
+      {"name": "route-1", "paths": [248], "anim": "pop", "delay": 0.45, "duration": 0.4, "origin": [100, 174]},
+      {"name": "pin-2", "paths": [150], "anim": "pop", "delay": 0.8, "duration": 0.3},
+      {"name": "route-2", "paths": [168], "anim": "pop", "delay": 1, "duration": 0.4, "origin": [138, 149]},
+      {"name": "pin-3", "paths": [147], "anim": "pop", "delay": 1.35, "duration": 0.3},
+      {"name": "route-3", "paths": [149], "anim": "pop", "delay": 1.4, "duration": 0.4, "origin": [136, 155]},
+      {"name": "pin-4", "paths": [266, 267], "anim": "pop", "delay": 1.75, "duration": 0.3},
+      {"name": "tick-1", "paths": [75], "anim": "pop", "delay": 0.4, "duration": 0.3},
+      {"name": "tick-2", "paths": [77], "anim": "pop", "delay": 0.75, "duration": 0.3},
+      {"name": "tick-3", "paths": [79], "anim": "pop", "delay": 1.1, "duration": 0.3}
+    ],
+    "inserts": [
+      {"after": 146, "clip": [147, 149, 150, 168, 248, 249, 250, 266, 267], "svg": "<rect x=\"80\" y=\"110\" width=\"110\" height=\"85\" fill=\"#f4fbfb\"/>", "_note": "pale ghost of the route and stops, filled in as they appear"},
+      {"after": 74, "clip": [75, 77, 79], "svg": "<rect x=\"255\" y=\"72\" width=\"15\" height=\"40\" fill=\"#ccd0ce\"/>", "_note": "grey unticked dots under the green ones"},
+      {"after": 66, "svg": "<rect x=\"255\" y=\"55\" width=\"45\" height=\"15\" fill=\"#fefefe\"/><text x=\"258\" y=\"66.5\" font-family=\"system-ui,-apple-system,Segoe UI,sans-serif\" font-weight=\"800\" font-size=\"9\" letter-spacing=\"-0.15\" fill=\"#0b0b0b\">Wish List</text>", "_note": "heading, retyped: the traced one read \"Wish Lit\" (paths 23, 28, 67-74, dropped)"},
+      {"after": 317, "svg": "<rect x=\"117\" y=\"210\" width=\"18\" height=\"18\" fill=\"#dddfdd\"/>", "_note": "plain chin where the computer's logo was (path 318, dropped)"}
+    ]
+  },
+  "prepare": {
+    "label": "Someone packing a suitcase on the bed in front of an open wardrobe",
+    "pathCount": 306,
+    "groups": [
+      {"name": "hanging-shirts", "paths": [8, 16, 41, 42, 58, 59, 60, 108, 109, 112, 113, 115], "anim": "tap", "delay": 0.3, "duration": 1.1, "repeat": 2, "rotate": 2.5, "origin": [253, 95]},
+      {"name": "packed-1", "paths": ["45-49"], "anim": "drop", "delay": 0.2, "duration": 0.5},
+      {"name": "packed-2", "paths": ["50-55", 96], "anim": "drop", "delay": 0.6, "duration": 0.5}
+    ],
+    "inserts": [
+      {"after": 7, "clip": [8, 16, 41, 42, 58, 59, 60, 108, 109, 112, 113, 115], "svg": "<rect x=\"215\" y=\"85\" width=\"60\" height=\"120\" fill=\"#5e4438\"/>", "_note": "wardrobe behind the hanging shirts"},
+      {"after": 44, "clip": ["45-49", "50-55", 96], "svg": "<rect x=\"88\" y=\"275\" width=\"80\" height=\"40\" fill=\"#5f5d5b\"/>", "_note": "suitcase lining under the packed clothes"}
+    ]
+  },
+  "play": {
+    "label": "A family walking through a theme park taking photos, with a roller coaster and a Ferris wheel",
+    "pathCount": 421,
+    "groups": [
+      {"name": "cloud", "paths": [1, 419, 420], "anim": "glide", "delay": 0, "duration": 2.4, "translate": [-70, 0]},
+      {"name": "flash-1", "paths": [], "anim": "flash", "delay": 0.5, "duration": 0.5, "repeat": 2, "origin": [83, 195]},
+      {"name": "flash-2", "paths": [], "anim": "flash", "delay": 1.3, "duration": 0.5, "repeat": 2, "origin": [189, 192]}
+    ],
+    "inserts": [
+      {"after": 0, "clip": [1, 419, 420], "svg": "<rect x=\"0\" y=\"38\" width=\"115\" height=\"46\" fill=\"#a1ddf9\"/>", "_note": "sky behind the cloud"},
+      {"after": 420, "group": "flash-1", "svg": "<g transform=\"translate(83 195)\"><circle r=\"7\" fill=\"#fffbe6\" opacity=\".55\"/><path d=\"M0-11L1.8-1.8L11 0L1.8 1.8L0 11L-1.8 1.8L-11 0L-1.8-1.8Z\" fill=\"#fffef5\"/></g>"},
+      {"after": 420, "group": "flash-2", "svg": "<g transform=\"translate(189 192)\"><circle r=\"7\" fill=\"#fffbe6\" opacity=\".55\"/><path d=\"M0-11L1.8-1.8L11 0L1.8 1.8L0 11L-1.8 1.8L-11 0L-1.8-1.8Z\" fill=\"#fffef5\"/></g>"}
+    ]
+  },
+  "publish": {
+    "label": "A family at a computer looking at their \"Our Day\" photo collage",
+    "pathCount": 532,
+    "drop": [147],
+    "groups": [
+      {"name": "title", "paths": ["175-177", "521-526"], "anim": "pop", "delay": 0.15, "duration": 0.4},
+      {"name": "photo-1", "paths": ["178-207", "368-370"], "anim": "pop", "delay": 0.45, "duration": 0.32},
+      {"name": "photo-2", "paths": ["208-265"], "anim": "pop", "delay": 0.58, "duration": 0.32},
+      {"name": "photo-3", "paths": ["266-290", 511, 512], "anim": "pop", "delay": 0.71, "duration": 0.32},
+      {"name": "photo-4", "paths": ["291-309"], "anim": "pop", "delay": 0.84, "duration": 0.32},
+      {"name": "photo-5", "paths": ["310-367", "513-520"], "anim": "pop", "delay": 0.97, "duration": 0.32},
+      {"name": "photo-6", "paths": ["371-427", 505, 506, 509, 510], "anim": "pop", "delay": 1.1, "duration": 0.32},
+      {"name": "photo-7", "paths": ["428-451"], "anim": "pop", "delay": 1.23, "duration": 0.32},
+      {"name": "photo-8", "paths": ["452-477", 507, 508], "anim": "pop", "delay": 1.36, "duration": 0.32},
+      {"name": "photo-9", "paths": ["478-504"], "anim": "pop", "delay": 1.49, "duration": 0.32},
+      {"name": "photo-10", "paths": [20, "24-26", 28, "30-32", 34, "37-39", 41, 42, 47, 49, 52, 57, 58, 60, 63, 64, "69-78", "85-91"], "anim": "pop", "delay": 1.62, "duration": 0.32}
+    ],
+    "inserts": [
+      {"after": 0, "clip": [20, "24-26", 28, "30-32", 34, "37-39", 41, 42, 47, 49, 52, 57, 58, 60, 63, 64, "69-78", "85-91", "175-526"], "svg": "<rect x=\"45\" y=\"70\" width=\"205\" height=\"135\" fill=\"#fefefe\"/>", "_note": "screen white behind the title and photos"},
+      {"after": 146, "svg": "<rect x=\"137\" y=\"211\" width=\"20\" height=\"18\" fill=\"#cdcdcb\"/>", "_note": "plain chin where the computer's logo was (path 147, dropped)"}
+    ]
+  }
+}

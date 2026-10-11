@@ -90,21 +90,23 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 
 ## Colors
 
+The day colours are picked from the traced cards, so the banner matches them.
+
 | Name | Hex | Used for |
 |---|---|---|
-| sky | `#BFE3DD` | sky, windows |
-| sky-2 | `#E9D3A3` | the banner's horizon glow |
-| wall | `#F1E6CF` | room walls |
-| floor | `#D8C29C` | floors, ground, walkways |
-| paper | `#FFF9EC` | paper, maps, the computer case |
-| ink | `#2B2D42` | outlines, hair, legs |
-| teal | `#2F9C95` | the main character's clothes, leaves |
-| orange | `#E07A3F` | desks, lids, accents |
-| mustard | `#E3A93A` | starbursts, stars, highlights |
-| coral | `#D9573F` | pins, pots, suitcases |
-| sage | `#7FA97C` | hills, grass, the wardrobe |
-| skin | `#EFC29C` | faces and hands |
-| orb | `#F4B942` | the sun (it becomes the moon at night) |
+| sky | `#A1DDF9` | the sky (Play's sky) |
+| sky-2 | `#BDE2F7` | the haze band along the horizon |
+| wall | `#F3E5D8` | walls |
+| floor | `#E7BD91` | the ground strip |
+| paper | `#FBF7EB` | the track, the tower, train windows |
+| ink | `#2F3C42` | outlines, and the frame and title box around the banner |
+| teal | `#44A48B` | the train, palm leaves |
+| orange | `#F6AF4E` | roofs and accents |
+| mustard | `#F9BE3A` | sparkles, starbursts, the title's tagline |
+| coral | `#F5765E` | the saucer, the coaster track, roofs |
+| sage | `#6AA178` | hills and bushes |
+| skin | `#FBA593` | the coaster riders |
+| orb | `#FCD05C` | the sun (it becomes the moon at night) |
 | star | `#FFFFFF` | night stars (hidden in day mode) |
 
 Want a new color? Ask Claude to add it to the palette, with a night-mode partner, before you use it.

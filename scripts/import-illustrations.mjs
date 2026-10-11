@@ -23,10 +23,10 @@ const OUT_DIR = path.join(ROOT, "src/components/home/illustrations/generated");
 
 // Day-mode palette hex → theme token. Night values live in globals.css.
 const PALETTE = {
-  "#BFE3DD": "sky", "#E9D3A3": "sky-2", "#F1E6CF": "wall", "#D8C29C": "floor",
-  "#FFF9EC": "paper", "#2B2D42": "ink", "#2F9C95": "teal", "#E07A3F": "orange",
-  "#E3A93A": "mustard", "#D9573F": "coral", "#7FA97C": "sage", "#EFC29C": "skin",
-  "#F4B942": "orb", "#FFFFFF": "star",
+  "#A1DDF9": "sky", "#BDE2F7": "sky-2", "#F3E5D8": "wall", "#E7BD91": "floor",
+  "#FBF7EB": "paper", "#2F3C42": "ink", "#44A48B": "teal", "#F6AF4E": "orange",
+  "#F9BE3A": "mustard", "#F5765E": "coral", "#6AA178": "sage", "#FBA593": "skin",
+  "#FCD05C": "orb", "#FFFFFF": "star",
 };
 const NAMED = { white: "#FFFFFF", black: "#000000" };
 const COLOR_PROPS = ["fill", "stroke", "stop-color"];

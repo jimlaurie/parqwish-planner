@@ -176,7 +176,7 @@
   --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55);
   --shadow-focus: 0 0 0 3px rgba(255, 215, 0, 0.35);
 
-  /* Mid-century illustration palette (Home cards + banner) — night */
+  /* Mid-century illustration palette (the Home banner) — night */
   /* The traced Home-card art has no palette, so at night it's just dimmed. */
   --illo-traced-filter: brightness(0.86) saturate(0.95);
   --illo-sky: #1F3A4D;
@@ -244,21 +244,23 @@
   --shadow-xl: 0 24px 48px rgba(16, 24, 40, 0.14), 0 8px 16px rgba(16, 24, 40, 0.06);
   --shadow-focus: 0 0 0 3px rgba(153, 101, 21, 0.3);
 
-  /* Mid-century illustration palette (Home cards + banner) — day */
+  /* Mid-century illustration palette (the Home banner) — day. Picked from the
+     traced Home cards (Play's sky, the cards' greens, reds and yellows) so the
+     banner sits with them. */
   --illo-traced-filter: none;
-  --illo-sky: #BFE3DD;
-  --illo-sky-2: #E9D3A3;
-  --illo-wall: #F1E6CF;
-  --illo-floor: #D8C29C;
-  --illo-paper: #FFF9EC;
-  --illo-ink: #2B2D42;
-  --illo-teal: #2F9C95;
-  --illo-orange: #E07A3F;
-  --illo-mustard: #E3A93A;
-  --illo-coral: #D9573F;
-  --illo-sage: #7FA97C;
-  --illo-skin: #EFC29C;
-  --illo-orb: #F4B942;
+  --illo-sky: #A1DDF9;
+  --illo-sky-2: #BDE2F7;
+  --illo-wall: #F3E5D8;
+  --illo-floor: #E7BD91;
+  --illo-paper: #FBF7EB;
+  --illo-ink: #2F3C42;
+  --illo-teal: #44A48B;
+  --illo-orange: #F6AF4E;
+  --illo-mustard: #F9BE3A;
+  --illo-coral: #F5765E;
+  --illo-sage: #6AA178;
+  --illo-skin: #FBA593;
+  --illo-orb: #FCD05C;
   --illo-star: #FFFFFF;
   --illo-star-opacity: 0;
 

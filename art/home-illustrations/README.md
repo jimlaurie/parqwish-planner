@@ -92,7 +92,7 @@ Each moving part must keep its layer name. A name ending in `-` (like `pin-`) me
 
 ## Colors
 
-The day colours are picked from the traced cards, so the banner matches them.
+The day colours are picked from the traced cards, so the banner matches them. At night the sky becomes a blue-hour version of the cards' sky, and every other colour is its day value dimmed the same way the cards are at night (the night values are in `src/app/globals.css`).
 
 | Name | Hex | Used for |
 |---|---|---|

@@ -177,21 +177,24 @@
   --shadow-focus: 0 0 0 3px rgba(255, 215, 0, 0.35);
 
   /* Mid-century illustration palette (the Home banner) — night */
-  /* The traced Home-card art has no palette, so at night it's just dimmed. */
+  /* The traced Home-card art has no palette, so at night it's just dimmed.
+     The banner's night palette follows suit: a blue-hour sky from the cards'
+     sky hue, and every other colour is its day value through the same filter
+     (brightness 0.86, saturate 0.95), so the banner matches the dimmed cards. */
   --illo-traced-filter: brightness(0.86) saturate(0.95);
-  --illo-sky: #1F3A4D;
-  --illo-sky-2: #2C4F5F;
-  --illo-wall: #243F4C;
-  --illo-floor: #1A2F3A;
-  --illo-paper: #EADFC4;
-  --illo-ink: #10202A;
-  --illo-teal: #4FB3A9;
-  --illo-orange: #E8833A;
-  --illo-mustard: #E9B949;
-  --illo-coral: #E2654F;
-  --illo-sage: #7FA88A;
-  --illo-skin: #E8B98F;
-  --illo-orb: #EADFC4;
+  --illo-sky: #244A66;
+  --illo-sky-2: #3A6C88;
+  --illo-wall: #D0C5BA;
+  --illo-floor: #C5A37F;
+  --illo-paper: #D8D4CB;
+  --illo-ink: #293338;
+  --illo-teal: #3E8C78;
+  --illo-orange: #D19748;
+  --illo-mustard: #D4A438;
+  --illo-coral: #CE6753;
+  --illo-sage: #5D8A68;
+  --illo-skin: #D58F80;
+  --illo-orb: #F1E8CF;
   --illo-star: #F6E7B0;
   --illo-star-opacity: 1;
 

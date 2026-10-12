@@ -1,11 +1,12 @@
 import type { PublishData, DayData } from "@/hooks/use-publish-data";
-import db, { type DayItemRecord } from "@/lib/db";
-import { buildResortTrailSVG, type MapMarker, type LandOverlayFeature } from "./resort-map-svg";
+import db, { type DayItemRecord, type TripTrail, type User } from "@/lib/db";
+import { buildResortTrailSVG, type MapMarker, type LandOverlayFeature, type ResortTrailLine } from "./resort-map-svg";
 import { getAttractionCoords, type CoordMaps } from "./park-data";
 import { LAND_COORDINATES } from "./map-data";
 import { calcDistanceMiles, calcDurationMinutes } from "./trail-geo";
 import type { TrailTimeRanges } from "@/components/publish/TrailGallery";
 import { formatTime12 } from "./time-format";
+import { trailPerson, comparePeople, usesPersonColors, trailsForFilter, usersByIdMap } from "./trail-people";
 
 // ==================== HELPERS ====================
 
@@ -43,6 +44,11 @@ function filterPointsByRange(points: RawPoint[], from: string, to: string): RawP
     const mins = d.getHours() * 60 + d.getMinutes();
     return mins >= fromMins && mins <= toMins;
   });
+}
+
+/** Escapes text for the PDF's HTML (people's names are typed by users). */
+function escapeHtml(text: string): string {
+  return text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
 function formatDuration(minutes: number): string {
@@ -256,30 +262,34 @@ function buildMainHTML(data: PublishData): string {
     </div>`;
 }
 
-/** Per-day trail page — where you walked stats + resort map SVG. */
-function buildDayTrailHTML(
-  mapImageUrl:  string | undefined,
-  landGeoJSON:  { features: LandOverlayFeature[] } | null,
-  markers:      MapMarker[],
-  trailPoints:  Array<{ lat: number; lng: number }>,
-  dayLabel:     string,
-  trailStats:   { distanceMiles: number; durationMinutes: number; pointCount: number } | null,
-  timeRange:    { from: string; to: string } | null,
-): string {
-  const hasTrail  = trailPoints.length >= 2;
-  const statsHTML = trailStats && hasTrail ? `
+type TrailStats = { distanceMiles: number; durationMinutes: number; pointCount: number };
+
+/** The PDF's trail colour when only one person recorded trails (unchanged from before per-person lines). */
+const SINGLE_PDF_TRAIL_COLOR = "#E74C3C";
+
+/** One person's trail on a day page: the line, whose it is, and its own stats and time range. */
+interface DayTrailLine extends ResortTrailLine {
+  userId: string;
+  name: string;
+  stats: TrailStats;
+  range: { from: string; to: string } | null;
+}
+
+/** The classic stats row for a day with one person's trail. */
+function singleTrailStatsHTML(stats: TrailStats, timeRange: { from: string; to: string } | null): string {
+  return `
     <div style="display:flex;gap:20px;margin-bottom:10px;">
       <div>
         <span style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#6E7180;font-weight:600;">Distance</span>
-        <div style="font-size:18px;font-weight:700;color:#1976D2;">${trailStats.distanceMiles.toFixed(1)} <span style="font-size:11px;color:#6E7180;">mi</span></div>
+        <div style="font-size:18px;font-weight:700;color:#1976D2;">${stats.distanceMiles.toFixed(1)} <span style="font-size:11px;color:#6E7180;">mi</span></div>
       </div>
       <div>
         <span style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#6E7180;font-weight:600;">Duration</span>
-        <div style="font-size:18px;font-weight:700;color:#1976D2;">${formatDuration(trailStats.durationMinutes)}</div>
+        <div style="font-size:18px;font-weight:700;color:#1976D2;">${formatDuration(stats.durationMinutes)}</div>
       </div>
       <div>
         <span style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#6E7180;font-weight:600;">GPS Points</span>
-        <div style="font-size:18px;font-weight:700;color:#1976D2;">${trailStats.pointCount.toLocaleString()}</div>
+        <div style="font-size:18px;font-weight:700;color:#1976D2;">${stats.pointCount.toLocaleString()}</div>
       </div>
       ${timeRange ? `
         <div>
@@ -288,14 +298,43 @@ function buildDayTrailHTML(
             ${formatTime12(timeRange.from)} – ${formatTime12(timeRange.to)}
           </div>
         </div>` : ""}
-    </div>` : "";
+    </div>`;
+}
+
+/** One row per person (colour key, name, stats) for a day several people recorded. */
+function peopleTrailStatsHTML(lines: DayTrailLine[]): string {
+  const rows = lines.map((l) => `
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:#1C1C28;">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${l.color};box-shadow:0 0 0 1px #1C1C28;"></span>
+        <span style="font-weight:700;min-width:80px;">${escapeHtml(l.name)}</span>
+        <span style="color:#1976D2;font-weight:700;">${l.stats.distanceMiles.toFixed(1)} mi</span>
+        <span style="color:#6E7180;">· ${formatDuration(l.stats.durationMinutes)} · ${l.stats.pointCount.toLocaleString()} pts${
+          l.range ? ` · ${formatTime12(l.range.from)} – ${formatTime12(l.range.to)}` : ""}</span>
+      </div>`).join("");
+  return `<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;">${rows}</div>`;
+}
+
+/** Per-day trail page — where you walked stats + resort map SVG. */
+function buildDayTrailHTML(
+  mapImageUrl:  string | undefined,
+  landGeoJSON:  { features: LandOverlayFeature[] } | null,
+  markers:      MapMarker[],
+  lines:        DayTrailLine[],
+  dayLabel:     string,
+  byPerson:     boolean,
+): string {
+  const drawn     = lines.filter((l) => l.points.length >= 2);
+  const statsHTML = drawn.length === 0 ? ""
+    : byPerson ? peopleTrailStatsHTML(drawn)
+    : singleTrailStatsHTML(drawn[0].stats, drawn[0].range);
 
   const noteHTML = markers.length > 0
     ? `<p style="font-size:9px;color:#6E7180;margin:8px 0 0 0;">${markers.length} completed item${markers.length !== 1 ? "s" : ""} shown on map</p>`
     : "";
 
-  const mapSVG = buildResortTrailSVG(trailPoints, {
+  const mapSVG = buildResortTrailSVG(drawn, {
     width: 720,
+    casing: byPerson,
     mapImageUrl: mapImageUrl ?? "/images/resort-map.svg",
     showLands: true,
     landGeoJSON: landGeoJSON ?? undefined,
@@ -344,15 +383,50 @@ function buildPhotosHTML(photos: PublishData["allPhotos"]): string {
 
 // ==================== MAIN EXPORT ====================
 
+/** Each recorded trail's points (time-sorted, cut to its time range) as a day-page line. */
+function dayTrailLines(
+  trails:          TripTrail[],
+  users:           User[],
+  trailTimeRanges: TrailTimeRanges,
+  byPerson:        boolean,
+): Record<string, DayTrailLine[]> {
+  const byId = usersByIdMap(users);
+  const byDate: Record<string, DayTrailLine[]> = {};
+  for (const trail of trails) {
+    const sorted = [...trail.points].sort((a, b) => a.timestamp - b.timestamp);
+    const range  = trailTimeRanges[trail.id] ?? null;
+    const pts    = range ? filterPointsByRange(sorted, range.from, range.to) : sorted;
+    const person = trailPerson(trail, byId);
+    (byDate[trail.date] ??= []).push({
+      name:   person.name,
+      color:  byPerson ? person.color : SINGLE_PDF_TRAIL_COLOR,
+      points: pts.map((p) => ({ lat: p.latitude, lng: p.longitude })),
+      stats:  { distanceMiles: calcDistanceMiles(pts), durationMinutes: calcDurationMinutes(pts), pointCount: pts.length },
+      range,
+      userId: person.userId,
+    });
+  }
+  for (const lines of Object.values(byDate)) {
+    lines.sort(comparePeople);
+  }
+  return byDate;
+}
+
+/**
+ * Builds and downloads the trip recap PDF. Trail time ranges are keyed by
+ * trail id (TrailGallery); `userFilter` is the app-wide Trip User filter, so
+ * the PDF's trails match the people shown on Publish.
+ */
 export async function generateTripPDF(
   data:            PublishData,
   trailTimeRanges: TrailTimeRanges = {},
+  userFilter:      string[] | null = null,
 ): Promise<void> {
   const html2canvas = (await import("html2canvas-pro")).default;
   const { jsPDF }  = await import("jspdf");
 
-  // 1. Fetch map assets + coords + raw trails in parallel
-  const [mapImageUrl, landGeoJSON, coordMaps, rawTrails] = await Promise.all([
+  // 1. Fetch map assets + coords + raw trails + people in parallel
+  const [mapImageUrl, landGeoJSON, coordMaps, rawTrails, users] = await Promise.all([
     fetch("/images/resort-map.svg")
       .then((r) => (r.ok ? r.text() : null))
       .then((text) => text ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}` : undefined)
@@ -361,32 +435,13 @@ export async function generateTripPDF(
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null) as Promise<{ features: LandOverlayFeature[] } | null>,
     getAttractionCoords(),
-    db.trails.where("tripId").equals(data.trip.id).toArray().catch(() => []),
+    db.trails.where("tripId").equals(data.trip.id).toArray().catch(() => [] as TripTrail[]),
+    db.users.toArray().catch(() => [] as User[]),
   ]);
 
-  // 2. Group and sort raw trail points by date, applying time range filters
-  const trailByDate: Record<string, Array<{ lat: number; lng: number; ts: number }>> = {};
-  const trailStatsByDate: Record<string, { distanceMiles: number; durationMinutes: number; pointCount: number }> = {};
-
-  for (const trail of rawTrails) {
-    const sorted = [...trail.points].sort((a, b) => a.timestamp - b.timestamp);
-    const range  = trailTimeRanges[trail.date];
-    const pts    = range ? filterPointsByRange(sorted, range.from, range.to) : sorted;
-    if (!trailByDate[trail.date]) trailByDate[trail.date] = [];
-    for (const p of pts) {
-      trailByDate[trail.date].push({ lat: p.latitude, lng: p.longitude, ts: p.timestamp });
-    }
-  }
-
-  for (const [date, pts] of Object.entries(trailByDate)) {
-    pts.sort((a, b) => a.ts - b.ts);
-    const rawPts = pts.map((p) => ({ timestamp: p.ts, latitude: p.lat, longitude: p.lng }));
-    trailStatsByDate[date] = {
-      distanceMiles:   calcDistanceMiles(rawPts),
-      durationMinutes: calcDurationMinutes(rawPts),
-      pointCount:      pts.length,
-    };
-  }
+  // 2. One line per person per day, each cut to its own time range
+  const byPerson    = usesPersonColors(rawTrails);
+  const linesByDate = dayTrailLines(trailsForFilter(rawTrails, userFilter), users, trailTimeRanges, byPerson);
 
   // 3. Build HTML sections
   const wrapper = document.createElement("div");
@@ -400,15 +455,12 @@ export async function generateTripPDF(
   // Pages 2–N: one per day with trail or completed items
   const mapDivs: HTMLDivElement[] = [];
   for (const day of data.days) {
-    const rawPts    = trailByDate[day.date] ?? [];
-    const dayTrail  = rawPts.map((p) => ({ lat: p.lat, lng: p.lng }));
+    const lines      = linesByDate[day.date] ?? [];
     const dayMarkers = buildMarkersForItems(day.items, coordMaps);
-    if (dayTrail.length < 2 && dayMarkers.length === 0) continue;
+    if (!lines.some((l) => l.points.length >= 2) && dayMarkers.length === 0) continue;
 
-    const stats     = trailStatsByDate[day.date] ?? null;
-    const range     = trailTimeRanges[day.date] ?? null;
     const div       = document.createElement("div");
-    div.innerHTML   = buildDayTrailHTML(mapImageUrl, landGeoJSON, dayMarkers, dayTrail, day.displayDate, stats, range);
+    div.innerHTML   = buildDayTrailHTML(mapImageUrl, landGeoJSON, dayMarkers, lines, day.displayDate, byPerson);
     wrapper.appendChild(div);
     mapDivs.push(div);
   }

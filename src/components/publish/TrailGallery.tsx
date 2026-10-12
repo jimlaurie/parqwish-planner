@@ -2,8 +2,11 @@
 
 // ==================== TRAIL GALLERY ====================
 // Renders GPS trail data imported from the mobile app for the current trip.
-// One card per recorded day, with distance/duration stats, time-range filter,
-// and a mini map polyline. Pro feature on mobile — PWA just visualizes it.
+// One card per recorded trail (a person's day), with distance/duration stats,
+// its own time-range filter, and a mini map polyline. When several people
+// recorded trails, each card names its person and draws in their colour, and
+// the app-wide Trip User filter picks whose cards show. Pro feature on
+// mobile — PWA just visualizes it.
 
 import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
@@ -12,6 +15,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db, { type TripTrail } from "@/lib/db";
 import type { ItineraryItem } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import { useUsers } from "@/hooks/use-users";
+import { trailPerson, comparePeople, usesPersonColors, lineColor, trailsForFilter, usersByIdMap, type TrailPerson } from "@/lib/trail-people";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
 import { auth, isSyncEnabled } from "@/lib/auth";
 import { deleteTrailRemote } from "@/lib/wish-sync";
@@ -23,7 +28,7 @@ const ACCENT = "var(--color-accent-publish)";
 // ==================== TYPES ====================
 
 export interface TrailTimeRange { from: string; to: string }
-export type TrailTimeRanges = Record<string, TrailTimeRange>; // keyed by trail.date
+export type TrailTimeRanges = Record<string, TrailTimeRange>; // keyed by trail.id (one person's day)
 
 interface TrailGalleryProps {
   onTimeRangesChange?: (ranges: TrailTimeRanges) => void;
@@ -91,7 +96,8 @@ const TrailMiniMap = dynamic(() => import("./TrailMiniMap"), {
 // ==================== COMPONENT ====================
 
 export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) {
-  const { currentTripId } = useAppStore();
+  const { currentTripId, activeUserFilter } = useAppStore();
+  const { users } = useUsers();
   const [expanded,     setExpanded]     = useState<string | null>(null);
   const [timeRanges,   setTimeRanges]   = useState<TrailTimeRanges>({});
   const [deletingTrail, setDeletingTrail] = useState<TripTrail | null>(null);
@@ -125,9 +131,19 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
     [] as TripTrail[],
   );
 
+  // Who recorded each trail, and whether cards colour by person (decided on
+  // every trail of the trip, so colours don't change as the filter does).
+  const peopleById = useMemo(() => {
+    const byId = usersByIdMap(users);
+    return new Map<string, TrailPerson>((trails ?? []).map((t) => [t.id, trailPerson(t, byId)]));
+  }, [trails, users]);
+  const byPerson = usesPersonColors(trails ?? []);
+
+  // The trails the Trip User filter shows, by date, then person.
   const sorted = useMemo(
-    () => [...(trails || [])].sort((a, b) => a.date.localeCompare(b.date)),
-    [trails],
+    () => trailsForFilter([...(trails || [])], activeUserFilter).sort((a, b) =>
+      a.date.localeCompare(b.date) || comparePeople(peopleById.get(a.id)!, peopleById.get(b.id)!)),
+    [trails, activeUserFilter, peopleById],
   );
 
   // Initialise time ranges once per trail (when trails first load or new ones appear)
@@ -137,10 +153,10 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
       const next = { ...prev };
       let changed = false;
       for (const trail of sorted) {
-        if (next[trail.date]) continue;
+        if (next[trail.id]) continue;
         const def = defaultRangeForTrail(trail);
         if (!def) continue;
-        next[trail.date] = def;
+        next[trail.id] = def;
         changed = true;
       }
       return changed ? next : prev;
@@ -152,14 +168,14 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
     onTimeRangesChange?.(timeRanges);
   }, [timeRanges, onTimeRangesChange]);
 
-  const updateRange = useCallback((date: string, field: "from" | "to", value: string) => {
-    setTimeRanges((prev) => ({ ...prev, [date]: { ...prev[date], [field]: value } }));
+  const updateRange = useCallback((trailId: string, field: "from" | "to", value: string) => {
+    setTimeRanges((prev) => ({ ...prev, [trailId]: { ...prev[trailId], [field]: value } }));
   }, []);
 
   const resetRange = useCallback((trail: TripTrail) => {
     const def = defaultRangeForTrail(trail);
     if (!def) return;
-    setTimeRanges((prev) => ({ ...prev, [trail.date]: def }));
+    setTimeRanges((prev) => ({ ...prev, [trail.id]: def }));
   }, []);
 
   const completedItems = useLiveQuery(
@@ -193,18 +209,18 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
     return result;
   }, [coordMaps, completedItems]);
 
-  // Filtered trail objects (sorted points + recalculated stats)
-  const filteredByDate = useMemo(() => {
+  // Filtered trail objects (sorted points + recalculated stats), by trail id
+  const filteredById = useMemo(() => {
     const result: Record<string, { trail: TripTrail; filteredPoints: TrailPoint[]; isFiltered: boolean }> = {};
     for (const trail of sorted) {
       const rawSorted   = [...trail.points].sort((a, b) => a.timestamp - b.timestamp);
-      const range       = timeRanges[trail.date];
+      const range       = timeRanges[trail.id];
       const filtered    = range ? filterPointsByRange(rawSorted, range.from, range.to) : rawSorted;
       const def         = defaultRangeForTrail(trail);
       const isFiltered  = !!range && def
         ? range.from !== def.from || range.to !== def.to
         : false;
-      result[trail.date] = {
+      result[trail.id] = {
         isFiltered,
         filteredPoints: filtered,
         trail: {
@@ -219,15 +235,21 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
     return result;
   }, [sorted, timeRanges]);
 
+  // Miles and points add up everyone shown; time counts each day once (the
+  // longest trail that day), since people out together share the same hours.
   const totals = useMemo(() => {
-    let miles = 0, minutes = 0, points = 0;
-    for (const { trail } of Object.values(filteredByDate)) {
-      miles   += trail.distanceMiles   || 0;
-      minutes += trail.durationMinutes || 0;
-      points  += trail.pointCount      || 0;
+    let miles = 0, points = 0;
+    const minutesByDate = new Map<string, number>();
+    for (const t of sorted) {
+      const trail = filteredById[t.id]?.trail;
+      if (!trail) continue;
+      miles  += trail.distanceMiles || 0;
+      points += trail.pointCount    || 0;
+      minutesByDate.set(t.date, Math.max(minutesByDate.get(t.date) ?? 0, trail.durationMinutes || 0));
     }
-    return { miles, minutes, points, days: sorted.length };
-  }, [filteredByDate, sorted.length]);
+    const minutes = [...minutesByDate.values()].reduce((a, b) => a + b, 0);
+    return { miles, minutes, points, days: minutesByDate.size };
+  }, [filteredById, sorted]);
 
   if (!currentTripId) return null;
 
@@ -238,7 +260,9 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
         <div className="p-6 rounded-lg text-center"
              style={{ backgroundColor: "var(--color-surface-raised)", border: "1px solid var(--color-border-subtle)" }}>
           <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-            No GPS trail data yet. Enable trail recording in the mobile app and import your trip data.
+            {trails?.length
+              ? "No GPS trails for the people selected. Choose All above to see everyone\u2019s."
+              : "No GPS trail data yet. Enable trail recording in the mobile app and import your trip data."}
           </p>
         </div>
       </section>
@@ -262,9 +286,11 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
       <div className="grid gap-3 md:grid-cols-2">
         {sorted.map((rawTrail) => {
           const isOpen  = expanded === rawTrail.id;
-          const fd      = filteredByDate[rawTrail.date];
-          const range   = timeRanges[rawTrail.date];
+          const fd      = filteredById[rawTrail.id];
+          const range   = timeRanges[rawTrail.id];
           const def     = defaultRangeForTrail(rawTrail);
+          const person  = peopleById.get(rawTrail.id);
+          const color   = person ? lineColor(person, byPerson) : undefined;
 
           return (
             <div key={rawTrail.id} className="rounded-lg overflow-hidden"
@@ -274,8 +300,15 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
               <button type="button" onClick={() => setExpanded(isOpen ? null : rawTrail.id)}
                       className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:brightness-110">
                 <div>
-                  <div className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                  <div className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--color-text-primary)" }}>
                     {formatDate(rawTrail.date)}
+                    {byPerson && person && (
+                      <span className="flex items-center gap-1 text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
+                        <span aria-hidden className="inline-block w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: color, boxShadow: "0 0 0 1px var(--color-border-strong)" }} />
+                        {person.name}
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
                     {fd ? (
@@ -309,7 +342,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
                       <input
                         type="time"
                         value={range?.from ?? def?.from ?? ""}
-                        onChange={(e) => updateRange(rawTrail.date, "from", e.target.value)}
+                        onChange={(e) => updateRange(rawTrail.id, "from", e.target.value)}
                         className="rounded px-2 py-0.5 text-xs border"
                         style={{
                           backgroundColor: "var(--color-bg-card)",
@@ -323,7 +356,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
                       <input
                         type="time"
                         value={range?.to ?? def?.to ?? ""}
-                        onChange={(e) => updateRange(rawTrail.date, "to", e.target.value)}
+                        onChange={(e) => updateRange(rawTrail.id, "to", e.target.value)}
                         className="rounded px-2 py-0.5 text-xs border"
                         style={{
                           backgroundColor: "var(--color-bg-card)",
@@ -350,7 +383,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
                     </div>
                   )}
 
-                  <TrailMiniMap trail={fd.trail} markers={markersByDate[rawTrail.date] ?? []} />
+                  <TrailMiniMap trail={fd.trail} markers={markersByDate[rawTrail.date] ?? []} color={color} />
 
                   <div className="flex justify-end pt-3 mt-3 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
                     <button
@@ -362,7 +395,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
                         color: "var(--color-error)",
                       }}
                     >
-                      🗑 Delete This Day&rsquo;s Trail
+                      🗑 {byPerson && person ? `Delete ${person.name}\u2019s Trail` : <>Delete This Day&rsquo;s Trail</>}
                     </button>
                   </div>
                 </div>
@@ -392,7 +425,9 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--color-text-primary)" }}>
-                Delete {formatDate(deletingTrail.date)}&rsquo;s trail?
+                {byPerson && peopleById.get(deletingTrail.id)
+                  ? `Delete ${peopleById.get(deletingTrail.id)!.name}\u2019s trail for ${formatDate(deletingTrail.date)}?`
+                  : <>Delete {formatDate(deletingTrail.date)}&rsquo;s trail?</>}
               </h3>
               <p className="text-sm mb-4" style={{ color: "var(--color-text-dim)" }}>
                 This removes the recorded GPS trail for this day everywhere it&rsquo;s synced. This cannot be undone.

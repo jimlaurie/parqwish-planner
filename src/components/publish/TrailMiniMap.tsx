@@ -10,6 +10,7 @@ import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
 import type { TripTrail } from "@/lib/db";
 import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM } from "@/lib/map-data";
+import { TRAIL_CASING_COLOR } from "@/lib/trail-people";
 import ResortMask from "@/components/map/ResortMask";
 
 const TRAIL_COLOR = "#FFA500";
@@ -69,6 +70,7 @@ function TrailMapView({
   bounds,
   markers = [],
   landGeoJSON,
+  color,
 }: {
   allPositions: [number, number][];
   activePositions: [number, number][];
@@ -76,6 +78,7 @@ function TrailMapView({
   bounds: [[number, number], [number, number]];
   markers?: TrailMarker[];
   landGeoJSON?: GeoJsonObject | null;
+  color: string;
 }) {
   const complete = activePositions.length >= allPositions.length;
   return (
@@ -107,14 +110,20 @@ function TrailMapView({
       {/* Ghost — full path at low opacity */}
       <Polyline
         positions={allPositions}
-        pathOptions={{ color: TRAIL_COLOR, weight: 2, opacity: 0.2 }}
+        pathOptions={{ color, weight: 2, opacity: 0.2 }}
       />
 
-      {/* Active — drawn portion */}
+      {/* Active — drawn portion; a person's (pale) colour gets a dark edge so it reads on light tiles */}
+      {activePositions.length > 1 && color !== TRAIL_COLOR && (
+        <Polyline
+          positions={activePositions}
+          pathOptions={{ color: TRAIL_CASING_COLOR, weight: 5.5, opacity: 0.45, lineCap: "round", lineJoin: "round" }}
+        />
+      )}
       {activePositions.length > 1 && (
         <Polyline
           positions={activePositions}
-          pathOptions={{ color: TRAIL_COLOR, weight: 3, opacity: 0.9, lineCap: "round", lineJoin: "round" }}
+          pathOptions={{ color, weight: 3, opacity: 0.9, lineCap: "round", lineJoin: "round" }}
         />
       )}
 
@@ -130,7 +139,7 @@ function TrailMapView({
         <CircleMarker
           center={[currentPoint.latitude, currentPoint.longitude]}
           radius={7}
-          pathOptions={{ color: "#fff", fillColor: TRAIL_COLOR, fillOpacity: 1, weight: 2 }}
+          pathOptions={{ color: "#fff", fillColor: color, fillOpacity: 1, weight: 2 }}
         />
       )}
 
@@ -179,7 +188,8 @@ function TrailMapView({
 
 // ==================== MAIN COMPONENT ====================
 
-export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail; markers?: TrailMarker[] }) {
+/** `color` is the line colour: the recording person's when a trip has trails from several people (see trail-people.ts). */
+export default function TrailMiniMap({ trail, markers = [], color = TRAIL_COLOR }: { trail: TripTrail; markers?: TrailMarker[]; color?: string }) {
   const [fullscreen, setFullscreen] = useState(false);
   const [sliderIndex, setSliderIndex] = useState(trail.points.length); // start fully drawn
   const [playing, setPlaying] = useState(false);
@@ -303,7 +313,7 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
         value={sliderIndex}
         onChange={handleSlider}
         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-        style={{ accentColor: TRAIL_COLOR }}
+        style={{ accentColor: color }}
       />
 
       {/* Play controls + speed */}
@@ -315,7 +325,7 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
         </button>
         <button type="button" onClick={handleTogglePlay}
           className="w-8 h-7 rounded flex items-center justify-center text-sm font-bold"
-          style={{ backgroundColor: TRAIL_COLOR, color: "#000" }}>
+          style={{ backgroundColor: color, color: "#000" }}>
           {playing ? "⏸" : "▶"}
         </button>
         <span className="text-[10px] ml-1" style={{ color: "var(--color-text-muted)" }}>
@@ -326,7 +336,7 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
             <button key={s} type="button" onClick={() => setSpeed(s)}
               className="text-[10px] px-1.5 py-0.5 rounded"
               style={{
-                backgroundColor: speed === s ? TRAIL_COLOR : "var(--color-surface-overlay)",
+                backgroundColor: speed === s ? color : "var(--color-surface-overlay)",
                 color: speed === s ? "#000" : "var(--color-text-muted)",
               }}>
               {s}×
@@ -337,7 +347,7 @@ export default function TrailMiniMap({ trail, markers = [] }: { trail: TripTrail
     </div>
   );
 
-  const mapProps = { allPositions, activePositions, currentPoint, bounds, markers, landGeoJSON };
+  const mapProps = { allPositions, activePositions, currentPoint, bounds, markers, landGeoJSON, color };
 
   return (
     <>

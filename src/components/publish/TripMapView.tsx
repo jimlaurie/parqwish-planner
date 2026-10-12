@@ -17,7 +17,7 @@
 // while indoors): the page puts one point into "correcting" state, this
 // view highlights it and listens for the next map click to relocate it.
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { Fragment, useMemo, useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, Polyline, CircleMarker, Tooltip, useMap, useMapEvent } from "react-leaflet";
 import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
@@ -27,6 +27,7 @@ import { TILE_URL, TILE_ATTRIBUTION, TILE_CLASS_NAME, TILE_MAX_NATIVE_ZOOM, RESO
 import type { FlagResult } from "@/lib/trip-map-flags";
 import { findNearestMarkerAt } from "@/lib/trip-map-proximity";
 import ResortMask from "@/components/map/ResortMask";
+import { TRAIL_CASING_COLOR } from "@/lib/trail-people";
 
 const TRAIL_COLOR = "#FFA500";
 const FLAG_COLOR = "#F44336";
@@ -43,11 +44,13 @@ type Speed = (typeof SPEEDS)[number];
 const ARROW_KEY_STEP_MS = 5 * 60_000;
 
 // ==================== TRAIL POINT / MERGED TRAIL TYPES ====================
-// A day can have more than one recorded TripTrail row (one per user); the
-// page flattens them into a single point list for display. Each point
-// carries sourceTrailId so a correction can be written back to the right
-// underlying record's key, and so a point stays identifiable across
-// re-sorts/filters (see trip-map-prefs.ts's pointCorrectionKey).
+// A day can have more than one recorded TripTrail row (one per user). The
+// page flattens the shown ones into a single time-sorted point list, which
+// drives the shared timeline (scrubber, playback, GPS list); each point
+// carries sourceTrailId so the map can draw every person's trail as its own
+// line, a correction can be written back to the right record's key, and a
+// point stays identifiable across re-sorts/filters (see trip-map-prefs.ts's
+// pointCorrectionKey).
 
 export interface MergedTrailPoint {
   latitude: number;
@@ -60,6 +63,13 @@ export interface MergedTrailPoint {
 export interface MergedTrail {
   id: string;
   points: MergedTrailPoint[];
+}
+
+/** One person's line on the map: which trail it is, and how to draw it. */
+export interface TrailLine {
+  id: string; // the TripTrail id its points carry as sourceTrailId
+  label: string;
+  color: string;
 }
 
 // ==================== MARKER TYPES ====================
@@ -171,6 +181,7 @@ function CorrectionClickListener({ onPick }: { onPick: (lat: number, lng: number
 
 export default function TripMapView({
   trail,
+  lines,
   markers,
   photoMarkers = [],
   activeMarkerId,
@@ -181,6 +192,8 @@ export default function TripMapView({
   onCorrectPoint,
 }: {
   trail: MergedTrail | null;
+  /** One entry per person shown; more than one draws dark edges under the (pale) person colours. */
+  lines: TrailLine[];
   markers: TripMapMarker[];
   photoMarkers?: TripPhotoMarker[];
   activeMarkerId?: string | null;
@@ -284,14 +297,12 @@ export default function TripMapView({
     return result;
   }, [sortedPoints, elapsedMs]);
 
-  const activePositions = trailPositions.slice(0, activeIndex + 1);
-  const complete = activePositions.length >= trailPositions.length;
-  const currentPoint = activeIndex >= 0 && !complete ? sortedPoints[activeIndex] : null;
+  const complete = activeIndex + 1 >= trailPositions.length;
 
-  // The point the scrubber is "on" for list-highlighting purposes — unlike
-  // currentPoint (which hides once playback completes, so the moving dot
-  // disappears), this stays resolved to the last point at full draw, since
-  // "slider at the end" should still highlight that last GPS entry.
+  // The point the scrubber is "on" for list-highlighting purposes — this
+  // stays resolved to the last point at full draw (the moving dots hide
+  // then), since "slider at the end" should still highlight that last GPS
+  // entry.
   const activePoint = activeIndex >= 0 ? sortedPoints[activeIndex] : null;
 
   useEffect(() => {
@@ -299,12 +310,31 @@ export default function TripMapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePoint?.sourceTrailId, activePoint?.timestamp]);
 
-  // What's nearby right now, for the sidebar panel — uses activePoint (not
-  // currentPoint, which hides once playback completes) since proximity
+  // What's nearby right now, for the sidebar panel — uses activePoint (the
+  // moving dots hide once playback completes) since proximity
   // detection should keep working whether the user is playing, paused, or
   // has manually scrubbed to a static spot; scrubbing to inspect a moment is
   // already a documented use of this view (see file header).
   const currentAbsoluteMs = sortedPoints.length > 0 ? sortedPoints[0].timestamp + elapsedMs : null;
+
+  // Each person's own line, cut at the shared clock: drawn up to now, a dot
+  // where they are while they're recording, an end mark once they've stopped.
+  const drawnLines = useMemo(() => lines.map((line) => {
+    const pts = sortedPoints.filter((p) => p.sourceTrailId === line.id);
+    const positions = pts.map((p) => [p.latitude, p.longitude] as [number, number]);
+    const t = currentAbsoluteMs ?? Infinity;
+    const doneCount = complete ? pts.length : pts.filter((p) => p.timestamp <= t).length;
+    const last = pts[pts.length - 1];
+    const finished = complete || (!!last && last.timestamp <= t);
+    return {
+      ...line,
+      positions,
+      drawn: positions.slice(0, doneCount),
+      dot: !finished && doneCount > 0 ? positions[doneCount - 1] : null,
+      end: finished && positions.length > 0 ? positions[positions.length - 1] : null,
+    };
+  }), [lines, sortedPoints, currentAbsoluteMs, complete]);
+  const casing = lines.length > 1;
   const nearbyMarker = useMemo(
     () => findNearestMarkerAt(activePoint, currentAbsoluteMs, markers),
     [activePoint, currentAbsoluteMs, markers]
@@ -418,44 +448,56 @@ export default function TripMapView({
             />
           )}
 
-          {hasPlayback && (
-            <>
-              {/* Ghost — full path at low opacity, so the un-walked portion stays visible during playback */}
+          {hasPlayback && drawnLines.map((line) => line.positions.length > 0 && (
+            <Fragment key={line.id}>
+              {/* Ghost — the person's full path at low opacity, so the un-walked part stays visible during playback */}
               <Polyline
-                positions={trailPositions}
-                pathOptions={{ color: TRAIL_COLOR, weight: 2, opacity: 0.25, lineCap: "round", lineJoin: "round" }}
+                positions={line.positions}
+                pathOptions={{ color: line.color, weight: 2, opacity: 0.3, lineCap: "round", lineJoin: "round" }}
               />
-              {/* Active — drawn portion */}
-              {activePositions.length > 1 && (
+              {/* Drawn portion, with a dark edge when several people share the map */}
+              {line.drawn.length > 1 && casing && (
                 <Polyline
-                  positions={activePositions}
-                  pathOptions={{ color: TRAIL_COLOR, weight: 3, opacity: 0.9, lineCap: "round", lineJoin: "round" }}
+                  positions={line.drawn}
+                  pathOptions={{ color: TRAIL_CASING_COLOR, weight: 5.5, opacity: 0.45, lineCap: "round", lineJoin: "round" }}
+                />
+              )}
+              {line.drawn.length > 1 && (
+                <Polyline
+                  positions={line.drawn}
+                  pathOptions={{ color: line.color, weight: 3, opacity: 0.95, lineCap: "round", lineJoin: "round" }}
                 />
               )}
               {/* Start marker */}
               <CircleMarker
-                center={trailPositions[0]}
-                radius={6}
-                pathOptions={{ color: "#4CAF50", fillColor: "#4CAF50", fillOpacity: 1, weight: 2 }}
-              />
-              {/* Moving position dot */}
-              {currentPoint && !complete && (
+                center={line.positions[0]}
+                radius={casing ? 5 : 6}
+                pathOptions={{ color: casing ? line.color : "#4CAF50", fillColor: "#4CAF50", fillOpacity: 1, weight: 2 }}
+              >
+                {casing && <Tooltip direction="top" offset={[0, -6]}>{line.label} starts</Tooltip>}
+              </CircleMarker>
+              {/* Where they are right now */}
+              {line.dot && (
                 <CircleMarker
-                  center={[currentPoint.latitude, currentPoint.longitude]}
+                  center={line.dot}
                   radius={7}
-                  pathOptions={{ color: "#fff", fillColor: TRAIL_COLOR, fillOpacity: 1, weight: 2 }}
-                />
+                  pathOptions={{ color: casing ? TRAIL_CASING_COLOR : "#fff", fillColor: line.color, fillOpacity: 1, weight: 2 }}
+                >
+                  {casing && <Tooltip direction="top" offset={[0, -8]}>{line.label}</Tooltip>}
+                </CircleMarker>
               )}
-              {/* End marker when fully played */}
-              {complete && (
+              {/* End marker once they've stopped recording */}
+              {line.end && (
                 <CircleMarker
-                  center={trailPositions[trailPositions.length - 1]}
-                  radius={6}
-                  pathOptions={{ color: "#F44336", fillColor: "#F44336", fillOpacity: 1, weight: 2 }}
-                />
+                  center={line.end}
+                  radius={casing ? 5 : 6}
+                  pathOptions={{ color: casing ? line.color : "#F44336", fillColor: "#F44336", fillOpacity: 1, weight: 2 }}
+                >
+                  {casing && <Tooltip direction="top" offset={[0, -6]}>{line.label} ends</Tooltip>}
+                </CircleMarker>
               )}
-            </>
-          )}
+            </Fragment>
+          ))}
 
           {markers.map((m) => {
             const color = MARKER_COLORS[m.itemType] ?? "#78909C";

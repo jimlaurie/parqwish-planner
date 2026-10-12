@@ -155,8 +155,62 @@ function buildMarkersSVG(markers: MapMarker[], scale: number): string {
 
 // ==================== MAIN EXPORT ====================
 
+/** One GPS trail to draw: its points in order, and its line colour. */
+export interface ResortTrailLine {
+  points: Array<{ lat: number; lng: number }>;
+  color: string;
+}
+
+/** SVG for one trail line with its start (circle) and end (square) marks. */
+function buildTrailLineSVG(line: ResortTrailLine, scale: number, casing: boolean): string {
+  const { points, color } = line;
+  if (points.length < 2) return "";
+  const ptStrings = points
+    .map((p) => {
+      const { x, y } = toSVG(p.lat, p.lng);
+      return `${(x * scale).toFixed(1)},${(y * scale).toFixed(1)}`;
+    })
+    .join(" ");
+
+  const startPt = toSVG(points[0].lat, points[0].lng);
+  const endPt   = toSVG(points[points.length - 1].lat, points[points.length - 1].lng);
+  const sx = (startPt.x * scale).toFixed(1);
+  const sy = (startPt.y * scale).toFixed(1);
+  const r  = Math.max(4, Math.round(5 * scale));
+  const casingSVG = casing
+    ? `<polyline points="${ptStrings}" fill="none" stroke="#1C1C28" stroke-width="${(4.5 * scale).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>`
+    : "";
+
+  return `
+  <!-- GPS trail -->
+  ${casingSVG}
+  <polyline
+    points="${ptStrings}"
+    fill="none"
+    stroke="${color}"
+    stroke-width="${(2.5 * scale).toFixed(1)}"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.9"
+  />
+  <!-- Start marker -->
+  <circle cx="${sx}" cy="${sy}" r="${r}" fill="#27AE60" stroke="${casing ? color : "#fff"}" stroke-width="${(1.5 * scale).toFixed(1)}"/>
+  <!-- End marker -->
+  <rect
+    x="${((endPt.x * scale) - r).toFixed(1)}"
+    y="${((endPt.y * scale) - r).toFixed(1)}"
+    width="${r * 2}" height="${r * 2}"
+    fill="#E74C3C" stroke="${casing ? color : "#fff"}" stroke-width="${(1.5 * scale).toFixed(1)}"
+  />`;
+}
+
+/**
+ * The resort map with GPS trails and item markers. Pass one line per person
+ * who recorded that day; `casing` draws a dark edge under each line, for
+ * pale person colours.
+ */
 export function buildResortTrailSVG(
-  points: Array<{ lat: number; lng: number }>,
+  lines: ResortTrailLine[],
   options?: {
     /** Override canvas width (image scales proportionally). Default: MAP_W */
     width?: number;
@@ -175,6 +229,8 @@ export function buildResortTrailSVG(
     landGeoJSON?: { features: LandOverlayFeature[] };
     /** Trip item markers to plot on the map */
     markers?: MapMarker[];
+    /** Dark edge under each trail line (used when lines take people's pale colours). */
+    casing?: boolean;
   }
 ): string {
   const width     = options?.width ?? MAP_W;
@@ -189,47 +245,9 @@ export function buildResortTrailSVG(
   const landFeatures = options?.landGeoJSON?.features ?? [];
   const landSVG = showLands ? buildLandOverlaySVG(scale, landFeatures) : "";
 
-  // ==================== GPS TRAIL ====================
+  // ==================== GPS TRAILS ====================
 
-  let trailSVG = "";
-
-  if (points.length >= 2) {
-    const ptStrings = points
-      .map((p) => {
-        const { x, y } = toSVG(p.lat, p.lng);
-        return `${(x * scale).toFixed(1)},${(y * scale).toFixed(1)}`;
-      })
-      .join(" ");
-
-    const startPt = toSVG(points[0].lat, points[0].lng);
-    const endPt   = toSVG(points[points.length - 1].lat, points[points.length - 1].lng);
-    const sx = (startPt.x * scale).toFixed(1);
-    const sy = (startPt.y * scale).toFixed(1);
-    const ex = (endPt.x * scale).toFixed(1);
-    const ey = (endPt.y * scale).toFixed(1);
-    const r  = Math.max(4, Math.round(5 * scale));
-
-    trailSVG = `
-  <!-- GPS trail -->
-  <polyline
-    points="${ptStrings}"
-    fill="none"
-    stroke="#E74C3C"
-    stroke-width="${(2.5 * scale).toFixed(1)}"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    opacity="0.9"
-  />
-  <!-- Start marker -->
-  <circle cx="${sx}" cy="${sy}" r="${r}" fill="#27AE60" stroke="#fff" stroke-width="${(1.5 * scale).toFixed(1)}"/>
-  <!-- End marker -->
-  <rect
-    x="${((endPt.x * scale) - r).toFixed(1)}"
-    y="${((endPt.y * scale) - r).toFixed(1)}"
-    width="${r * 2}" height="${r * 2}"
-    fill="#E74C3C" stroke="#fff" stroke-width="${(1.5 * scale).toFixed(1)}"
-  />`;
-  }
+  const trailSVG = lines.map((line) => buildTrailLineSVG(line, scale, options?.casing ?? false)).join("");
 
   // ==================== TRIP MARKERS ====================
 

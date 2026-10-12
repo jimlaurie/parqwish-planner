@@ -8,6 +8,10 @@
 // supports correcting individual GPS points that drifted (e.g. recorded
 // while indoors) — see trip-map-prefs.ts for why that's a local-only
 // overlay rather than a rewrite of the synced trail record.
+//
+// When several people recorded the same day, each trail is its own coloured
+// line and a legend turns people on and off (starting from the app-wide Trip
+// User filter); see trail-people.ts.
 
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -16,6 +20,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db, { type TripTrail } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
+import { useUsers } from "@/hooks/use-users";
 import { useDayItems } from "@/hooks/use-day-items";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
 import { flagItem, scheduledTimeToMs } from "@/lib/trip-map-flags";
@@ -28,7 +33,9 @@ import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
 import { useTripPhotos } from "@/hooks/use-trip-photos";
 import { getFirstThumbnail, getPhotos } from "@/lib/image-utils";
-import type { TripMapMarker, TripPhotoMarker, MergedTrail, MergedTrailPoint } from "@/components/publish/TripMapView";
+import { calcDistanceMiles } from "@/lib/trail-geo";
+import { trailPerson, comparePeople, usesPersonColors, lineColor, usersByIdMap, type TrailPerson } from "@/lib/trail-people";
+import type { TripMapMarker, TripPhotoMarker, MergedTrail, MergedTrailPoint, TrailLine } from "@/components/publish/TripMapView";
 
 const ACCENT = "var(--color-accent-publish)";
 const FLAG_COLOR = "var(--color-error)";
@@ -76,12 +83,38 @@ function formatPointTime(ts: number): string {
   return new Date(ts).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", hour12: true });
 }
 
+/**
+ * Flattens trail rows into one time-sorted point list (the shared timeline),
+ * tagging each point with the trail it came from and applying any locally
+ * saved point corrections on top. Null when there are no trails.
+ */
+function mergeTrails(trails: TripTrail[]): MergedTrail | null {
+  if (trails.length === 0) return null;
+  const corrections = getAllPointCorrections();
+  const points: MergedTrailPoint[] = trails
+    .flatMap((t) => t.points.map((p) => {
+      const fix = corrections[pointCorrectionKey(t.id, p.timestamp)];
+      return {
+        latitude: fix ? fix.latitude : p.latitude,
+        longitude: fix ? fix.longitude : p.longitude,
+        timestamp: p.timestamp,
+        accuracy: p.accuracy,
+        sourceTrailId: t.id,
+      };
+    }))
+    .sort((a, b) => a.timestamp - b.timestamp);
+  return { id: trails.map((t) => t.id).sort().join("|"), points };
+}
+
 // ==================== PAGE ====================
 
 export default function TripMapPage() {
   const router = useRouter();
   const { _hasHydrated, currentTripId } = useAppStore();
   const { currentTrip } = useTrips();
+  const { users } = useUsers();
+  const activeUserFilter = useAppStore((s) => s.activeUserFilter);
+  const [hiddenTrailIds, setHiddenTrailIds] = useState<ReadonlySet<string>>(new Set());
   const coordMapsRef = useRef<CoordMaps | null>(null);
   const [coordMaps, setCoordMaps] = useState<CoordMaps | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -139,9 +172,7 @@ export default function TripMapPage() {
 
   const { items, updateItem, removeItem, toggleCompleted } = useDayItems(selectedDate);
 
-  // A trail can have one row per recording user for the same day — merge
-  // all of them, same simplification TrailGallery already makes (no active
-  // per-user filtering of trail data).
+  // One trail row per recording person for the day.
   const dayTrails = useLiveQuery(
     () => currentTripId && selectedDate
       ? db.trails.where("[tripId+date]").equals([currentTripId, selectedDate]).toArray()
@@ -150,31 +181,62 @@ export default function TripMapPage() {
     [] as TripTrail[],
   );
 
-  // Flattens every recorded row into one point list, tagging each with the
-  // trail it actually came from (needed to key a correction stably — see
-  // trip-map-prefs.ts), then applies any locally-saved corrections on top.
-  const mergedTrail = useMemo<MergedTrail | null>(() => {
-    if (!dayTrails || dayTrails.length === 0 || !selectedDate) return null;
-    const corrections = getAllPointCorrections();
-    const points: MergedTrailPoint[] = dayTrails
-      .flatMap((t) => t.points.map((p) => {
-        const key = pointCorrectionKey(t.id, p.timestamp);
-        const fix = corrections[key];
-        return {
-          latitude: fix ? fix.latitude : p.latitude,
-          longitude: fix ? fix.longitude : p.longitude,
-          timestamp: p.timestamp,
-          accuracy: p.accuracy,
-          sourceTrailId: t.id,
-        };
-      }))
-      .sort((a, b) => a.timestamp - b.timestamp);
-    return { id: dayTrails[0].id, points };
-    // correctionVersion isn't read directly but forces a recompute right
-    // after the user saves/reverts a correction (localStorage writes don't
-    // trigger React re-renders on their own).
+  const people = useMemo<TrailPerson[]>(() => {
+    const byId = usersByIdMap(users);
+    return (dayTrails ?? []).map((t) => trailPerson(t, byId)).sort(comparePeople);
+  }, [dayTrails, users]);
+  const byPerson = usesPersonColors(dayTrails ?? []);
+
+  // Start each day from the app-wide Trip User filter: anyone it leaves out
+  // starts hidden (unless that would hide everyone).
+  const dayTrailKey = (dayTrails ?? []).map((t) => t.id).sort().join("|");
+  useEffect(() => {
+    if (!activeUserFilter) { setHiddenTrailIds(new Set()); return; }
+    const hidden = people.filter((p) => !activeUserFilter.includes(p.userId)).map((p) => p.trailId);
+    setHiddenTrailIds(new Set(hidden.length < people.length ? hidden : []));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dayTrails, selectedDate, correctionVersion]);
+  }, [dayTrailKey, activeUserFilter]);
+
+  const toggleTrail = useCallback((trailId: string) => {
+    setHiddenTrailIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(trailId)) next.delete(trailId);
+      else if (people.length - prev.size > 1) next.add(trailId); // always keep one person shown
+      return next;
+    });
+  }, [people.length]);
+
+  // Every person's points: flags check an item against anyone's trail, so
+  // hiding someone never manufactures "no trail coverage" flags.
+  // correctionVersion isn't read directly but forces a recompute right after
+  // the user saves/reverts a correction (localStorage writes don't trigger
+  // React re-renders on their own).
+  const allTrail = useMemo(
+    () => mergeTrails(dayTrails ?? []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dayTrails, correctionVersion]
+  );
+
+  // The people shown: they drive the map lines, the timeline and the GPS list.
+  const mergedTrail = useMemo(
+    () => mergeTrails((dayTrails ?? []).filter((t) => !hiddenTrailIds.has(t.id))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dayTrails, hiddenTrailIds, correctionVersion]
+  );
+
+  const trailLines = useMemo<TrailLine[]>(
+    () => people.filter((p) => !hiddenTrailIds.has(p.trailId))
+      .map((p) => ({ id: p.trailId, label: p.name, color: lineColor(p, byPerson) })),
+    [people, hiddenTrailIds, byPerson]
+  );
+  const colorByTrailId = useMemo(
+    () => new Map(people.map((p) => [p.trailId, lineColor(p, byPerson)])),
+    [people, byPerson]
+  );
+  const milesByTrailId = useMemo(
+    () => new Map((dayTrails ?? []).map((t) => [t.id, calcDistanceMiles([...t.points].sort((a, b) => a.timestamp - b.timestamp))])),
+    [dayTrails]
+  );
 
   const fullDayRange = useMemo(
     () => (mergedTrail ? defaultTimeRange(mergedTrail.points) : null),
@@ -204,7 +266,7 @@ export default function TripMapPage() {
         coordMaps.byName[item.title.toLowerCase()];
       if (!coord) continue;
       const flag = item.completed
-        ? flagItem(selectedDate, item.scheduledTime, coord, mergedTrail?.points ?? [])
+        ? flagItem(selectedDate, item.scheduledTime, coord, allTrail?.points ?? [])
         : { flagged: false };
       result.push({
         id: item.id,
@@ -220,7 +282,7 @@ export default function TripMapPage() {
       });
     }
     return result;
-  }, [items, coordMaps, mergedTrail, selectedDate]);
+  }, [items, coordMaps, allTrail, selectedDate]);
 
   const flaggedMarkers = useMemo(() => markers.filter((m) => m.flag.flagged), [markers]);
 
@@ -322,6 +384,42 @@ export default function TripMapPage() {
         )}
       </div>
 
+      {/* Who's on the map — only when more than one person recorded this day */}
+      {people.length > 1 && (
+        <div className="flex items-center gap-2 px-4 py-2 flex-wrap shrink-0"
+             style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
+          <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>
+            Trails:
+          </span>
+          {people.map((p) => {
+            const shown = !hiddenTrailIds.has(p.trailId);
+            const color = lineColor(p, byPerson);
+            const isOnlyShown = shown && people.length - hiddenTrailIds.size === 1;
+            return (
+              <button
+                key={p.trailId}
+                type="button"
+                aria-pressed={shown}
+                disabled={isOnlyShown}
+                title={isOnlyShown ? "At least one trail stays on the map" : shown ? `Hide ${p.name}'s trail` : `Show ${p.name}'s trail`}
+                onClick={() => toggleTrail(p.trailId)}
+                className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full cursor-pointer disabled:cursor-default"
+                style={{
+                  backgroundColor: shown ? "var(--color-surface-raised)" : "transparent",
+                  color: shown ? "var(--color-text-primary)" : "var(--color-text-dim)",
+                  border: `1px solid ${shown ? "var(--color-border-default)" : "var(--color-border-subtle)"}`,
+                }}
+              >
+                <span aria-hidden className="inline-block w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: color, opacity: shown ? 1 : 0.35, boxShadow: "0 0 0 1px var(--color-border-strong)" }} />
+                {p.name}
+                <span style={{ color: "var(--color-text-muted)" }}>· {(milesByTrailId.get(p.trailId) ?? 0).toFixed(1)} mi</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Time range filter */}
       {mergedTrail && fullDayRange && (
         <div className="flex items-center gap-3 px-4 py-2 flex-wrap shrink-0"
@@ -380,6 +478,7 @@ export default function TripMapPage() {
         <div className="flex-1 flex flex-col min-h-0">
           <TripMapView
             trail={displayTrail}
+            lines={trailLines}
             markers={markers}
             photoMarkers={photoMarkers}
             activeMarkerId={activeMarkerId}
@@ -427,7 +526,7 @@ export default function TripMapPage() {
             </button>
           )}
 
-          {!mergedTrail && (
+          {!allTrail && (
             <p className="text-xs p-3" style={{ color: "var(--color-text-muted)" }}>
               No GPS trail recorded for this day — items are plotted at their real-world location, but there&rsquo;s nothing to compare them against.
             </p>
@@ -532,7 +631,11 @@ export default function TripMapPage() {
                         }}
                       >
                         <div>
-                          <div className="text-xs font-medium" style={{ color: "var(--color-text-primary)" }}>
+                          <div className="text-xs font-medium flex items-center gap-1.5" style={{ color: "var(--color-text-primary)" }}>
+                            {byPerson && (
+                              <span aria-hidden className="inline-block w-2 h-2 rounded-full shrink-0"
+                                    style={{ backgroundColor: colorByTrailId.get(p.sourceTrailId), boxShadow: "0 0 0 1px var(--color-border-strong)" }} />
+                            )}
                             {formatPointTime(p.timestamp)}
                             {isCorrected && <span style={{ color: CORRECTING_COLOR }}> · corrected</span>}
                           </div>

@@ -54,7 +54,7 @@ export default function PublishPage() {
         ...data,
         allPhotos: data.allPhotos.filter((p) => !excludedSet.has(p.id)),
       };
-      await generateTripPDF(pdfData, trailTimeRangesRef.current);
+      await generateTripPDF(pdfData, trailTimeRangesRef.current, useAppStore.getState().activeUserFilter);
     } catch (err) {
       console.error("[Publish] PDF generation failed:", err);
     } finally {

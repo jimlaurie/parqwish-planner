@@ -6,6 +6,7 @@ import { LAND_COORDINATES } from "./map-data";
 import { calcDistanceMiles, calcDurationMinutes } from "./trail-geo";
 import type { TrailTimeRanges } from "@/components/publish/TrailGallery";
 import { formatTime12 } from "./time-format";
+import { escapeHtml } from "./html-escape";
 import { trailPerson, comparePeople, usesPersonColors, trailsForFilter, usersByIdMap } from "./trail-people";
 
 // ==================== HELPERS ====================
@@ -44,11 +45,6 @@ function filterPointsByRange(points: RawPoint[], from: string, to: string): RawP
     const mins = d.getHours() * 60 + d.getMinutes();
     return mins >= fromMins && mins <= toMins;
   });
-}
-
-/** Escapes text for the PDF's HTML (people's names are typed by users). */
-function escapeHtml(text: string): string {
-  return text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
 function formatDuration(minutes: number): string {
@@ -127,9 +123,9 @@ function buildDaySection(day: DayData): string {
       <span style="font-size:13px;">${SOURCE_ICONS[item.itemType] ?? "📌"}</span>
       <span style="font-size:12px;flex:1;color:${item.completed ? "#6E7180" : "#1C1C28"};
                    ${item.completed ? "text-decoration:line-through;" : ""}">
-        ${item.title}
+        ${escapeHtml(item.title)}
       </span>
-      ${item.land ? `<span style="font-size:10px;color:#6E7180;">${item.land}</span>` : ""}
+      ${item.land ? `<span style="font-size:10px;color:#6E7180;">${escapeHtml(item.land)}</span>` : ""}
       ${item.completed ? '<span style="font-size:11px;color:#22c55e;">✓</span>' : ""}
     </div>`).join("");
 
@@ -137,7 +133,7 @@ function buildDaySection(day: DayData): string {
     <div style="margin-bottom:12px;border:1px solid ${isComplete ? "rgba(34,197,94,0.3)" : "#E5E2DD"};
                 border-left:3px solid #996515;border-radius:10px;overflow:hidden;">
       <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F7F5F2;">
-        <span style="font-size:13px;font-weight:600;color:#1C1C28;">${day.displayDate}</span>
+        <span style="font-size:13px;font-weight:600;color:#1C1C28;">${escapeHtml(day.displayDate)}</span>
         <div style="flex:1;height:4px;border-radius:2px;background:#E5E2DD;overflow:hidden;">
           <div style="width:${day.percentComplete}%;height:100%;border-radius:2px;
                        background:${isComplete ? "#22c55e" : "#1976D2"};"></div>
@@ -158,7 +154,7 @@ function buildParkBar(name: string, count: number, maxCount: number, color: stri
   return `
     <div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
       <span style="font-size:11px;width:140px;text-align:right;color:#4A4A5A;flex-shrink:0;
-                   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>
+                   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(name)}</span>
       <div style="flex:1;height:16px;border-radius:8px;background:#E5E2DD;overflow:hidden;">
         <div style="width:${Math.max(widthPercent, 8)}%;height:100%;border-radius:8px;
                      background:${color};opacity:0.85;"></div>
@@ -207,7 +203,7 @@ function buildMainHTML(data: PublishData): string {
                                font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
       <div style="margin-bottom:24px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-          <span style="font-size:28px;font-weight:700;color:#1976D2;">${trip.name}</span>
+          <span style="font-size:28px;font-weight:700;color:#1976D2;">${escapeHtml(trip.name)}</span>
           <span style="font-size:24px;">🏰</span>
         </div>
         <p style="font-size:11px;color:#6E7180;margin:0 0 10px 0;">
@@ -349,7 +345,7 @@ function buildDayTrailHTML(
                    font-weight:700;margin:0;border-left:3px solid #996615;padding-left:8px;">
           Where You Walked
         </h2>
-        <span style="font-size:13px;font-weight:600;color:#1C1C28;">${dayLabel}</span>
+        <span style="font-size:13px;font-weight:600;color:#1C1C28;">${escapeHtml(dayLabel)}</span>
       </div>
       ${statsHTML}
       <div style="border:1px solid #E5E2DD;border-radius:10px;overflow:hidden;">${mapSVG}</div>
@@ -362,11 +358,11 @@ function buildPhotosHTML(photos: PublishData["allPhotos"]): string {
   if (photos.length === 0) return "";
   const photoItems = photos.map((p) => `
     <div style="width:calc(33.33% - 6px);aspect-ratio:1;border-radius:8px;overflow:hidden;background:#E5E2DD;">
-      <img src="${p.url}" alt="${p.caption}"
+      <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.caption)}"
            style="width:100%;height:100%;object-fit:cover;" />
       <div style="font-size:9px;color:#6E7180;padding:3px 6px;white-space:nowrap;
                   overflow:hidden;text-overflow:ellipsis;background:#F7F5F2;">
-        ${p.caption}
+        ${escapeHtml(p.caption)}
       </div>
     </div>`).join("");
 

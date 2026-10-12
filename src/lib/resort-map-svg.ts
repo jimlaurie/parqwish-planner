@@ -17,6 +17,8 @@
 //   x = (lng - WEST) / (EAST - WEST) * SVG_W
 //   y = (NORTH - lat) / (NORTH - SOUTH) * SVG_H
 
+import { escapeHtml } from "./html-escape";
+
 // ==================== BOUNDING BOX ====================
 // Must match the constants in scripts/build-resort-map.py exactly.
 
@@ -84,7 +86,7 @@ function buildLandOverlaySVG(
     const name    = f.properties?.name    ?? "";
     const color   = f.properties?.color   ?? "#888888";
     const opacity = f.properties?.opacity ?? 0.28;
-    const safe    = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const safe    = escapeHtml(name);
 
     // Collect outer rings (index 0 of each polygon)
     const outerRings: number[][][] =
@@ -134,10 +136,10 @@ function buildMarkersSVG(markers: MapMarker[], scale: number): string {
 
     const baseY = parseFloat(cy) + r + 3;
     const timeEl = timePart
-      ? `<text x="${cx}" y="${(baseY + lfs).toFixed(1)}" text-anchor="middle" font-family="sans-serif" font-size="${lfs}" font-weight="600" fill="#111" opacity="0.95">${timePart.slice(0, 10)}</text>`
+      ? `<text x="${cx}" y="${(baseY + lfs).toFixed(1)}" text-anchor="middle" font-family="sans-serif" font-size="${lfs}" font-weight="600" fill="#111" opacity="0.95">${escapeHtml(timePart.slice(0, 10))}</text>`
       : "";
     const titleEl = titlePart
-      ? `<text x="${cx}" y="${(baseY + lfs + lfs + 1).toFixed(1)}" text-anchor="middle" font-family="sans-serif" font-size="${lfs - 1}" fill="#222" opacity="0.85">${titlePart.slice(0, 20)}</text>`
+      ? `<text x="${cx}" y="${(baseY + lfs + lfs + 1).toFixed(1)}" text-anchor="middle" font-family="sans-serif" font-size="${lfs - 1}" fill="#222" opacity="0.85">${escapeHtml(titlePart.slice(0, 20))}</text>`
       : "";
 
     return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" stroke="#fff" stroke-width="${(2 * scale).toFixed(1)}" opacity="0.95"/>

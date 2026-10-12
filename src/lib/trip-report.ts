@@ -7,6 +7,7 @@
 // A fixed-position header repeats the logo + generation timestamp on every page.
 
 import type { Trip, FlightLeg, HotelStay, TransportLeg } from "@/lib/db";
+import { escapeHtml } from "./html-escape";
 
 // ==================== HELPERS ====================
 
@@ -25,7 +26,7 @@ function fmtDateTime(): string {
 
 function row(label: string, value?: string): string {
   if (!value) return "";
-  return `<tr><td class="label">${label}</td><td class="value">${value}</td></tr>`;
+  return `<tr><td class="label">${label}</td><td class="value">${escapeHtml(value)}</td></tr>`;
 }
 
 function section(title: string, icon: string, content: string): string {
@@ -43,7 +44,7 @@ function renderFlights(flights?: FlightLeg[]): string {
   if (!flights?.length) return "";
   const cards = flights.map((f, i) => `
     <div class="card">
-      <div class="card-title">Flight ${i + 1}${f.airline ? ` — ${f.airline}` : ""}${f.flightNumber ? ` ${f.flightNumber}` : ""}</div>
+      <div class="card-title">Flight ${i + 1}${f.airline ? ` — ${escapeHtml(f.airline)}` : ""}${f.flightNumber ? ` ${escapeHtml(f.flightNumber)}` : ""}</div>
       <table class="data-table">
         ${row("Date", f.date ? fmt(f.date) : undefined)}
         ${row("Departure time", f.time)}
@@ -62,7 +63,7 @@ function renderHotels(hotels?: HotelStay[]): string {
   if (!hotels?.length) return "";
   const cards = hotels.map((h, i) => `
     <div class="card">
-      <div class="card-title">Hotel ${i + 1}${h.name ? ` — ${h.name}` : ""}</div>
+      <div class="card-title">Hotel ${i + 1}${h.name ? ` — ${escapeHtml(h.name)}` : ""}</div>
       <table class="data-table">
         ${row("Check-in", h.checkIn ? fmt(h.checkIn) : undefined)}
         ${row("Check-out", h.checkOut ? fmt(h.checkOut) : undefined)}
@@ -79,7 +80,7 @@ function renderTransport(transports?: TransportLeg[]): string {
   if (!transports?.length) return "";
   const cards = transports.map((t, i) => `
     <div class="card">
-      <div class="card-title">Transport ${i + 1}${t.type ? ` — ${t.type}` : ""}</div>
+      <div class="card-title">Transport ${i + 1}${t.type ? ` — ${escapeHtml(t.type)}` : ""}</div>
       <table class="data-table">
         ${row("Date", t.date ? fmt(t.date) : undefined)}
         ${row("Details", t.details)}
@@ -93,8 +94,7 @@ function renderTransport(transports?: TransportLeg[]): string {
 
 function renderNotes(notes?: string): string {
   if (!notes?.trim()) return "";
-  const escaped = notes.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return section("Trip Notes", "📝", `<p class="notes-text">${escaped.replace(/\n/g, "<br>")}</p>`);
+  return section("Trip Notes", "📝", `<p class="notes-text">${escapeHtml(notes).replace(/\n/g, "<br>")}</p>`);
 }
 
 // ==================== HTML TEMPLATE ====================
@@ -110,7 +110,7 @@ function buildHtml(trip: Trip, logoUrl: string, generated: string): string {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>${trip.name} — Trip Itinerary</title>
+  <title>${escapeHtml(trip.name)} — Trip Itinerary</title>
   <style>
     /* ── Page setup ── */
     @page {
@@ -254,7 +254,7 @@ function buildHtml(trip: Trip, logoUrl: string, generated: string): string {
   </div>
 
   <!-- Trip summary -->
-  <div class="trip-title">${trip.name}</div>
+  <div class="trip-title">${escapeHtml(trip.name)}</div>
   <div class="trip-dates">
     ${trip.startDate && trip.endDate
       ? `${fmt(trip.startDate)} &nbsp;→&nbsp; ${fmt(trip.endDate)}`

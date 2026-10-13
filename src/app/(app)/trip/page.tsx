@@ -9,8 +9,8 @@
 //                              created and synced only on Save
 //   /trip?new=1&template=1     a new, unsaved template (sidebar › + New Template)
 // A query string rather than /trip/<id>, since the planner is a static export.
-// Every way of editing a trip leads here: the ✏️ beside a trip, the star
-// compass, and the New Trip menu.
+// Every way of editing a trip leads here: the ✏️ beside a trip and the New
+// Trip menu.
 
 import { Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";

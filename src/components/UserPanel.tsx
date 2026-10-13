@@ -158,7 +158,7 @@ function UserRow({
         </span>
       ) : (
         <button
-          className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] px-1.5 py-0.5 rounded-full font-medium cursor-pointer shrink-0"
+          className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity text-[10px] px-1.5 py-0.5 rounded-full font-medium cursor-pointer shrink-0"
           style={{
             backgroundColor: `${user.color}15`,
             color: user.color,
@@ -177,7 +177,7 @@ function UserRow({
 
       {/* Edit button */}
       <button
-        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-white/10 cursor-pointer text-xs"
+        className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity p-0.5 rounded hover:bg-white/10 cursor-pointer text-xs"
         style={{ color: "var(--color-text-dim)" }}
         onClick={(e) => {
           e.stopPropagation();
@@ -191,7 +191,7 @@ function UserRow({
       {/* Delete button (guests only) */}
       {user.role !== "primary" && (
         <button
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-red-500/20 cursor-pointer text-xs"
+          className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity p-0.5 rounded hover:bg-red-500/20 cursor-pointer text-xs"
           style={{ color: "var(--color-text-dim)" }}
           onClick={(e) => {
             e.stopPropagation();

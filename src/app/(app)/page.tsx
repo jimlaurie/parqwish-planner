@@ -54,7 +54,6 @@ export default function Home() {
     futureTrips,
     recentTrips,
     archivedTrips,
-    currentTrip,
     createTrip,
     createFromTemplate,
     setDefaultTemplate,
@@ -248,7 +247,6 @@ export default function Home() {
   const sidebar = (
     <TripSidebar
       currentTripId={currentTripId}
-      currentTrip={currentTrip}
       futureTrips={futureTrips}
       recentTrips={recentTrips}
       archivedTrips={archivedTrips}

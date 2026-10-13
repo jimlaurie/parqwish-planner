@@ -2,7 +2,6 @@
 
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import StarCompass from "@/components/StarCompass";
 import UserPanel from "@/components/UserPanel";
 import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
 import type { Trip } from "@/lib/db";
@@ -12,7 +11,6 @@ import { formatTripDates } from "@/lib/trip-dates";
 
 interface TripSidebarProps {
   currentTripId: string | null;
-  currentTrip: Trip | undefined;
   futureTrips: Trip[];
   recentTrips: Trip[];
   archivedTrips: Trip[];
@@ -56,7 +54,7 @@ function DefaultStar({ name, isDefault, onToggle }: { name: string; isDefault: b
       title={isDefault ? "Default template (click to clear)" : "Make this the default template"}
       onClick={(e) => { e.stopPropagation(); onToggle(); }}
       className={`p-1 rounded hover:bg-white/10 cursor-pointer transition-opacity text-sm leading-none
-                  focus-visible:opacity-100 ${isDefault ? "" : "opacity-0 group-hover:opacity-100"}`}
+                  focus-visible:opacity-100 [@media(hover:none)]:opacity-100 ${isDefault ? "" : "opacity-0 group-hover:opacity-100"}`}
       style={{ color: isDefault ? "var(--color-gold)" : "var(--color-text-dim)" }}
     >
       {isDefault ? "\u2605" : "\u2606"}
@@ -142,7 +140,8 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
                     />
                   )}
                   <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/10 cursor-pointer"
+                    className={`${isActive ? "" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100"}
+                                [@media(hover:none)]:opacity-100 transition-opacity p-1 rounded hover:bg-white/10 cursor-pointer`}
                     style={{ color: "var(--color-text-dim)" }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -176,7 +175,6 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
 
 export default function TripSidebar({
   currentTripId,
-  currentTrip,
   futureTrips,
   recentTrips,
   archivedTrips,
@@ -189,17 +187,6 @@ export default function TripSidebar({
 }: TripSidebarProps) {
   return (
     <div className="flex flex-col h-full py-4">
-      {/* Compass Star */}
-      <div
-        className="mx-auto mb-4 rounded-xl overflow-hidden cursor-pointer"
-        style={{ backgroundColor: "var(--color-bg-deep)", maxWidth: 120 }}
-        onClick={() => {
-          if (currentTripId) onEditTrip(currentTripId);
-        }}
-      >
-        <StarCompass tripName={currentTrip?.name ?? null} />
-      </div>
-
       {/* Trip sections */}
       <div className="flex-1 overflow-y-auto">
         <TripSection

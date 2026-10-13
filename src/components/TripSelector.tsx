@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { formatTripDates } from "@/lib/trip-dates";
 
 interface TripItem {
   id: string;
@@ -17,14 +18,6 @@ interface TripSelectorProps {
   onDeleteTrip: (id: string) => void;
   onNewTrip: () => void;
   onEditTrip?: (id: string) => void;
-}
-
-function formatDateRange(start: string, end: string): string {
-  if (!start || !end) return "No dates";
-  const s = new Date(start + "T00:00:00");
-  const e = new Date(end + "T00:00:00");
-  const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
-  return `${s.toLocaleDateString("en-US", opts)} – ${e.toLocaleDateString("en-US", opts)}`;
 }
 
 export default function TripSelector({
@@ -130,7 +123,7 @@ export default function TripSelector({
               className="text-[10px] whitespace-nowrap"
               style={{ color: "var(--color-text-dim)" }}
             >
-              {formatDateRange(trip.startDate, trip.endDate)}
+              {formatTripDates(trip.startDate, trip.endDate, "No dates")}
             </span>
           )}
         </div>

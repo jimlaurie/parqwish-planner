@@ -6,6 +6,7 @@ import StarCompass from "@/components/StarCompass";
 import UserPanel from "@/components/UserPanel";
 import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
 import type { Trip } from "@/lib/db";
+import { formatTripDates } from "@/lib/trip-dates";
 
 // ==================== TYPES ====================
 
@@ -42,17 +43,6 @@ interface TripSectionProps {
 }
 
 // ==================== HELPERS ====================
-
-function formatDateRange(start?: string, end?: string): string {
-  if (!start || !end) return "";
-  const s = new Date(start + "T12:00:00");
-  const e = new Date(end + "T12:00:00");
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  if (s.getMonth() === e.getMonth()) {
-    return `${months[s.getMonth()]} ${s.getDate()}\u2013${e.getDate()}`;
-  }
-  return `${months[s.getMonth()]} ${s.getDate()} \u2013 ${months[e.getMonth()]} ${e.getDate()}`;
-}
 
 // ==================== DEFAULT TEMPLATE STAR ====================
 
@@ -132,7 +122,7 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
                         className="text-[10px] truncate"
                         style={{ color: "var(--color-text-dim)" }}
                       >
-                        {formatDateRange(trip.startDate, trip.endDate)}
+                        {formatTripDates(trip.startDate, trip.endDate)}
                       </div>
                     )}
                     {trip.archiveFileName && (

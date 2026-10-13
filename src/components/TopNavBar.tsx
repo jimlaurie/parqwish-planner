@@ -11,6 +11,7 @@ import { tripCountdown, type CountdownTrip } from "@/lib/trip-countdown";
 import ThemeToggle from "@/components/ThemeToggle";
 import SyncStatusIndicator from "@/components/SyncStatusIndicator";
 import { marketingUrl } from "@/lib/marketing-links";
+import { formatTripDates } from "@/lib/trip-dates";
 
 // ==================== NAVIGATION ====================
 // The five trip phases follow the same journey as the marketing site's
@@ -71,17 +72,6 @@ function getActivePhase(pathname: string): NavPhase {
     if (pathname.startsWith(`/${id}`)) return id;
   }
   return "home";
-}
-
-function formatDateRange(start?: string, end?: string): string {
-  if (!start || !end) return "";
-  const s = new Date(start + "T12:00:00");
-  const e = new Date(end + "T12:00:00");
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  if (s.getMonth() === e.getMonth()) {
-    return `${months[s.getMonth()]} ${s.getDate()}–${e.getDate()}`;
-  }
-  return `${months[s.getMonth()]} ${s.getDate()} – ${months[e.getMonth()]} ${e.getDate()}`;
 }
 
 function linkLabel(link: PhaseLink, disabled: boolean): string {
@@ -291,7 +281,7 @@ export default function TopNavBar() {
                       countdown stays, since it's the more useful of the two. */}
                   {currentTrip.startDate && (
                     <span className="flex items-center gap-1.5 text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
-                      <span className="hidden lg:inline">{formatDateRange(currentTrip.startDate, currentTrip.endDate)}</span>
+                      <span className="hidden lg:inline">{formatTripDates(currentTrip.startDate, currentTrip.endDate)}</span>
                       <TripCountdownPill trip={currentTrip} />
                     </span>
                   )}

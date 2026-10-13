@@ -10,6 +10,7 @@ import TemplatePickerModal from "@/components/TemplatePickerModal";
 import type { NewTripActions } from "@/components/NewTripMenu";
 import { quickTripName, nameFromTemplate } from "@/lib/new-trip";
 import { localToday } from "@/lib/trip-selection";
+import { showUndoToast } from "@/lib/undo-toast";
 import WelcomeCard from "@/components/WelcomeCard";
 import HomeBanner from "@/components/home/HomeBanner";
 import { LazyIlloScene, type IlloArtLoader } from "@/components/home/illustrations/illo";
@@ -57,6 +58,7 @@ export default function Home() {
     createTrip,
     createFromTemplate,
     setDefaultTemplate,
+    deleteTrip,
     loading,
   } = useTrips();
 
@@ -119,15 +121,25 @@ export default function Home() {
 
   const defaultTemplate = templateTrips.find((t) => t.isDefaultTemplate) ?? null;
 
-  /** Quick Trip: one click, from the starred default template or blank, dated today. */
+  /**
+   * Quick Trip: one click, from the starred default template or blank, dated
+   * today. It becomes the selected trip and Home stays put (dates can be set
+   * later from the ✏️); the toast's Undo deletes it and reselects the trip
+   * that was selected before.
+   */
   const handleQuickTrip = useCallback(async () => {
+    const previousTripId = currentTripId;
     const today = localToday();
     const name = quickTripName(today);
     const id = defaultTemplate
       ? await createFromTemplate(defaultTemplate.id, name, today, today)
       : await createTrip({ name, startDate: today, endDate: today });
-    openTripEditor(id, true);
-  }, [defaultTemplate, createFromTemplate, createTrip, openTripEditor]);
+    if (!id) return;
+    showUndoToast(`Created \u201C${name}\u201D`, async () => {
+      await deleteTrip(id);
+      setCurrentTripId(previousTripId);
+    });
+  }, [currentTripId, defaultTemplate, createFromTemplate, createTrip, deleteTrip, setCurrentTripId]);
 
   /** From Template: the picked template's content and name, dated today. */
   const handlePickTemplate = useCallback(async (templateId: string) => {

@@ -2,7 +2,7 @@
 
 // ==================== NEW TRIP MENU ====================
 // The "+ New Trip" button's menu: Quick Trip (one click, from the starred
-// default template or blank, dated today), From Template (pick one), and Full
+// default template or blank, dated today; stays on Home), From Template (pick one), and Full
 // Detail (the Edit Trip page as an unsaved draft). Used by the trip sidebar
 // (opens upward) and the no-trips welcome card (opens downward). Drawn with
 // fixed positioning from the trigger's position, so a scrolling sidebar

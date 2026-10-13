@@ -1,9 +1,10 @@
 // ==================== NEW TRIP ====================
 // Names and descriptions for the "+ New Trip" menu (NewTripMenu.tsx). A
 // Quick Trip or a trip from a template is created straight away, dated today
-// for both start and end, then opened in the trip editor to set real dates:
-// a trip always has dates, since Preview's days, the countdown, Publish and
-// trails depend on them.
+// for both start and end (a trip always has dates, since Preview's days, the
+// countdown, Publish and trails depend on them). Quick Trip stays on Home
+// with an Undo toast; From Template opens the Edit Trip page to set the
+// real dates.
 
 /** "New Trip – Oct 13" for a YYYY-MM-DD date. */
 export function quickTripName(today: string): string {

@@ -23,13 +23,21 @@ export function templateContentFrom(trip: Trip): Partial<Trip> {
   return content;
 }
 
-/** A new trip or template record holding `content`, with nothing from any other trip's identity. */
+/**
+ * A new trip or template record holding `content`, with nothing from any
+ * other trip's identity. A template's hotels carry no dates, so on a new
+ * trip they're booked for the trip's own dates.
+ */
 export function newTripRecord(
   base: { id: string; name: string; startDate: string; endDate: string; isTemplate: boolean; now: number },
   content: Partial<Trip>,
 ): Trip {
+  const hotels = !base.isTemplate && content.hotels
+    ? content.hotels.map((h) => ({ ...h, checkIn: h.checkIn || base.startDate, checkOut: h.checkOut || base.endDate }))
+    : content.hotels;
   return {
     ...content,
+    ...(hotels ? { hotels } : {}),
     id: base.id,
     name: base.name,
     startDate: base.isTemplate ? "" : base.startDate,

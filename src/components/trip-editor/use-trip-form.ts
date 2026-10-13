@@ -14,6 +14,22 @@ import type { Trip } from "@/lib/db";
 
 export type TripArrayField = "flights" | "hotels" | "transports";
 
+/**
+ * Moving the trip's dates moves any hotel stay that was booked for exactly
+ * the old start or end (a trip made from a template gets its hotel booked
+ * for the trip's dates, first today, until the real dates are set).
+ * Returns `prev.hotels` itself when nothing changes.
+ */
+function hotelsFollowingDates(prev: Partial<Trip>, next: Partial<Trip>): Trip["hotels"] {
+  const moved = (from?: string, to?: string) => !!from && from !== to;
+  if (!prev.hotels?.length || (!moved(prev.startDate, next.startDate) && !moved(prev.endDate, next.endDate))) return prev.hotels;
+  return prev.hotels.map((h) => ({
+    ...h,
+    checkIn: h.checkIn && h.checkIn === prev.startDate ? next.startDate : h.checkIn,
+    checkOut: h.checkOut && h.checkOut === prev.endDate ? next.endDate : h.checkOut,
+  }));
+}
+
 const BLANK_DRAFT: Partial<Trip> = { name: "", startDate: "", endDate: "", isTemplate: false };
 
 /** `draft` seeds a new, unsaved trip (e.g. `{ isTemplate: true }` for a new template). */
@@ -42,7 +58,13 @@ export function useTripForm(trip: Trip | null | undefined, draft?: Partial<Trip>
 
   const setField = useCallback((field: keyof Trip, value: string | boolean) => {
     dirtyFields.current.add(field);
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      const hotels = hotelsFollowingDates(prev, next);
+      if (hotels === prev.hotels) return next;
+      dirtyFields.current.add("hotels");
+      return { ...next, hotels };
+    });
   }, []);
 
   const updateItem = useCallback(<T,>(field: TripArrayField, index: number, key: keyof T, value: string) => {

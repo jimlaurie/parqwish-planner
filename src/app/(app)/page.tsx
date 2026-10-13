@@ -6,12 +6,10 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { motion } from "framer-motion";
 import SidebarLayout from "@/components/SidebarLayout";
 import TripSidebar from "@/components/TripSidebar";
-import CreateTripModal from "@/components/CreateTripModal";
 import TemplatePickerModal from "@/components/TemplatePickerModal";
 import type { NewTripActions } from "@/components/NewTripMenu";
 import { quickTripName, nameFromTemplate } from "@/lib/new-trip";
 import { localToday } from "@/lib/trip-selection";
-import EditTripModal from "@/components/EditTripModal";
 import WelcomeCard from "@/components/WelcomeCard";
 import HomeBanner from "@/components/home/HomeBanner";
 import { LazyIlloScene, type IlloArtLoader } from "@/components/home/illustrations/illo";
@@ -46,11 +44,8 @@ const PORTALS: PortalConfig[] = [
 
 export default function Home() {
   const router = useRouter();
-  const { currentTripId, setCurrentTripId, showTripModal, setShowTripModal, tripsRestoring } =
+  const { currentTripId, setCurrentTripId, tripsRestoring } =
     useAppStore();
-  const [editingTripId, setEditingTripId] = useState<string | null>(null);
-  // A trip just made dated today (Quick Trip, From Template): its editor points at the dates.
-  const [highlightDatesFor, setHighlightDatesFor] = useState<string | null>(null);
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const {
     trips,
@@ -60,14 +55,8 @@ export default function Home() {
     archivedTrips,
     currentTrip,
     createTrip,
-    updateTrip,
     createFromTemplate,
-    saveAsTemplate,
     setDefaultTemplate,
-    clearTrip,
-    deleteTrip,
-    archiveTrip,
-    unarchiveTrip,
     loading,
   } = useTrips();
 
@@ -119,15 +108,12 @@ export default function Home() {
     publish: 0,
   };
 
-  // After creating a trip, go straight to its edit screen so flights,
-  // hotels, and notes can be filled in without hunting for the Edit button.
-  // The short delay lets the New Trip modal finish closing first, so the two
-  // overlays don't stack for a frame.
-  const openEditorAfterCreate = useCallback((tripId: string | null, highlightDates = false) => {
+  // Editing a trip happens on the Edit Trip page (/trip). A trip just made
+  // dated today (Quick Trip, From Template) opens there pointing at its dates.
+  const openTripEditor = useCallback((tripId: string | null, highlightDates = false) => {
     if (!tripId) return;
-    setHighlightDatesFor(highlightDates ? tripId : null);
-    setTimeout(() => setEditingTripId(tripId), 250);
-  }, []);
+    router.push(`/trip?id=${encodeURIComponent(tripId)}${highlightDates ? "&dates=1" : ""}`);
+  }, [router]);
 
   // ==================== NEW TRIP MENU ====================
 
@@ -140,8 +126,8 @@ export default function Home() {
     const id = defaultTemplate
       ? await createFromTemplate(defaultTemplate.id, name, today, today)
       : await createTrip({ name, startDate: today, endDate: today });
-    openEditorAfterCreate(id, true);
-  }, [defaultTemplate, createFromTemplate, createTrip, openEditorAfterCreate]);
+    openTripEditor(id, true);
+  }, [defaultTemplate, createFromTemplate, createTrip, openTripEditor]);
 
   /** From Template: the picked template's content and name, dated today. */
   const handlePickTemplate = useCallback(async (templateId: string) => {
@@ -149,20 +135,16 @@ export default function Home() {
     if (!template) return;
     setShowTemplatePicker(false);
     const today = localToday();
-    openEditorAfterCreate(await createFromTemplate(templateId, nameFromTemplate(template.name), today, today), true);
-  }, [templateTrips, createFromTemplate, openEditorAfterCreate]);
+    openTripEditor(await createFromTemplate(templateId, nameFromTemplate(template.name), today, today), true);
+  }, [templateTrips, createFromTemplate, openTripEditor]);
 
   const newTrip: NewTripActions = {
     defaultTemplateName: defaultTemplate ? nameFromTemplate(defaultTemplate.name) : null,
     templateCount: templateTrips.length,
     onQuickTrip: handleQuickTrip,
     onFromTemplate: () => setShowTemplatePicker(true),
-    onFullDetail: () => setShowTripModal(true),
+    onFullDetail: () => router.push("/trip?new=1"),
   };
-
-  const editingTrip = editingTripId
-    ? trips.find((t) => t.id === editingTripId) ?? null
-    : null;
 
   // ==================== PORTAL CLICK ====================
 
@@ -260,7 +242,7 @@ export default function Home() {
       archivedTrips={archivedTrips}
       templateTrips={templateTrips}
       onSelectTrip={(id) => setCurrentTripId(id)}
-      onEditTrip={(id) => setEditingTripId(id)}
+      onEditTrip={(id) => openTripEditor(id)}
       newTrip={newTrip}
       onSetDefaultTemplate={setDefaultTemplate}
     />
@@ -293,13 +275,6 @@ export default function Home() {
     return (
       <main className="min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center px-4 py-12">
         <WelcomeCard newTrip={newTrip} />
-        <CreateTripModal
-          visible={showTripModal}
-          onClose={() => setShowTripModal(false)}
-          onCreateTrip={async (data) => { openEditorAfterCreate(await createTrip(data)); }}
-          onCreateFromTemplate={async (...args) => { const id = await createFromTemplate(...args); openEditorAfterCreate(id); return id; }}
-          templates={templateTrips}
-        />
       </main>
     );
   }
@@ -333,36 +308,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Create Trip Modal */}
-      <CreateTripModal
-        visible={showTripModal}
-        onClose={() => setShowTripModal(false)}
-        onCreateTrip={async (data) => { openEditorAfterCreate(await createTrip(data)); }}
-        onCreateFromTemplate={async (...args) => { const id = await createFromTemplate(...args); openEditorAfterCreate(id); return id; }}
-        templates={templateTrips}
-      />
-
       <TemplatePickerModal
         visible={showTemplatePicker}
         templates={templateTrips}
         onPick={handlePickTemplate}
         onClose={() => setShowTemplatePicker(false)}
       />
-
-      {/* Edit Trip Modal */}
-      <EditTripModal
-        visible={!!editingTripId}
-        trip={editingTrip}
-        highlightDates={!!editingTripId && editingTripId === highlightDatesFor}
-        onClose={() => { setEditingTripId(null); setHighlightDatesFor(null); }}
-        onSave={updateTrip}
-        onSaveAsTemplate={saveAsTemplate}
-        onClear={clearTrip}
-        onDelete={deleteTrip}
-        onArchive={archiveTrip}
-        onUnarchive={unarchiveTrip}
-      />
-
     </SidebarLayout>
   );
 }

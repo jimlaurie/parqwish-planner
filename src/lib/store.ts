@@ -30,10 +30,6 @@ interface AppState {
   activePhase: "plan" | "prepare" | "preview" | "play" | "publish" | null;
   setActivePhase: (phase: AppState["activePhase"]) => void;
 
-  // Trip creation modal
-  showTripModal: boolean;
-  setShowTripModal: (show: boolean) => void;
-
   // Wish add modal
   showAddWishModal: boolean;
   setShowAddWishModal: (show: boolean) => void;
@@ -146,10 +142,6 @@ export const useAppStore = create<AppState>()(
       // Phase navigation
       activePhase: null,
       setActivePhase: (phase) => set({ activePhase: phase }),
-
-      // Trip creation modal
-      showTripModal: false,
-      setShowTripModal: (show) => set({ showTripModal: show }),
 
       // Wish add modal
       showAddWishModal: false,

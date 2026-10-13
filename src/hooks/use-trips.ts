@@ -101,10 +101,13 @@ export function useTrips() {
     startDate: string;
     endDate: string;
     isTemplate?: boolean;
+    /** Travel details and notes filled in before the trip existed (the Edit Trip page's draft). */
+    details?: Pick<Trip, "flights" | "hotels" | "transports" | "notes">;
   }) => {
     const id = newTripId();
     const now = Date.now();
     const trip: Trip = {
+      ...data.details,
       id,
       name: data.name,
       startDate: data.isTemplate ? "" : data.startDate,

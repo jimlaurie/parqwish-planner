@@ -3,7 +3,7 @@
 // ==================== NEW TRIP MENU ====================
 // The "+ New Trip" button's menu: Quick Trip (one click, from the starred
 // default template or blank, dated today), From Template (pick one), and Full
-// Detail (the New Trip form, then the trip editor). Used by the trip sidebar
+// Detail (the Edit Trip page as an unsaved draft). Used by the trip sidebar
 // (opens upward) and the no-trips welcome card (opens downward). Drawn with
 // fixed positioning from the trigger's position, so a scrolling sidebar
 // can't clip it.
@@ -56,7 +56,7 @@ function menuItems(a: NewTripActions): MenuItem[] {
         ? "No templates yet (save one from a trip’s editor)"
         : `Choose from your ${a.templateCount} template${a.templateCount === 1 ? "" : "s"}`,
     },
-    { id: "full", icon: "\u{1F4DD}", label: "Full Detail", run: a.onFullDetail, detail: "Name and dates first, then everything else" },
+    { id: "full", icon: "\u{1F4DD}", label: "Full Detail", run: a.onFullDetail, detail: "Every detail on one page, saved when you\u2019re ready" },
   ];
 }
 

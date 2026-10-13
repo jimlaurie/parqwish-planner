@@ -311,6 +311,16 @@ export function startSharedTripCreate(trip: Trip, uid: string, displayName?: str
   _pendingSharedTripCreates.set(trip.id, pending);
 }
 
+/**
+ * Resolves once a trip started with startSharedTripCreate exists remotely
+ * (immediately if nothing is pending). Content written right after creating
+ * a trip (e.g. a template's copied selections) waits on this, so it never
+ * reaches Firestore before the trip doc its security rules check.
+ */
+export function whenTripCreated(tripId: string): Promise<void> {
+  return _pendingSharedTripCreates.get(tripId) ?? Promise.resolve();
+}
+
 export async function createSharedTrip(trip: Trip, uid: string, displayName?: string): Promise<void> {
   const tripKey = generateRandomKey();
   _tripKeyCache.set(trip.id, tripKey);

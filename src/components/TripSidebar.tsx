@@ -18,6 +18,8 @@ interface TripSidebarProps {
   onSelectTrip: (id: string) => void;
   onEditTrip: (id: string) => void;
   onNewTrip: () => void;
+  /** Stars a template as the default (null clears it). */
+  onSetDefaultTemplate?: (id: string | null) => void;
 }
 
 interface TripSectionProps {
@@ -29,6 +31,8 @@ interface TripSectionProps {
   defaultOpen?: boolean;
   /** If set, only this many trips show by default with a "Show more" toggle for the rest. */
   previewCount?: number;
+  /** Templates only: shows a star to make one the default. */
+  onSetDefault?: (id: string | null) => void;
 }
 
 // ==================== HELPERS ====================
@@ -44,9 +48,29 @@ function formatDateRange(start?: string, end?: string): string {
   return `${months[s.getMonth()]} ${s.getDate()} \u2013 ${months[e.getMonth()]} ${e.getDate()}`;
 }
 
+// ==================== DEFAULT TEMPLATE STAR ====================
+
+/** Gold and always shown on the default template; a faint outline on hover for the others. */
+function DefaultStar({ name, isDefault, onToggle }: { name: string; isDefault: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={isDefault}
+      aria-label={isDefault ? `${name} is the default template` : `Make ${name} the default template`}
+      title={isDefault ? "Default template (click to clear)" : "Make this the default template"}
+      onClick={(e) => { e.stopPropagation(); onToggle(); }}
+      className={`p-1 rounded hover:bg-white/10 cursor-pointer transition-opacity text-sm leading-none
+                  focus-visible:opacity-100 ${isDefault ? "" : "opacity-0 group-hover:opacity-100"}`}
+      style={{ color: isDefault ? "var(--color-gold)" : "var(--color-text-dim)" }}
+    >
+      {isDefault ? "\u2605" : "\u2606"}
+    </button>
+  );
+}
+
 // ==================== TRIP SECTION ====================
 
-function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, defaultOpen = true, previewCount }: TripSectionProps) {
+function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, defaultOpen = true, previewCount, onSetDefault }: TripSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [showAll, setShowAll] = useState(false);
 
@@ -114,6 +138,13 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
                       </div>
                     )}
                   </div>
+                  {onSetDefault && (
+                    <DefaultStar
+                      name={trip.name}
+                      isDefault={!!trip.isDefaultTemplate}
+                      onToggle={() => onSetDefault(trip.isDefaultTemplate ? null : trip.id)}
+                    />
+                  )}
                   <button
                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/10 cursor-pointer"
                     style={{ color: "var(--color-text-dim)" }}
@@ -156,6 +187,7 @@ export default function TripSidebar({
   onSelectTrip,
   onEditTrip,
   onNewTrip,
+  onSetDefaultTemplate,
 }: TripSidebarProps) {
   return (
     <div className="flex flex-col h-full py-4">
@@ -202,6 +234,7 @@ export default function TripSidebar({
           onSelectTrip={onSelectTrip}
           onEditTrip={onEditTrip}
           defaultOpen={false}
+          onSetDefault={onSetDefaultTemplate}
         />
       </div>
 

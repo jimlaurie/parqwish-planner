@@ -160,7 +160,7 @@ export default function CreateTripModal({
                     <option value="">Blank trip</option>
                     {templates.map((t) => (
                       <option key={t.id} value={t.id}>
-                        {t.name}
+                        {t.isDefaultTemplate ? `\u2605 ${t.name} (default)` : t.name}
                       </option>
                     ))}
                   </select>

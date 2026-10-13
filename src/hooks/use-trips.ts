@@ -1,10 +1,73 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import db, { type Trip } from "@/lib/db";
+import db, { type Trip, type TripWishSelection, type TripPackingSelection } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { auth, isSyncEnabled } from "@/lib/auth";
-import { startSharedTripCreate, pushTrip, deleteTripRemote, deleteSelectionRemote } from "@/lib/wish-sync";
+import {
+  startSharedTripCreate, whenTripCreated, pushTrip, deleteTripRemote, deleteSelectionRemote,
+  pushSelection, pushWishMirror, pushPackingSelection, pushPackingItemMirror,
+} from "@/lib/wish-sync";
+import { templateContentFrom, newTripRecord, copyWishSelections, copyPackingSelections } from "@/lib/trip-template";
+
+// ==================== TEMPLATE COPYING ====================
+
+function newTripId(): string {
+  return `trip_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+}
+
+/**
+ * Pushes a new trip's copied selections, plus the wish and packing item
+ * content collaborators need to read them, once the trip itself exists in
+ * Cloud Sync (its security rules check the trip doc).
+ */
+async function syncCopiedSelections(
+  tripId: string,
+  wishCopies: TripWishSelection[],
+  packCopies: TripPackingSelection[],
+  uid: string,
+): Promise<void> {
+  await whenTripCreated(tripId);
+  const pushes = [
+    ...wishCopies.map(async (sel) => {
+      await pushSelection(sel, uid);
+      const wish = await db.wishes.get(sel.wishId);
+      if (wish) await pushWishMirror(tripId, wish, uid);
+    }),
+    ...packCopies.map(async (sel) => {
+      await pushPackingSelection(sel, uid);
+      const item = await db.packingItems.get(sel.itemId);
+      if (item) await pushPackingItemMirror(tripId, item, uid);
+    }),
+  ];
+  const failed = (await Promise.allSettled(pushes)).filter((r) => r.status === "rejected");
+  if (failed.length) console.error(`[use-trips] ${failed.length} copied selection(s) didn't sync for ${tripId}:`, failed[0]);
+}
+
+/**
+ * Saves a new trip or template holding copies of another trip's wishes and
+ * packing (fresh: nothing done or packed), then creates it in Cloud Sync
+ * like any new trip and syncs the copies.
+ */
+async function addTripWithCopies(trip: Trip, sourceTripId: string): Promise<void> {
+  const user = auth.currentUser;
+  const [wishSels, packSels] = await Promise.all([
+    db.tripWishSelections.where("tripId").equals(sourceTripId).toArray(),
+    db.tripPackingSelections.where("tripId").equals(sourceTripId).toArray(),
+  ]);
+  const wishCopies = copyWishSelections(wishSels, trip.id, trip.createdAt, user?.uid);
+  const packCopies = copyPackingSelections(packSels, trip.id, trip.createdAt, user?.uid);
+  await db.transaction("rw", db.trips, db.tripWishSelections, db.tripPackingSelections, async () => {
+    await db.trips.add(trip);
+    if (wishCopies.length) await db.tripWishSelections.bulkPut(wishCopies);
+    if (packCopies.length) await db.tripPackingSelections.bulkPut(packCopies);
+  });
+  if (user && isSyncEnabled(user)) {
+    startSharedTripCreate(trip, user.uid, user.displayName ?? undefined);
+    syncCopiedSelections(trip.id, wishCopies, packCopies, user.uid)
+      .catch((err) => console.error("[use-trips] copied selection sync failed:", err));
+  }
+}
 
 export function useTrips() {
   const { currentTripId, setCurrentTripId } = useAppStore();
@@ -39,7 +102,7 @@ export function useTrips() {
     endDate: string;
     isTemplate?: boolean;
   }) => {
-    const id = `trip_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    const id = newTripId();
     const now = Date.now();
     const trip: Trip = {
       id,
@@ -77,6 +140,7 @@ export function useTrips() {
     }
   };
 
+  /** A new trip from a template: its wishes, packing and travel details, with the given name and dates. */
   const createFromTemplate = async (
     templateId: string,
     name: string,
@@ -85,67 +149,34 @@ export function useTrips() {
   ) => {
     const template = await db.trips.get(templateId);
     if (!template) return null;
-
-    const id = `trip_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-    const now = Date.now();
-
-    // Copy template data but with new dates and non-template flag
-    const trip: Trip = {
-      ...template,
-      id,
-      name,
-      startDate,
-      endDate,
-      isTemplate: false,
-      createdAt: now,
-      updatedAt: now,
-    };
-    await db.trips.add(trip);
-
-    // Also clone wish selections from the template
-    const wishSelections = await db.tripWishSelections
-      .where("tripId")
-      .equals(templateId)
-      .toArray();
-    if (wishSelections.length > 0) {
-      const cloned = wishSelections.map((s) => ({
-        ...s,
-        id: `${id}__${s.wishId}`,
-        tripId: id,
-        addedAt: now,
-      }));
-      await db.tripWishSelections.bulkAdd(cloned);
-    }
-
-    // Clone packing selections from the template
-    const packingSelections = await db.tripPackingSelections
-      .where("tripId")
-      .equals(templateId)
-      .toArray();
-    if (packingSelections.length > 0) {
-      const cloned = packingSelections.map((s) => ({
-        ...s,
-        id: `${id}__${s.itemId}`,
-        tripId: id,
-        completed: false,
-        addedAt: now,
-      }));
-      await db.tripPackingSelections.bulkAdd(cloned);
-    }
-
-    setCurrentTripId(id);
-    return id;
+    const trip = newTripRecord(
+      { id: newTripId(), name, startDate, endDate, isTemplate: false, now: Date.now() },
+      templateContentFrom(template),
+    );
+    await addTripWithCopies(trip, templateId);
+    setCurrentTripId(trip.id);
+    return trip.id;
   };
 
+  /** Saves a trip's reusable content (see trip-template.ts) as a new template. Stays on the current trip. */
   const saveAsTemplate = async (tripId: string, templateName: string) => {
-    const trip = await db.trips.get(tripId);
-    if (!trip) return null;
-    return createTrip({
-      name: templateName,
-      startDate: "",
-      endDate: "",
-      isTemplate: true,
-    });
+    const source = await db.trips.get(tripId);
+    if (!source) return null;
+    const template = newTripRecord(
+      { id: newTripId(), name: templateName, startDate: "", endDate: "", isTemplate: true, now: Date.now() },
+      templateContentFrom(source),
+    );
+    await addTripWithCopies(template, tripId);
+    return template.id;
+  };
+
+  /** Stars one template as the default (or none, with null); at most one is ever starred. */
+  const setDefaultTemplate = async (templateId: string | null) => {
+    const templates = await db.trips.filter((t) => t.isTemplate).toArray();
+    for (const t of templates) {
+      const want = t.id === templateId;
+      if (!!t.isDefaultTemplate !== want) await updateTrip(t.id, { isDefaultTemplate: want });
+    }
   };
 
   const archiveTrip = async (id: string, fileName?: string) => {
@@ -222,6 +253,7 @@ export function useTrips() {
     updateTrip,
     createFromTemplate,
     saveAsTemplate,
+    setDefaultTemplate,
     archiveTrip,
     unarchiveTrip,
     clearTrip,

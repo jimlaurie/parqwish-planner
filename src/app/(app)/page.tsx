@@ -56,6 +56,7 @@ export default function Home() {
     updateTrip,
     createFromTemplate,
     saveAsTemplate,
+    setDefaultTemplate,
     clearTrip,
     deleteTrip,
     archiveTrip,
@@ -222,6 +223,7 @@ export default function Home() {
       onSelectTrip={(id) => setCurrentTripId(id)}
       onEditTrip={(id) => setEditingTripId(id)}
       onNewTrip={() => setShowTripModal(true)}
+      onSetDefaultTemplate={setDefaultTemplate}
     />
   );
 

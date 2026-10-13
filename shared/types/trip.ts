@@ -83,6 +83,9 @@ export interface Trip extends Timestamped {
   startDate: string;          // "" for templates
   endDate: string;            // "" for templates
   isTemplate: boolean;
+  /** The starred template that a quick new trip starts from (Planner, Oct 2026). At most one
+   *  template has it; additive and optional, so older apps ignore it. */
+  isDefaultTemplate?: boolean;
   phase: TripPhase;
   /** Resorts this trip visits (shared/constants/resorts.ts). Missing means
    *  ["disneyland_resort"], so trips from before multi-park support keep

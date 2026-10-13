@@ -7,6 +7,7 @@
 //                              Template): point at the dates
 //   /trip?new=1                a new, unsaved trip (New Trip › Full Detail),
 //                              created and synced only on Save
+//   /trip?new=1&template=1     a new, unsaved template (sidebar › + New Template)
 // A query string rather than /trip/<id>, since the planner is a static export.
 // Every way of editing a trip leads here: the ✏️ beside a trip, the star
 // compass, and the New Trip menu.
@@ -59,6 +60,7 @@ function TripPageInner() {
   const router = useRouter();
   const tripId = params.get("id");
   const highlightDates = params.get("dates") === "1";
+  const newTemplate = !tripId && params.get("template") === "1";
   const t = useTrips();
   const trip = tripId ? t.trips.find((x) => x.id === tripId) ?? null : null;
   const goHome = useCallback(() => router.push("/"), [router]);
@@ -84,9 +86,10 @@ function TripPageInner() {
 
   return (
     <TripEditor
-      key={trip?.id ?? "new"}
+      key={trip?.id ?? (newTemplate ? "new-template" : "new")}
       trip={trip}
       highlightDates={highlightDates}
+      newTemplate={newTemplate}
       onSave={save}
       onClose={goHome}
       onSaveAsTemplate={trip ? async () => { await t.saveAsTemplate(trip.id, `${trip.name} (Template)`); } : undefined}

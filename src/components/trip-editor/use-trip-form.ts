@@ -16,8 +16,9 @@ export type TripArrayField = "flights" | "hotels" | "transports";
 
 const BLANK_DRAFT: Partial<Trip> = { name: "", startDate: "", endDate: "", isTemplate: false };
 
-export function useTripForm(trip: Trip | null | undefined) {
-  const [form, setForm] = useState<Partial<Trip>>(trip ? { ...trip } : BLANK_DRAFT);
+/** `draft` seeds a new, unsaved trip (e.g. `{ isTemplate: true }` for a new template). */
+export function useTripForm(trip: Trip | null | undefined, draft?: Partial<Trip>) {
+  const [form, setForm] = useState<Partial<Trip>>(trip ? { ...trip } : { ...BLANK_DRAFT, ...draft });
   const dirtyFields = useRef<Set<keyof Trip>>(new Set());
   const formTripId = useRef<string | null>(trip?.id ?? null);
 

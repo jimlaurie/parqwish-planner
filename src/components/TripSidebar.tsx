@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import StarCompass from "@/components/StarCompass";
 import UserPanel from "@/components/UserPanel";
@@ -18,6 +18,8 @@ interface TripSidebarProps {
   templateTrips: Trip[];
   onSelectTrip: (id: string) => void;
   onEditTrip: (id: string) => void;
+  /** Opens a new, unsaved template on the Edit Trip page. */
+  onNewTemplate: () => void;
   /** What the "+ New Trip" menu offers and does. */
   newTrip: NewTripActions;
   /** Stars a template as the default (null clears it). */
@@ -35,6 +37,8 @@ interface TripSectionProps {
   previewCount?: number;
   /** Templates only: shows a star to make one the default. */
   onSetDefault?: (id: string | null) => void;
+  /** Shown after the list; a section with a footer shows even when it has no trips. */
+  footer?: ReactNode;
 }
 
 // ==================== HELPERS ====================
@@ -72,11 +76,11 @@ function DefaultStar({ name, isDefault, onToggle }: { name: string; isDefault: b
 
 // ==================== TRIP SECTION ====================
 
-function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, defaultOpen = true, previewCount, onSetDefault }: TripSectionProps) {
+function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, defaultOpen = true, previewCount, onSetDefault, footer }: TripSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [showAll, setShowAll] = useState(false);
 
-  if (trips.length === 0) return null;
+  if (trips.length === 0 && !footer) return null;
 
   const isPreviewing = previewCount !== undefined && trips.length > previewCount && !showAll;
   const visibleTrips = isPreviewing ? trips.slice(0, previewCount) : trips;
@@ -170,6 +174,7 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
                 {showAll ? "Show less" : `Show ${hiddenCount} more`}
               </button>
             )}
+            {footer}
           </motion.div>
         )}
       </AnimatePresence>
@@ -189,6 +194,7 @@ export default function TripSidebar({
   onSelectTrip,
   onEditTrip,
   newTrip,
+  onNewTemplate,
   onSetDefaultTemplate,
 }: TripSidebarProps) {
   return (
@@ -237,6 +243,16 @@ export default function TripSidebar({
           onEditTrip={onEditTrip}
           defaultOpen={false}
           onSetDefault={onSetDefaultTemplate}
+          footer={
+            <button
+              type="button"
+              className="w-full px-4 py-1.5 text-xs text-left cursor-pointer hover:bg-white/5 transition-colors"
+              style={{ color: "var(--color-text-dim)" }}
+              onClick={onNewTemplate}
+            >
+              + New Template
+            </button>
+          }
         />
       </div>
 

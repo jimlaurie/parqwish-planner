@@ -29,6 +29,8 @@ interface TripEditorProps {
   trip: Trip | null;
   /** Just made dated today (Quick Trip, From Template): point at the dates. */
   highlightDates: boolean;
+  /** For a new draft: start it as a template (the sidebar's "+ New Template"). */
+  newTemplate?: boolean;
   onSave: (form: Partial<Trip>) => Promise<void>;
   onClose: () => void;
   onSaveAsTemplate?: () => Promise<void>;
@@ -48,7 +50,7 @@ export function saveBlocker(form: Partial<Trip>): string | null {
 
 export default function TripEditor(props: TripEditorProps) {
   const { trip, highlightDates, onSave, onClose } = props;
-  const f = useTripForm(trip);
+  const f = useTripForm(trip, props.newTemplate ? { isTemplate: true } : undefined);
   const [saving, setSaving] = useState(false);
   const [archiveBusy, setArchiveBusy] = useState(false);
   const [templateSaved, setTemplateSaved] = useState(false);
@@ -96,7 +98,7 @@ export default function TripEditor(props: TripEditorProps) {
           ← Home
         </button>
         <h1 className="text-xl font-bold truncate" style={{ color: "var(--color-heading)" }}>
-          {trip ? `✏️ Edit ${trip.isTemplate ? "Template" : "Trip"}` : "\u{1F3F0} New Trip"}
+          {trip ? `✏️ Edit ${trip.isTemplate ? "Template" : "Trip"}` : f.form.isTemplate ? "\u{1F4CB} New Template" : "\u{1F3F0} New Trip"}
         </h1>
       </header>
 
@@ -129,7 +131,7 @@ export default function TripEditor(props: TripEditorProps) {
         )}
       </div>
 
-      <SaveBar isDraft={!trip} saving={saving} blocker={blocker} onSave={save} onCancel={close} />
+      <SaveBar isDraft={!trip} isTemplate={!!f.form.isTemplate} saving={saving} blocker={blocker} onSave={save} onCancel={close} />
     </div>
   );
 }
@@ -196,8 +198,8 @@ function useActiveSection(): string {
 // ==================== SAVE BAR ====================
 
 /** Cancel and Save, always in reach at the bottom of the screen (above the phone tab bar). */
-function SaveBar({ isDraft, saving, blocker, onSave, onCancel }: {
-  isDraft: boolean; saving: boolean; blocker: string | null; onSave: () => void; onCancel: () => void;
+function SaveBar({ isDraft, isTemplate, saving, blocker, onSave, onCancel }: {
+  isDraft: boolean; isTemplate: boolean; saving: boolean; blocker: string | null; onSave: () => void; onCancel: () => void;
 }) {
   return (
     <div className="sticky z-30 mt-6 -mx-4 px-4 py-3 flex items-center gap-3 border-t backdrop-blur-md"
@@ -212,7 +214,7 @@ function SaveBar({ isDraft, saving, blocker, onSave, onCancel }: {
       <button type="button" onClick={onSave} disabled={saving || !!blocker}
               className="px-5 py-2 rounded-full text-sm font-semibold cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110"
               style={{ backgroundColor: "var(--color-gold)", color: "var(--color-bg-deep)" }}>
-        {saving ? (isDraft ? "Creating..." : "Saving...") : isDraft ? "Create Trip" : "Save"}
+        {saving ? (isDraft ? "Creating..." : "Saving...") : isDraft ? `Create ${isTemplate ? "Template" : "Trip"}` : "Save"}
       </button>
     </div>
   );

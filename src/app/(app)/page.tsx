@@ -244,6 +244,7 @@ export default function Home() {
       onSelectTrip={(id) => setCurrentTripId(id)}
       onEditTrip={(id) => openTripEditor(id)}
       newTrip={newTrip}
+      onNewTemplate={() => router.push("/trip?new=1&template=1")}
       onSetDefaultTemplate={setDefaultTemplate}
     />
   );

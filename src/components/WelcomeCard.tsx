@@ -8,9 +8,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IOS_APP_STORE_URL, marketingUrl } from "@/lib/marketing-links";
+import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
 
 interface WelcomeCardProps {
-  onCreateTrip: () => void;
+  /** What the "Create Your First Trip" menu offers and does. */
+  newTrip: NewTripActions;
 }
 
 const FEATURES = [
@@ -20,7 +22,7 @@ const FEATURES = [
   { icon: "🔄", text: "Sync with the ParQwish Pal iOS app and your travel group" },
 ];
 
-export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
+export default function WelcomeCard({ newTrip }: WelcomeCardProps) {
   const router = useRouter();
   return (
     <div
@@ -151,9 +153,14 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
 
         {/* CTAs */}
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {/* Primary: Create trip */}
+          {/* Primary: Create trip (opens the New Trip menu) */}
+          <NewTripMenu
+            {...newTrip}
+            placement="down"
+            trigger={(props) => (
           <button
-            onClick={onCreateTrip}
+            type="button"
+            {...props}
             style={{
               width: "100%",
               padding: "13px 20px",
@@ -172,6 +179,8 @@ export default function WelcomeCard({ onCreateTrip }: WelcomeCardProps) {
           >
             <span>+</span> Create Your First Trip
           </button>
+            )}
+          />
 
           {/* Secondary: Guide */}
           <Link

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import StarCompass from "@/components/StarCompass";
 import UserPanel from "@/components/UserPanel";
+import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
 import type { Trip } from "@/lib/db";
 
 // ==================== TYPES ====================
@@ -17,7 +18,8 @@ interface TripSidebarProps {
   templateTrips: Trip[];
   onSelectTrip: (id: string) => void;
   onEditTrip: (id: string) => void;
-  onNewTrip: () => void;
+  /** What the "+ New Trip" menu offers and does. */
+  newTrip: NewTripActions;
   /** Stars a template as the default (null clears it). */
   onSetDefaultTemplate?: (id: string | null) => void;
 }
@@ -186,7 +188,7 @@ export default function TripSidebar({
   templateTrips,
   onSelectTrip,
   onEditTrip,
-  onNewTrip,
+  newTrip,
   onSetDefaultTemplate,
 }: TripSidebarProps) {
   return (
@@ -241,20 +243,27 @@ export default function TripSidebar({
       {/* Family members */}
       <UserPanel />
 
-      {/* New Trip button */}
+      {/* New Trip menu */}
       <div className="px-4 pt-4">
-        <button
-          onClick={onNewTrip}
-          className="w-full px-4 py-2.5 rounded-lg border-2 text-sm font-semibold
-                     transition-colors duration-200 cursor-pointer
-                     hover:bg-[var(--color-gold)] hover:text-[var(--color-bg-deep)]"
-          style={{
-            borderColor: "var(--color-gold)",
-            color: "var(--color-gold)",
-          }}
-        >
-          + New Trip
-        </button>
+        <NewTripMenu
+          {...newTrip}
+          placement="up"
+          trigger={(props) => (
+            <button
+              type="button"
+              {...props}
+              className="w-full px-4 py-2.5 rounded-lg border-2 text-sm font-semibold
+                         transition-colors duration-200 cursor-pointer
+                         hover:bg-[var(--color-gold)] hover:text-[var(--color-bg-deep)]"
+              style={{
+                borderColor: "var(--color-gold)",
+                color: "var(--color-gold)",
+              }}
+            >
+              + New Trip
+            </button>
+          )}
+        />
       </div>
     </div>
   );

@@ -26,6 +26,8 @@ interface EditTripModalProps {
   /** Hides the trip from the main Recent/Future lists into TripSidebar's "Archived Trips" section. Reversible via onUnarchive. */
   onArchive?: (id: string) => Promise<void>;
   onUnarchive?: (id: string) => Promise<void>;
+  /** Just created by Quick Trip or from a template (dated today): point the user at the dates. */
+  highlightDates?: boolean;
 }
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
@@ -49,8 +51,10 @@ export default function EditTripModal({
   onDelete,
   onArchive,
   onUnarchive,
+  highlightDates = false,
 }: EditTripModalProps) {
   const focusRef = useFocusTrap(visible, onClose);
+  const startDateRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<TabId>("general");
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<Partial<Trip>>({});
@@ -86,6 +90,15 @@ export default function EditTripModal({
   const markDirty = useCallback((field: keyof Trip) => {
     dirtyFields.current.add(field);
   }, []);
+
+  // A trip that was just created dated today opens on its start date, after
+  // the modal's entrance (the focus trap focuses its first field first).
+  useEffect(() => {
+    if (!visible || !highlightDates || !trip) return;
+    const timer = setTimeout(() => startDateRef.current?.focus(), 350);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, highlightDates, trip?.id]);
 
   // Opening the modal (or switching trips) starts from a clean copy.
   useEffect(() => {
@@ -330,7 +343,7 @@ export default function EditTripModal({
   const renderInput = (
     label: string,
     field: keyof Trip,
-    opts?: { type?: string; placeholder?: string; min?: string }
+    opts?: { type?: string; placeholder?: string; min?: string; inputRef?: React.Ref<HTMLInputElement>; highlight?: boolean }
   ) => (
     <div>
       <label
@@ -345,8 +358,9 @@ export default function EditTripModal({
         onChange={(e) => handleChange(field, e.target.value)}
         placeholder={opts?.placeholder}
         min={opts?.min}
+        ref={opts?.inputRef}
         className={inputClass}
-        style={inputStyle}
+        style={opts?.highlight ? { ...inputStyle, borderColor: "var(--color-gold)" } : inputStyle}
       />
     </div>
   );
@@ -381,10 +395,16 @@ export default function EditTripModal({
       {renderInput("Trip Name", "name", { placeholder: "e.g., Summer 2026 Disneyland" })}
       {!form.isTemplate && (
         <>
-          {renderInput("Start Date", "startDate", { type: "date" })}
+          {highlightDates && (
+            <p className="text-xs -mb-2" style={{ color: "var(--color-gold)" }}>
+              This trip starts today for now. Set its real dates here.
+            </p>
+          )}
+          {renderInput("Start Date", "startDate", { type: "date", inputRef: startDateRef, highlight: highlightDates })}
           {renderInput("End Date", "endDate", {
             type: "date",
             min: (form.startDate as string) || undefined,
+            highlight: highlightDates,
           })}
         </>
       )}

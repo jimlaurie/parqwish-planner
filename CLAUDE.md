@@ -55,6 +55,7 @@ src/
 │       ├── plan/, prepare/, preview/, play/, publish/   # The five trip-phase pages
 │       ├── preview/analytics/, heat-map/, reliability/  # Wait-time Analytics gallery and its two pages
 │       ├── catalog/          # Browse full park-data catalog, independent of any trip
+│       ├── trip/             # Edit Trip page: /trip?id=… (edit), ?id=…&dates=1 (just created, dates highlighted), ?new=1 (unsaved draft)
 │       ├── join/             # Cross-account trip-collaboration invite acceptance
 │       ├── share/            # Web Share Target landing page
 │       └── ai/               # Exploratory in-browser LLM chat (WebLLM) — not production
@@ -64,7 +65,8 @@ src/
 │   ├── publish/                # Publish-phase sub-components (stats, gallery, trail map, AIExportPanel)
 │   ├── catalog/, map/          # Catalog photo gallery; resort-map mask
 │   ├── ai/                     # WebLLMChat (exploratory)
-│   └── ...                     # WishCard, PackingCard, EditTripModal, SidebarLayout, sync UI, etc.
+│   ├── trip-editor/            # The Edit Trip page's form (use-trip-form.ts keeps typing safe from sync updates) and sections
+│   └── ...                     # WishCard, PackingCard, NewTripMenu, TemplatePickerModal, SidebarLayout, sync UI, etc.
 │                               # (The user Guide is on parqwish.com, built from dland-wishes/marketing — not in this repo)
 ├── hooks/                     # Data-access hooks (use-trips, use-publish-data, use-day-items, etc.)
 └── lib/

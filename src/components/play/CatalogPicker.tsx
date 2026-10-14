@@ -5,10 +5,13 @@
 // show, restaurant, shop, or place without first adding it on the Plan page,
 // or pin a brand-new Place on the map. Selection-only — the modal decides
 // what to do with the result (add to the trip's plan, then to the timeline).
+// The Shows tab can hide shows by status (closed, seasonal), remembered.
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useParkData } from "@/hooks/use-park-data";
+import { useShowSchedules } from "@/hooks/use-show-schedules";
+import { useAppStore } from "@/lib/store";
 import type { ParkDataItem } from "@/lib/park-data";
 import type { PickedPoint } from "./PlacePickerMap";
 
@@ -53,14 +56,29 @@ export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }:
   const [pinning, setPinning] = useState(false);
   const [placeName, setPlaceName] = useState("");
   const [point, setPoint] = useState<PickedPoint | null>(null);
+  const hiddenStatuses = useAppStore((s) => s.hiddenCatalogShowStatuses);
+  const setHiddenStatuses = useAppStore((s) => s.setHiddenCatalogShowStatuses);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items
       .filter((i) => i.type === tab)
+      .filter((i) => tab !== "show" || !hiddenStatuses.includes(showStatus(i)))
       .filter((i) => !q || i.name.toLowerCase().includes(q) || i.land.toLowerCase().includes(q))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [items, tab, query]);
+  }, [items, tab, query, hiddenStatuses]);
+
+  // Each status the shows have, with how many, for the Shows tab's filter
+  const showStatusCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const i of items) if (i.type === "show") counts.set(showStatus(i), (counts.get(showStatus(i)) ?? 0) + 1);
+    return [...counts].sort(([a], [b]) => STATUS_ORDER.indexOf(a) - STATUS_ORDER.indexOf(b));
+  }, [items]);
+
+  const toggleStatus = (status: string) => {
+    setHiddenStatuses(hiddenStatuses.includes(status) ? hiddenStatuses.filter((s) => s !== status) : [...hiddenStatuses, status]);
+    resetSelection();
+  };
 
   const resetSelection = () => {
     setSelectedId(null);
@@ -129,6 +147,9 @@ export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }:
             style={{ backgroundColor: "var(--color-surface-sunken)", border: "1px solid var(--color-border-input)", color: "var(--color-text-primary)" }}
           />
         )}
+        {tab === "show" && showStatusCounts.length > 1 && (
+          <ShowStatusFilter counts={showStatusCounts} hidden={hiddenStatuses} onToggle={toggleStatus} />
+        )}
       </div>
 
       {pinning ? (
@@ -154,6 +175,61 @@ export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }:
             </p>
           )}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== SHOW STATUS FILTER ====================
+
+const STATUS_ORDER = ["operating", "seasonal", "closed"];
+
+/** A show's status for filtering; one with none listed counts as operating. */
+function showStatus(item: ParkDataItem): string {
+  return item.status || "operating";
+}
+
+/**
+ * Ticked chips for each show status; untick Closed or Seasonal to hide those
+ * shows. A show's status comes from the morning's showtime sync: "closed"
+ * means it isn't on that day's schedule, not that it's gone for good.
+ */
+function ShowStatusFilter({ counts, hidden, onToggle }: {
+  counts: [string, number][];
+  hidden: string[];
+  onToggle: (status: string) => void;
+}) {
+  const { syncedOn } = useShowSchedules();
+  const asOf = syncedOn
+    ? new Date(`${syncedOn}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    : null;
+  return (
+    <div className="mb-1">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Show status">
+        {counts.map(([status, n]) => {
+          const on = !hidden.includes(status);
+          return (
+            <button
+              key={status}
+              type="button"
+              onClick={() => onToggle(status)}
+              aria-pressed={on}
+              className="px-2.5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-100"
+              style={{
+                backgroundColor: on ? `color-mix(in srgb, ${ACCENT} 15%, transparent)` : "transparent",
+                color: on ? ACCENT : "var(--color-text-dim)",
+                border: on ? `1px solid color-mix(in srgb, ${ACCENT} 45%, transparent)` : "1px dashed var(--color-border-subtle)",
+              }}
+            >
+              {on ? "✓ " : ""}{status.charAt(0).toUpperCase() + status.slice(1)} ({n})
+            </button>
+          );
+        })}
+      </div>
+      {asOf && (
+        <p className="text-[10px] mt-1" style={{ color: "var(--color-text-dim)" }}>
+          As of {asOf}. Closed means not on that day&rsquo;s schedule.
+        </p>
       )}
     </div>
   );

@@ -5,7 +5,8 @@ const BASE_URL = "/data";
 
 const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
-const CACHE_KEY = "dland-park-data-cache-v4";
+// v5: the cache entry also keeps showtimesSyncedAt (bump on any shape change)
+const CACHE_KEY = "dland-park-data-cache-v5";
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 export interface ParkDataStop {
@@ -127,7 +128,7 @@ function flattenParkData(
 ): ParkDataItem[] {
   const items: ParkDataItem[] = [];
   for (const [parkKey, entities] of Object.entries(data)) {
-    if (parkKey === "version" || parkKey === "lastUpdated") continue;
+    if (parkKey === "version" || parkKey === "lastUpdated" || typeof entities !== "object" || !entities) continue;
     const parkLabel = HOTEL_PARK_KEYS.has(parkKey) ? "Hotels" : (PARK_LABELS[parkKey] ?? parkKey);
     for (const [entityId, entity] of Object.entries(entities)) {
       if (!entity.name) continue;
@@ -192,6 +193,19 @@ function flattenParkData(
 interface CacheEntry {
   data: ParkDataItem[];
   timestamp: number;
+  /** shows.json's lastShowtimeSync: when its showtimes were fetched (they're that day's schedule). */
+  showtimesSyncedAt?: string | null;
+}
+
+let showtimesSyncedAt: string | null = null;
+
+/**
+ * When the loaded showtimes were synced (ISO), or null if unknown. The
+ * Planner serves the shows.json bundled at its last deploy, and its
+ * showtimes are the schedule for the day they were synced. Set by getParkData.
+ */
+export function getShowtimesSyncedAt(): string | null {
+  return showtimesSyncedAt;
 }
 
 export async function getParkData(): Promise<ParkDataItem[]> {
@@ -201,6 +215,7 @@ export async function getParkData(): Promise<ParkDataItem[]> {
     if (cached) {
       const entry: CacheEntry = JSON.parse(cached);
       if (Date.now() - entry.timestamp < CACHE_TTL && entry.data.length > 0) {
+        showtimesSyncedAt = entry.showtimesSyncedAt ?? null;
         return entry.data;
       }
     }
@@ -214,6 +229,7 @@ export async function getParkData(): Promise<ParkDataItem[]> {
       const res = await fetch(`${BASE_URL}/${file}`);
       if (!res.ok) throw new Error(`${file}: ${res.status}`);
       const data = await res.json();
+      if (file === "shows.json" && typeof data.lastShowtimeSync === "string") showtimesSyncedAt = data.lastShowtimeSync;
       return flattenParkData(data, fileToType(file));
     })
   );
@@ -231,7 +247,7 @@ export async function getParkData(): Promise<ParkDataItem[]> {
   // Only cache if we got data (avoids caching an empty result from a failed fetch)
   if (items.length > 0) {
     try {
-      const entry: CacheEntry = { data: items, timestamp: Date.now() };
+      const entry: CacheEntry = { data: items, timestamp: Date.now(), showtimesSyncedAt };
       localStorage.setItem(CACHE_KEY, JSON.stringify(entry));
     } catch {
       // Cache write failed (e.g. quota)

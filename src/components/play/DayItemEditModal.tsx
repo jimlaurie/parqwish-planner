@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import { formatTime12 } from "@/lib/time-format";
+import { hasShowtimes, isListedShowtime, type ShowSchedule } from "@/lib/showtimes";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -28,6 +29,8 @@ interface DayItemEditModalProps {
   onSave: (id: string, updates: DayItemUpdates) => Promise<void>;
   onRemove: (id: string) => Promise<void>;
   onToggleCompleted: (id: string) => Promise<void>;
+  /** For a show: its listed times and what day they're for (lib/showtimes.ts). */
+  showtimes?: { schedule: ShowSchedule; note: string } | null;
 }
 
 // ==================== COMPONENT ====================
@@ -39,6 +42,7 @@ export default function DayItemEditModal({
   onSave,
   onRemove,
   onToggleCompleted,
+  showtimes,
 }: DayItemEditModalProps) {
   const [title, setTitle] = useState("");
   const [isAnytime, setIsAnytime] = useState(false);
@@ -62,6 +66,15 @@ export default function DayItemEditModal({
   const icon = DAY_ITEM_TYPE_ICONS[item.itemType] ?? "📌";
 
   const effectiveTime: string | undefined = isAnytime ? undefined : (scheduledTime || undefined);
+  // A listed show's length joins the usual choices (20 and 25 minutes are common)
+  const durationOptions = [...new Set([...DURATION_OPTIONS, showtimes?.schedule.duration, duration])]
+    .filter((d): d is number => !!d)
+    .sort((a, b) => a - b);
+  const pickShowtime = (time: string) => {
+    setIsAnytime(false);
+    setScheduledTime(time);
+    if (duration === undefined && showtimes?.schedule.duration) setDuration(showtimes.schedule.duration);
+  };
 
   const hasChanges =
     (isCustom && title !== item.title) ||
@@ -175,6 +188,15 @@ export default function DayItemEditModal({
               </div>
             )}
 
+            {showtimes && (
+              <ShowtimePicker
+                schedule={showtimes.schedule}
+                note={showtimes.note}
+                selected={effectiveTime}
+                onPick={pickShowtime}
+              />
+            )}
+
             {/* Duration */}
             <div className="mb-4">
               <label
@@ -196,7 +218,7 @@ export default function DayItemEditModal({
                 >
                   —
                 </button>
-                {DURATION_OPTIONS.map((d) => (
+                {durationOptions.map((d) => (
                   <button
                     key={d}
                     onClick={() => setDuration(d)}
@@ -289,5 +311,59 @@ export default function DayItemEditModal({
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+// ==================== SHOWTIMES ====================
+
+/**
+ * A show's listed times as chips that set the time, any windows it performs
+ * in, what day they're for, and a gentle note when the chosen time isn't
+ * one of them. Never blocks a time: the list is a guide (lib/showtimes.ts).
+ */
+function ShowtimePicker({ schedule, note, selected, onPick }: {
+  schedule: ShowSchedule;
+  note: string;
+  selected: string | undefined;
+  onPick: (time: string) => void;
+}) {
+  const offList = !!selected && hasShowtimes(schedule) && !isListedShowtime(schedule, selected);
+  return (
+    <div className="mb-4">
+      <span className="block text-xs font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>
+        Showtimes
+      </span>
+      {schedule.times.length > 0 && (
+        <div className="flex gap-1.5 flex-wrap mb-1.5">
+          {schedule.times.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => onPick(t)}
+              aria-pressed={selected === t}
+              className="px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-100"
+              style={{
+                backgroundColor: selected === t ? "var(--color-gold)" : "var(--color-bg-deep)",
+                color: selected === t ? "var(--color-bg-deep)" : "var(--color-text-secondary)",
+                border: selected === t ? "none" : "1px solid color-mix(in srgb, var(--color-gold) 40%, transparent)",
+              }}
+            >
+              {formatTime12(t)}
+            </button>
+          ))}
+        </div>
+      )}
+      {schedule.ranges.map((r) => (
+        <p key={r.start} className="text-xs mb-1" style={{ color: "var(--color-text-secondary)" }}>
+          Appears {formatTime12(r.start)} – {formatTime12(r.end)}
+        </p>
+      ))}
+      {offList && (
+        <p className="text-[11px] font-medium mb-1" style={{ color: "var(--color-gold)" }}>
+          {formatTime12(selected)} isn&rsquo;t a listed showtime.
+        </p>
+      )}
+      <p className="text-[10px]" style={{ color: "var(--color-text-dim)" }}>{note}</p>
+    </div>
   );
 }

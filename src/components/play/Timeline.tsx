@@ -8,6 +8,7 @@ import type { TripMember } from "@shared/types/trip";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
 import TimelineSlot from "./TimelineSlot";
 import DayItemCard from "./DayItemCard";
+import { ShowtimeDragNote } from "./ShowtimeMarks";
 import { useTypicalWaits } from "@/hooks/use-typical-waits";
 import { buildWaitHint, findRide, type WaitHint } from "@/lib/typical-waits";
 
@@ -231,6 +232,8 @@ export default function Timeline({
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto pr-1 h-full">
       <div className="space-y-1 pb-8">
+        <ShowtimeDragNote />
+
         {/* Anytime section */}
         <AnytimeSection
           items={anytimeItems}

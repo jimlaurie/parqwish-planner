@@ -24,6 +24,9 @@ import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { auth } from "@/lib/auth";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
+import { useShowSchedules } from "@/hooks/use-show-schedules";
+import { showtimeInSlot, slotMarks, showtimesNote, type ShowSchedule } from "@/lib/showtimes";
+import { ShowtimeMarksContext, type ShowtimeDragHints } from "@/components/play/ShowtimeMarks";
 import PlayHeader from "@/components/play/PlayHeader";
 import DatePickerBar from "@/components/play/DatePickerBar";
 import PlayDesktopLayout from "@/components/play/PlayDesktopLayout";
@@ -75,6 +78,40 @@ export default function PreviewPage() {
   const [activeDragDayItem, setActiveDragDayItem] = useState<DayItemRecord | null>(null);
 
   const { allWishes, addOrSelectWish, addWish } = useTripWishes();
+  const { findSchedule, syncedOn } = useShowSchedules();
+
+  // ==================== SHOWTIMES ====================
+  // A show placed on a slot takes the listed showtime inside that slot (a
+  // 1:10 show dropped on 1:00 gets 1:10) and the show's length. Other times
+  // stay allowed: the listed times are for the day they were synced, a
+  // guide for any other day (lib/showtimes.ts).
+
+  /** The time and length to give a show placed on `slot`; unchanged for anything else. */
+  const placeOnSlot = useCallback(
+    (schedule: ShowSchedule | null, slot: string | undefined, durationMinutes?: number) => ({
+      scheduledTime: (slot && showtimeInSlot(schedule, slot)) || slot,
+      durationMinutes: durationMinutes ?? schedule?.duration,
+    }),
+    []
+  );
+
+  // The dragged item's showtimes, marked on the timeline (ShowtimeMarks.tsx)
+  const showtimeHints = useMemo((): ShowtimeDragHints | null => {
+    const dragged = activeDragPoolItem ?? activeDragDayItem;
+    if (!dragged) return null;
+    const schedule = findSchedule(dragged.parkDataId, dragged.title);
+    if (!schedule) return null;
+    return { showTitle: dragged.title, marks: slotMarks(schedule), note: showtimesNote(schedule, selectedPlayDate, syncedOn) };
+  }, [activeDragPoolItem, activeDragDayItem, findSchedule, selectedPlayDate, syncedOn]);
+
+  // The open item's showtimes, for the edit dialog's chips
+  const editingShowtimes = useCallback(
+    (item: DayItemRecord | null) => {
+      const schedule = item ? findSchedule(item.parkDataId, item.title) : null;
+      return schedule ? { schedule, note: showtimesNote(schedule, selectedPlayDate, syncedOn) } : null;
+    },
+    [findSchedule, selectedPlayDate, syncedOn]
+  );
 
   // Park-data ids already on the plan — marked "In plan" in the Add to Day
   // modal's catalog view.
@@ -100,10 +137,14 @@ export default function PreviewPage() {
           land: item.land,
         });
         if (!wishId) return;
+        // A time from the slot that was clicked snaps to a showtime in it
+        const placed = scheduledTime === addModalInitialTime
+          ? placeOnSlot(findSchedule(item.id, item.name), scheduledTime)
+          : { scheduledTime, durationMinutes: findSchedule(item.id, item.name)?.duration };
         await addItem({
           title: item.name,
           itemType: CATALOG_TYPE_TO_DAY_ITEM_TYPE[item.type],
-          scheduledTime,
+          ...placed,
           park: item.park,
           land: item.land,
           parkDataId: item.id,
@@ -134,7 +175,7 @@ export default function PreviewPage() {
       }
       setAddModalVisible(false);
     },
-    [addOrSelectWish, addWish, addItem]
+    [addOrSelectWish, addWish, addItem, addModalInitialTime, placeOnSlot, findSchedule]
   );
 
   // Derive editing item reactively from useDayItems
@@ -207,7 +248,7 @@ export default function PreviewPage() {
       await addItem({
         title:      poolItem.title,
         itemType:   POOL_TYPE_TO_DAY_ITEM_TYPE[poolItem.sourceType] ?? "wish",
-        scheduledTime: targetTime,
+        ...placeOnSlot(findSchedule(poolItem.parkDataId, poolItem.title), targetTime),
         park:       poolItem.park,
         land:       poolItem.land,
         parkDataId: poolItem.parkDataId,
@@ -220,9 +261,11 @@ export default function PreviewPage() {
     if (activeId.startsWith("timeline__")) {
       // Existing day item moved to a new slot
       const itemId = activeId.replace("timeline__", "");
-      await moveItem(itemId, targetTime);
+      const dayItem = items.find((i) => i.id === itemId);
+      const schedule = dayItem ? findSchedule(dayItem.parkDataId, dayItem.title) : null;
+      await moveItem(itemId, placeOnSlot(schedule, targetTime).scheduledTime);
     }
-  }, [poolItems, addItem, moveItem]);
+  }, [poolItems, items, addItem, moveItem, placeOnSlot, findSchedule]);
 
   const handleScheduleReservation = useCallback(async (item: PoolItem) => {
     if (!item.reservationTime) return;
@@ -255,19 +298,19 @@ export default function PreviewPage() {
     if (min === 0) hour++;
     if (hour >= 23) { hour = 8; min = 0; }
     const time = `${hour.toString().padStart(2, "0")}:${min.toString().padStart(2, "0")}`;
+    const schedule = findSchedule(item.parkDataId, item.title);
 
     await addItem({
       title:      item.title,
       itemType:   POOL_TYPE_TO_DAY_ITEM_TYPE[item.sourceType] ?? "wish",
-      scheduledTime: time,
+      ...placeOnSlot(schedule, time, item.sourceType === "dining" ? 90 : schedule?.duration ?? 60),
       park:       item.park,
       land:       item.land,
       parkDataId: item.parkDataId,
       priority:   item.priority,
       sourceId:   item.id,
-      durationMinutes: item.sourceType === "dining" ? 90 : 60,
     });
-  }, [addItem]);
+  }, [addItem, placeOnSlot, findSchedule]);
 
   // "Quick add" — from clicking an empty time slot or Anytime + button
   const handleQuickAdd = useCallback((time: string) => {
@@ -300,6 +343,7 @@ export default function PreviewPage() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
+      <ShowtimeMarksContext.Provider value={showtimeHints}>
       <main className="min-h-screen flex flex-col items-center px-4 py-6">
         {/* Header */}
         <PlayHeader trip={currentTrip} stats={stats} />
@@ -384,11 +428,13 @@ export default function PreviewPage() {
           )}
         </DragOverlay>
       </main>
+      </ShowtimeMarksContext.Provider>
 
       {/* Edit Modal */}
       <DayItemEditModal
         visible={!!editingItemId}
         item={editingItem}
+        showtimes={editingShowtimes(editingItem)}
         onClose={() => setEditingItemId(null)}
         onSave={async (id, updates) => { await updateItem(id, updates as Parameters<typeof updateItem>[1]); }}
         onRemove={async (id) => { await removeItem(id); }}
@@ -400,7 +446,15 @@ export default function PreviewPage() {
         visible={addModalVisible}
         initialTime={addModalInitialTime}
         poolItems={poolItems}
-        onAdd={async (params) => { await addItem(params); setAddModalVisible(false); }}
+        onAdd={async (params) => {
+          // Still the clicked slot's time: snap a show to its showtime in that slot
+          const schedule = findSchedule(params.parkDataId, params.title);
+          const placed = params.scheduledTime === addModalInitialTime
+            ? placeOnSlot(schedule, params.scheduledTime, params.durationMinutes)
+            : { scheduledTime: params.scheduledTime, durationMinutes: params.durationMinutes ?? schedule?.duration };
+          await addItem({ ...params, ...placed });
+          setAddModalVisible(false);
+        }}
         onClose={() => setAddModalVisible(false)}
         onAddFromCatalog={handleAddFromCatalog}
         plannedParkDataIds={plannedParkDataIds}

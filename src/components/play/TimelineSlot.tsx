@@ -7,6 +7,7 @@ import type { TripMember } from "@shared/types/trip";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
 import DayItemCard from "./DayItemCard";
 import type { WaitHint } from "@/lib/typical-waits";
+import { useShowtimeDragHints, SlotShowtimeLabel, slotMarkStyle } from "./ShowtimeMarks";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -47,6 +48,7 @@ export default function TimelineSlot({
   const { isOver, setNodeRef } = useDroppable({ id: `slot__${time}` });
 
   const hasItems = items.length > 0;
+  const markStyle = slotMarkStyle(useShowtimeDragHints()?.marks[time]?.kind);
   const showBadges = (userMap && userMap.size > 1) || (members && Object.keys(members).length > 1);
 
   return (
@@ -86,9 +88,12 @@ export default function TimelineSlot({
           padding: hasItems ? 0 : "2px",
           minHeight: "40px",
           cursor: !hasItems ? "pointer" : undefined,
+          // A dragged show's listed showtimes (ShowtimeMarks.tsx), under the drop highlight
+          ...(markStyle && !isOver ? markStyle : {}),
         }}
         onClick={!hasItems ? () => onQuickAdd(time) : undefined}
       >
+        <SlotShowtimeLabel slot={time} />
         {hasItems ? (
           <div className="space-y-1">
             {items.map((item) => {

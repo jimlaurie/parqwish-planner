@@ -437,7 +437,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-14T13:00:35.523Z",
+  "lastUpdated": "2026-10-14T23:49:02.975Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -612,7 +612,7 @@
     },
     "princesses-royal-hall": {
       "duration": 15,
-      "status": "closed",
+      "status": "operating",
       "longitude": -117.919419,
       "land": "Fantasyland",
       "types": [
@@ -810,12 +810,12 @@
       "apiEntityId": "5a107a57-9174-4f3f-9be7-625a5d5bb899",
       "timeRanges": [
         {
-          "start": "08:00",
+          "start": "09:00",
           "end": "23:30"
         }
       ],
       "duration": 15,
-      "status": "closed",
+      "status": "operating",
       "types": [
         "character experience"
       ],
@@ -956,5 +956,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-10-14T13:00:35.523Z"
+  "lastShowtimeSync": "2026-10-14T23:49:02.975Z"
 }

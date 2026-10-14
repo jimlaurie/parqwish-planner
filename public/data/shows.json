@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "22:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "22:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "17:30"
+          "end": "21:30"
         }
       ],
       "duration": 15,
@@ -279,15 +279,10 @@
         "street show"
       ],
       "longitude": -117.918172,
-      "status": "operating",
+      "status": "closed",
       "duration": 15,
       "apiEntityId": "531f6200-393e-4e4d-b95e-aedd30102e49",
-      "timeRanges": [
-        {
-          "start": "08:00",
-          "end": "14:30"
-        }
-      ],
+      "timeRanges": [],
       "name": "Ancient Sanctum",
       "latitude": 33.80649
     },
@@ -322,12 +317,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "12:10",
-        "13:10",
-        "14:15",
-        "15:45",
-        "16:45",
-        "17:45"
+        "15:30",
+        "16:30",
+        "17:30",
+        "18:45",
+        "19:35",
+        "20:25"
       ],
       "types": [
         "street show"
@@ -345,12 +340,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
-        "10:30",
         "11:30",
         "12:30",
-        "14:00",
+        "13:30",
         "15:00",
-        "16:00"
+        "16:00",
+        "17:00"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -391,12 +386,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "11:30",
         "12:30",
         "13:30",
-        "15:10",
-        "16:10",
-        "17:10"
+        "14:35",
+        "16:05",
+        "17:05",
+        "18:05"
       ],
       "longitude": -117.919083,
       "types": [
@@ -442,7 +437,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-13T13:00:05.796Z",
+  "lastUpdated": "2026-10-14T13:00:35.523Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -504,21 +499,14 @@
       "latitude": 33.812041
     },
     "dapper-dans": {
-      "times": [
-        "11:00",
-        "12:15",
-        "13:10",
-        "14:20",
-        "16:15",
-        "17:00"
-      ],
+      "times": [],
       "types": [
         "street show",
         "character experience"
       ],
       "land": "Main Street U.S.A.",
       "longitude": -117.918962,
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
       "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
       "timeRanges": [
@@ -722,7 +710,8 @@
       "times": [
         "20:55",
         "21:55",
-        "22:55"
+        "22:55",
+        "23:55"
       ],
       "land": "Main Street U.S.A.",
       "types": [
@@ -822,7 +811,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "19:30"
+          "end": "23:30"
         }
       ],
       "duration": 15,
@@ -848,16 +837,9 @@
       "timeRanges": []
     },
     "storytelling-royal-theatre": {
-      "status": "operating",
+      "status": "closed",
       "duration": 25,
-      "times": [
-        "10:15",
-        "11:25",
-        "12:40",
-        "14:15",
-        "15:25",
-        "16:35"
-      ],
+      "times": [],
       "longitude": -117.919443,
       "land": "Fantasyland",
       "types": [
@@ -974,5 +956,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-10-13T13:00:05.796Z"
+  "lastShowtimeSync": "2026-10-14T13:00:35.523Z"
 }

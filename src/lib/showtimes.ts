@@ -3,11 +3,13 @@
 // times, or the windows a roaming show or character appears in, for ONE day:
 // the day they were synced from ThemeParks.wiki, which only publishes the
 // current day. The Planner reads that file live each day (park-data.ts),
-// falling back to its deploy's copy. For any other day the times are a guide
-// to the usual pattern, so the timeline suggests them (snapping a drop to
-// one, marking slots, chips in the edit dialog) and never blocks other
-// times. Pure functions; the data comes from park-data.ts via
-// use-show-schedules.ts.
+// falling back to its deploy's copy. For another day it uses the history the
+// sync keeps (a few weeks of daily snapshots, showtimeHistory.json): that
+// day's own record if it's past, otherwise the latest same weekday (a show
+// can be off midweek). Either way they're a guide, so the timeline suggests
+// them (snapping a drop to one, marking slots, chips in the edit dialog) and
+// never blocks other times. Pure functions; the data comes from
+// park-data.ts via use-show-schedules.ts.
 
 import { formatTime12 } from "@/lib/time-format";
 
@@ -103,4 +105,87 @@ export function showtimesNote(s: ShowSchedule | null | undefined, day: string | 
   return listed
     ? `Showtimes as of ${shortDate(syncedOn)}. They can change, so check closer to your visit.`
     : `No showtimes listed as of ${shortDate(syncedOn)}. Check closer to your visit.`;
+}
+
+// ==================== WEEKDAY HISTORY ====================
+
+/** One show's record for a day in showtimeHistory.json. */
+interface HistoryEntry {
+  t?: string[];
+  r?: Array<{ s: string; e: string }>;
+}
+
+/** showtimeHistory.json: daily snapshots, keyed date → "park__show" → times. A show missing from a day wasn't on its schedule. */
+export interface ShowtimeHistory {
+  days: Record<string, Record<string, HistoryEntry>>;
+}
+
+/** A show's times for the day being planned, and what they're based on. */
+export interface ShowGuess {
+  schedule: ShowSchedule;
+  note: string;
+}
+
+const MAX_WEEKDAYS = 6;
+const CHECK_LATER = "They can change, so check closer to your visit.";
+
+function weekdayName(day: string): string {
+  return new Date(`${day}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" });
+}
+
+function fromEntry(entry: HistoryEntry | undefined, duration?: number): ShowSchedule {
+  return {
+    times: entry?.t ?? [],
+    ranges: (entry?.r ?? []).map((x) => ({ start: x.s, end: x.e })),
+    duration,
+  };
+}
+
+/** The recorded days on the same weekday as `day`, newest first, at most six. */
+function sameWeekdays(history: ShowtimeHistory, day: string): string[] {
+  const weekday = new Date(`${day}T12:00:00`).getDay();
+  return Object.keys(history.days)
+    .filter((d) => new Date(`${d}T12:00:00`).getDay() === weekday)
+    .sort()
+    .reverse()
+    .slice(0, MAX_WEEKDAYS);
+}
+
+/** " (the same on the last 3 Tuesdays)", or "" when there's only one to go by. */
+function agreement(same: number, of: number, weekday: string): string {
+  if (of < 2) return "";
+  return same === of ? ` (the same on the last ${of} ${weekday}s)` : ` (the same on ${same} of the last ${of} ${weekday}s)`;
+}
+
+/**
+ * A show's times for `day`: the day's own (synced today, or recorded in the
+ * history), else the latest same weekday in the history, else the latest
+ * sync as a rough guide.
+ */
+export function showtimesForDay(
+  id: string,
+  latest: ShowSchedule,
+  day: string | null,
+  syncedOn: string | null,
+  history: ShowtimeHistory | null,
+): ShowGuess {
+  const exact = (schedule: ShowSchedule, d: string) => ({ schedule, note: showtimesNote(schedule, d, d) });
+  if (!day || day === syncedOn || !history) return { schedule: latest, note: showtimesNote(latest, day, syncedOn) };
+  if (history.days[day]) return exact(fromEntry(history.days[day][id], latest.duration), day);
+
+  const weekdays = sameWeekdays(history, day);
+  if (!weekdays.length) return { schedule: latest, note: showtimesNote(latest, day, syncedOn) };
+  const [newest] = weekdays;
+  const pick = history.days[newest][id];
+  const key = JSON.stringify(pick ?? null);
+  const same = weekdays.filter((d) => JSON.stringify(history.days[d][id] ?? null) === key).length;
+  const weekday = weekdayName(day);
+  const schedule = fromEntry(pick, latest.duration);
+  const when = `${weekday}, ${shortDate(newest)}`;
+  const note = hasShowtimes(schedule)
+    ? `Showtimes from ${when}${agreement(same, weekdays.length, weekday)}. ${CHECK_LATER}`
+    : same === weekdays.length && same > 1
+      ? `Not on the schedule on the last ${same} ${weekday}s. ${CHECK_LATER}`
+      : `Not on the schedule on ${when}${agreement(same, weekdays.length, weekday)}. ${CHECK_LATER}`;
+  return { schedule, note };
 }

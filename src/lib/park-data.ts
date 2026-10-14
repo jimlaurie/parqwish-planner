@@ -1,6 +1,6 @@
 // ==================== PARK DATA ====================
 
-import { syncDay } from "@/lib/showtimes";
+import { syncDay, type ShowtimeHistory } from "@/lib/showtimes";
 
 // Served from public/data/ (downloaded from Firebase Storage via scripts/download-park-data.mjs)
 const BASE_URL = "/data";
@@ -253,6 +253,46 @@ async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
   return fetchJson(`${BASE_URL}/${file}`);
 }
 
+// ==================== SHOWTIME HISTORY ====================
+// A few weeks of daily showtime snapshots kept by the dland-wishes
+// syncShowtimes function (functions/showtimeHistory.js), read live from
+// Storage only: without it the Planner falls back to the latest sync.
+
+const HISTORY_CACHE_KEY = "dland-showtime-history-cache-v1";
+let historyInFlight: Promise<ShowtimeHistory | null> | null = null;
+
+export function getShowtimeHistory(): Promise<ShowtimeHistory | null> {
+  historyInFlight ??= loadShowtimeHistory().finally(() => { historyInFlight = null; });
+  return historyInFlight;
+}
+
+async function loadShowtimeHistory(): Promise<ShowtimeHistory | null> {
+  const now = Date.now();
+  const today = new Date(now).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  try {
+    const cached = localStorage.getItem(HISTORY_CACHE_KEY);
+    if (cached) {
+      const entry: { data: ShowtimeHistory; timestamp: number } = JSON.parse(cached);
+      const age = now - entry.timestamp;
+      const hasToday = !!entry.data?.days?.[today];
+      if (entry.data?.days && age < CACHE_TTL && (hasToday || age < STALE_SHOWTIMES_RETRY)) return entry.data;
+    }
+  } catch { /* cache read failed */ }
+
+  try {
+    const data = await fetchJson(`${LIVE_BASE_URL}/showtimeHistory.json`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
+    if (!data || typeof data.days !== "object" || !data.days) throw new Error("no days");
+    const history: ShowtimeHistory = { days: data.days as ShowtimeHistory["days"] };
+    try {
+      localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify({ data: history, timestamp: now }));
+    } catch { /* cache write failed */ }
+    return history;
+  } catch (err) {
+    console.warn("[park-data] showtime history unavailable:", err);
+    return null;
+  }
+}
+
 // Callers that ask at the same time (the catalog and the show schedules on
 // Preview) share one download.
 let inFlight: Promise<ParkDataItem[]> | null = null;
@@ -328,6 +368,7 @@ const waitStatsCacheKey = "dland-wait-time-stats-cache-v3";
 export function clearParkDataCache(): void {
   try {
     localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(HISTORY_CACHE_KEY);
     localStorage.removeItem(coordCacheKey);
     localStorage.removeItem(landConfigCacheKey);
     localStorage.removeItem(waitStatsCacheKey);

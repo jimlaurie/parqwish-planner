@@ -25,7 +25,7 @@ import { auth } from "@/lib/auth";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import { useShowSchedules } from "@/hooks/use-show-schedules";
-import { showtimeInSlot, slotMarks, showtimesNote, type ShowSchedule } from "@/lib/showtimes";
+import { showtimeInSlot, slotMarks, type ShowSchedule } from "@/lib/showtimes";
 import { ShowtimeMarksContext, type ShowtimeDragHints } from "@/components/play/ShowtimeMarks";
 import PlayHeader from "@/components/play/PlayHeader";
 import DatePickerBar from "@/components/play/DatePickerBar";
@@ -78,13 +78,13 @@ export default function PreviewPage() {
   const [activeDragDayItem, setActiveDragDayItem] = useState<DayItemRecord | null>(null);
 
   const { allWishes, addOrSelectWish, addWish } = useTripWishes();
-  const { findSchedule, syncedOn } = useShowSchedules();
+  const { findShow, findSchedule } = useShowSchedules(selectedPlayDate);
 
   // ==================== SHOWTIMES ====================
   // A show placed on a slot takes the listed showtime inside that slot (a
   // 1:10 show dropped on 1:00 gets 1:10) and the show's length. Other times
-  // stay allowed: the listed times are for the day they were synced, a
-  // guide for any other day (lib/showtimes.ts).
+  // stay allowed: the times are the day's own, or for a later day those of
+  // recent same weekdays, a guide (lib/showtimes.ts).
 
   /** The time and length to give a show placed on `slot`; unchanged for anything else. */
   const placeOnSlot = useCallback(
@@ -99,18 +99,15 @@ export default function PreviewPage() {
   const showtimeHints = useMemo((): ShowtimeDragHints | null => {
     const dragged = activeDragPoolItem ?? activeDragDayItem;
     if (!dragged) return null;
-    const schedule = findSchedule(dragged.parkDataId, dragged.title);
-    if (!schedule) return null;
-    return { showTitle: dragged.title, marks: slotMarks(schedule), note: showtimesNote(schedule, selectedPlayDate, syncedOn) };
-  }, [activeDragPoolItem, activeDragDayItem, findSchedule, selectedPlayDate, syncedOn]);
+    const show = findShow(dragged.parkDataId, dragged.title);
+    if (!show) return null;
+    return { showTitle: dragged.title, marks: slotMarks(show.schedule), note: show.note };
+  }, [activeDragPoolItem, activeDragDayItem, findShow]);
 
   // The open item's showtimes, for the edit dialog's chips
   const editingShowtimes = useCallback(
-    (item: DayItemRecord | null) => {
-      const schedule = item ? findSchedule(item.parkDataId, item.title) : null;
-      return schedule ? { schedule, note: showtimesNote(schedule, selectedPlayDate, syncedOn) } : null;
-    },
-    [findSchedule, selectedPlayDate, syncedOn]
+    (item: DayItemRecord | null) => (item ? findShow(item.parkDataId, item.title) : null),
+    [findShow]
   );
 
   // Park-data ids already on the plan — marked "In plan" in the Add to Day

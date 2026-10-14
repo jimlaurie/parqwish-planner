@@ -1,13 +1,26 @@
 // ==================== PARK DATA ====================
 
+import { syncDay } from "@/lib/showtimes";
+
 // Served from public/data/ (downloaded from Firebase Storage via scripts/download-park-data.mjs)
 const BASE_URL = "/data";
+
+// The same files straight from Firebase Storage, refreshed by Cloud Functions
+// (shows.json's showtimes every morning at 6 AM PT). Readable from the
+// Planner's origins and localhost:3000 thanks to the bucket's CORS rule
+// (dland-wishes docs/changelog.md, "CORS Rule on the Storage Bucket").
+const LIVE_BASE_URL = "https://storage.googleapis.com/my-tour-guide-backend.firebasestorage.app/data";
+/** Files read live, falling back to the deploy's copy in public/data/. */
+const LIVE_FILES = new Set<string>(["shows.json"]);
+const LIVE_TIMEOUT_MS = 8000;
 
 const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
 // v5: the cache entry also keeps showtimesSyncedAt (bump on any shape change)
 const CACHE_KEY = "dland-park-data-cache-v5";
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+// Once the cached showtimes are from an earlier park day, look again this often
+const STALE_SHOWTIMES_RETRY = 60 * 60 * 1000; // 1 hour
 
 export interface ParkDataStop {
   name: string;
@@ -200,21 +213,62 @@ interface CacheEntry {
 let showtimesSyncedAt: string | null = null;
 
 /**
- * When the loaded showtimes were synced (ISO), or null if unknown. The
- * Planner serves the shows.json bundled at its last deploy, and its
- * showtimes are the schedule for the day they were synced. Set by getParkData.
+ * When the loaded showtimes were synced (ISO), or null if unknown. They're
+ * the schedule for the day they were synced: normally today's, read live
+ * from Storage, or the deploy's copy if that couldn't be reached. Set by getParkData.
  */
 export function getShowtimesSyncedAt(): string | null {
   return showtimesSyncedAt;
 }
 
-export async function getParkData(): Promise<ParkDataItem[]> {
+/**
+ * A cached copy is used for up to a day, but once its showtimes are from an
+ * earlier park day (Pacific) it's refetched hourly, so the morning's new
+ * showtimes show up the same day.
+ */
+function isCacheFresh(entry: CacheEntry, now: number): boolean {
+  const age = now - entry.timestamp;
+  if (age >= CACHE_TTL || entry.data.length === 0) return false;
+  const today = new Date(now).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  return syncDay(entry.showtimesSyncedAt ?? null) === today || age < STALE_SHOWTIMES_RETRY;
+}
+
+async function fetchJson(url: string, init?: RequestInit): Promise<Record<string, unknown>> {
+  const res = await fetch(url, init);
+  if (!res.ok) throw new Error(`${url}: ${res.status}`);
+  return res.json();
+}
+
+/** One park data file: live from Storage for LIVE_FILES, else (or if that fails) the deploy's copy. */
+async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
+  if (LIVE_FILES.has(file)) {
+    try {
+      const data = await fetchJson(`${LIVE_BASE_URL}/${file}`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
+      if (data && typeof data === "object" && "version" in data) return data;
+      console.warn(`[park-data] live ${file} looked wrong, using the deployed copy`);
+    } catch (err) {
+      console.warn(`[park-data] live ${file} unavailable, using the deployed copy:`, err);
+    }
+  }
+  return fetchJson(`${BASE_URL}/${file}`);
+}
+
+// Callers that ask at the same time (the catalog and the show schedules on
+// Preview) share one download.
+let inFlight: Promise<ParkDataItem[]> | null = null;
+
+export function getParkData(): Promise<ParkDataItem[]> {
+  inFlight ??= loadParkData().finally(() => { inFlight = null; });
+  return inFlight;
+}
+
+async function loadParkData(): Promise<ParkDataItem[]> {
   // Check localStorage cache
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       const entry: CacheEntry = JSON.parse(cached);
-      if (Date.now() - entry.timestamp < CACHE_TTL && entry.data.length > 0) {
+      if (isCacheFresh(entry, Date.now())) {
         showtimesSyncedAt = entry.showtimesSyncedAt ?? null;
         return entry.data;
       }
@@ -226,11 +280,9 @@ export async function getParkData(): Promise<ParkDataItem[]> {
   // Fetch all files in parallel
   const results = await Promise.allSettled(
     FILES.map(async (file) => {
-      const res = await fetch(`${BASE_URL}/${file}`);
-      if (!res.ok) throw new Error(`${file}: ${res.status}`);
-      const data = await res.json();
+      const data = await fetchParkFile(file);
       if (file === "shows.json" && typeof data.lastShowtimeSync === "string") showtimesSyncedAt = data.lastShowtimeSync;
-      return flattenParkData(data, fileToType(file));
+      return flattenParkData(data as Record<string, Record<string, RawParkEntity>>, fileToType(file));
     })
   );
 

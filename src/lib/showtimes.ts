@@ -2,10 +2,12 @@
 // Placing a show on the Preview timeline. shows.json lists each show's start
 // times, or the windows a roaming show or character appears in, for ONE day:
 // the day they were synced from ThemeParks.wiki, which only publishes the
-// current day. For any other day they're a guide to the usual pattern, so
-// the timeline suggests them (snapping a drop to one, marking slots, chips
-// in the edit dialog) and never blocks other times. Pure functions; the
-// data comes from park-data.ts via use-show-schedules.ts.
+// current day. The Planner reads that file live each day (park-data.ts),
+// falling back to its deploy's copy. For any other day the times are a guide
+// to the usual pattern, so the timeline suggests them (snapping a drop to
+// one, marking slots, chips in the edit dialog) and never blocks other
+// times. Pure functions; the data comes from park-data.ts via
+// use-show-schedules.ts.
 
 import { formatTime12 } from "@/lib/time-format";
 

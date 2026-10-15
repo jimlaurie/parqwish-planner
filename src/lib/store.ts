@@ -86,10 +86,11 @@ interface AppState {
   catalogView: "gallery" | "list";
   setCatalogView: (view: "gallery" | "list") => void;
 
-  // Show statuses ("closed", "seasonal") unticked in Preview's Add to Day ›
-  // Park catalog › Shows; empty = all shown
-  hiddenCatalogShowStatuses: string[];
-  setHiddenCatalogShowStatuses: (statuses: string[]) => void;
+  // Statuses ("closed", "seasonal") unticked in the park catalog lists
+  // (CatalogStatusFilter.tsx: Plan's catalog panel and Preview's Add to
+  // Day); one choice for every tab; empty = all shown
+  hiddenCatalogStatuses: string[];
+  setHiddenCatalogStatuses: (statuses: string[]) => void;
 
   // Session-only: true while sync's first download of this account's trips
   // is still running, so Home shows "Restoring your trips…" instead of the
@@ -258,8 +259,8 @@ export const useAppStore = create<AppState>()(
       catalogView: "gallery",
       setCatalogView: (view) => set({ catalogView: view }),
 
-      hiddenCatalogShowStatuses: [],
-      setHiddenCatalogShowStatuses: (statuses) => set({ hiddenCatalogShowStatuses: statuses }),
+      hiddenCatalogStatuses: [],
+      setHiddenCatalogStatuses: (statuses) => set({ hiddenCatalogStatuses: statuses }),
 
       tripsRestoring: false,
       setTripsRestoring: (restoring) => set({ tripsRestoring: restoring }),
@@ -309,7 +310,7 @@ export const useAppStore = create<AppState>()(
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
         catalogView: state.catalogView,
-        hiddenCatalogShowStatuses: state.hiddenCatalogShowStatuses,
+        hiddenCatalogStatuses: state.hiddenCatalogStatuses,
       }),
     }
   )

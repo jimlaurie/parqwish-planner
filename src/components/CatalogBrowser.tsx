@@ -12,6 +12,7 @@ import { hasOwner, isSameOwner } from "@shared/selection-owners";
 import { PARK_DATA_TYPE_TO_TAG, getRideReliabilityStats, getWaitTimeStats } from "@/lib/park-data";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
+import CatalogStatusFilter, { useCatalogStatusFilter } from "@/components/CatalogStatusFilter";
 import { waitColor } from "@/components/publish/waitTimeColors";
 
 const SCHEDULE_TIP_SEEN_KEY = "parqwish_seen_schedule_tip";
@@ -611,9 +612,11 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
     });
   };
 
+  const { isShown } = useCatalogStatusFilter();
+
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    let result = tabItems;
+    let result = tabItems.filter(isShown);
     if (selectedParks.size > 0) {
       result = result.filter((item) => selectedParks.has(item.park));
     }
@@ -625,7 +628,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
       );
     }
     return result;
-  }, [tabItems, searchQuery, selectedParks]);
+  }, [tabItems, searchQuery, selectedParks, isShown]);
 
   const groupedByPark = useMemo(() => {
     const groups: Record<string, ParkDataItem[]> = {};
@@ -765,6 +768,13 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           />
         </div>
 
+        {/* Status — untick Closed or Seasonal for a shorter list */}
+        {expanded && (
+          <div className="px-3 pb-2">
+            <CatalogStatusFilter items={tabItems} accent={ACCENT} onChange={() => setSelectedId(null)} />
+          </div>
+        )}
+
         {/* Ride sort — alphabetical, or shortest typical wait first */}
         {activeTab === "ride" && expanded && insights.size > 0 && (
           <div className="flex items-center gap-1.5 px-3 pb-2 text-[10px]" role="group" aria-label="Sort rides">
@@ -863,7 +873,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           <div className={`px-3 pb-3 overflow-y-auto flex flex-col gap-4 ${isPanel ? "flex-1 min-h-0 pt-1" : "max-h-[480px]"}`}>
             {Object.entries(groupedByPark).length === 0 ? (
               <p className="text-xs text-center py-4" style={{ color: "var(--color-text-dim)" }}>
-                No results for &ldquo;{searchQuery}&rdquo;
+                {searchQuery.trim() ? <>No results for &ldquo;{searchQuery}&rdquo;</> : "Nothing to show with these filters"}
               </p>
             ) : (
               Object.entries(groupedByPark)

@@ -1,8 +1,8 @@
 "use client";
 
 // ==================== PLACE PICKER MAP ====================
-// Tap-to-pin map for creating a custom Place from the Preview "Add to Day"
-// modal. Leaflet — import this only via next/dynamic with ssr: false.
+// Tap-to-pin map for creating a custom Place (play/NewPlaceForm.tsx: Preview's
+// Add to Day and the Plan page catalog). Leaflet — import this only via next/dynamic with ssr: false.
 // Reports the pinned point plus its resolved park/land (place-location.ts);
 // the land overlays are also what that resolution uses, so they're loaded
 // once here and handed back to the caller through onPick.

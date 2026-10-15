@@ -12,6 +12,8 @@ import { hasOwner, isSameOwner } from "@shared/selection-owners";
 import { PARK_DATA_TYPE_TO_TAG, getRideReliabilityStats, getWaitTimeStats } from "@/lib/park-data";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
+import CatalogNewPlace from "@/components/CatalogNewPlace";
+import type { PickedPoint } from "@/components/play/PlacePickerMap";
 import CatalogStatusFilter, { useCatalogStatusFilter } from "@/components/CatalogStatusFilter";
 import { waitColor } from "@/components/publish/waitTimeColors";
 
@@ -522,7 +524,7 @@ interface CatalogBrowserProps {
 export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserProps) {
   const isPanel = variant === "panel";
   const { items, loading } = useParkData();
-  const { allWishes, addOrSelectWish, unselectWish } = useTripWishes();
+  const { allWishes, addOrSelectWish, addWish, unselectWish } = useTripWishes();
   const { currentUserId } = useAppStore();
   const { currentTrip } = useTrips();
   const { userMap } = useUsers();
@@ -539,6 +541,10 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
   const [selectedParks, setSelectedParks] = useState<Set<string>>(new Set());
   const [rideSort, setRideSort] = useState<"az" | "wait">("az");
   const [insights, setInsights] = useState<Map<string, RideInsight>>(new Map());
+  // Places tab: pinning a new place instead of browsing, and the last one added
+  const [pinning, setPinning] = useState(false);
+  const [addedPlace, setAddedPlace] = useState<string | null>(null);
+  const browsing = !pinning;
 
   // Historical wait + reliability stats (cached 24h by park-data.ts). Rows
   // simply render without those chips until this resolves, or if either
@@ -688,6 +694,23 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
     if (wishId) await unselectWish(wishId);
   });
 
+  // A pinned place goes on the trip's plan as a Place wish, like Preview's
+  // Add to Day › Pin a new place (without putting it on a day).
+  const handleAddNewPlace = async (name: string, point: PickedPoint) => {
+    const wishId = await addWish({
+      title: name,
+      tags: ["place"],
+      priority: "B",
+      park: point.parkLand?.park,
+      land: point.parkLand?.land,
+      latitude: point.lat,
+      longitude: point.lng,
+    });
+    if (!wishId) return;
+    setPinning(false);
+    setAddedPlace(name);
+  };
+
   const totalCount = useMemo(() => items.length, [items]);
 
   if (loading) return null;
@@ -725,7 +748,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
             return (
               <button
                 key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setSelectedId(null); setSearchQuery(""); setSelectedParks(new Set()); }}
+                onClick={() => { setActiveTab(tab.id); setSelectedId(null); setSearchQuery(""); setSelectedParks(new Set()); setPinning(false); setAddedPlace(null); }}
                 role="tab"
                 aria-selected={isActive}
                 className="flex-1 flex flex-col items-center py-2.5 text-xs font-medium
@@ -751,8 +774,36 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           })}
         </div>
 
-        {/* Search — always visible */}
-        <div className="px-3 pt-3 pb-2">
+        {/* Places: pin one that isn't in the catalog */}
+        {activeTab === "place" && (
+          <div className="px-3 pt-3">
+            <button
+              type="button"
+              onClick={() => { setPinning((v) => !v); setAddedPlace(null); setSelectedId(null); }}
+              aria-expanded={pinning}
+              className="w-full px-3 py-2 rounded-lg text-xs font-semibold text-left cursor-pointer"
+              style={{
+                color: ACCENT,
+                backgroundColor: `color-mix(in srgb, ${ACCENT} ${pinning ? 18 : 8}%, transparent)`,
+                border: `1px dashed color-mix(in srgb, ${ACCENT} 50%, transparent)`,
+              }}
+            >
+              {pinning ? "▾" : "+"} Pin a new place on the map
+            </button>
+            {addedPlace && !pinning && (
+              <p role="status" className="text-[11px] mt-1.5" style={{ color: "var(--color-text-secondary)" }}>
+                📍 Added &ldquo;{addedPlace}&rdquo; to your plan.
+              </p>
+            )}
+          </div>
+        )}
+
+        {pinning && (
+          <CatalogNewPlace accent={ACCENT} onAdd={handleAddNewPlace} onCancel={() => setPinning(false)} />
+        )}
+
+        {/* Search — visible unless pinning a new place */}
+        {browsing && <div className="px-3 pt-3 pb-2">
           <input
             type="text"
             value={searchQuery}
@@ -766,10 +817,10 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
               borderColor: "var(--color-border-input)",
             }}
           />
-        </div>
+        </div>}
 
         {/* Status — untick Closed or Seasonal for a shorter list */}
-        {expanded && (
+        {browsing && expanded && (
           <div className="px-3 pb-2">
             <CatalogStatusFilter items={tabItems} accent={ACCENT} onChange={() => setSelectedId(null)} />
           </div>
@@ -803,7 +854,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
 
         {/* List toggle — list itself collapses by default (inline only;
             the panel always shows results) */}
-        {!isPanel && <button
+        {browsing && !isPanel && <button
           onClick={() => { setExpanded(!expanded); setSelectedId(null); }}
           aria-expanded={expanded}
           className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold cursor-pointer
@@ -817,7 +868,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           </span>
         </button>}
 
-        {expanded && availableParks.length > 1 && (
+        {browsing && expanded && availableParks.length > 1 && (
           <div className="border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
             <button
               onClick={() => setParksExpanded(!parksExpanded)}
@@ -869,7 +920,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
           </div>
         )}
 
-        {expanded && (
+        {browsing && expanded && (
           <div className={`px-3 pb-3 overflow-y-auto flex flex-col gap-4 ${isPanel ? "flex-1 min-h-0 pt-1" : "max-h-[480px]"}`}>
             {Object.entries(groupedByPark).length === 0 ? (
               <p className="text-xs text-center py-4" style={{ color: "var(--color-text-dim)" }}>

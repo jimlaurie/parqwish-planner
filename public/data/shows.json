@@ -77,7 +77,7 @@
       "latitude": 33.806095
     },
     "citizens-of-buena-vista-street": {
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
       "times": [],
       "land": "Buena Vista Street",
@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "22:00"
+          "end": "18:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "22:00"
+          "end": "18:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:30"
+          "end": "17:30"
         }
       ],
       "duration": 15,
@@ -317,12 +317,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "15:30",
-        "16:30",
-        "17:30",
-        "18:45",
-        "19:35",
-        "20:25"
+        "12:10",
+        "13:10",
+        "14:15",
+        "15:45",
+        "16:45",
+        "17:45"
       ],
       "types": [
         "street show"
@@ -340,12 +340,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
+        "10:30",
         "11:30",
         "12:30",
-        "13:30",
+        "14:00",
         "15:00",
-        "16:00",
-        "17:00"
+        "16:00"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -386,12 +386,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
+        "11:30",
         "12:30",
         "13:30",
-        "14:35",
-        "16:05",
-        "17:05",
-        "18:05"
+        "15:10",
+        "16:10",
+        "17:10"
       ],
       "longitude": -117.919083,
       "types": [
@@ -437,16 +437,20 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-14T23:49:02.975Z",
+  "lastUpdated": "2026-10-15T13:00:04.084Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "timeRanges": [],
       "name": "Pearly Band near \"it's a small world\"",
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
-      "times": [],
+      "times": [
+        "11:50",
+        "13:05",
+        "14:05"
+      ],
       "land": "Fantasyland",
       "types": [
         "street show"
@@ -458,13 +462,19 @@
       "apiEntityId": "95a9cde3-ff1f-40a3-8276-2477ded688f8",
       "name": "Bluey’s Best Day Ever!",
       "latitude": 33.8144,
-      "times": [],
+      "times": [
+        "11:00",
+        "12:20",
+        "13:40",
+        "15:25",
+        "16:45"
+      ],
       "longitude": -117.91855,
       "land": "Fantasyland",
       "types": [
         "theater show"
       ],
-      "status": "closed",
+      "status": "operating",
       "duration": 25
     },
     "disneyland-band-frontierland": {
@@ -612,7 +622,7 @@
     },
     "princesses-royal-hall": {
       "duration": 15,
-      "status": "operating",
+      "status": "closed",
       "longitude": -117.919419,
       "land": "Fantasyland",
       "types": [
@@ -810,12 +820,12 @@
       "apiEntityId": "5a107a57-9174-4f3f-9be7-625a5d5bb899",
       "timeRanges": [
         {
-          "start": "09:00",
+          "start": "08:00",
           "end": "23:30"
         }
       ],
       "duration": 15,
-      "status": "operating",
+      "status": "closed",
       "types": [
         "character experience"
       ],
@@ -905,9 +915,14 @@
       "timeRanges": []
     },
     "pearly-band-castle": {
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
-      "times": [],
+      "times": [
+        "09:15",
+        "10:05",
+        "11:00",
+        "15:05"
+      ],
       "types": [
         "street show"
       ],
@@ -956,5 +971,5 @@
       "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-10-14T23:49:02.975Z"
+  "lastShowtimeSync": "2026-10-15T13:00:04.084Z"
 }

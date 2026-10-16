@@ -290,8 +290,9 @@ function ItemDetail({ item }: {
               className="text-[11px] font-semibold px-2.5 py-1 rounded-full transition-opacity hover:opacity-80"
               style={{ backgroundColor: "var(--color-surface-raised)", color: ACCENT }}
               onClick={(e) => e.stopPropagation()}
+              title="Opens Disney's site in a new tab"
             >
-              🔗 Info
+              {"\u{1F517}"} View {"\u2197"}
             </a>
           )}
           {item.menuUrl && (
@@ -302,8 +303,9 @@ function ItemDetail({ item }: {
               className="text-[11px] font-semibold px-2.5 py-1 rounded-full transition-opacity hover:opacity-80"
               style={{ backgroundColor: "var(--color-surface-raised)", color: ACCENT }}
               onClick={(e) => e.stopPropagation()}
+              title="Opens Disney's site in a new tab"
             >
-              🍽️ Menu
+              {"\u{1F37D}\uFE0F"} Menu {"\u2197"}
             </a>
           )}
           {item.reservationUrl && (
@@ -314,8 +316,9 @@ function ItemDetail({ item }: {
               className="text-[11px] font-semibold px-2.5 py-1 rounded-full transition-opacity hover:opacity-80"
               style={{ backgroundColor: "var(--color-surface-raised)", color: ACCENT }}
               onClick={(e) => e.stopPropagation()}
+              title="Opens Disney's site in a new tab"
             >
-              📅 Reserve
+              {"\u{1F4C5}"} Reserve {"\u2197"}
             </a>
           )}
         </div>

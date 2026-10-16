@@ -29,6 +29,7 @@ import { showtimeInSlot, slotMarks, type ShowSchedule } from "@/lib/showtimes";
 import { ShowtimeMarksContext, type ShowtimeDragHints } from "@/components/play/ShowtimeMarks";
 import PlayHeader from "@/components/play/PlayHeader";
 import DatePickerBar from "@/components/play/DatePickerBar";
+import ParkHoursLine from "@/components/play/ParkHoursLine";
 import PlayDesktopLayout from "@/components/play/PlayDesktopLayout";
 import PlayMobileLayout from "@/components/play/PlayMobileLayout";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
@@ -350,6 +351,7 @@ export default function PreviewPage() {
           startDate={currentTrip.startDate}
           endDate={currentTrip.endDate}
         />
+        <ParkHoursLine date={selectedPlayDate} />
 
         {/* Layout: Desktop vs Mobile */}
         {isDesktop ? (

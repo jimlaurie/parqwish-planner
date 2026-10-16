@@ -10,14 +10,18 @@ const BASE_URL = "/data";
 // Planner's origins and localhost:3000 thanks to the bucket's CORS rule
 // (dland-wishes docs/changelog.md, "CORS Rule on the Storage Bucket").
 const LIVE_BASE_URL = "https://storage.googleapis.com/my-tour-guide-backend.firebasestorage.app/data";
-/** Files read live, falling back to the deploy's copy in public/data/. */
-const LIVE_FILES = new Set<string>(["shows.json"]);
+/** Files read live, falling back to the deploy's copy in public/data/:
+ *  showtimes change daily, and restaurants carry Disney's View/Menu/Reserve
+ *  links, which the publish step adds and refreshes nightly. */
+const LIVE_FILES = new Set<string>(["shows.json", "restaurants.json"]);
+const DISNEY_SITE = "https://disneyland.disney.go.com";
 const LIVE_TIMEOUT_MS = 8000;
 
 const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
-// v5: the cache entry also keeps showtimesSyncedAt (bump on any shape change)
-const CACHE_KEY = "dland-park-data-cache-v5";
+// v5: the cache entry also keeps showtimesSyncedAt; v6: restaurants read
+// live with their links (bump on any shape or source change)
+const CACHE_KEY = "dland-park-data-cache-v6";
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 // Once the cached showtimes are from an earlier park day, look again this often
 const STALE_SHOWTIMES_RETRY = 60 * 60 * 1000; // 1 hour
@@ -185,7 +189,8 @@ function flattenParkData(
         if (entity.requiresReservations != null) item.requiresReservations = entity.requiresReservations;
         if (entity.url) item.url = entity.url;
         if (entity.menuUrl) item.menuUrl = entity.menuUrl;
-        if (entity.reservationUrl) item.reservationUrl = entity.reservationUrl;
+        // Stored as a path on Disney's site ("/dine-res/…"); Pal adds the host the same way
+        if (entity.reservationUrl) item.reservationUrl = entity.reservationUrl.startsWith("/") ? DISNEY_SITE + entity.reservationUrl : entity.reservationUrl;
       } else if (type === "shop") {
         if (entity.type) item.shopType = entity.type;
         if (entity.description) item.description = entity.description;
@@ -244,7 +249,8 @@ async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
   if (LIVE_FILES.has(file)) {
     try {
       const data = await fetchJson(`${LIVE_BASE_URL}/${file}`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
-      if (data && typeof data === "object" && "version" in data) return data;
+      // Every park data file is keyed by park (restaurants.json has no "version")
+      if (data && typeof data === "object" && typeof data.disneyland === "object") return data;
       console.warn(`[park-data] live ${file} looked wrong, using the deployed copy`);
     } catch (err) {
       console.warn(`[park-data] live ${file} unavailable, using the deployed copy:`, err);
@@ -369,6 +375,7 @@ export function clearParkDataCache(): void {
   try {
     localStorage.removeItem(CACHE_KEY);
     localStorage.removeItem(HISTORY_CACHE_KEY);
+    localStorage.removeItem(HOURS_CACHE_KEY);
     localStorage.removeItem(coordCacheKey);
     localStorage.removeItem(landConfigCacheKey);
     localStorage.removeItem(waitStatsCacheKey);
@@ -627,4 +634,76 @@ export async function getLandConfig(): Promise<Record<string, LandConfigEntry>> 
   } catch {
     return {};
   }
+}
+
+// ==================== PARK HOURS ====================
+// One file per day, data/hours/YYYY-MM-DD.json, written nightly by the
+// dland-wishes generateParkHours function from ThemeParks.wiki, about a
+// month ahead (later days don't exist yet). Read live from Storage.
+
+export interface ParkSpecialHours {
+  description: string;
+  openingTime: string | null;
+  closingTime: string | null;
+}
+
+export interface ParkHoursForPark {
+  /** ISO times with the park's offset, e.g. "2026-10-16T08:00:00-07:00". */
+  openingTime: string | null;
+  closingTime: string | null;
+  /** Ticketed events (e.g. an after-hours party) that day. */
+  specialHours: ParkSpecialHours[];
+}
+
+export interface DayParkHours {
+  date: string;
+  disneyland: ParkHoursForPark | null;
+  californiaadventure: ParkHoursForPark | null;
+}
+
+const HOURS_CACHE_KEY = "dland-park-hours-cache-v1";
+const HOURS_TTL = 6 * 60 * 60 * 1000; // hours rarely change, but they can
+const hoursInFlight = new Map<string, Promise<DayParkHours | null>>();
+
+type HoursCache = Record<string, { data: DayParkHours | null; fetchedAt: number }>;
+
+function readHoursCache(): HoursCache {
+  try {
+    return JSON.parse(localStorage.getItem(HOURS_CACHE_KEY) || "{}") as HoursCache;
+  } catch {
+    return {};
+  }
+}
+
+function writeHoursCache(date: string, data: DayParkHours | null): void {
+  try {
+    const cache = readHoursCache();
+    const cutoff = Date.now() - HOURS_TTL;
+    for (const [d, e] of Object.entries(cache)) if (e.fetchedAt < cutoff) delete cache[d];
+    cache[date] = { data, fetchedAt: Date.now() };
+    localStorage.setItem(HOURS_CACHE_KEY, JSON.stringify(cache));
+  } catch { /* cache write failed */ }
+}
+
+/** A day's park hours, or null when they aren't posted (too far ahead, or past). */
+export function getParkHours(date: string): Promise<DayParkHours | null> {
+  const cached = readHoursCache()[date];
+  if (cached && Date.now() - cached.fetchedAt < HOURS_TTL) return Promise.resolve(cached.data);
+  let pending = hoursInFlight.get(date);
+  if (!pending) {
+    pending = fetch(`${LIVE_BASE_URL}/hours/${date}.json`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) })
+      .then(async (res) => {
+        // Storage answers 403 for a file that doesn't exist yet
+        const data = res.ok ? ((await res.json()) as DayParkHours) : null;
+        writeHoursCache(date, data);
+        return data;
+      })
+      .catch((err) => {
+        console.warn(`[park-data] park hours for ${date} unavailable:`, err);
+        return null;
+      })
+      .finally(() => hoursInFlight.delete(date));
+    hoursInFlight.set(date, pending);
+  }
+  return pending;
 }

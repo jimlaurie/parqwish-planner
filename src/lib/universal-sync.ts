@@ -17,6 +17,7 @@ import { CATEGORY_META, ALL_CATEGORIES } from "./sync-types";
 import { isValidDate, isValidEnvelope } from "@shared/validation";
 import { wishTagToSyncCategory } from "@shared/sync-helpers";
 import JSZip from "jszip";
+import { addDays, datesBetween, daysBetween, parkToday } from "@/lib/dates";
 
 // ==================== CODE GENERATION & VERIFICATION ====================
 
@@ -79,16 +80,9 @@ export function getDateRange(startDate: string, endDate: string): string[] {
   if (!isValidDate(startDate)) throw new Error(`Invalid startDate: ${startDate}`);
   if (!isValidDate(endDate)) throw new Error(`Invalid endDate: ${endDate}`);
 
-  const dates: string[] = [];
-  const start = new Date(startDate + "T00:00:00");
-  const end = new Date(endDate + "T00:00:00");
-
-  const current = new Date(start);
-  while (current <= end) {
-    dates.push(current.toISOString().split("T")[0]);
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
+  // String date arithmetic: local midnight to UTC shifted every day back one
+  // for anyone east of UTC
+  return datesBetween(startDate, endDate);
 }
 
 // ==================== EXPORT FUNCTIONS ====================
@@ -296,7 +290,7 @@ export async function downloadExportFile(
   const safeUserName = userName
     ? `-${userName.replace(/[^a-zA-Z0-9-_ ]/g, "").replace(/\s+/g, "-")}`
     : "";
-  const dateStr = new Date().toISOString().split("T")[0];
+  const dateStr = parkToday();
   const filename = `ParQwish-${safeTripName}${safeUserName}-${dateStr}.json`;
 
   await shareOrDownload(blob, filename);
@@ -573,9 +567,8 @@ function convertV1ToV2(
     exportedBy: "Legacy Import",
     categories: detectCategoriesFromPayload(v1.items),
     dateRange: {
-      startDate: dates[0] || new Date().toISOString().split("T")[0],
-      endDate:
-        dates[dates.length - 1] || new Date().toISOString().split("T")[0],
+      startDate: dates[0] || parkToday(),
+      endDate: dates[dates.length - 1] || parkToday(),
     },
     data: v1.items,
   };
@@ -584,7 +577,7 @@ function convertV1ToV2(
 function convertWishExportToV2(
   wishData: { exportedBy?: string; exportDate?: string; wishes: Array<Record<string, unknown>> }
 ): SyncEnvelopeV2 {
-  const today = new Date().toISOString().split("T")[0];
+  const today = parkToday();
   const wishes = (wishData.wishes || []).map(
     (w: Record<string, unknown>, i: number) => ({
       id:
@@ -668,15 +661,11 @@ export function remapPayloadDates(
   const originalDates = Array.from(dateSet).sort();
   if (originalDates.length === 0) return envelope;
 
-  // Build date mapping preserving day offsets
-  const originBase = new Date(originalDates[0] + "T00:00:00");
-  const newBase = new Date(newStartDate + "T00:00:00");
+  // Build date mapping preserving day offsets (string date arithmetic: from
+  // local midnight, UTC put every day one earlier for anyone east of UTC)
   const dateMap: Record<string, string> = {};
   for (const origDate of originalDates) {
-    const orig = new Date(origDate + "T00:00:00");
-    const dayOffset = Math.round((orig.getTime() - originBase.getTime()) / 86400000);
-    const newDate = new Date(newBase.getTime() + dayOffset * 86400000);
-    dateMap[origDate] = newDate.toISOString().split("T")[0];
+    dateMap[origDate] = addDays(newStartDate, daysBetween(originalDates[0], origDate));
   }
 
   // Remap helper — works on any sync item type
@@ -915,7 +904,7 @@ export async function downloadJsonFile(
   const jsonString = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonString], { type: "application/json" });
 
-  const dateStr = new Date().toISOString().split("T")[0];
+  const dateStr = parkToday();
   const filename = `ParQwish-${prefix}-${dateStr}.json`;
 
   await shareOrDownload(blob, filename);

@@ -1,6 +1,7 @@
 // ==================== PARK DATA ====================
 
 import { syncDay, type ShowtimeHistory } from "@/lib/showtimes";
+import { parkDate } from "@/lib/dates";
 
 // Served from public/data/ (downloaded from Firebase Storage via scripts/download-park-data.mjs)
 const BASE_URL = "/data";
@@ -29,9 +30,38 @@ function liveUrl(path: string): string {
 
 const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
-// v5: the cache entry also keeps showtimesSyncedAt; v6: restaurants read
-// live with their links (bump on any shape or source change)
-const CACHE_KEY = "dland-park-data-cache-v6";
+// ==================== CACHE KEYS ====================
+// Every localStorage cache here is keyed to the build's version, so each
+// deploy starts with fresh caches: a change to what's cached (a new field,
+// a new source) can't be hidden by a copy cached before it, and there's no
+// suffix to remember to bump (forgotten three times before this). Older
+// keys are removed at startup by pruneOldParkDataCaches().
+
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
+
+/** A cache key for this build, e.g. "dland-park-data-cache@6.0.84". */
+function cacheKey(name: string): string {
+  return `dland-${name}-cache@${APP_VERSION}`;
+}
+
+/** Any park data cache key, this build's or an older one ("-v6", "@6.0.83"...). Not the app store's keys. */
+const PARK_CACHE_KEY_PATTERN = /^dland-[a-z-]+-cache(-v\d+)?(@.+)?$/;
+
+/** Removes park data caches left by earlier builds. Safe to call on every start. */
+export function pruneOldParkDataCaches(): void {
+  try {
+    const stale: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && PARK_CACHE_KEY_PATTERN.test(key) && !key.endsWith(`@${APP_VERSION}`)) stale.push(key);
+    }
+    stale.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // localStorage unavailable
+  }
+}
+
+const CACHE_KEY = cacheKey("park-data");
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 // Once the cached showtimes are from an earlier park day, look again this often
 const STALE_SHOWTIMES_RETRY = 60 * 60 * 1000; // 1 hour
@@ -244,7 +274,7 @@ export function getShowtimesSyncedAt(): string | null {
 function isCacheFresh(entry: CacheEntry, now: number): boolean {
   const age = now - entry.timestamp;
   if (age >= CACHE_TTL || entry.data.length === 0) return false;
-  const today = new Date(now).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const today = parkDate(new Date(now));
   return syncDay(entry.showtimesSyncedAt ?? null) === today || age < STALE_SHOWTIMES_RETRY;
 }
 
@@ -274,7 +304,7 @@ async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
 // syncShowtimes function (functions/showtimeHistory.js), read live from
 // Storage only: without it the Planner falls back to the latest sync.
 
-const HISTORY_CACHE_KEY = "dland-showtime-history-cache-v1";
+const HISTORY_CACHE_KEY = cacheKey("showtime-history");
 let historyInFlight: Promise<ShowtimeHistory | null> | null = null;
 
 export function getShowtimeHistory(): Promise<ShowtimeHistory | null> {
@@ -284,7 +314,7 @@ export function getShowtimeHistory(): Promise<ShowtimeHistory | null> {
 
 async function loadShowtimeHistory(): Promise<ShowtimeHistory | null> {
   const now = Date.now();
-  const today = new Date(now).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const today = parkDate(new Date(now));
   try {
     const cached = localStorage.getItem(HISTORY_CACHE_KEY);
     if (cached) {
@@ -370,16 +400,11 @@ async function loadParkData(): Promise<ParkDataItem[]> {
 // Two lookup maps:
 // 1. By parkDataId (e.g. "disneyland__space-mountain") → exact match from wish linkage
 // 2. By name (lowercase) → fuzzy fallback for unlinked items
-const coordCacheKey = "dland-park-coord-cache";
+const coordCacheKey = cacheKey("park-coord");
 
-// Bump the version suffix whenever WaitTimeRideEntry's shape changes (e.g.
-// a new field like byHourByDayOfWeek) — otherwise a client with an old
-// object already cached under this key keeps serving it for the full
-// 24h TTL, silently missing whatever new field a just-shipped feature
-// reads. Hit this for real: the day-of-week and hourly-by-day fields both
-// shipped without a version bump, so existing sessions saw those features
-// as broken/missing until their cache happened to expire.
-const waitStatsCacheKey = "dland-wait-time-stats-cache-v3";
+// Keyed to the build (cacheKey): the day-of-week and hourly fields once
+// shipped behind a key nobody bumped, and looked broken for up to 24h.
+const waitStatsCacheKey = cacheKey("wait-time-stats");
 
 export function clearParkDataCache(): void {
   try {
@@ -532,9 +557,7 @@ export async function getWaitTimeStats(): Promise<WaitTimeStats | null> {
 const RIDE_RELIABILITY_FILE = "rideReliabilityStats.json";
 
 // Bump the version suffix whenever RideReliabilityEntry's shape changes —
-// see waitStatsCacheKey's comment above for why this matters (a stale
-// cached object missing a new field silently looks "broken" for up to 24h).
-const rideReliabilityCacheKey = "dland-ride-reliability-cache-v1";
+const rideReliabilityCacheKey = cacheKey("ride-reliability");
 
 export interface RideReliabilityRecovery {
   episodeCount: number;
@@ -614,7 +637,7 @@ export interface LandConfigEntry {
   lands: string[];
 }
 
-const landConfigCacheKey = "dland-land-config-cache";
+const landConfigCacheKey = cacheKey("land-config");
 
 export async function getLandConfig(): Promise<Record<string, LandConfigEntry>> {
   try {
@@ -671,7 +694,7 @@ export interface DayParkHours {
   californiaadventure: ParkHoursForPark | null;
 }
 
-const HOURS_CACHE_KEY = "dland-park-hours-cache-v1";
+const HOURS_CACHE_KEY = cacheKey("park-hours");
 const HOURS_TTL = 6 * 60 * 60 * 1000; // hours rarely change, but they can
 const hoursInFlight = new Map<string, Promise<DayParkHours | null>>();
 

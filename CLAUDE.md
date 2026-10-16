@@ -153,6 +153,9 @@ background: `${ACCENT}20`  // broken — ACCENT is now a var(), not a hex
 - Zustand for UI-only state (theme, current trip/user selection, Cloud Sync toggle, catalog view)
 - Dexie/`useLiveQuery()` for all persisted app data — no manual cache layer
 - Multi-user: `userId` on junction tables (`tripWishSelections`, `tripPackingSelections`, `dayItems`) for ownership; `activeUserFilter` in Zustand filters the UI, doesn't touch storage
+- **Dates:** calendar dates ("YYYY-MM-DD") and "today" come from `src/lib/dates.ts` (`parkToday`, `parkDate`, `parkClock`, `addDays`, `daysBetween`, `datesBetween`), in the park's time zone (Pacific). Never `toISOString().slice(0, 10)` / `.split("T")[0]`: that's UTC, already tomorrow after 5 PM Pacific, and a day early for anyone east of UTC. ESLint rejects it outside `dates.ts`
+- **Park data caches** (`src/lib/park-data.ts`, localStorage) are keyed to the build's version with `cacheKey(name)`, so every deploy starts fresh; don't add hand-versioned keys (`-v2`). `pruneOldParkDataCaches()` (run in AppInit) removes earlier builds' keys
+- **Live Storage reads** (shows, restaurants, showtime history, park hours) depend on the bucket's CORS rule, which lists `app.parqwish.com` (the address users open), `parqwish-app.web.app`, `parqwish-app.firebaseapp.com` and `localhost:3000`. Check a live-data change from a page on `app.parqwish.com`; a blocked read quietly falls back to the deploy's copy
 
 ## Commit Message Style
 

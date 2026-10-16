@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { getParkHours, type DayParkHours, type ParkHoursForPark } from "@/lib/park-data";
+import { parkToday } from "@/lib/dates";
 
 const PARKS: { key: "disneyland" | "californiaadventure"; label: string }[] = [
   { key: "disneyland", label: "Disneyland" },
@@ -35,10 +36,6 @@ function parkPart(label: string, p: ParkHoursForPark | null) {
     hours: p.openingTime ? range(p) : "Ticketed event only",
     events: p.specialHours.map((e) => `${e.description} ${range(e)}`),
   };
-}
-
-function todayInPark(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 }
 
 export default function ParkHoursLine({ date }: { date: string | null }) {
@@ -68,7 +65,7 @@ export default function ParkHoursLine({ date }: { date: string | null }) {
   }
 
   if (!hours) {
-    const past = date < todayInPark();
+    const past = date < parkToday();
     return (
       <p className="w-full max-w-7xl -mt-2 mb-3 text-[11px]" style={{ color: "var(--color-text-dim)" }}>
         {"\u{1F552}"} {past ? "Park hours aren't kept for past days." : "Park hours for this day aren't posted yet; Disney usually posts them about a month ahead."}

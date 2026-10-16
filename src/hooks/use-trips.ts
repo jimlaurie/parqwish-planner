@@ -9,6 +9,7 @@ import {
   pushSelection, pushWishMirror, pushPackingSelection, pushPackingItemMirror,
 } from "@/lib/wish-sync";
 import { templateContentFrom, newTripRecord, copyWishSelections, copyPackingSelections } from "@/lib/trip-template";
+import { parkToday } from "@/lib/dates";
 
 // ==================== TEMPLATE COPYING ====================
 
@@ -86,8 +87,9 @@ export function useTrips() {
   const regularTrips = (trips ?? []).filter((t) => !t.isTemplate);
   const templateTrips = (trips ?? []).filter((t) => t.isTemplate);
 
-  // Categorize regular trips by timing
-  const today = new Date().toISOString().split("T")[0];
+  // Categorize regular trips by timing (the park's today: in UTC a trip
+  // happening today moved to Recent at 5 PM Pacific)
+  const today = parkToday();
   const futureTrips = regularTrips.filter(
     (t) => !t.isArchived && (t.startDate === "" || t.startDate >= today)
   );

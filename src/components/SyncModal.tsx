@@ -22,6 +22,7 @@ import {
 } from "@/lib/universal-sync";
 import type { ImportPreview, PhotoImportResult } from "@/lib/universal-sync";
 import TripPhotoImportPanel from "@/components/publish/TripPhotoImportPanel";
+import { addDays, daysBetween } from "@/lib/dates";
 
 // ==================== TYPES ====================
 
@@ -970,11 +971,8 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
                         )}
                       </div>
                       {remapStartDate && (() => {
-                        const origStart = new Date(importPreview.dateRange.startDate + "T00:00:00");
-                        const origEnd = new Date(importPreview.dateRange.endDate + "T00:00:00");
-                        const dayCount = Math.round((origEnd.getTime() - origStart.getTime()) / 86400000);
-                        const newEnd = new Date(new Date(remapStartDate + "T00:00:00").getTime() + dayCount * 86400000);
-                        const newEndStr = newEnd.toISOString().split("T")[0];
+                        const dayCount = daysBetween(importPreview.dateRange.startDate, importPreview.dateRange.endDate);
+                        const newEndStr = addDays(remapStartDate, dayCount);
                         return (
                           <div className="mt-2">
                             <div className="text-xs" style={{ color: GOLD }}>

@@ -10,6 +10,7 @@ import { startSync, startCollaboratorSync, stopSync, pullWishes, pullSharedTrips
 import { useAppStore } from "@/lib/store";
 import { cleanUpDiningDuplicates } from "@/lib/dining-duplicates";
 import { migratePackingCategories } from "@/lib/category-migration";
+import { pruneOldParkDataCaches } from "@/lib/park-data";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "0";
 
@@ -20,6 +21,8 @@ const CACHE_VERSION_KEY = "pwa-cache-version";
 
 function useCacheBuster() {
   useEffect(() => {
+    // Park data caches are keyed to the build; drop earlier builds' copies
+    pruneOldParkDataCaches();
     try {
       const stored = localStorage.getItem(CACHE_VERSION_KEY);
       const current = Number(stored) || 0;

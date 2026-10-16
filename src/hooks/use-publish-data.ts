@@ -10,6 +10,7 @@ import db, {
 import { useAppStore } from "@/lib/store";
 import { useAllTripPhotos } from "@/hooks/use-all-trip-photos";
 import { selectionOwners } from "@shared/selection-owners";
+import { datesBetween } from "@/lib/dates";
 
 // ==================== TYPES ====================
 
@@ -51,16 +52,7 @@ function formatDisplayDate(dateStr: string): string {
   return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 }
 
-function getDatesBetween(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const current = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-  while (current <= last) {
-    dates.push(current.toISOString().slice(0, 10));
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
-}
+const getDatesBetween = datesBetween;
 
 // ==================== MAIN HOOK ====================
 

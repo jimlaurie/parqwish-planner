@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
 import { useAppStore } from "@/lib/store";
+import { datesBetween } from "@/lib/dates";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -12,16 +13,7 @@ interface DatePickerBarProps {
   endDate: string;
 }
 
-function getDaysBetween(start: string, end: string): string[] {
-  const days: string[] = [];
-  const current = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-  while (current <= last) {
-    days.push(current.toISOString().slice(0, 10));
-    current.setDate(current.getDate() + 1);
-  }
-  return days;
-}
+const getDaysBetween = datesBetween;
 
 function formatDateChip(dateStr: string): { dayOfWeek: string; monthDay: string } {
   const d = new Date(dateStr + "T12:00:00");

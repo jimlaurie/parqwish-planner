@@ -15,6 +15,7 @@ import { compressImageMultiRes } from "@/lib/image-utils";
 import { readExifLocation, suggestLocationFromTrail } from "@/lib/trip-photo-location";
 import { addTripPhoto } from "@/hooks/use-trip-photos";
 import TripPhotoLocationPicker, { type LocationMatch } from "./TripPhotoLocationPicker";
+import { datesBetween, parkDate, parkToday } from "@/lib/dates";
 
 const ACCENT = "var(--color-accent-publish)";
 
@@ -32,21 +33,13 @@ interface PendingPhoto {
   editingLocation: boolean;
 }
 
-function getDatesBetween(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const current = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-  while (current <= last) {
-    dates.push(current.toISOString().slice(0, 10));
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
-}
+const getDatesBetween = datesBetween;
 
 function resolveDate(capturedAtIso: string | undefined, tripDates: string[]): string {
-  const fallback = tripDates[0] ?? new Date().toISOString().slice(0, 10);
+  const fallback = tripDates[0] ?? parkToday();
   if (!capturedAtIso) return fallback;
-  const day = capturedAtIso.slice(0, 10);
+  // The park's date of the moment it was taken (the UTC date is tomorrow for evening photos)
+  const day = parkDate(new Date(capturedAtIso));
   return tripDates.includes(day) ? day : fallback;
 }
 

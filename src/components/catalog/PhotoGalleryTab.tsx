@@ -16,17 +16,9 @@ import { useAppStore } from "@/lib/store";
 import { removeTripPhoto, updateTripPhotoLinks } from "@/hooks/use-trip-photos";
 import PhotoGalleryCard from "@/components/catalog/PhotoGalleryCard";
 import PhotoItemLinkerModal from "@/components/catalog/PhotoItemLinkerModal";
+import { datesBetween } from "@/lib/dates";
 
-function getDatesBetween(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const current = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-  while (current <= last) {
-    dates.push(current.toISOString().slice(0, 10));
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
-}
+const getDatesBetween = datesBetween;
 
 function formatTabDate(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");

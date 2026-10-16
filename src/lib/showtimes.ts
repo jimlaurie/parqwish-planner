@@ -12,6 +12,7 @@
 // park-data.ts via use-show-schedules.ts.
 
 import { formatTime12 } from "@/lib/time-format";
+import { parkDate } from "@/lib/dates";
 
 export interface ShowSchedule {
   /** Start times, "HH:MM" (24-hour, park time). */
@@ -91,7 +92,7 @@ function shortDate(day: string): string {
 export function syncDay(syncedAt: string | null): string | null {
   if (!syncedAt) return null;
   const d = new Date(syncedAt);
-  return isNaN(d.getTime()) ? null : d.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  return isNaN(d.getTime()) ? null : parkDate(d);
 }
 
 /**

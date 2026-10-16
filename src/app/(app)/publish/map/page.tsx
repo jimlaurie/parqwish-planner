@@ -36,6 +36,7 @@ import { getFirstThumbnail, getPhotos } from "@/lib/image-utils";
 import { calcDistanceMiles } from "@/lib/trail-geo";
 import { trailPerson, comparePeople, usesPersonColors, lineColor, usersByIdMap, type TrailPerson } from "@/lib/trail-people";
 import type { TripMapMarker, TripPhotoMarker, MergedTrail, MergedTrailPoint, TrailLine } from "@/components/publish/TripMapView";
+import { datesBetween } from "@/lib/dates";
 
 const ACCENT = "var(--color-accent-publish)";
 const FLAG_COLOR = "var(--color-error)";
@@ -54,16 +55,7 @@ const TripMapView = dynamic(() => import("@/components/publish/TripMapView"), {
 
 // ==================== HELPERS ====================
 
-function getDatesBetween(start: string, end: string): string[] {
-  const dates: string[] = [];
-  const current = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-  while (current <= last) {
-    dates.push(current.toISOString().slice(0, 10));
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
-}
+const getDatesBetween = datesBetween;
 
 function formatTabDate(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");

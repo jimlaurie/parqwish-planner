@@ -11,6 +11,7 @@ import DayItemCard from "./DayItemCard";
 import { ShowtimeDragNote } from "./ShowtimeMarks";
 import { useTypicalWaits } from "@/hooks/use-typical-waits";
 import { buildWaitHint, findRide, type WaitHint } from "@/lib/typical-waits";
+import { parkClock } from "@/lib/dates";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -199,11 +200,12 @@ export default function Timeline({
   // Current-time slot
   const nowSlot = useMemo(() => {
     if (!selectedDate) return null;
-    const today = new Date().toISOString().slice(0, 10);
-    if (selectedDate !== today) return null;
-    const now = new Date();
-    const hh = now.getHours().toString().padStart(2, "0");
-    const mm = now.getMinutes() >= 30 ? "30" : "00";
+    // Park time: the plan's times are the park's, and the UTC date is
+    // already tomorrow after 5 PM Pacific
+    const now = parkClock();
+    if (selectedDate !== now.date) return null;
+    const hh = now.hours.toString().padStart(2, "0");
+    const mm = now.minutes >= 30 ? "30" : "00";
     return `${hh}:${mm}`;
   }, [selectedDate]);
 

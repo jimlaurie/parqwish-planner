@@ -9,6 +9,8 @@
 // With nothing (valid) selected, picks the trip you most likely want:
 // one in progress, else the next one coming up, else the most recent.
 
+import { parkDate } from "@/lib/dates";
+
 export interface SelectableTrip {
   id: string;
   startDate: string; // YYYY-MM-DD, "" for templates
@@ -18,11 +20,13 @@ export interface SelectableTrip {
   isArchived?: boolean;
 }
 
-/** Today as YYYY-MM-DD in the device's own time zone. */
+/**
+ * Today as YYYY-MM-DD at the park (Pacific; lib/dates.ts), the same "today"
+ * the trip lists use. It was the device's own time zone, which could
+ * disagree with them for anyone outside Pacific time.
+ */
 export function localToday(now: Date = new Date()): string {
-  const m = String(now.getMonth() + 1).padStart(2, "0");
-  const d = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${m}-${d}`;
+  return parkDate(now);
 }
 
 function defaultTrip(trips: SelectableTrip[], today: string): SelectableTrip | null {

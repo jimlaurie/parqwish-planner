@@ -178,6 +178,11 @@ npm run lint      # ESLint must pass clean
 
 Manually check any visual change in both light and dark mode — theming bugs (a hardcoded hex slipping past the token convention) are the easiest thing to miss and won't show up in build/lint. `npm run ship` (see Commands) is the full release step; a change isn't "done" until it's actually deployed for anything user-facing, matching the mobile repo's same philosophy that "it works locally" isn't sufficient.
 
+Also part of done (the reasons are in `dland-wishes/CLAUDE.md` › Harness):
+- **Ask "what else needs this?" while planning:** Pal (`dland-wishes`), the Admin site, `shared/` (mirror into both repos), the Guide on parqwish.com
+- **Check it on `https://app.parqwish.com`** after shipping when it reads live data or depends on the page's address (CORS, sign-in); `localhost` and `parqwish-app.web.app` have passed while the real address failed
+- **A fallback isn't a pass:** for live reads that fall back to the deploy's copy or a cache, confirm the live path ran (something only the live data has), and keep "failed to load" distinct from "nothing there"
+
 ## Key Patterns
 
 ### Theme Switching

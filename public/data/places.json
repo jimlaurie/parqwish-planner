@@ -167,6 +167,45 @@
       "status": "operating"
     }
   },
+  "hotels": {
+    "lobby-at-grand-californian": {
+      "latitude": 33.80775,
+      "longitude": -117.92253,
+      "category": "photo spot",
+      "name": "Lobby at Grand Californian",
+      "status": "operating",
+      "description": "Fireplace. Seasonal Displays",
+      "land": "Disney's Grand Californian Hotel"
+    },
+    "lobby-at-pixar-place": {
+      "description": "Pixar themed displays",
+      "name": "Lobby at Pixar Place",
+      "status": "operating",
+      "longitude": -117.92452,
+      "land": "Pixar Place Hotel",
+      "category": "meeting point",
+      "latitude": 33.8062
+    },
+    "pool-at-gch": {
+      "longitude": -117.92197,
+      "status": "operating",
+      "category": "meeting point",
+      "latitude": 33.80746,
+      "name": "Pool at GCH",
+      "description": "The pool at Grand Californian Hotel",
+      "land": "Disney's Grand Californian Hotel"
+    },
+    "pool-at-disneyland-hotel": {
+      "latitude": 33.80847,
+      "category": "photo spot",
+      "description": "",
+      "name": "Pool at Disneyland Hotel",
+      "longitude": -117.92688,
+      "status": "operating",
+      "land": "Disneyland Hotel"
+    }
+  },
+  "lastUpdated": "2026-10-16T00:44:59.120Z",
   "disneyland": {
     "frontierland-entrance": {
       "category": "photo spot",
@@ -176,15 +215,6 @@
       "description": "The rustic log stockade entrance to Frontierland.",
       "longitude": -117.91955,
       "name": "Frontierland Stockade Entrance"
-    },
-    "key-to-disneyland-fantasyland": {
-      "name": "Key to Disneyland Main Entrance",
-      "land": "Main Street U.S.A.",
-      "category": "photo spot",
-      "status": "seasonal",
-      "description": "",
-      "latitude": 33.80985,
-      "longitude": -117.91925
     },
     "tarzan-treehouse": {
       "name": "Tarzan's Treehouse",
@@ -321,15 +351,6 @@
       "land": "Main Street U.S.A.",
       "category": "guest services"
     },
-    "key-to-disneyland-entrance": {
-      "name": "Key to Disneyland Entrance",
-      "land": "Main Street U.S.A.",
-      "category": "photo spot",
-      "status": "seasonal",
-      "description": "",
-      "latitude": 33.81043,
-      "longitude": -117.91938
-    },
     "main-street-train-station": {
       "status": "operating",
       "name": "Main Street Train Station",
@@ -338,45 +359,24 @@
       "land": "Main Street U.S.A.",
       "category": "landmark",
       "latitude": 33.81005
-    }
-  },
-  "hotels": {
-    "lobby-at-grand-californian": {
-      "latitude": 33.80775,
-      "longitude": -117.92253,
+    },
+    "key-to-disneyland-entrance": {
+      "land": "Main Street U.S.A.",
       "category": "photo spot",
-      "name": "Lobby at Grand Californian",
-      "status": "operating",
-      "description": "Fireplace. Seasonal Displays",
-      "land": "Disney's Grand Californian Hotel"
+      "status": "seasonal",
+      "latitude": 33.81043,
+      "longitude": -117.91938,
+      "name": "Key to Disneyland Town Square",
+      "description": "Inside the park, in Town Square at the start of Main Street."
     },
-    "lobby-at-pixar-place": {
-      "description": "Pixar themed displays",
-      "name": "Lobby at Pixar Place",
-      "status": "operating",
-      "longitude": -117.92452,
-      "land": "Pixar Place Hotel",
-      "category": "meeting point",
-      "latitude": 33.8062
-    },
-    "pool-at-gch": {
-      "longitude": -117.92197,
-      "status": "operating",
-      "category": "meeting point",
-      "latitude": 33.80746,
-      "name": "Pool at GCH",
-      "description": "The pool at Grand Californian Hotel",
-      "land": "Disney's Grand Californian Hotel"
-    },
-    "pool-at-disneyland-hotel": {
-      "latitude": 33.80847,
+    "key-to-disneyland-fantasyland": {
+      "name": "Key to Disneyland Main Entrance",
+      "land": "Main Street U.S.A.",
       "category": "photo spot",
-      "description": "",
-      "name": "Pool at Disneyland Hotel",
-      "longitude": -117.92688,
-      "status": "operating",
-      "land": "Disneyland Hotel"
+      "status": "seasonal",
+      "latitude": 33.80985,
+      "longitude": -117.91925,
+      "description": "Just outside the main entrance gates."
     }
-  },
-  "lastUpdated": "2026-08-17T23:13:10.451Z"
+  }
 }

@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "22:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "18:00"
+          "end": "22:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "17:30"
+          "end": "21:30"
         }
       ],
       "duration": 15,
@@ -317,12 +317,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "12:10",
-        "13:10",
-        "14:15",
-        "15:45",
-        "16:45",
-        "17:45"
+        "15:30",
+        "16:30",
+        "17:30",
+        "18:45",
+        "19:35",
+        "20:25"
       ],
       "types": [
         "street show"
@@ -340,12 +340,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
-        "10:30",
         "11:30",
         "12:30",
-        "14:00",
+        "13:30",
         "15:00",
-        "16:00"
+        "16:00",
+        "17:00"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -386,12 +386,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "11:30",
         "12:30",
         "13:30",
-        "15:10",
-        "16:10",
-        "17:10"
+        "14:35",
+        "16:05",
+        "17:05",
+        "18:05"
       ],
       "longitude": -117.919083,
       "types": [
@@ -437,7 +437,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-15T13:00:04.084Z",
+  "lastUpdated": "2026-10-16T13:00:06.179Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -509,14 +509,21 @@
       "latitude": 33.812041
     },
     "dapper-dans": {
-      "times": [],
+      "times": [
+        "11:00",
+        "12:15",
+        "13:10",
+        "14:20",
+        "16:15",
+        "17:00"
+      ],
       "types": [
         "street show",
         "character experience"
       ],
       "land": "Main Street U.S.A.",
       "longitude": -117.918962,
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
       "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
       "timeRanges": [
@@ -662,9 +669,12 @@
         "nighttime spectacular"
       ],
       "land": "Frontierland",
-      "times": [],
+      "times": [
+        "21:00",
+        "22:30"
+      ],
       "duration": 25,
-      "status": "closed",
+      "status": "operating",
       "name": "Fantasmic!",
       "timeRanges": [],
       "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db",
@@ -701,9 +711,17 @@
       ]
     },
     "jambalaya-jazz": {
-      "status": "closed",
+      "status": "operating",
       "duration": 25,
-      "times": [],
+      "times": [
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:05",
+        "16:00",
+        "17:00"
+      ],
       "types": [
         "street show"
       ],
@@ -821,7 +839,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "23:30"
+          "end": "19:30"
         }
       ],
       "duration": 15,
@@ -847,9 +865,16 @@
       "timeRanges": []
     },
     "storytelling-royal-theatre": {
-      "status": "closed",
+      "status": "operating",
       "duration": 25,
-      "times": [],
+      "times": [
+        "10:15",
+        "11:25",
+        "12:40",
+        "14:15",
+        "15:25",
+        "16:35"
+      ],
       "longitude": -117.919443,
       "land": "Fantasyland",
       "types": [
@@ -872,7 +897,6 @@
       "longitude": -117.921242,
       "times": [
         "20:30",
-        "21:25",
         "22:15"
       ],
       "duration": 12,
@@ -966,10 +990,12 @@
         "nighttime spectacular"
       ],
       "longitude": -117.9213958,
-      "times": [],
+      "times": [
+        "21:30"
+      ],
       "duration": 15,
-      "status": "closed"
+      "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-10-15T13:00:04.084Z"
+  "lastShowtimeSync": "2026-10-16T13:00:06.180Z"
 }

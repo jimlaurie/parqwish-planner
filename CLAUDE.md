@@ -33,15 +33,16 @@ npm run build    # Production build (static export to out/), writes out/version.
 npm run lint     # ESLint check
 npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
-npm run deploy   # bump-version.mjs (patch-bump package.json) → download-park-data.mjs
-                  #   → npm run build → firebase deploy --only hosting:pwa
+npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check
+npm run ship -- --check   # just the checks (branch, clean tree, origin, .env.local, lint)
+npm run ship -- --retry   # after a failed Firebase upload: re-upload the build, no second bump
+npm run deploy   # the raw steps ship runs: bump-version.mjs (patch-bump package.json)
+                  #   → download-park-data.mjs → npm run build → firebase deploy --only hosting:pwa
 npm run illustrations          # Home banner: art/home-illustrations/banner.svg → generated/banner.ts
 npm run illustrations:traced   # Home cards: art/home-illustrations/traced/*.svg → generated/<card>.ts
 ```
 
-Run `npm run deploy` only from `main`: the local `partner-demo` branch must never be deployed or pushed (see `dland-wishes/CLAUDE.md`).
-
-**`npm run deploy` doesn't commit anything it changes.** The version bump and any refreshed `public/data/*.json` files are left as uncommitted changes after a deploy — the established pattern is: commit the actual feature/fix first and push, run `npm run deploy`, then commit whatever changed as a follow-up `Bump version to X.Y.Z (deploy)` commit. Firebase project `my-tour-guide-backend`, hosting target `parqwish-app` (`firebase.json`), live at `https://parqwish-app.web.app` (custom domain `parqwish.com`).
+**Release with `npm run ship`** (`scripts/ship.mjs`): commit and push the feature first, then ship. It refuses to run off `main` (the local `partner-demo` branch must never be deployed or pushed; see `dland-wishes/CLAUDE.md`), with uncommitted tracked changes, behind origin, without real Firebase values in `.env.local`, or with lint errors; warns if `shared/` source differs from `dland-wishes/shared`. Then it runs the deploy steps one at a time (a failure names the step and how to undo or retry), commits "Bump version" with only `package.json`, `package-lock.json` and `public/data`, pushes, waits for `https://app.parqwish.com/version.json` to show the new version, and warns if a dev server needs restarting (the build replaces `.next`). It replaces the hand-typed commit/deploy/commit chain, which broke `main` twice. Bare `npm run deploy` still works but commits nothing. Firebase project `my-tour-guide-backend`, hosting target `parqwish-app` (`firebase.json`), live at `https://parqwish-app.web.app` (custom domain `parqwish.com`).
 
 ## Project Structure
 
@@ -85,7 +86,8 @@ src/
     └── firebase.ts               # Firebase config (has inert placeholder fallbacks — see Gotchas)
 shared/                        # Copy of the mobile repo's shared/ — see Project Overview
 scripts/
-├── bump-version.mjs            # Patch-bumps package.json version (run by npm run deploy)
+├── bump-version.mjs            # Patch-bumps package.json version (run by npm run deploy / ship)
+├── ship.mjs                    # npm run ship: checks, deploy, "Bump version" commit, live check
 ├── download-park-data.mjs      # Refreshes public/data/*.json from the live source
 ├── import-illustrations.mjs    # Home banner importer (named layers, palette → --illo-* tokens)
 └── import-traced-art.mjs       # Home card importer (traced art, moving parts by path number)
@@ -174,7 +176,7 @@ npm run build     # static export must succeed — no TS or build errors
 npm run lint      # ESLint must pass clean
 ```
 
-Manually check any visual change in both light and dark mode — theming bugs (a hardcoded hex slipping past the token convention) are the easiest thing to miss and won't show up in build/lint. `npm run deploy` (see Commands) is the full release step; a change isn't "done" until it's actually deployed for anything user-facing, matching the mobile repo's same philosophy that "it works locally" isn't sufficient.
+Manually check any visual change in both light and dark mode — theming bugs (a hardcoded hex slipping past the token convention) are the easiest thing to miss and won't show up in build/lint. `npm run ship` (see Commands) is the full release step; a change isn't "done" until it's actually deployed for anything user-facing, matching the mobile repo's same philosophy that "it works locally" isn't sufficient.
 
 ## Key Patterns
 
@@ -231,8 +233,8 @@ Manually check any visual change in both light and dark mode — theming bugs (a
 ## Gotchas
 
 - **Route renames, current names win:** the itinerary/timeline page is `/preview` (was `/play`); the data-transfer page is `/play` (was `/sync`). Component/hook/CSS-token names haven't fully caught up — `src/components/play/` holds *Preview*-phase components, and `--color-accent-play` is the *data-transfer* page's accent, not a leftover. Don't rename-on-sight; check which era a given name is from before assuming it's wrong.
-- **`firebase.ts` has inert placeholder fallbacks** (`"demo-api-key"`, `"demo-project"`, etc.) so `next build` doesn't crash when `.env.local` is missing. This has bitten production twice: `.env.local` was absent during `npm run deploy` and the placeholder config silently shipped live, breaking every Firebase-backed feature (Sign in with Apple/Google, Cloud Sync) behind a generic "Sign in failed" message. **Before any deploy, confirm `.env.local` exists with real values** — `cat .env.local`, or check the deployed bundle for the literal string `"demo-project"` in the compiled `firebaseConfig` object if in doubt.
-- **`npm run deploy` doesn't commit its own changes** — see Commands above.
+- **`firebase.ts` has inert placeholder fallbacks** (`"demo-api-key"`, `"demo-project"`, etc.) so `next build` doesn't crash when `.env.local` is missing. This has bitten production twice: `.env.local` was absent during `npm run deploy` and the placeholder config silently shipped live, breaking every Firebase-backed feature (Sign in with Apple/Google, Cloud Sync) behind a generic "Sign in failed" message. `npm run ship` now refuses to deploy without real values in `.env.local`; with bare `npm run deploy`, check it yourself first.
+- **Bare `npm run deploy` doesn't commit its own changes** — use `npm run ship` (see Commands).
 - **`shared/` is a copy, not a package** — see Project Overview. Check whether a `shared/` fix needs mirroring into `dland-wishes/shared/` (and vice versa) before considering it done. As of Aug 2026 the two copies have stayed in sync (spot-checked via full checksum diff) — but nothing enforces that automatically.
 
 ## For historical/roadmap context

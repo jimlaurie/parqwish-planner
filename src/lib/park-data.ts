@@ -17,6 +17,16 @@ const LIVE_FILES = new Set<string>(["shows.json", "restaurants.json"]);
 const DISNEY_SITE = "https://disneyland.disney.go.com";
 const LIVE_TIMEOUT_MS = 8000;
 
+/**
+ * A live Storage URL with a query that changes hourly. Storage lets browsers
+ * cache these files for an hour, and a copy cached before the bucket's CORS
+ * rule covered this site would keep failing; the query also picks up the
+ * morning's new showtimes on the hour.
+ */
+function liveUrl(path: string): string {
+  return `${LIVE_BASE_URL}/${path}?h=${Math.floor(Date.now() / 3_600_000)}`;
+}
+
 const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
 // v5: the cache entry also keeps showtimesSyncedAt; v6: restaurants read
@@ -248,7 +258,7 @@ async function fetchJson(url: string, init?: RequestInit): Promise<Record<string
 async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
   if (LIVE_FILES.has(file)) {
     try {
-      const data = await fetchJson(`${LIVE_BASE_URL}/${file}`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
+      const data = await fetchJson(liveUrl(file), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
       // Every park data file is keyed by park (restaurants.json has no "version")
       if (data && typeof data === "object" && typeof data.disneyland === "object") return data;
       console.warn(`[park-data] live ${file} looked wrong, using the deployed copy`);
@@ -286,7 +296,7 @@ async function loadShowtimeHistory(): Promise<ShowtimeHistory | null> {
   } catch { /* cache read failed */ }
 
   try {
-    const data = await fetchJson(`${LIVE_BASE_URL}/showtimeHistory.json`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
+    const data = await fetchJson(liveUrl("showtimeHistory.json"), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
     if (!data || typeof data.days !== "object" || !data.days) throw new Error("no days");
     const history: ShowtimeHistory = { days: data.days as ShowtimeHistory["days"] };
     try {
@@ -685,22 +695,23 @@ function writeHoursCache(date: string, data: DayParkHours | null): void {
   } catch { /* cache write failed */ }
 }
 
-/** A day's park hours, or null when they aren't posted (too far ahead, or past). */
+/**
+ * A day's park hours, or null when they aren't posted (too far ahead, or
+ * past). Rejects when they couldn't be loaded (offline, blocked), which the
+ * caller should say differently from "not posted".
+ */
 export function getParkHours(date: string): Promise<DayParkHours | null> {
   const cached = readHoursCache()[date];
   if (cached && Date.now() - cached.fetchedAt < HOURS_TTL) return Promise.resolve(cached.data);
   let pending = hoursInFlight.get(date);
   if (!pending) {
-    pending = fetch(`${LIVE_BASE_URL}/hours/${date}.json`, { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) })
+    pending = fetch(liveUrl(`hours/${date}.json`), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) })
       .then(async (res) => {
-        // Storage answers 403 for a file that doesn't exist yet
+        // Storage answers 403 (or 404) for a file that doesn't exist yet
+        if (!res.ok && res.status !== 403 && res.status !== 404) throw new Error(`park hours ${date}: ${res.status}`);
         const data = res.ok ? ((await res.json()) as DayParkHours) : null;
         writeHoursCache(date, data);
         return data;
-      })
-      .catch((err) => {
-        console.warn(`[park-data] park hours for ${date} unavailable:`, err);
-        return null;
       })
       .finally(() => hoursInFlight.delete(date));
     hoursInFlight.set(date, pending);

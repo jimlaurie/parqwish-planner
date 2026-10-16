@@ -4,7 +4,8 @@
 // The selected day's park hours under Preview's date bar: Disneyland and
 // California Adventure opening to closing, plus any ticketed event that
 // night. Hours come from data/hours/<date>.json (park-data.ts
-// getParkHours), posted about a month ahead; a later day says so.
+// getParkHours), posted about a month ahead; a later day says so, and a
+// failed load says that instead.
 
 import { useEffect, useState } from "react";
 import { getParkHours, type DayParkHours, type ParkHoursForPark } from "@/lib/park-data";
@@ -41,17 +42,30 @@ function todayInPark(): string {
 }
 
 export default function ParkHoursLine({ date }: { date: string | null }) {
-  const [state, setState] = useState<{ date: string; hours: DayParkHours | null } | null>(null);
+  const [state, setState] = useState<{ date: string; hours: DayParkHours | null; failed?: boolean } | null>(null);
 
   useEffect(() => {
     if (!date) return;
     let cancelled = false;
-    getParkHours(date).then((hours) => { if (!cancelled) setState({ date, hours }); });
+    getParkHours(date)
+      .then((hours) => { if (!cancelled) setState({ date, hours }); })
+      .catch((err) => {
+        console.warn("[ParkHoursLine] park hours didn't load:", err);
+        if (!cancelled) setState({ date, hours: null, failed: true });
+      });
     return () => { cancelled = true; };
   }, [date]);
 
   if (!date || state?.date !== date) return null;
   const { hours } = state;
+
+  if (state.failed) {
+    return (
+      <p className="w-full max-w-7xl -mt-2 mb-3 text-[11px]" style={{ color: "var(--color-text-dim)" }}>
+        {"\u{1F552}"} Park hours couldn&rsquo;t be loaded right now. Check your connection, or try again later.
+      </p>
+    );
+  }
 
   if (!hours) {
     const past = date < todayInPark();

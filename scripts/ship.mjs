@@ -135,7 +135,8 @@ function hashTree(dir) {
   const files = new Map();
   const walk = (d) => {
     for (const name of readdirSync(d)) {
-      if (name === "node_modules" || name.startsWith(".")) continue;
+      // Tests run in dland-wishes (Jest); the Planner has no test runner
+      if (name === "node_modules" || name === "__tests__" || name.startsWith(".")) continue;
       const p = join(d, name);
       if (statSync(p).isDirectory()) walk(p);
       else files.set(relative(dir, p), createHash("sha1").update(readFileSync(p)).digest("hex"));
@@ -145,7 +146,7 @@ function hashTree(dir) {
   return files;
 }
 
-/** Warns (doesn't stop) when shared/ differs from the private repo's copy. */
+/** Warns (doesn't stop) when shared/'s source differs from the private repo's copy (tests aren't compared). */
 function warnSharedDrift() {
   const other = join(ROOT, "..", "dland-wishes", "shared");
   if (!existsSync(other)) return;

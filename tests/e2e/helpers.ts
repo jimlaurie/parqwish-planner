@@ -98,12 +98,17 @@ export async function drag(page: Page, from: { x: number; y: number }, to: { x: 
   await page.mouse.up();
 }
 
+/** Every record in one of the app's IndexedDB stores, for checking what a change saved. */
+export async function rows<T = Record<string, unknown>>(page: Page, store: string): Promise<T[]> {
+  return page.evaluate(async (name) => {
+    const db = await new Promise<IDBDatabase>((res, rej) => { const r = indexedDB.open("ParQwishPWA"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    const all = await new Promise<unknown[]>((res) => { const q = db.transaction(name).objectStore(name).getAll(); q.onsuccess = () => res(q.result); });
+    db.close();
+    return all;
+  }, store) as Promise<T[]>;
+}
+
 /** A trip's day items as stored, for checking what a drop saved. */
 export async function dayItems(page: Page): Promise<Array<{ title: string; date: string; scheduledTime?: string; durationMinutes?: number }>> {
-  return page.evaluate(async () => {
-    const db = await new Promise<IDBDatabase>((res, rej) => { const r = indexedDB.open("ParQwishPWA"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
-    const all = await new Promise<unknown[]>((res) => { const q = db.transaction("dayItems").objectStore("dayItems").getAll(); q.onsuccess = () => res(q.result); });
-    db.close();
-    return all as Array<{ title: string; date: string; scheduledTime?: string; durationMinutes?: number }>;
-  });
+  return rows(page, "dayItems");
 }

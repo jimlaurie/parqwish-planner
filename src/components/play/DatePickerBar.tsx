@@ -11,6 +11,8 @@ const ACCENT = "var(--color-accent-preview)";
 interface DatePickerBarProps {
   startDate: string;
   endDate: string;
+  /** Inside the page header (PlayHeader's title row) rather than a row of its own. */
+  inline?: boolean;
 }
 
 const getDaysBetween = datesBetween;
@@ -22,7 +24,7 @@ function formatDateChip(dateStr: string): { dayOfWeek: string; monthDay: string 
   return { dayOfWeek, monthDay };
 }
 
-export default function DatePickerBar({ startDate, endDate }: DatePickerBarProps) {
+export default function DatePickerBar({ startDate, endDate, inline }: DatePickerBarProps) {
   const { currentTripId, selectedPlayDate, setSelectedPlayDate } = useAppStore();
   const days = useMemo(() => getDaysBetween(startDate, endDate), [startDate, endDate]);
 
@@ -44,8 +46,9 @@ export default function DatePickerBar({ startDate, endDate }: DatePickerBarProps
   );
 
   return (
-    <div className="w-full max-w-7xl mb-4">
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+    <div className={inline ? "min-w-0" : "w-full max-w-7xl mb-4"}>
+      {/* pt-1.5 keeps the count badges (-top-1) from being clipped by the scroll box */}
+      <div className={`flex gap-2 overflow-x-auto pb-2 scrollbar-thin ${inline ? "pt-1.5" : ""}`}>
         {days.map((day) => {
           const { dayOfWeek, monthDay } = formatDateChip(day);
           const isSelected = selectedPlayDate === day;

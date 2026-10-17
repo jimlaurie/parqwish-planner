@@ -8,6 +8,9 @@
 //   /trip?new=1                a new, unsaved trip (New Trip › Full Detail),
 //                              created and synced only on Save
 //   /trip?new=1&template=1     a new, unsaved template (sidebar › + New Template)
+//   …&from=/plan               came from that page (the top bar's trip name):
+//                              Save, Cancel and Clear go back there; Delete
+//                              and Archive go Home (the trip's gone from view)
 // A query string rather than /trip/<id>, since the planner is a static export.
 // Every way of editing a trip leads here: the ✏️ beside a trip and the New
 // Trip menu.
@@ -17,6 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { Trip } from "@/lib/db";
 import { useTrips } from "@/hooks/use-trips";
 import TripEditor from "@/components/trip-editor/TripEditor";
+import { safeReturnPath, returnLabel } from "@/lib/return-path";
 
 function Spinner() {
   return (
@@ -64,6 +68,8 @@ function TripPageInner() {
   const t = useTrips();
   const trip = tripId ? t.trips.find((x) => x.id === tripId) ?? null : null;
   const goHome = useCallback(() => router.push("/"), [router]);
+  const returnTo = safeReturnPath(params.get("from")) ?? "/";
+  const goBack = useCallback(() => router.push(returnTo), [router, returnTo]);
 
   if (tripId && t.loading) return <Spinner />;
   if (tripId && !trip) return <NotFound onHome={goHome} />;
@@ -81,7 +87,7 @@ function TripPageInner() {
         details: { flights: fields.flights, hotels: fields.hotels, transports: fields.transports, notes: fields.notes },
       });
     }
-    goHome();
+    goBack();
   };
 
   return (
@@ -91,14 +97,15 @@ function TripPageInner() {
       highlightDates={highlightDates}
       newTemplate={newTemplate}
       onSave={save}
-      onClose={goHome}
+      onClose={goBack}
+      backLabel={returnLabel(returnTo)}
       onSaveAsTemplate={trip ? async () => { await t.saveAsTemplate(trip.id, `${trip.name} (Template)`); } : undefined}
       onToggleArchive={trip ? async () => {
         if (trip.isArchived) { await t.unarchiveTrip(trip.id); return; }
         await t.archiveTrip(trip.id);
         goHome();
       } : undefined}
-      onClear={trip ? async () => { await t.clearTrip(trip.id); goHome(); } : undefined}
+      onClear={trip ? async () => { await t.clearTrip(trip.id); goBack(); } : undefined}
       onDelete={trip ? async () => { await t.deleteTrip(trip.id); goHome(); } : undefined}
     />
   );

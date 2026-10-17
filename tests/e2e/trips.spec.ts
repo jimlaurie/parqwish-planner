@@ -52,3 +52,37 @@ test.describe("east of UTC", () => {
     await expect(page.getByRole("button", { name: /10\/13|10\/18/ })).toHaveCount(0);
   });
 });
+
+test.describe("the top bar's trip name opens Edit Trip and comes back", () => {
+  test.beforeEach(async ({ page }) => { await seedTrip(page); });
+
+  test("from Plan: '← Plan', and Cancel returns to Plan", async ({ page }) => {
+    await page.goto("/plan");
+    await page.getByRole("link", { name: "Edit trip: Test Trip" }).click();
+    await expect(page).toHaveURL(/\/trip\?id=trip_test&from=%2Fplan$/);
+    await page.getByRole("button", { name: "← Plan" }).click();
+    await expect(page).toHaveURL(/\/plan$/);
+  });
+
+  test("from Preview: Save returns to Preview", async ({ page }) => {
+    await page.goto("/preview");
+    await page.getByRole("link", { name: "Edit trip: Test Trip" }).click();
+    await page.locator("#general input").first().fill("Test Trip Renamed");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page).toHaveURL(/\/preview$/);
+    await expect(page.getByRole("link", { name: "Edit trip: Test Trip Renamed" })).toBeVisible();
+  });
+
+  test("a crafted from= to another site is ignored (back goes Home)", async ({ page }) => {
+    await page.goto(`/trip?id=${TRIP_ID}&from=${encodeURIComponent("https://example.com/")}`);
+    await expect(page.getByRole("button", { name: "← Home" })).toBeVisible();
+    await page.goto(`/trip?id=${TRIP_ID}&from=${encodeURIComponent("//example.com")}`);
+    await page.getByRole("button", { name: "← Home" }).click();
+    await expect(page).toHaveURL(/localhost:3000\/$/);
+  });
+
+  test("on the Edit Trip page itself the trip name isn't a link", async ({ page }) => {
+    await page.goto(`/trip?id=${TRIP_ID}`);
+    await expect(page.getByRole("link", { name: /Edit trip:/ })).toHaveCount(0);
+  });
+});

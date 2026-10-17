@@ -12,6 +12,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import SyncStatusIndicator from "@/components/SyncStatusIndicator";
 import { marketingUrl } from "@/lib/marketing-links";
 import { formatTripDates } from "@/lib/trip-dates";
+import { editTripHref } from "@/lib/return-path";
 
 // ==================== NAVIGATION ====================
 // The five trip phases follow the same journey as the marketing site's
@@ -270,9 +271,9 @@ export default function TopNavBar() {
                 />
               </Link>
               {currentTrip && (
-                <div className="flex flex-col min-w-0">
+                <TripNameLink tripId={currentTrip.id} name={currentTrip.name} pathname={pathname}>
                   <span
-                    className="text-xs md:text-sm font-bold truncate max-w-[40vw] md:max-w-[160px]"
+                    className="text-xs md:text-sm font-bold truncate max-w-[40vw] md:max-w-[160px] group-hover:underline underline-offset-2"
                     style={{ color: "var(--color-heading)" }}
                   >
                     {currentTrip.name}
@@ -285,7 +286,7 @@ export default function TopNavBar() {
                       <TripCountdownPill trip={currentTrip} />
                     </span>
                   )}
-                </div>
+                </TripNameLink>
               )}
             </div>
 
@@ -322,6 +323,24 @@ export default function TopNavBar() {
 }
 
 // ==================== TRIP COUNTDOWN PILL ====================
+
+/**
+ * The trip name and dates, linking to the Edit Trip page and back to this
+ * page afterwards (lib/return-path.ts). Plain text on the Edit Trip page itself.
+ */
+function TripNameLink({ tripId, name, pathname, children }: { tripId: string; name: string; pathname: string; children: React.ReactNode }) {
+  if (pathname.startsWith("/trip")) return <div className="flex flex-col min-w-0">{children}</div>;
+  return (
+    <Link
+      href={editTripHref(tripId, pathname)}
+      className="group flex flex-col min-w-0 rounded focus-visible:outline-2 focus-visible:outline-offset-2"
+      aria-label={`Edit trip: ${name}`}
+      title="Edit this trip"
+    >
+      {children}
+    </Link>
+  );
+}
 
 function TripCountdownPill({ trip }: { trip: CountdownTrip }) {
   const status = tripCountdown(trip);

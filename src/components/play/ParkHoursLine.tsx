@@ -38,7 +38,9 @@ function parkPart(label: string, p: ParkHoursForPark | null) {
   };
 }
 
-export default function ParkHoursLine({ date }: { date: string | null }) {
+/** `inline`: inside the header's counts row rather than a row of its own. */
+export default function ParkHoursLine({ date, inline }: { date: string | null; inline?: boolean }) {
+  const box = inline ? "min-w-0" : "w-full max-w-7xl -mt-2 mb-3";
   const [state, setState] = useState<{ date: string; hours: DayParkHours | null; failed?: boolean } | null>(null);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function ParkHoursLine({ date }: { date: string | null }) {
 
   if (state.failed) {
     return (
-      <p className="w-full max-w-7xl -mt-2 mb-3 text-[11px]" style={{ color: "var(--color-text-dim)" }}>
+      <p className={`${box} text-[11px]`} style={{ color: "var(--color-text-dim)" }}>
         {"\u{1F552}"} Park hours couldn&rsquo;t be loaded right now. Check your connection, or try again later.
       </p>
     );
@@ -67,7 +69,7 @@ export default function ParkHoursLine({ date }: { date: string | null }) {
   if (!hours) {
     const past = date < parkToday();
     return (
-      <p className="w-full max-w-7xl -mt-2 mb-3 text-[11px]" style={{ color: "var(--color-text-dim)" }}>
+      <p className={`${box} text-[11px]`} style={{ color: "var(--color-text-dim)" }}>
         {"\u{1F552}"} {past ? "Park hours aren't kept for past days." : "Park hours for this day aren't posted yet; Disney usually posts them about a month ahead."}
       </p>
     );
@@ -75,7 +77,7 @@ export default function ParkHoursLine({ date }: { date: string | null }) {
 
   const parts = PARKS.map((p) => parkPart(p.label, hours[p.key]));
   return (
-    <div className="w-full max-w-7xl -mt-2 mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]"
+    <div className={`${box} flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]`}
          role="note" aria-label="Park hours" style={{ color: "var(--color-text-secondary)" }}>
       <span aria-hidden="true">{"\u{1F552}"}</span>
       {parts.map((p) => (

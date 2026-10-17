@@ -33,6 +33,8 @@ interface TripEditorProps {
   newTemplate?: boolean;
   onSave: (form: Partial<Trip>) => Promise<void>;
   onClose: () => void;
+  /** Where the back button returns to, e.g. "Plan" (default "Home"). */
+  backLabel?: string;
   onSaveAsTemplate?: () => Promise<void>;
   onToggleArchive?: () => Promise<void>;
   onClear?: () => Promise<void>;
@@ -95,7 +97,7 @@ export default function TripEditor(props: TripEditorProps) {
       <header className="flex items-center gap-3 pt-6 pb-3">
         <button type="button" onClick={close} className="text-sm px-2 py-1 rounded cursor-pointer hover:bg-white/5"
                 style={{ color: "var(--color-text-muted)" }}>
-          ← Home
+          ← {props.backLabel ?? "Home"}
         </button>
         <h1 className="text-xl font-bold truncate" style={{ color: "var(--color-heading)" }}>
           {trip ? `✏️ Edit ${trip.isTemplate ? "Template" : "Trip"}` : f.form.isTemplate ? "\u{1F4CB} New Template" : "\u{1F3F0} New Trip"}

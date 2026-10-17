@@ -342,16 +342,15 @@ export default function PreviewPage() {
       onDragEnd={handleDragEnd}
     >
       <ShowtimeMarksContext.Provider value={showtimeHints}>
-      <main className="min-h-screen flex flex-col items-center px-4 py-6">
-        {/* Header */}
-        <PlayHeader trip={currentTrip} stats={stats} />
-
-        {/* Date Picker */}
-        <DatePickerBar
-          startDate={currentTrip.startDate}
-          endDate={currentTrip.endDate}
+      {/* Left-aligned with the same side padding as Plan and Prepare */}
+      <main className="min-h-screen flex flex-col items-start px-6 py-6">
+        {/* Header: name, day tabs and person on one row; counts, park hours and Analytics on the next */}
+        <PlayHeader
+          trip={currentTrip}
+          stats={stats}
+          dayTabs={<DatePickerBar startDate={currentTrip.startDate} endDate={currentTrip.endDate} inline />}
+          hours={<ParkHoursLine date={selectedPlayDate} inline />}
         />
-        <ParkHoursLine date={selectedPlayDate} />
 
         {/* Layout: Desktop vs Mobile */}
         {isDesktop ? (

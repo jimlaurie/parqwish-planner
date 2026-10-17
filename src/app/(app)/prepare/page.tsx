@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useTwoColumns, twoColumnClasses } from "@/hooks/use-two-columns";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { usePackingItems } from "@/hooks/use-packing-items";
@@ -70,7 +70,9 @@ export default function PreparePage() {
   // Second filter level: sub-categories within each chosen category. Drives
   // both the trip list and (on wide screens) the catalog column.
   const [subcategories, setSubcategories] = useState<SubcategoryFilter>({});
-  const isWide = useMediaQuery("(min-width: 1280px)");
+  // Room for two equal columns (use-two-columns.ts): the trip's packing on
+  // the left, your catalog on the right; otherwise stacked
+  const [contentRef, isWide] = useTwoColumns();
   const allPackingItems = useLiveQuery(() => db.packingItems.toArray(), []);
   const visibleItems = useMemo(
     () => items.filter((item) => matchesSubcategory(item, subcategories)),
@@ -240,9 +242,10 @@ export default function PreparePage() {
 
   return (
     <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
-      <div className="px-6 py-8">
-        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] xl:gap-8 xl:items-start">
-        <div className="max-w-2xl xl:max-w-none">
+      {/* Same width cap as Plan, so the two columns stay readable on a wide monitor */}
+      <div ref={contentRef} className="px-6 py-8 max-w-6xl">
+        <div className={twoColumnClasses(isWide)}>
+        <div className={isWide ? "min-w-0" : "max-w-2xl"}>
         {/* Header with progress */}
         <PrepareHeader trip={currentTrip} stats={stats} />
 
@@ -382,7 +385,7 @@ export default function PreparePage() {
 
         {/* ==================== RIGHT: YOUR CATALOG (wide screens) ==================== */}
         {isWide && (
-          <aside className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
+          <aside data-testid="catalog-panel" className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
             <PackingCatalogPanel
               types={activePackingTabs}
               subcategories={subcategories}

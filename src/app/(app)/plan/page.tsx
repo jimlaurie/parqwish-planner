@@ -7,7 +7,7 @@ import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import { useTripWishes } from "@/hooks/use-trip-wishes";
 import { useUsers } from "@/hooks/use-users";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useTwoColumns, twoColumnClasses } from "@/hooks/use-two-columns";
 import { WISH_TAGS } from "@/lib/constants";
 import SidebarLayout from "@/components/SidebarLayout";
 import PlanHeader from "@/components/PlanHeader";
@@ -46,10 +46,10 @@ export default function PlanPage() {
   // not just accounts with multiple local Trip Users — see owner-badge.ts.
   const showUserBadges = users.length > 1 || Object.keys(currentTrip?.members ?? {}).length > 1;
   const myUid = auth.currentUser?.uid;
-  // Wide screens get a two-column layout: the trip's plan on the left and
-  // the park catalog pinned open on the right. Narrow screens keep the
-  // catalog as a collapsible block above the list.
-  const isWide = useMediaQuery("(min-width: 1280px)");
+  // Room for two equal columns (use-two-columns.ts): the trip's plan on the
+  // left and the park catalog pinned open on the right. Otherwise the
+  // catalog is a collapsible block above the list.
+  const [contentRef, isWide] = useTwoColumns();
   const {
     wishes,
     stats,
@@ -215,11 +215,11 @@ export default function PlanPage() {
 
   return (
     <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
-      <div className="px-6 py-8 max-w-6xl">
+      <div ref={contentRef} className="px-6 py-8 max-w-6xl">
         {/* Header */}
         <PlanHeader trip={currentTrip} stats={stats} />
 
-        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] xl:gap-8 xl:items-start">
+        <div className={twoColumnClasses(isWide)}>
           {/* ==================== LEFT: THE TRIP'S PLAN ==================== */}
           <div className="min-w-0">
             {/* Narrow screens: catalog sits above the list */}
@@ -343,7 +343,7 @@ export default function PlanPage() {
 
           {/* ==================== RIGHT: PARK CATALOG (wide screens) ==================== */}
           {isWide && (
-            <aside className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
+            <aside data-testid="catalog-panel" className="sticky top-[4.5rem] h-[calc(100vh-6rem)]">
               <CatalogBrowser variant="panel" />
             </aside>
           )}

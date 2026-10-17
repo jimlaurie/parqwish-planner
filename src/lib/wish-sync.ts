@@ -44,6 +44,7 @@ import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
 import { localUpdatedAtISO } from "@shared/sync-helpers";
 import db, { type User } from "./db";
+import { reassignRemovedUser } from "./reassign-user";
 
 const firestore = getFirestore(app);
 
@@ -918,9 +919,9 @@ async function applyRemoteTripUser(remote: SyncedWishDoc, decrypted: SyncedTripU
       return;
     }
 
-    await db.tripWishSelections.where("userId").equals(remote.id).modify({ userId: "user_primary" });
-    await db.tripPackingSelections.where("userId").equals(remote.id).modify({ userId: "user_primary" });
-    await db.dayItems.where("userId").equals(remote.id).modify({ userId: "user_primary" });
+    // Same reassignment as a local removal; the device that removed them
+    // pushes the saved items it changed
+    await reassignRemovedUser(remote.id, auth.currentUser?.uid);
     await db.users.delete(remote.id);
     return;
   }

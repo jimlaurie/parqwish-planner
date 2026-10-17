@@ -1,17 +1,19 @@
 // The travel group on the Plan page: adding a member, switching who's
 // active (new wishes are theirs), filtering by person, and removing a
-// member (their trip wishes go to the primary user).
+// member (everything of theirs goes to the primary user).
 import { test, expect, type Page } from "@playwright/test";
 import { seedTrip, fakeParkData, atParkTime, rows, SEED, TRIP_ID } from "./helpers";
 
 type Wish = { title: string; userId?: string };
 
-/** The test trip with a second member, Sam, who owns The Dapper Dans. */
-const WITH_SAM: typeof SEED = {
+/** The test trip with a second member, Sam, who owns The Dapper Dans, a saved packing item and an ensemble. */
+const WITH_SAM = {
   ...SEED,
   users: [...SEED.users, { id: "user_sam", name: "Sam", color: "#60A5FA", role: "guest", createdAt: 1, updatedAt: 1 }],
-  wishes: SEED.wishes.map((w) => (w.id === "w_dapper" ? { ...w, userId: "user_sam" } : w)),
+  wishes: SEED.wishes.map((w) => (w.id === "w_dapper" ? { ...w, userId: "user_sam", updatedAt: 1 } : w)),
   tripWishSelections: SEED.tripWishSelections.map((s) => (s.wishId === "w_dapper" ? { ...s, userId: "user_sam" } : s)),
+  packingItems: [{ id: "p_poncho", type: "equipment", name: "Rain poncho", category: "Rain Gear", priority: "C", userId: "user_sam", createdAt: 1, updatedAt: 1 }],
+  ensembles: [{ id: "e_sam", name: "Sam's park look", itemIds: [], userId: "user_sam", createdAt: 1, updatedAt: 1 }],
 };
 
 const heading = (page: Page, title: string) => page.getByRole("heading", { name: title, exact: true });
@@ -78,7 +80,12 @@ test("Removing a member asks first, then their wishes go to the primary user", a
   // one person left, so cards drop their owner badges
   await expect(heading(page, "The Dapper Dans")).toBeVisible();
   await expect(wishCard(page, "The Dapper Dans").getByTitle("Sam")).toHaveCount(0);
-  // who has a wish on a trip is its trip selection (the saved wish keeps its creator)
   expect((await rows<{ wishId: string; tripId: string; userId?: string }>(page, "tripWishSelections"))
     .find((s) => s.wishId === "w_dapper" && s.tripId === TRIP_ID)?.userId).toBe("user_primary");
+  // and what Sam created, so the Catalog doesn't show it with no owner
+  for (const store of ["wishes", "packingItems", "ensembles"]) {
+    const owned = await rows<{ userId?: string; updatedAt: number }>(page, store);
+    expect(owned.map((r) => r.userId), store).not.toContain("user_sam");
+    expect(owned.every((r) => r.updatedAt > 1), `${store} updatedAt bumped for Cloud Sync`).toBe(true);
+  }
 });

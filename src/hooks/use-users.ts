@@ -3,9 +3,8 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type User } from "@/lib/db";
 import { auth, isSyncEnabled } from "@/lib/auth";
-import { pushTripUser, deleteTripUserRemote } from "@/lib/wish-sync";
-import { reassignSelectionOwner } from "@shared/selection-owners";
-import type { SelectionOwner } from "@shared/types/wish";
+import { pushTripUser, deleteTripUserRemote, pushWish, pushPackingItem, markWishPending } from "@/lib/wish-sync";
+import { reassignRemovedUser, type ReassignedItems } from "@/lib/reassign-user";
 
 // ==================== USER COLORS ====================
 
@@ -37,6 +36,26 @@ function syncUserDelete(user: User) {
   deleteTripUserRemote(user, authUser.uid).catch(
     (err) => console.error("[use-users] sync delete push failed:", err)
   );
+}
+
+/**
+ * Pushes the saved wishes and packing items a removed user's reassignment
+ * changed. Without sync (or if a push fails) wishes are marked pending;
+ * startSync pushes every packing item anyway.
+ */
+function syncReassigned({ wishIds, packingItemIds }: ReassignedItems) {
+  const authUser = auth.currentUser;
+  if (!authUser || !isSyncEnabled(authUser)) {
+    wishIds.forEach((wishId) => markWishPending(wishId).catch((err) => console.error("[use-users] mark pending failed:", err)));
+    return;
+  }
+  const uid = authUser.uid;
+  db.wishes.bulkGet(wishIds).then((wishes) => wishes.forEach((w) => {
+    if (w) pushWish(w, uid).catch(() => markWishPending(w.id));
+  })).catch((err) => console.error("[use-users] reassigned wish push failed:", err));
+  db.packingItems.bulkGet(packingItemIds).then((items) => items.forEach((p) => {
+    if (p) pushPackingItem(p, uid).catch((err) => console.error("[use-users] reassigned packing push failed:", err));
+  })).catch((err) => console.error("[use-users] reassigned packing push failed:", err));
 }
 
 // ==================== ENSURE DEFAULT USER ====================
@@ -141,7 +160,9 @@ export function useUsers() {
   };
 
   /**
-   * Delete a guest user and reassign their items to the primary user.
+   * Delete a guest user and reassign their items (trip selections, day
+   * items, and the wishes, packing items and ensembles they created) to the
+   * primary user: see src/lib/reassign-user.ts.
    * Primary user cannot be deleted. Deletion is synced as a name-verified
    * tombstone — see SyncedTripUser in shared/sync/firestore-schema.ts.
    */
@@ -149,29 +170,11 @@ export function useUsers() {
     if (id === "user_primary") return;
 
     const user = await db.users.get(id);
-
-    // Reassign owned items to primary user. Wish and packing selections can
-    // be shared (shared/selection-owners.ts), so the removed person may be any
-    // owner, not just the one mirrored in userId: swap them for the primary
-    // user, without a duplicate if the primary user already had it too.
-    const myUid = auth.currentUser?.uid;
-    const reassign = (sel: { userId?: string; authorUid?: string; owners?: SelectionOwner[] }) => {
-      const next = reassignSelectionOwner(sel, id, myUid);
-      if (!next) return;
-      sel.owners = next.owners;
-      sel.userId = next.userId;
-    };
-    await db.tripWishSelections.toCollection().modify(reassign);
-    await db.tripPackingSelections.toCollection().modify(reassign);
-
-    await db.dayItems
-      .where("userId")
-      .equals(id)
-      .modify({ userId: "user_primary" });
-
+    const reassigned = await reassignRemovedUser(id, auth.currentUser?.uid);
     await db.users.delete(id);
 
     if (user) syncUserDelete(user);
+    syncReassigned(reassigned);
   };
 
   /** Look up a single user by ID. */

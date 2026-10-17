@@ -38,7 +38,7 @@ export const SEED = {
 };
 
 /** Opens the app with the test trip in its database and selected. */
-export async function seedTrip(page: Page, data: typeof SEED = SEED): Promise<void> {
+export async function seedTrip(page: Page, data: Record<string, unknown[]> = SEED): Promise<void> {
   await page.goto("/");
   await page.waitForFunction(() => indexedDB.databases().then((dbs) => dbs.some((d) => d.name === "ParQwishPWA")));
   await page.evaluate(async (seed) => {

@@ -10,3 +10,4 @@ export * from "./trip";
 export * from "./ai-context";
 export * from "./scheduled-event";
 export * from "./day-item";
+export * from "./weather";

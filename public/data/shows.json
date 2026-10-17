@@ -77,7 +77,7 @@
       "latitude": 33.806095
     },
     "citizens-of-buena-vista-street": {
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
       "times": [],
       "land": "Buena Vista Street",
@@ -437,7 +437,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-10-16T13:00:06.179Z",
+  "lastUpdated": "2026-10-17T13:00:06.268Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -997,5 +997,5 @@
       "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-10-16T13:00:06.180Z"
+  "lastShowtimeSync": "2026-10-17T13:00:06.268Z"
 }

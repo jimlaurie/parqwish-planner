@@ -10,6 +10,7 @@
     "ship": "node scripts/ship.mjs",
     "deploy": "node scripts/bump-version.mjs && node scripts/download-park-data.mjs && npm run build && firebase deploy --only hosting:pwa",
     "lint": "eslint",
+    "check": "playwright test",
     "illustrations": "node scripts/import-illustrations.mjs",
     "illustrations:traced": "node scripts/import-traced-art.mjs"
   },
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.51.1",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",

@@ -1,0 +1,13 @@
+{
+ "date": "2026-10-15",
+ "disneyland": {
+  "openingTime": "2026-10-15T08:00:00-07:00",
+  "closingTime": "2026-10-16T00:00:00-07:00",
+  "specialHours": []
+ },
+ "californiaadventure": {
+  "openingTime": "2026-10-15T08:00:00-07:00",
+  "closingTime": "2026-10-15T22:00:00-07:00",
+  "specialHours": []
+ }
+}

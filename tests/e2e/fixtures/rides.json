@@ -1,0 +1,20 @@
+{
+ "version": "test",
+ "disneyland": {
+  "space-mountain": {
+   "name": "Space Mountain",
+   "land": "Tomorrowland",
+   "status": "operating",
+   "type": "Thrill",
+   "latitude": 33.8115,
+   "longitude": -117.9174
+  },
+  "matterhorn-bobsleds": {
+   "name": "Matterhorn Bobsleds",
+   "land": "Fantasyland",
+   "status": "closed",
+   "type": "Thrill"
+  }
+ },
+ "californiaadventure": {}
+}

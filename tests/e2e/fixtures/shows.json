@@ -1,0 +1,51 @@
+{
+ "version": "test",
+ "lastUpdated": "2026-10-15T13:00:00.000Z",
+ "lastShowtimeSync": "2026-10-15T13:00:00.000Z",
+ "disneyland": {
+  "dapper-dans": {
+   "name": "The Dapper Dans",
+   "land": "Main Street U.S.A.",
+   "status": "operating",
+   "types": [
+    "street show"
+   ],
+   "duration": 20,
+   "times": [
+    "11:00",
+    "12:15",
+    "13:10"
+   ],
+   "timeRanges": [],
+   "latitude": 33.8105,
+   "longitude": -117.919
+  },
+  "fantasmic": {
+   "name": "Fantasmic!",
+   "land": "Frontierland",
+   "status": "closed",
+   "types": [
+    "nighttime spectacular"
+   ],
+   "duration": 25,
+   "times": [],
+   "timeRanges": [],
+   "latitude": 33.8124,
+   "longitude": -117.9212
+  },
+  "holiday-parade": {
+   "name": "Holiday Parade",
+   "land": "Main Street U.S.A.",
+   "status": "seasonal",
+   "types": [
+    "parade"
+   ],
+   "duration": 20,
+   "times": [
+    "15:30"
+   ],
+   "timeRanges": []
+  }
+ },
+ "californiaadventure": {}
+}

@@ -1,0 +1,28 @@
+{
+ "lastUpdated": "2026-10-15",
+ "disneyland": {
+  "blue-bayou-restaurant": {
+   "name": "Blue Bayou Restaurant",
+   "land": "New Orleans Square",
+   "status": "operating",
+   "type": "Table Service",
+   "cuisine": "Cajun & Creole",
+   "reservations": true,
+   "url": "https://disneyland.disney.go.com/dining/disneyland/blue-bayou-restaurant/",
+   "menuUrl": "https://disneyland.disney.go.com/dining/disneyland/blue-bayou-restaurant/menus/",
+   "reservationUrl": "/dine-res/restaurant/blue-bayou-restaurant/",
+   "latitude": 33.811,
+   "longitude": -117.9212
+  },
+  "harbour-galley": {
+   "name": "Harbour Galley",
+   "land": "Bayou Country",
+   "status": "seasonal",
+   "type": "Quick Service",
+   "cuisine": "Seafood"
+  }
+ },
+ "californiaadventure": {},
+ "downtown": {},
+ "hotels": {}
+}

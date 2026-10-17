@@ -10,13 +10,14 @@
  *   npm run ship -- --check   only the checks, no deploy
  *   npm run ship -- --retry   after the Firebase upload failed (e.g. a 503):
  *                             upload the build again and finish, no new bump
+ *   npm run ship -- --skip-checks   skip the headless checks (urgent fixes only)
  *
  * Steps (each stops everything if it fails):
  *   1. Checks: on `main` (never `partner-demo`), no uncommitted changes to
  *      tracked files, not behind origin/main (pushes if ahead), .env.local
  *      has real Firebase values (a missing one shipped placeholder config
- *      twice), lint has no errors. Warns if shared/ differs from
- *      ../dland-wishes/shared.
+ *      twice), lint has no errors, the headless checks pass (npm run check,
+ *      ~30 s; tests/e2e). Warns if shared/ differs from ../dland-wishes/shared.
  *   2. The four steps of `npm run deploy`, one at a time so a failure says
  *      which: bump version, download park data, build, Firebase upload.
  *   3. Commit "Bump version" (package.json, package-lock.json, public/data
@@ -43,6 +44,7 @@ const FIREBASE_KEYS = [
 const args = new Set(process.argv.slice(2));
 const CHECK_ONLY = args.has("--check");
 const RETRY = args.has("--retry");
+const SKIP_CHECKS = args.has("--skip-checks");
 
 // ==================== HELPERS ====================
 
@@ -123,6 +125,13 @@ function checkEnv() {
   if (missing.length) fail(`.env.local is missing values for: ${missing.join(", ")}`);
   if (/^demo|^000000/.test(env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) || env.NEXT_PUBLIC_FIREBASE_API_KEY.startsWith("demo")) {
     fail(".env.local has placeholder Firebase values.");
+  }
+}
+
+function checkHeadless() {
+  console.log("  Running the headless checks (npm run check)…");
+  if (!run("npx", ["playwright", "test", "--reporter=line"])) {
+    fail("A headless check failed.", "See the failure above (screenshot and trace in test-results/). Fix it, or ship with -- --skip-checks for an urgent fix.");
   }
 }
 
@@ -231,6 +240,7 @@ checkInSyncWithOrigin();
 checkEnv();
 warnSharedDrift();
 if (!RETRY) checkLint();
+if (!RETRY && !SKIP_CHECKS) checkHeadless();
 console.log("  ✓ Checks passed");
 
 if (CHECK_ONLY) {

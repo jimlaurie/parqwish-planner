@@ -1,0 +1,23 @@
+{
+ "lastUpdated": "2026-10-14",
+ "disneyland": {
+  "blue-bayou-restaurant": {
+   "name": "Blue Bayou Restaurant",
+   "land": "New Orleans Square",
+   "status": "operating",
+   "type": "Table Service",
+   "cuisine": "Cajun & Creole",
+   "reservations": true
+  },
+  "harbour-galley": {
+   "name": "Harbour Galley",
+   "land": "Bayou Country",
+   "status": "seasonal",
+   "type": "Quick Service",
+   "cuisine": "Seafood"
+  }
+ },
+ "californiaadventure": {},
+ "downtown": {},
+ "hotels": {}
+}

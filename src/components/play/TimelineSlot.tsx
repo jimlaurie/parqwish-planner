@@ -66,6 +66,7 @@ export default function TimelineSlot({
         </span>
         {isNow && (
           <div
+            data-testid="now-marker"
             className="absolute top-2 -right-1 w-2 h-2 rounded-full"
             style={{ backgroundColor: ACCENT }}
           />
@@ -75,6 +76,7 @@ export default function TimelineSlot({
       {/* Droppable area */}
       <div
         ref={setNodeRef}
+        data-testid={`slot-${time}`}
         className="flex-1 rounded-lg transition-all duration-150 relative"
         style={{
           backgroundColor: isOver

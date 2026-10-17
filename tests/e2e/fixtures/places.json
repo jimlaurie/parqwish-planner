@@ -1,0 +1,21 @@
+{
+ "version": "test",
+ "disneyland": {
+  "castle-photo": {
+   "name": "Castle Photo Spot",
+   "land": "Hub",
+   "category": "photo spot",
+   "status": "operating",
+   "latitude": 33.8121,
+   "longitude": -117.919
+  },
+  "key-to-disneyland-entrance": {
+   "name": "Key to Disneyland Town Square",
+   "land": "Main Street U.S.A.",
+   "category": "photo spot",
+   "status": "seasonal",
+   "latitude": 33.81043,
+   "longitude": -117.91938
+  }
+ }
+}

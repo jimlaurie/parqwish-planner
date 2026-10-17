@@ -96,6 +96,7 @@ export default function DayItemCard({
   return (
     <div
       ref={setNodeRef}
+      data-testid="day-item"
       {...attributes}
       {...listeners}
       className="flex items-stretch rounded-lg overflow-hidden cursor-grab

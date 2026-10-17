@@ -1,0 +1,19 @@
+{
+ "date": "2026-10-16",
+ "disneyland": {
+  "openingTime": "2026-10-16T08:00:00-07:00",
+  "closingTime": "2026-10-16T23:00:00-07:00",
+  "specialHours": []
+ },
+ "californiaadventure": {
+  "openingTime": "2026-10-16T08:00:00-07:00",
+  "closingTime": "2026-10-16T18:00:00-07:00",
+  "specialHours": [
+   {
+    "description": "Special Ticketed Event",
+    "openingTime": "2026-10-16T18:00:00-07:00",
+    "closingTime": "2026-10-16T23:00:00-07:00"
+   }
+  ]
+ }
+}

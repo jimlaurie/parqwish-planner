@@ -32,6 +32,7 @@ export default function PoolItemCard({
   return (
     <div
       ref={setNodeRef}
+      data-testid="pool-item"
       style={style}
       className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-grab active:cursor-grabbing
                  transition-colors duration-100 group"

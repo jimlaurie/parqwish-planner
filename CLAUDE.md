@@ -31,6 +31,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 npm run dev      # Start Next.js dev server (port 3000, Turbopack)
 npm run build    # Production build (static export to out/), writes out/version.json
 npm run lint     # ESLint check
+npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (~30 s; ship runs them)
 npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
 npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check
@@ -174,7 +175,10 @@ Bump version to 6.0.4 (deploy)
 ```bash
 npm run build     # static export must succeed — no TS or build errors
 npm run lint      # ESLint must pass clean
+npm run check     # headless checks must pass (npm run ship runs them too)
 ```
+
+**Headless checks** (`tests/e2e/`, `playwright.config.ts`): Playwright drives the installed Chrome (`channel: "chrome"`, no browser download) against the dev server (started if none is running), in a fresh profile per check. `helpers.ts` seeds a made-up test trip into IndexedDB (never real data: this repo is public), serves fixture park data for both the deploy's `/data/*.json` copy and the live Storage files (`tests/e2e/fixtures/`; `"blocked"` mode fails every Storage request to exercise fallbacks), and fixes the clock at a park time, so results don't change with each day's data. They cover Quick Trip, Edit Trip hotel dates, park-time dates (evening, east of UTC), showtime snapping (the day's own and weekday history), park hours (posted, not posted, couldn't load), dining links, the status filter, pinning a place, the live-data fallback and cache-key pruning. Add a check with any fix to a flow; prefer roles and visible text, and `data-testid` only where there's none (`pool-item`, `day-item`, `slot-HH:MM`, `now-marker`).
 
 Manually check any visual change in both light and dark mode — theming bugs (a hardcoded hex slipping past the token convention) are the easiest thing to miss and won't show up in build/lint. `npm run ship` (see Commands) is the full release step; a change isn't "done" until it's actually deployed for anything user-facing, matching the mobile repo's same philosophy that "it works locally" isn't sufficient.
 

@@ -1,0 +1,10 @@
+{
+ "version": "test",
+ "disneyland": {
+  "emporium": {
+   "name": "Emporium",
+   "land": "Main Street U.S.A.",
+   "type": "Souvenirs"
+  }
+ }
+}

@@ -31,7 +31,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 npm run dev      # Start Next.js dev server (port 3000, Turbopack)
 npm run build    # Production build (static export to out/), writes out/version.json
 npm run lint     # ESLint check
-npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (~30 s; ship runs them)
+npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (~45 s; ship runs them)
 npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
 npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check
@@ -214,6 +214,11 @@ Also part of done (the reasons are in `dland-wishes/CLAUDE.md` › Harness):
 //     makes the import refuse until the card is re-mapped)
 ```
 
+### Page Layout
+- **Two columns or stacked** (Plan, Prepare): `useTwoColumns()` (`src/hooks/use-two-columns.ts`) measures the content area itself with a `ResizeObserver` and returns two equal columns (`twoColumnClasses`) once there's room for two 380 px columns, so the sidebar collapsing changes it too. Don't go back to a window media query for this
+- **Pages left-aligned** under the top bar (`items-start`), Preview included; Preview's day tabs and park hours sit inside `PlayHeader` (`dayTabs`/`hours` props, `inline` mode on `DatePickerBar` and `ParkHoursLine`)
+- **Edit Trip returns to its caller:** link with `editTripHref(tripId, pathname)` (`src/lib/return-path.ts`); `/trip` reads `from` through `safeReturnPath()` (this app's own paths only, never `/trip` itself) and labels the back button with `returnLabel()`. Save, Cancel and back return there; Archive and Delete go Home
+
 ### Two Independent Sync Mechanisms
 ```typescript
 // 1. File-based transfer (universal-sync.ts / sync-translate.ts) — always
@@ -244,7 +249,7 @@ Also part of done (the reasons are in `dland-wishes/CLAUDE.md` › Harness):
 - **Route renames, current names win:** the itinerary/timeline page is `/preview` (was `/play`); the data-transfer page is `/play` (was `/sync`). Component/hook/CSS-token names haven't fully caught up — `src/components/play/` holds *Preview*-phase components, and `--color-accent-play` is the *data-transfer* page's accent, not a leftover. Don't rename-on-sight; check which era a given name is from before assuming it's wrong.
 - **`firebase.ts` has inert placeholder fallbacks** (`"demo-api-key"`, `"demo-project"`, etc.) so `next build` doesn't crash when `.env.local` is missing. This has bitten production twice: `.env.local` was absent during `npm run deploy` and the placeholder config silently shipped live, breaking every Firebase-backed feature (Sign in with Apple/Google, Cloud Sync) behind a generic "Sign in failed" message. `npm run ship` now refuses to deploy without real values in `.env.local`; with bare `npm run deploy`, check it yourself first.
 - **Bare `npm run deploy` doesn't commit its own changes** — use `npm run ship` (see Commands).
-- **`shared/` is a copy, not a package** — see Project Overview. Check whether a `shared/` fix needs mirroring into `dland-wishes/shared/` (and vice versa) before considering it done. As of Aug 2026 the two copies have stayed in sync (spot-checked via full checksum diff) — but nothing enforces that automatically.
+- **`shared/` is a copy, not a package** — see Project Overview. Check whether a `shared/` fix needs mirroring into `dland-wishes/shared/` (and vice versa) before considering it done. `npm run ship` warns when they differ, and `npm run data-flow` in `dland-wishes` fails on it.
 
 ## For historical/roadmap context
 

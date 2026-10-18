@@ -22,11 +22,11 @@ export function formatTemp(tempF: number | null | undefined, unit: TempUnit): st
 
 // ==================== CONDITIONS ====================
 
-/** An emoji and words for a WMO weather code (null = unknown). */
+/** An emoji and a short word or two for a WMO weather code (null = unknown); NWS's own text can run long ("Showers And Thunderstorms Likely"). */
 export function weatherCondition(code: number | null | undefined, isDay = true): { icon: string; label: string } {
   if (code == null) return { icon: isDay ? "🌡️" : "🌙", label: "Conditions unknown" };
-  if (code === 0) return { icon: isDay ? "☀️" : "🌙", label: "Clear" };
-  if (code === 1) return { icon: isDay ? "🌤️" : "🌙", label: "Mostly clear" };
+  if (code === 0) return isDay ? { icon: "☀️", label: "Sunny" } : { icon: "🌙", label: "Clear" };
+  if (code === 1) return isDay ? { icon: "🌤️", label: "Mostly sunny" } : { icon: "🌙", label: "Mostly clear" };
   if (code === 2) return { icon: isDay ? "⛅" : "☁️", label: "Partly cloudy" };
   if (code === 3) return { icon: "☁️", label: "Cloudy" };
   if (code >= 45 && code <= 48) return { icon: "🌫️", label: "Fog or haze" };

@@ -16,7 +16,7 @@ const LIVE_BASE_URL = "https://storage.googleapis.com/my-tour-guide-backend.fire
  *  links, which the publish step adds and refreshes nightly. */
 const LIVE_FILES = new Set<string>(["shows.json", "restaurants.json"]);
 const DISNEY_SITE = "https://disneyland.disney.go.com";
-const LIVE_TIMEOUT_MS = 8000;
+export const LIVE_TIMEOUT_MS = 8000;
 
 /**
  * A live Storage URL with a query that changes hourly. Storage lets browsers
@@ -24,7 +24,7 @@ const LIVE_TIMEOUT_MS = 8000;
  * rule covered this site would keep failing; the query also picks up the
  * morning's new showtimes on the hour.
  */
-function liveUrl(path: string): string {
+export function liveUrl(path: string): string {
   return `${LIVE_BASE_URL}/${path}?h=${Math.floor(Date.now() / 3_600_000)}`;
 }
 
@@ -40,7 +40,7 @@ const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "pl
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
 
 /** A cache key for this build, e.g. "dland-park-data-cache@6.0.84". */
-function cacheKey(name: string): string {
+export function cacheKey(name: string): string {
   return `dland-${name}-cache@${APP_VERSION}`;
 }
 

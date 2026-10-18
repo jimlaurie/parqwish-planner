@@ -26,6 +26,10 @@ interface AppState {
   themePreference: "system" | "light" | "dark";
   setThemePreference: (pref: "system" | "light" | "dark") => void;
 
+  // Temperature unit for weather (persisted); weather files are always °F
+  temperatureUnit: "F" | "C";
+  setTemperatureUnit: (unit: "F" | "C") => void;
+
   // Phase navigation
   activePhase: "plan" | "prepare" | "preview" | "play" | "publish" | null;
   setActivePhase: (phase: AppState["activePhase"]) => void;
@@ -144,6 +148,10 @@ export const useAppStore = create<AppState>()(
       // Theme preference
       themePreference: "system",
       setThemePreference: (pref) => set({ themePreference: pref }),
+
+      // Temperature unit
+      temperatureUnit: "F",
+      setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
 
       // Phase navigation
       activePhase: null,
@@ -307,6 +315,7 @@ export const useAppStore = create<AppState>()(
         currentTripId: state.currentTripId,
         currentUserId: state.currentUserId,
         themePreference: state.themePreference,
+        temperatureUnit: state.temperatureUnit,
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
         catalogView: state.catalogView,

@@ -23,6 +23,7 @@ export default function CategoryPicker({
           <motion.button
             key={cat}
             type="button"
+            aria-pressed={isSelected}
             onClick={() => onChange(cat)}
             className="px-3 py-1.5 rounded-lg border-2 cursor-pointer
                        transition-all duration-150 text-sm"

@@ -19,6 +19,8 @@ interface PackingFormModalProps {
   visible: boolean;
   itemId?: string;
   activeTab: PackingType;
+  /** A new item's starting sub-category (e.g. from a weather tip); else the type's first */
+  initialCategory?: string;
   getItemById?: (id: string) => Promise<PackingItem | undefined>;
   onClose: () => void;
   onSave: (data: PackingFormData) => Promise<void>;
@@ -32,6 +34,7 @@ export default function PackingFormModal({
   visible,
   itemId,
   activeTab,
+  initialCategory,
   getItemById,
   onClose,
   onSave,
@@ -95,7 +98,7 @@ export default function PackingFormModal({
     } else if (visible && !isEditMode) {
       setName("");
       setNotes("");
-      setCategory(categories[0]);
+      setCategory(initialCategory && categories.includes(initialCategory) ? initialCategory : categories[0]);
       setPriority("C");
       setPrice("");
       setUrl("");
@@ -109,7 +112,7 @@ export default function PackingFormModal({
       setDiningType("walk-up");
       setDietaryNotes("");
     }
-  }, [visible, isEditMode, loadItem, categories]);
+  }, [visible, isEditMode, loadItem, categories, initialCategory]);
 
   const canSave = name.trim().length > 0 && !saving;
 

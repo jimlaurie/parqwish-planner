@@ -30,6 +30,7 @@ import { ShowtimeMarksContext, type ShowtimeDragHints } from "@/components/play/
 import PlayHeader from "@/components/play/PlayHeader";
 import DatePickerBar from "@/components/play/DatePickerBar";
 import ParkHoursLine from "@/components/play/ParkHoursLine";
+import DayWeatherLine from "@/components/weather/DayWeatherLine";
 import PlayDesktopLayout from "@/components/play/PlayDesktopLayout";
 import PlayMobileLayout from "@/components/play/PlayMobileLayout";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
@@ -349,7 +350,7 @@ export default function PreviewPage() {
           trip={currentTrip}
           stats={stats}
           dayTabs={<DatePickerBar startDate={currentTrip.startDate} endDate={currentTrip.endDate} inline />}
-          hours={<ParkHoursLine date={selectedPlayDate} inline />}
+          hours={<><ParkHoursLine date={selectedPlayDate} inline /><DayWeatherLine date={selectedPlayDate} /></>}
         />
 
         {/* Layout: Desktop vs Mobile */}

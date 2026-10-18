@@ -8,6 +8,8 @@ import { resolveOwnerBadge } from "@/lib/owner-badge";
 import DayItemCard from "./DayItemCard";
 import type { WaitHint } from "@/lib/typical-waits";
 import { useShowtimeDragHints, SlotShowtimeLabel, slotMarkStyle } from "./ShowtimeMarks";
+import HourWeather from "@/components/weather/HourWeather";
+import type { HourWeather as Hour } from "@shared/weather";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -28,6 +30,8 @@ interface TimelineSlotProps {
   myUid?: string;
   /** Typical-wait hint for a card, if its ride has wait history. */
   getWaitHint?: (item: DayItemRecord) => WaitHint | null;
+  /** The hour's weather, on :00 slots (forecast, or typical temperature only) */
+  weather?: { hour: Hour; typical: boolean };
 }
 
 export default function TimelineSlot({
@@ -44,6 +48,7 @@ export default function TimelineSlot({
   myUid,
   isNow,
   getWaitHint,
+  weather,
 }: TimelineSlotProps) {
   const { isOver, setNodeRef } = useDroppable({ id: `slot__${time}` });
 
@@ -64,6 +69,7 @@ export default function TimelineSlot({
         >
           {displayTime}
         </span>
+        {weather && <HourWeather hour={weather.hour} typical={weather.typical} />}
         {isNow && (
           <div
             data-testid="now-marker"

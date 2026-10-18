@@ -8,9 +8,12 @@ import { useTrips } from "@/hooks/use-trips";
 import { useTripWishes } from "@/hooks/use-trip-wishes";
 import { useUsers } from "@/hooks/use-users";
 import { useTwoColumns, twoColumnClasses } from "@/hooks/use-two-columns";
+import { useTripWeather } from "@/hooks/use-trip-weather";
+import { datesBetween } from "@/lib/dates";
 import { WISH_TAGS } from "@/lib/constants";
 import SidebarLayout from "@/components/SidebarLayout";
 import PlanHeader from "@/components/PlanHeader";
+import WeatherStrip from "@/components/weather/WeatherStrip";
 import WishCard from "@/components/WishCard";
 import WishFormModal from "@/components/WishFormModal";
 import WishCatalogPickerModal from "@/components/WishCatalogPickerModal";
@@ -45,6 +48,7 @@ export default function PlanPage() {
   // Badges matter for a solo-family account collaborating with others too,
   // not just accounts with multiple local Trip Users — see owner-badge.ts.
   const showUserBadges = users.length > 1 || Object.keys(currentTrip?.members ?? {}).length > 1;
+  const weather = useTripWeather(datesBetween(currentTrip?.startDate ?? "", currentTrip?.endDate ?? ""));
   const myUid = auth.currentUser?.uid;
   // Room for two equal columns (use-two-columns.ts): the trip's plan on the
   // left and the park catalog pinned open on the right. Otherwise the
@@ -218,6 +222,7 @@ export default function PlanPage() {
       <div ref={contentRef} className="px-6 py-8 max-w-6xl">
         {/* Header */}
         <PlanHeader trip={currentTrip} stats={stats} />
+        <WeatherStrip weather={weather} accent="var(--color-accent-plan)" />
 
         <div className={twoColumnClasses(isWide)}>
           {/* ==================== LEFT: THE TRIP'S PLAN ==================== */}

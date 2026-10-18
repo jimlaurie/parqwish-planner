@@ -67,9 +67,11 @@ export async function fakeParkData(page: Page, mode: LiveMode = "live"): Promise
   const deployed: Record<string, string> = {
     "rides.json": fixture("rides.json"), "shows.json": fixture("shows.json"), "restaurants.json": fixture("restaurants-deployed.json"),
     "shops.json": fixture("shops.json"), "places.json": fixture("places.json"),
+    // The deploy's forecast is days older than the live one (and 5° cooler on the 15th), to tell them apart
+    "weather/forecast.json": fixture("weather-forecast-deployed.json"), "weather/normals.json": fixture("weather-normals.json"),
   };
-  await page.route(/\/data\/[\w-]+\.json(\?.*)?$/, (route) => {
-    const name = new URL(route.request().url()).pathname.split("/").pop()!;
+  await page.route(/\/data\/[\w/-]+\.json(\?.*)?$/, (route) => {
+    const name = new URL(route.request().url()).pathname.replace(/^.*?\/data\//, "");
     return deployed[name] ? route.fulfill({ contentType: "application/json", body: deployed[name] }) : route.continue();
   });
   await page.route(/^https:\/\/storage\.googleapis\.com\//, (route) => (mode === "blocked" ? route.abort("failed") : serveLive(route)));
@@ -78,7 +80,8 @@ export async function fakeParkData(page: Page, mode: LiveMode = "live"): Promise
 function serveLive(route: Route) {
   const file = new URL(route.request().url()).pathname.replace(/^\/[^/]+\/data\//, "");
   const hours = file.match(/^hours\/(\d{4}-\d{2}-\d{2})\.json$/);
-  const name = hours ? `hours-${hours[1]}.json` : file;
+  // weather/forecast.json → weather-forecast.json
+  const name = hours ? `hours-${hours[1]}.json` : file.replace("/", "-");
   const body = fs.existsSync(path.join(FIXTURES, name)) ? fixture(name) : null;
   // Storage answers 403 for a file that doesn't exist
   return body ? route.fulfill({ contentType: "application/json", body }) : route.fulfill({ status: 403, body: "AccessDenied" });

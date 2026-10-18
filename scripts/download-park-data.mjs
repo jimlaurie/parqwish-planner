@@ -16,7 +16,7 @@ const OUT_DIR = join(__dirname, "..", "public", "data");
 const BASE_URL =
   "https://storage.googleapis.com/my-tour-guide-backend.firebasestorage.app/data";
 
-const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json", "landConfig.json", "waitTimeStats.json", "rideReliabilityStats.json"];
+const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json", "landConfig.json", "waitTimeStats.json", "rideReliabilityStats.json", "weather/forecast.json", "weather/normals.json"];
 
 async function main() {
   mkdirSync(OUT_DIR, { recursive: true });
@@ -39,6 +39,7 @@ async function main() {
       continue;
     }
     const text = await res.text();
+    mkdirSync(dirname(join(OUT_DIR, file)), { recursive: true });
     writeFileSync(join(OUT_DIR, file), text);
     console.log(` OK (${(text.length / 1024).toFixed(1)} KB)`);
   }

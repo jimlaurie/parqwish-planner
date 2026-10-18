@@ -18,6 +18,11 @@ import PackingFormModal from "@/components/PackingFormModal";
 import CatalogPickerModal from "@/components/CatalogPickerModal";
 import PackingCatalogPanel from "@/components/PackingCatalogPanel";
 import SubcategoryChips from "@/components/SubcategoryChips";
+import WeatherStrip from "@/components/weather/WeatherStrip";
+import WeatherTips from "@/components/weather/WeatherTips";
+import { useTripWeather } from "@/hooks/use-trip-weather";
+import { datesBetween } from "@/lib/dates";
+import type { PackingTip } from "@shared/weather";
 import { matchesSubcategory, subcategoriesFor, toggleSubcategory, type SubcategoryFilter } from "@/lib/packing-subcategories";
 import EmptyState from "@/components/EmptyState";
 import UserPanel from "@/components/UserPanel";
@@ -49,6 +54,7 @@ export default function PreparePage() {
   // Badges matter for a solo-family account collaborating with others too,
   // not just accounts with multiple local Trip Users — see owner-badge.ts.
   const showUserBadges = users.length > 1 || Object.keys(currentTrip?.members ?? {}).length > 1;
+  const weather = useTripWeather(datesBetween(currentTrip?.startDate ?? "", currentTrip?.endDate ?? ""));
   const myUid = auth.currentUser?.uid;
   const {
     items,
@@ -66,6 +72,8 @@ export default function PreparePage() {
 
   // Multi-group add popover state
   const [showGroupPicker, setShowGroupPicker] = useState(false);
+  // A packing tip's "+ Add" opens the form on its sub-category
+  const [addCategory, setAddCategory] = useState<string | undefined>();
 
   // Second filter level: sub-categories within each chosen category. Drives
   // both the trip list and (on wide screens) the catalog column.
@@ -131,6 +139,18 @@ export default function PreparePage() {
     } else {
       setShowAddPackingModal(true);
     }
+  };
+
+  // Weather tips (WeatherTips): show or add items in the tip's sub-category
+  const canShowTip = (tip: PackingTip) => subcategoriesFor(tip.type, allPackingItems ?? []).includes(tip.category);
+  const showTip = (tip: PackingTip) => {
+    setActivePackingTabs([tip.type]);
+    setSubcategories({ [tip.type]: [tip.category] });
+  };
+  const addForTip = (tip: PackingTip) => {
+    setActivePackingTabs([tip.type]);
+    setAddCategory(tip.category);
+    setShowAddPackingModal(true);
   };
 
   const handleGroupSelected = (tabId: string) => {
@@ -248,6 +268,9 @@ export default function PreparePage() {
         <div className={isWide ? "min-w-0" : "max-w-2xl"}>
         {/* Header with progress */}
         <PrepareHeader trip={currentTrip} stats={stats} />
+        <WeatherStrip weather={weather} accent="var(--color-accent-prepare)">
+          <WeatherTips days={weather.days} accent="var(--color-accent-prepare)" canShow={canShowTip} onShow={showTip} onAdd={addForTip} />
+        </WeatherStrip>
 
         {/* Item List */}
         {!loading && items.length === 0 && selectedTabItemCount === 0 && (
@@ -407,10 +430,12 @@ export default function PreparePage() {
       <PackingFormModal
         visible={showAddPackingModal}
         activeTab={primaryTab}
-        onClose={() => setShowAddPackingModal(false)}
+        initialCategory={addCategory}
+        onClose={() => { setShowAddPackingModal(false); setAddCategory(undefined); }}
         onSave={async (data) => {
           await addItem(data, primaryTab);
           setShowAddPackingModal(false);
+          setAddCategory(undefined);
         }}
       />
 

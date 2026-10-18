@@ -12,6 +12,7 @@ import { ShowtimeDragNote } from "./ShowtimeMarks";
 import { useTypicalWaits } from "@/hooks/use-typical-waits";
 import { buildWaitHint, findRide, type WaitHint } from "@/lib/typical-waits";
 import { parkClock } from "@/lib/dates";
+import { useTripWeather } from "@/hooks/use-trip-weather";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -168,6 +169,14 @@ export default function Timeline({
   const { highlightedLand } = useAppStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const waitStats = useTypicalWaits();
+  const weather = useTripWeather(selectedDate ? [selectedDate] : []);
+  const dayWeather = selectedDate ? weather.byDate.get(selectedDate) : undefined;
+  // The hour's weather for :00 slots (not 00:00, which is the next day)
+  const weatherFor = useCallback((time: string) => {
+    if (!dayWeather || !time.endsWith(":00") || time === "00:00") return undefined;
+    const hour = dayWeather.hours.find((h) => h.hour === Number(time.slice(0, 2)));
+    return hour ? { hour, typical: dayWeather.kind === "typical" } : undefined;
+  }, [dayWeather]);
 
   // Typical standby wait for ride cards, from the heat map's nightly medians.
   // Anytime items get the day-level figure plus the quietest hour.
@@ -266,6 +275,7 @@ export default function Timeline({
             members={members}
             myUid={myUid}
             getWaitHint={getWaitHint}
+            weather={weatherFor(slot.time)}
           />
         ))}
       </div>

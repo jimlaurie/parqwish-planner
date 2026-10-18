@@ -81,10 +81,11 @@ export default function ParkHoursLine({ date, inline }: { date: string | null; i
          role="note" aria-label="Park hours" style={{ color: "var(--color-text-secondary)" }}>
       <span aria-hidden="true">{"\u{1F552}"}</span>
       {parts.map((p) => (
-        <span key={p.label} className="whitespace-nowrap">
-          <span className="font-semibold" style={{ color: "var(--color-text-primary)" }}>{p.label}</span> {p.hours}
+        // Each part stays on one line, but an event chip can wrap below its park on a phone
+        <span key={p.label} className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1">
+          <span className="whitespace-nowrap"><span className="font-semibold" style={{ color: "var(--color-text-primary)" }}>{p.label}</span> {p.hours}</span>
           {p.events.map((e) => (
-            <span key={e} className="ml-1.5 px-1.5 py-0.5 rounded-full"
+            <span key={e} className="px-1.5 py-0.5 rounded-full whitespace-nowrap"
                   style={{ backgroundColor: "color-mix(in srgb, var(--color-accent-preview) 14%, transparent)" }}>
               {"\u{1F39F}️"} {e}
             </span>

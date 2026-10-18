@@ -22,6 +22,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getRideReliabilityStats, type RideReliabilityRecovery, type RideReliabilityStats } from "@/lib/park-data";
+import DataSourceNote from "@/components/DataSourceNote";
+import { useDataSource } from "@/lib/data-sources";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -91,6 +93,7 @@ function formatMin(v: number | null): string {
 }
 
 export default function RideReliabilityPage() {
+  const source = useDataSource("rideReliability");
   const router = useRouter();
   const [stats, setStats] = useState<RideReliabilityStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -153,6 +156,8 @@ export default function RideReliabilityPage() {
           Historical resort-wide breakdown data, not a live status board — useful for setting expectations, not for knowing what&rsquo;s down right now.
         </p>
 
+        <DataSourceNote source="rideReliability" className="mb-1" />
+
         {stats && (
           <p className="text-[10px] mb-4" style={{ color: "var(--color-text-dim)" }}>
             Based on {stats.windowDays} days of data ({stats.windowStart} to {stats.windowEnd}) &middot; {sortedRows.length} rides shown &middot; a breakdown that never reopened before close is capped at that day&rsquo;s last reading, not carried into the next day.
@@ -166,7 +171,7 @@ export default function RideReliabilityPage() {
         ) : !stats || sortedRows.length === 0 ? (
           <div className="flex items-center justify-center py-20 px-8 text-center">
             <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-              Reliability data isn&rsquo;t available yet — check back after tonight&rsquo;s update.
+              {source?.kind === "failed" ? "Reliability data couldn’t be loaded right now. Check your connection, or try again later." : "Reliability data isn’t available yet — check back after tonight’s update."}
             </span>
           </div>
         ) : (

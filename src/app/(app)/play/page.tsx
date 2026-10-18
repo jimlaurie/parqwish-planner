@@ -16,6 +16,7 @@ import {
 } from "@/lib/universal-sync";
 import { clearParkDataCache, getParkData } from "@/lib/park-data";
 import type { CatalogExportEnvelope, TemplateExportEnvelope } from "@/lib/universal-sync";
+import DataSourceList from "@/components/DataSourceList";
 
 // ==================== CONSTANTS ====================
 
@@ -547,7 +548,7 @@ function ParkDataSection() {
       <SectionHeader
         icon="🗂️"
         title="Park Data"
-        subtitle="Rides, shows, dining, shops, and places are cached locally for 24 hours."
+        subtitle="Rides, shows, dining, shops, and places are saved on this device for up to a day. Below: where each kind of data came from."
         accent={PURPLE}
       />
       <div className="flex items-center gap-3">
@@ -575,6 +576,7 @@ function ParkDataSection() {
           </span>
         )}
       </div>
+      <DataSourceList />
     </div>
   );
 }

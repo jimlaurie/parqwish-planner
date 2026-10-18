@@ -15,6 +15,7 @@
 import { useState, useEffect } from "react";
 import type { User } from "firebase/auth";
 import { onAuthChanged, signInWithApple, signOutSync, isSyncEnabled } from "@/lib/auth";
+import { FIREBASE_CONFIGURED } from "@/lib/firebase";
 import { startSync, stopSync } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
 
@@ -101,7 +102,7 @@ export default function SyncPanel() {
             ● Active
           </span>
         )}
-        {cloudSyncEnabled && !authChecked && (
+        {FIREBASE_CONFIGURED && cloudSyncEnabled && !authChecked && (
           <span
             className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-medium"
             style={{
@@ -112,7 +113,7 @@ export default function SyncPanel() {
             ○ Checking…
           </span>
         )}
-        {cloudSyncEnabled && authChecked && !synced && (
+        {FIREBASE_CONFIGURED && cloudSyncEnabled && authChecked && !synced && (
           <span
             className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-medium"
             style={{
@@ -125,8 +126,16 @@ export default function SyncPanel() {
         )}
       </div>
 
+      {/* ── This build has no Firebase settings: say so rather than fail at sign-in ── */}
+      {!FIREBASE_CONFIGURED && (
+        <p role="alert" className="text-xs" style={{ color: "var(--color-error)" }}>
+          Cloud Sync isn&rsquo;t available in this copy of the Planner: it was built without its sync
+          settings. File-based transfer below still works.
+        </p>
+      )}
+
       {/* ── State 1: Disabled (default) ── */}
-      {!cloudSyncEnabled && (
+      {FIREBASE_CONFIGURED && !cloudSyncEnabled && (
         <>
           <p className="text-xs mb-1" style={{ color: "var(--color-text-secondary)" }}>
             Keep your wish catalog in sync across iPhone, iPad, and this
@@ -158,14 +167,14 @@ export default function SyncPanel() {
       )}
 
       {/* ── State: Enabled, still restoring session ── */}
-      {cloudSyncEnabled && !authChecked && (
+      {FIREBASE_CONFIGURED && cloudSyncEnabled && !authChecked && (
         <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
           Checking sync status…
         </p>
       )}
 
       {/* ── State 2: Enabled, not signed in ── */}
-      {cloudSyncEnabled && authChecked && !synced && (
+      {FIREBASE_CONFIGURED && cloudSyncEnabled && authChecked && !synced && (
         <>
           <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>
             Cloud Sync uses your Apple ID as the one identity that stays
@@ -214,7 +223,7 @@ export default function SyncPanel() {
       )}
 
       {/* ── State 3: Active ── */}
-      {cloudSyncEnabled && synced && (
+      {FIREBASE_CONFIGURED && cloudSyncEnabled && synced && (
         <>
           <p className="text-xs mb-2" style={{ color: "var(--color-text-muted)" }}>
             Your wish catalog syncs automatically across all devices signed in

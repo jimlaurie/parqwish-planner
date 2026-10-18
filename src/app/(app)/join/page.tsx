@@ -15,6 +15,7 @@ import {
 } from "@/lib/auth";
 import { getInvite, acceptInvite, startCollaboratorSync, type TripInvite } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
+import { FIREBASE_CONFIGURED } from "@/lib/firebase";
 
 // ==================== LINK PARSING ====================
 
@@ -250,6 +251,19 @@ export default function JoinPage() {
   // on mobile. text-base (16px) sidesteps that entirely.
   const inputBase =
     "w-full rounded-xl px-4 py-3.5 text-base outline-none border";
+
+  // A build without its Firebase settings can't sign anyone in: say so up front
+  if (!FIREBASE_CONFIGURED) {
+    return (
+      <div className="max-w-md mx-auto px-5 py-16 text-center">
+        <div className="text-5xl mb-3">🏰</div>
+        <p role="alert" className="text-sm" style={{ color: "var(--color-error)" }}>
+          Joining a trip isn&rsquo;t available in this copy of the Planner: it was built without its sync
+          settings. Open the invite at app.parqwish.com instead.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div

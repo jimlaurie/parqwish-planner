@@ -18,6 +18,19 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:000000000000:web:0000000000000000000000",
 };
 
+/**
+ * Whether this build has its real Firebase settings (NEXT_PUBLIC_* are
+ * inlined at build time). Without them Cloud Sync and joining can't work,
+ * which the UI says plainly instead of a generic "Sign in failed" (that
+ * placeholder config shipped live twice before npm run ship checked it).
+ */
+export const FIREBASE_CONFIGURED = Boolean(
+  process.env.NEXT_PUBLIC_FIREBASE_API_KEY && process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID && process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+);
+if (!FIREBASE_CONFIGURED && typeof window !== "undefined") {
+  console.error("[firebase] This build has no Firebase settings (.env.local was missing): Cloud Sync and joining trips won't work.");
+}
+
 // Prevent re-initialization in hot reload
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

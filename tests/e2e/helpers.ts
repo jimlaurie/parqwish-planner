@@ -69,6 +69,8 @@ export async function fakeParkData(page: Page, mode: LiveMode = "live"): Promise
     "shops.json": fixture("shops.json"), "places.json": fixture("places.json"),
     // The deploy's forecast is days older than the live one (and 5° cooler on the 15th), to tell them apart
     "weather/forecast.json": fixture("weather-forecast-deployed.json"), "weather/normals.json": fixture("weather-normals.json"),
+    // Nightly stats: the deployed copies are from 10 Oct, the live ones from 15 Oct
+    "waitTimeStats.json": fixture("waitTimeStats-deployed.json"), "rideReliabilityStats.json": fixture("rideReliabilityStats-deployed.json"),
   };
   await page.route(/\/data\/[\w/-]+\.json(\?.*)?$/, (route) => {
     const name = new URL(route.request().url()).pathname.replace(/^.*?\/data\//, "");

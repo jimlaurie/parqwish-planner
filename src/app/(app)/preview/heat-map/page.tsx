@@ -23,6 +23,8 @@ import dynamic from "next/dynamic";
 import { getAttractionCoords, getWaitTimeStats, type WaitTimeStats } from "@/lib/park-data";
 import type { WaitTimeMarker } from "@/components/publish/WaitTimeHeatMap";
 import { WaitTimeLegend } from "@/components/publish/waitTimeColors";
+import DataSourceNote from "@/components/DataSourceNote";
+import { useDataSource } from "@/lib/data-sources";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -63,6 +65,7 @@ function formatHourLabel(hour: number): string {
 }
 
 export default function WaitTimeHeatMapPage() {
+  const source = useDataSource("waitTimeStats");
   const router = useRouter();
   const [stats, setStats] = useState<WaitTimeStats | null>(null);
   const [coordMaps, setCoordMaps] = useState<Awaited<ReturnType<typeof getAttractionCoords>> | null>(null);
@@ -267,6 +270,8 @@ export default function WaitTimeHeatMapPage() {
         </div>
       </div>
 
+      <DataSourceNote source="waitTimeStats" className="px-4 pt-1" />
+
       {stats && (
         <div className="px-4 py-2 text-[10px] shrink-0" style={{ color: "var(--color-text-dim)" }}>
           Based on {stats.windowDays} days of data ({stats.windowStart} to {stats.windowEnd}) · {markers.length} rides shown
@@ -282,7 +287,7 @@ export default function WaitTimeHeatMapPage() {
         ) : !stats ? (
           <div className="h-full w-full flex items-center justify-center px-8 text-center">
             <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-              Wait time data isn&rsquo;t available yet — check back after tonight&rsquo;s update.
+              {source?.kind === "failed" ? "Wait time data couldn’t be loaded right now. Check your connection, or try again later." : "Wait time data isn’t available yet — check back after tonight’s update."}
             </span>
           </div>
         ) : (

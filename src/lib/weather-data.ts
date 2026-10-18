@@ -12,6 +12,7 @@
 
 import type { WeatherForecastFile, WeatherNormalsFile } from "@shared/types/weather";
 import { cacheKey, liveUrl, LIVE_TIMEOUT_MS } from "@/lib/park-data";
+import { reportSource } from "@/lib/data-sources";
 
 const FORECAST_CACHE_KEY = cacheKey("weather-forecast");
 const FORECAST_TTL = 30 * 60 * 1000; // the forecast is republished hourly
@@ -52,20 +53,27 @@ function cacheForecast(data: WeatherForecastFile): void {
 
 async function loadForecast(): Promise<{ forecast: WeatherForecastFile | null; fallback: boolean }> {
   const cached = readCachedForecast();
-  if (cached) return { forecast: cached, fallback: false };
+  if (cached) {
+    reportSource({ key: "weatherForecast", kind: "cached", asOf: cached.fetchedAt });
+    return { forecast: cached, fallback: false };
+  }
+  let detail = "";
   try {
     const live = await fetchJson(liveUrl("weather/forecast.json"), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
     if (!isForecast(live)) throw new Error("live forecast looked wrong");
     cacheForecast(live);
+    reportSource({ key: "weatherForecast", kind: "live", asOf: live.fetchedAt });
     return { forecast: live, fallback: false };
   } catch (err) {
-    console.warn("[weather] live forecast unavailable, using the deployed copy:", err);
+    detail = `the live copy failed: ${err instanceof Error ? err.message : String(err)}`;
   }
   try {
     const deployed = await fetchJson("/data/weather/forecast.json");
-    return { forecast: isForecast(deployed) ? deployed : null, fallback: true };
+    if (!isForecast(deployed)) throw new Error("the deployed copy looked wrong");
+    reportSource({ key: "weatherForecast", kind: "deployed", asOf: deployed.fetchedAt, detail });
+    return { forecast: deployed, fallback: true };
   } catch (err) {
-    console.warn("[weather] no forecast at all:", err);
+    reportSource({ key: "weatherForecast", kind: "failed", asOf: null, detail: `${detail}; ${err instanceof Error ? err.message : String(err)}` });
     return { forecast: null, fallback: true };
   }
 }
@@ -73,13 +81,18 @@ async function loadForecast(): Promise<{ forecast: WeatherForecastFile | null; f
 async function loadNormals(): Promise<WeatherNormalsFile | null> {
   try {
     const data = await fetchJson("/data/weather/normals.json");
-    if (isNormals(data)) return data;
+    if (isNormals(data)) {
+      reportSource({ key: "weatherNormals", kind: "bundled", asOf: data.generatedAt });
+      return data;
+    }
   } catch { /* try live below */ }
   try {
     const live = await fetchJson(liveUrl("weather/normals.json"), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
-    return isNormals(live) ? live : null;
+    if (!isNormals(live)) throw new Error("the live copy looked wrong");
+    reportSource({ key: "weatherNormals", kind: "live", asOf: live.generatedAt });
+    return live;
   } catch (err) {
-    console.warn("[weather] typical weather unavailable:", err);
+    reportSource({ key: "weatherNormals", kind: "failed", asOf: null, detail: err instanceof Error ? err.message : String(err) });
     return null;
   }
 }

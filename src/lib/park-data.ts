@@ -2,6 +2,7 @@
 
 import { syncDay, type ShowtimeHistory } from "@/lib/showtimes";
 import { parkDate } from "@/lib/dates";
+import { reportSource, type DataSource, type SourceKey } from "@/lib/data-sources";
 
 // Served from public/data/ (downloaded from Firebase Storage via scripts/download-park-data.mjs)
 const BASE_URL = "/data";
@@ -251,6 +252,8 @@ function flattenParkData(
 interface CacheEntry {
   data: ParkDataItem[];
   timestamp: number;
+  /** Where the live files came from when this was saved, and the bundled files' date */
+  sources?: DataSource[];
   /** shows.json's lastShowtimeSync: when its showtimes were fetched (they're that day's schedule). */
   showtimesSyncedAt?: string | null;
 }
@@ -284,19 +287,41 @@ async function fetchJson(url: string, init?: RequestInit): Promise<Record<string
   return res.json();
 }
 
-/** One park data file: live from Storage for LIVE_FILES, else (or if that fails) the deploy's copy. */
-async function fetchParkFile(file: string): Promise<Record<string, unknown>> {
-  if (LIVE_FILES.has(file)) {
+const LIVE_SOURCE: Record<string, SourceKey> = { "shows.json": "shows", "restaurants.json": "restaurants" };
+
+/** A file's own date: shows.json's showtime sync, else its lastUpdated. */
+function fileDate(file: string, data: Record<string, unknown>): string | null {
+  const v = file === "shows.json" ? data.lastShowtimeSync ?? data.lastUpdated : data.lastUpdated;
+  return typeof v === "string" ? v : null;
+}
+
+/**
+ * One park data file: live from Storage for LIVE_FILES, else (or if that
+ * fails) the deploy's copy. A live file reports where it came from
+ * (data-sources.ts), "deployed" when it fell back.
+ */
+async function fetchParkFile(file: string): Promise<{ data: Record<string, unknown>; source?: DataSource }> {
+  const key = LIVE_SOURCE[file];
+  let detail = "";
+  if (key) {
     try {
       const data = await fetchJson(liveUrl(file), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
       // Every park data file is keyed by park (restaurants.json has no "version")
-      if (data && typeof data === "object" && typeof data.disneyland === "object") return data;
-      console.warn(`[park-data] live ${file} looked wrong, using the deployed copy`);
+      if (data && typeof data === "object" && typeof data.disneyland === "object") {
+        return { data, source: { key, kind: "live", asOf: fileDate(file, data) } };
+      }
+      detail = "the live copy looked wrong";
     } catch (err) {
-      console.warn(`[park-data] live ${file} unavailable, using the deployed copy:`, err);
+      detail = `the live copy couldn't be reached: ${err instanceof Error ? err.message : String(err)}`;
     }
   }
-  return fetchJson(`${BASE_URL}/${file}`);
+  try {
+    const data = await fetchJson(`${BASE_URL}/${file}`);
+    return { data, source: key ? { key, kind: "deployed", asOf: fileDate(file, data), detail } : undefined };
+  } catch (err) {
+    if (key) reportSource({ key, kind: "failed", asOf: null, detail: `${detail}; no deployed copy either` });
+    throw err;
+  }
 }
 
 // ==================== SHOWTIME HISTORY ====================
@@ -318,10 +343,13 @@ async function loadShowtimeHistory(): Promise<ShowtimeHistory | null> {
   try {
     const cached = localStorage.getItem(HISTORY_CACHE_KEY);
     if (cached) {
-      const entry: { data: ShowtimeHistory; timestamp: number } = JSON.parse(cached);
+      const entry: { data: ShowtimeHistory; timestamp: number; updatedAt?: string | null } = JSON.parse(cached);
       const age = now - entry.timestamp;
       const hasToday = !!entry.data?.days?.[today];
-      if (entry.data?.days && age < CACHE_TTL && (hasToday || age < STALE_SHOWTIMES_RETRY)) return entry.data;
+      if (entry.data?.days && age < CACHE_TTL && (hasToday || age < STALE_SHOWTIMES_RETRY)) {
+        reportSource({ key: "showtimeHistory", kind: "cached", asOf: entry.updatedAt ?? null });
+        return entry.data;
+      }
     }
   } catch { /* cache read failed */ }
 
@@ -329,12 +357,15 @@ async function loadShowtimeHistory(): Promise<ShowtimeHistory | null> {
     const data = await fetchJson(liveUrl("showtimeHistory.json"), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) });
     if (!data || typeof data.days !== "object" || !data.days) throw new Error("no days");
     const history: ShowtimeHistory = { days: data.days as ShowtimeHistory["days"] };
+    const updatedAt = typeof data.updatedAt === "string" ? data.updatedAt : null;
     try {
-      localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify({ data: history, timestamp: now }));
+      localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify({ data: history, timestamp: now, updatedAt }));
     } catch { /* cache write failed */ }
+    reportSource({ key: "showtimeHistory", kind: "live", asOf: updatedAt });
     return history;
   } catch (err) {
-    console.warn("[park-data] showtime history unavailable:", err);
+    // Later days then use the latest sync's times (their note says "as of")
+    reportSource({ key: "showtimeHistory", kind: "failed", asOf: null, detail: err instanceof Error ? err.message : String(err) });
     return null;
   }
 }
@@ -356,6 +387,8 @@ async function loadParkData(): Promise<ParkDataItem[]> {
       const entry: CacheEntry = JSON.parse(cached);
       if (isCacheFresh(entry, Date.now())) {
         showtimesSyncedAt = entry.showtimesSyncedAt ?? null;
+        // Saved on this device: the same data, so the same dates
+        for (const src of entry.sources ?? []) reportSource({ ...src, kind: "cached" });
         return entry.data;
       }
     }
@@ -364,13 +397,20 @@ async function loadParkData(): Promise<ParkDataItem[]> {
   }
 
   // Fetch all files in parallel
+  const sources: DataSource[] = [];
   const results = await Promise.allSettled(
     FILES.map(async (file) => {
-      const data = await fetchParkFile(file);
+      const { data, source } = await fetchParkFile(file);
+      if (source) sources.push(source);
+      if (file === "rides.json") sources.push({ key: "parkData", kind: "bundled", asOf: fileDate(file, data) });
       if (file === "shows.json" && typeof data.lastShowtimeSync === "string") showtimesSyncedAt = data.lastShowtimeSync;
       return flattenParkData(data as Record<string, Record<string, RawParkEntity>>, fileToType(file));
     })
   );
+  sources.forEach(reportSource);
+  if (results.some((r) => r.status === "rejected") && !sources.some((s) => s.key === "parkData")) {
+    reportSource({ key: "parkData", kind: "failed", asOf: null, detail: "rides.json didn't load" });
+  }
 
   const items: ParkDataItem[] = [];
   for (const result of results) {
@@ -382,10 +422,13 @@ async function loadParkData(): Promise<ParkDataItem[]> {
   // Sort alphabetically
   items.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Only cache if we got data (avoids caching an empty result from a failed fetch)
-  if (items.length > 0) {
+  // Only cache a complete, live result: an empty one (a failed fetch) or one
+  // where a live file fell back to the deployed copy is used now but not
+  // saved, so the next load tries the live files again
+  const fellBack = results.some((r) => r.status === "rejected") || sources.some((s) => s.kind !== "live" && s.kind !== "bundled");
+  if (items.length > 0 && !fellBack) {
     try {
-      const entry: CacheEntry = { data: items, timestamp: Date.now(), showtimesSyncedAt };
+      const entry: CacheEntry = { data: items, timestamp: Date.now(), showtimesSyncedAt, sources };
       localStorage.setItem(CACHE_KEY, JSON.stringify(entry));
     } catch {
       // Cache write failed (e.g. quota)
@@ -523,30 +566,49 @@ export interface WaitTimeStats {
   unmatchedRideNames: string[];
 }
 
-export async function getWaitTimeStats(): Promise<WaitTimeStats | null> {
+export function getWaitTimeStats(): Promise<WaitTimeStats | null> {
+  return loadNightlyStats<WaitTimeStats>(WAIT_STATS_FILE, waitStatsCacheKey, "waitTimeStats");
+}
+
+/**
+ * A nightly stats file (wait-time medians, ride reliability): live from
+ * Storage, where it's regenerated every night, else the deploy's copy
+ * (as old as the last release), cached for a day either way. Reports where
+ * it came from; null when neither loaded, which the pages say differently
+ * from "not available yet".
+ */
+async function loadNightlyStats<T extends { rides?: unknown; generatedAt?: string }>(
+  file: string, key: string, source: SourceKey,
+): Promise<T | null> {
   try {
-    const cached = localStorage.getItem(waitStatsCacheKey);
+    const cached = localStorage.getItem(key);
     if (cached) {
-      const entry = JSON.parse(cached);
+      const entry = JSON.parse(cached) as { data: T; timestamp: number; kind?: "live" | "deployed" };
       if (Date.now() - entry.timestamp < CACHE_TTL && entry.data?.rides) {
+        reportSource({ key: source, kind: entry.kind === "deployed" ? "deployed" : "cached", asOf: entry.data.generatedAt ?? null });
         return entry.data;
       }
     }
   } catch { /* cache read failed */ }
 
-  try {
-    const res = await fetch(`${BASE_URL}/${WAIT_STATS_FILE}`);
-    if (!res.ok) return null;
-    const data = await res.json() as WaitTimeStats;
-
+  let detail = "";
+  for (const kind of ["live", "deployed"] as const) {
     try {
-      localStorage.setItem(waitStatsCacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-    } catch { /* cache write failed */ }
-
-    return data;
-  } catch {
-    return null;
+      const url = kind === "live" ? liveUrl(file) : `${BASE_URL}/${file}`;
+      const data = await fetchJson(url, kind === "live" ? { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) } : undefined) as T;
+      if (!data?.rides) throw new Error("no rides in the file");
+      // A deployed copy is cached for an hour only, so the live one is tried again soon
+      try {
+        localStorage.setItem(key, JSON.stringify({ data, timestamp: kind === "live" ? Date.now() : Date.now() - CACHE_TTL + 3_600_000, kind }));
+      } catch { /* cache write failed */ }
+      reportSource({ key: source, kind, asOf: data.generatedAt ?? null, detail: kind === "deployed" ? detail : undefined });
+      return data;
+    } catch (err) {
+      detail = `${kind === "live" ? "the live copy" : "the deployed copy"} failed: ${err instanceof Error ? err.message : String(err)}`;
+    }
   }
+  reportSource({ key: source, kind: "failed", asOf: null, detail });
+  return null;
 }
 
 // ==================== RIDE RELIABILITY STATS ====================
@@ -591,30 +653,8 @@ export interface RideReliabilityStats {
   unmatchedRideNames: string[];
 }
 
-export async function getRideReliabilityStats(): Promise<RideReliabilityStats | null> {
-  try {
-    const cached = localStorage.getItem(rideReliabilityCacheKey);
-    if (cached) {
-      const entry = JSON.parse(cached);
-      if (Date.now() - entry.timestamp < CACHE_TTL && entry.data?.rides) {
-        return entry.data;
-      }
-    }
-  } catch { /* cache read failed */ }
-
-  try {
-    const res = await fetch(`${BASE_URL}/${RIDE_RELIABILITY_FILE}`);
-    if (!res.ok) return null;
-    const data = await res.json() as RideReliabilityStats;
-
-    try {
-      localStorage.setItem(rideReliabilityCacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-    } catch { /* cache write failed */ }
-
-    return data;
-  } catch {
-    return null;
-  }
+export function getRideReliabilityStats(): Promise<RideReliabilityStats | null> {
+  return loadNightlyStats<RideReliabilityStats>(RIDE_RELIABILITY_FILE, rideReliabilityCacheKey, "rideReliability");
 }
 
 // ==================== TAG MAPPING ====================

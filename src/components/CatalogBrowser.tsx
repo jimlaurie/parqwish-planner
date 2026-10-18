@@ -16,6 +16,7 @@ import CatalogNewPlace from "@/components/CatalogNewPlace";
 import type { PickedPoint } from "@/components/play/PlacePickerMap";
 import CatalogStatusFilter, { useCatalogStatusFilter } from "@/components/CatalogStatusFilter";
 import { waitColor } from "@/components/publish/waitTimeColors";
+import DataSourceNote from "@/components/DataSourceNote";
 
 const SCHEDULE_TIP_SEEN_KEY = "parqwish_seen_schedule_tip";
 
@@ -854,6 +855,9 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
             })}
           </div>
         )}
+
+        {/* Typical waits from an older deployed copy, or not loaded at all (data-sources.ts) */}
+        {activeTab === "ride" && expanded && <DataSourceNote source="waitTimeStats" className="px-3 pb-2" />}
 
         {/* List toggle — list itself collapses by default (inline only;
             the panel always shows results) */}

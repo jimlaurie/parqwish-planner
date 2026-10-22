@@ -19,6 +19,7 @@ import { useUsers } from "@/hooks/use-users";
 import { trailPerson, comparePeople, usesPersonColors, lineColor, trailsForFilter, usersByIdMap, type TrailPerson } from "@/lib/trail-people";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
 import { auth, isSyncEnabled } from "@/lib/auth";
+import { useTrips } from "@/hooks/use-trips";
 import { deleteTrailRemote } from "@/lib/wish-sync";
 import { calcDistanceMiles, calcDurationMinutes } from "@/lib/trail-geo";
 import type { TrailMarker } from "./TrailMiniMap";
@@ -111,7 +112,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
     await db.trails.delete(trail.id);
     const user = auth.currentUser;
     if (user && isSyncEnabled(user)) {
-      deleteTrailRemote(trail.tripId, `${trail.date}__${trail.userId}`, user.uid).catch(() => {});
+      deleteTrailRemote(trail.tripId, trail, user.uid).catch(() => {});
     }
   }, [deletingTrail]);
 
@@ -133,17 +134,20 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
 
   // Who recorded each trail, and whether cards colour by person (decided on
   // every trail of the trip, so colours don't change as the filter does).
+  const { currentTrip } = useTrips();
+  const myUid = auth.currentUser?.uid;
   const peopleById = useMemo(() => {
     const byId = usersByIdMap(users);
-    return new Map<string, TrailPerson>((trails ?? []).map((t) => [t.id, trailPerson(t, byId)]));
-  }, [trails, users]);
-  const byPerson = usesPersonColors(trails ?? []);
+    const viewer = { myUid, members: currentTrip?.members };
+    return new Map<string, TrailPerson>((trails ?? []).map((t) => [t.id, trailPerson(t, byId, viewer)]));
+  }, [trails, users, myUid, currentTrip?.members]);
+  const byPerson = usesPersonColors(trails ?? [], myUid);
 
   // The trails the Trip User filter shows, by date, then person.
   const sorted = useMemo(
-    () => trailsForFilter([...(trails || [])], activeUserFilter).sort((a, b) =>
+    () => trailsForFilter([...(trails || [])], activeUserFilter, myUid).sort((a, b) =>
       a.date.localeCompare(b.date) || comparePeople(peopleById.get(a.id)!, peopleById.get(b.id)!)),
-    [trails, activeUserFilter, peopleById],
+    [trails, activeUserFilter, peopleById, myUid],
   );
 
   // Initialise time ranges once per trail (when trails first load or new ones appear)

@@ -8,6 +8,7 @@ import type { TrailTimeRanges } from "@/components/publish/TrailGallery";
 import { formatTime12 } from "./time-format";
 import { escapeHtml } from "./html-escape";
 import { trailPerson, comparePeople, usesPersonColors, trailsForFilter, usersByIdMap } from "./trail-people";
+import { auth } from "./auth";
 
 // ==================== HELPERS ====================
 
@@ -267,6 +268,8 @@ const SINGLE_PDF_TRAIL_COLOR = "#E74C3C";
 interface DayTrailLine extends ResortTrailLine {
   userId: string;
   name: string;
+  /** Recorded on this account (false for a collaborator), for the order of lines */
+  mine: boolean;
   stats: TrailStats;
   range: { from: string; to: string } | null;
 }
@@ -385,6 +388,7 @@ function dayTrailLines(
   users:           User[],
   trailTimeRanges: TrailTimeRanges,
   byPerson:        boolean,
+  myUid?:          string,
 ): Record<string, DayTrailLine[]> {
   const byId = usersByIdMap(users);
   const byDate: Record<string, DayTrailLine[]> = {};
@@ -392,7 +396,7 @@ function dayTrailLines(
     const sorted = [...trail.points].sort((a, b) => a.timestamp - b.timestamp);
     const range  = trailTimeRanges[trail.id] ?? null;
     const pts    = range ? filterPointsByRange(sorted, range.from, range.to) : sorted;
-    const person = trailPerson(trail, byId);
+    const person = trailPerson(trail, byId, { myUid });
     (byDate[trail.date] ??= []).push({
       name:   person.name,
       color:  byPerson ? person.color : SINGLE_PDF_TRAIL_COLOR,
@@ -400,6 +404,7 @@ function dayTrailLines(
       stats:  { distanceMiles: calcDistanceMiles(pts), durationMinutes: calcDurationMinutes(pts), pointCount: pts.length },
       range,
       userId: person.userId,
+      mine:   person.mine,
     });
   }
   for (const lines of Object.values(byDate)) {
@@ -436,8 +441,9 @@ export async function generateTripPDF(
   ]);
 
   // 2. One line per person per day, each cut to its own time range
-  const byPerson    = usesPersonColors(rawTrails);
-  const linesByDate = dayTrailLines(trailsForFilter(rawTrails, userFilter), users, trailTimeRanges, byPerson);
+  const myUid       = auth.currentUser?.uid;
+  const byPerson    = usesPersonColors(rawTrails, myUid);
+  const linesByDate = dayTrailLines(trailsForFilter(rawTrails, userFilter, myUid), users, trailTimeRanges, byPerson, myUid);
 
   // 3. Build HTML sections
   const wrapper = document.createElement("div");

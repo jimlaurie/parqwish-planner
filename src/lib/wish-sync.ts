@@ -43,7 +43,8 @@ import { INVITE_TTL_MS, type Trip, type TripMember } from "@shared/types/trip";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
 import { localUpdatedAtISO } from "@shared/sync-helpers";
-import db, { type User } from "./db";
+import db, { type User, type TripTrail } from "./db";
+import { isSameRecording, legacyTrailRowId, trailDocId, trailRowId } from "./trail-ids";
 import { reassignRemovedUser } from "./reassign-user";
 
 const firestore = getFirestore(app);
@@ -1125,6 +1126,8 @@ interface TrailPayload {
   id: string;
   date: string;
   userId: string;
+  /** Pal 1.1.0+; older pushes carry the account only in the doc's plaintext authorUid */
+  authorUid?: string;
   resolution: "high" | "medium" | "low";
   points: Array<{ latitude: number; longitude: number; timestamp: number; accuracy: number }>;
   distanceMiles: number;
@@ -1132,31 +1135,53 @@ interface TrailPayload {
   pointCount: number;
 }
 
-export async function deleteTrailRemote(tripId: string, trailId: string, uid: string): Promise<void> {
+/**
+ * Delete a trail everywhere: tombstone its account-keyed doc and, when Pal
+ * before 1.1.0 left a copy under the old {date}__{userId} id written by the
+ * same account, that one too, so an older phone's next push doesn't bring it
+ * back. The old id is shared across accounts, so a copy written by someone
+ * else is left alone.
+ */
+export async function deleteTrailRemote(tripId: string, trail: Pick<TripTrail, "date" | "userId" | "authorUid">, uid: string): Promise<void> {
   const tripKey = await getTripKey(tripId, uid);
   if (!tripKey) return;
-  await setDoc(trailDocRef(tripId, trailId), {
-    id: trailId,
+  const tombstone = (id: string) => setDoc(trailDocRef(tripId, id), {
+    id,
     encryptedPayload: "",
     updatedAt: new Date().toISOString(),
     deletedAt: new Date().toISOString(),
   }, { merge: true });
+  const legacyId = trailDocId(trail.date, trail.userId);
+  if (trail.authorUid) await tombstone(trailDocId(trail.date, trail.userId, trail.authorUid));
+  const legacy = await getDoc(trailDocRef(tripId, legacyId));
+  const legacyAuthor = legacy.exists() ? (legacy.data() as SyncedWishDoc).authorUid : undefined;
+  if (legacy.exists() && (!trail.authorUid || legacyAuthor === trail.authorUid)) await tombstone(legacyId);
 }
 
+/**
+ * Store a pulled trail under its account (src/lib/trail-ids.ts). The account
+ * comes from the doc's plaintext authorUid, so a push from Pal before 1.1.0
+ * ({date}__{userId}) and from 1.1.0 ({date}__{authorUid}__{userId}) land in
+ * the same row. A trail only grows, so a copy with fewer points never
+ * replaces a longer one; an older copy of the same recording stored under
+ * the pre-account id is removed.
+ */
 async function applyRemoteTrail(tripId: string, tripKey: Uint8Array, remote: SyncedWishDoc): Promise<void> {
   if (remote.deletedAt) {
-    // The Firestore doc's plaintext id is "{date}__{userId}", and the Dexie
-    // id is "{tripId}__{date}__{userId}" — reconstructable without
-    // decrypting, same pattern as photo metadata above.
+    // The doc id is "{date}__{authorUid}__{userId}" (or the older
+    // "{date}__{userId}"), and the row id is "{tripId}__" + that —
+    // reconstructable without decrypting, same pattern as photo metadata below.
     await db.trails.delete(`${tripId}__${remote.id}`);
     return;
   }
   const decrypted = await decrypt<TrailPayload>(remote.encryptedPayload, tripKey);
   if (!decrypted) return;
-  await db.trails.put({
-    id: `${tripId}__${decrypted.date}__${decrypted.userId}`,
+  const authorUid = decrypted.authorUid ?? remote.authorUid;
+  const row: TripTrail = {
+    id: trailRowId(tripId, decrypted.date, decrypted.userId, authorUid),
     tripId,
     userId: decrypted.userId,
+    authorUid,
     date: decrypted.date,
     resolution: decrypted.resolution,
     points: decrypted.points,
@@ -1164,7 +1189,13 @@ async function applyRemoteTrail(tripId: string, tripKey: Uint8Array, remote: Syn
     durationMinutes: decrypted.durationMinutes,
     pointCount: decrypted.pointCount,
     importedAt: Date.now(),
-  });
+  };
+  const existing = await db.trails.get(row.id);
+  if (!existing || existing.pointCount <= row.pointCount) await db.trails.put(row);
+  if (!authorUid) return;
+  const legacyId = legacyTrailRowId(tripId, row.date, row.userId);
+  const legacy = await db.trails.get(legacyId);
+  if (legacy && isSameRecording(legacy, row)) await db.trails.delete(legacyId);
 }
 
 async function pullTrailsForTrip(tripId: string, uid: string): Promise<void> {

@@ -33,9 +33,12 @@ export interface User {
 
 // PWA-specific: GPS trail for a single day, imported from mobile
 export interface TripTrail {
-  id: string; // tripId__date__userId
+  /** tripId__date__authorUid__userId for a synced trail (src/lib/trail-ids.ts); tripId__date__userId when the account isn't known (file import, older copies) */
+  id: string;
   tripId: string;
   userId: string;
+  /** The account that recorded it (Cloud Sync); absent for a file import. A Trip User id alone collides across accounts */
+  authorUid?: string;
   date: string; // YYYY-MM-DD
   resolution: "high" | "medium" | "low";
   points: Array<{

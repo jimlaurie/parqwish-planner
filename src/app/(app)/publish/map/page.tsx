@@ -20,6 +20,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db, { type TripTrail } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
+import { auth } from "@/lib/auth";
 import { useUsers } from "@/hooks/use-users";
 import { useDayItems } from "@/hooks/use-day-items";
 import { getAttractionCoords, type CoordMaps } from "@/lib/park-data";
@@ -173,18 +174,21 @@ export default function TripMapPage() {
     [] as TripTrail[],
   );
 
+  const myUid = auth.currentUser?.uid;
   const people = useMemo<TrailPerson[]>(() => {
     const byId = usersByIdMap(users);
-    return (dayTrails ?? []).map((t) => trailPerson(t, byId)).sort(comparePeople);
-  }, [dayTrails, users]);
-  const byPerson = usesPersonColors(dayTrails ?? []);
+    const viewer = { myUid, members: currentTrip?.members };
+    return (dayTrails ?? []).map((t) => trailPerson(t, byId, viewer)).sort(comparePeople);
+  }, [dayTrails, users, myUid, currentTrip?.members]);
+  const byPerson = usesPersonColors(dayTrails ?? [], myUid);
 
   // Start each day from the app-wide Trip User filter: anyone it leaves out
   // starts hidden (unless that would hide everyone).
   const dayTrailKey = (dayTrails ?? []).map((t) => t.id).sort().join("|");
   useEffect(() => {
     if (!activeUserFilter) { setHiddenTrailIds(new Set()); return; }
-    const hidden = people.filter((p) => !activeUserFilter.includes(p.userId)).map((p) => p.trailId);
+    // The filter names our own people; a collaborator starts hidden unless it's "All"
+    const hidden = people.filter((p) => !p.mine || !activeUserFilter.includes(p.userId)).map((p) => p.trailId);
     setHiddenTrailIds(new Set(hidden.length < people.length ? hidden : []));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dayTrailKey, activeUserFilter]);

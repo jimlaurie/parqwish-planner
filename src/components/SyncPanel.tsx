@@ -8,6 +8,9 @@
  *   2. Cloud sync enabled, not signed in → show Apple Sign In button
  *   3. Cloud sync enabled, signed in → active badge + opt-out option
  *
+ * An account someone signed in to (Cloud Sync's Apple ID, or a collaborator's
+ * Google or email-link sign-in) also gets "Delete my account" at the foot.
+ *
  * File-based transfer (the existing manual flow) is always available
  * regardless of this setting.
  */
@@ -18,6 +21,7 @@ import { onAuthChanged, signInWithApple, signOutSync, isSyncEnabled } from "@/li
 import { FIREBASE_CONFIGURED } from "@/lib/firebase";
 import { startSync, stopSync } from "@/lib/wish-sync";
 import { useAppStore } from "@/lib/store";
+import DeleteAccountSection from "@/components/DeleteAccountSection";
 
 export default function SyncPanel() {
   const { cloudSyncEnabled, setCloudSyncEnabled } = useAppStore();
@@ -247,6 +251,12 @@ export default function SyncPanel() {
             Turning off stops syncing. Your local data is not affected.
           </p>
         </>
+      )}
+
+      {FIREBASE_CONFIGURED && (
+        <DeleteAccountSection
+          onDeleted={() => { stopSync(); setCloudSyncEnabled(false); setUser(null); setError(null); }}
+        />
       )}
     </div>
   );

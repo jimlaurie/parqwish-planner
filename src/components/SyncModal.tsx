@@ -128,7 +128,9 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
 
   // Trip dates
   const tripDates = useMemo(() => {
-    if (!currentTrip) return [];
+    // A template has no dates: nothing to pick (getDateRange throws on "",
+    // which took the whole Play page down when a template was the current trip)
+    if (!currentTrip?.startDate || !currentTrip.endDate) return [];
     return getDateRange(currentTrip.startDate, currentTrip.endDate);
   }, [currentTrip]);
 

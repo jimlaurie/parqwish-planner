@@ -83,3 +83,11 @@ test("A wrong code is refused and nothing can be imported", async ({ page, brows
   await expect(other.getByRole("button", { name: /Import Data/ })).toHaveCount(0);
   expect(await rows(other, "wishes")).toEqual([]);
 });
+
+test("Play opens when the current trip is a template (no dates)", async ({ page }) => {
+  const template = { ...SEED.trips[0], name: "Test Template", startDate: "", endDate: "", isTemplate: true };
+  await seedTrip(page, { ...SEED, trips: [template] });
+  await page.goto("/play");
+  await expect(page.getByRole("heading", { name: "Cloud Sync", exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Something went wrong")).toHaveCount(0);
+});

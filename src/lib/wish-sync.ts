@@ -42,7 +42,7 @@ import { stampOwnerAccounts } from "@shared/selection-owners";
 import { INVITE_TTL_MS, type Trip, type TripMember } from "@shared/types/trip";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
-import { localUpdatedAtISO } from "@shared/sync-helpers";
+import { localUpdatedAtISO, shouldPushAtStartup, type RemoteStamp } from "@shared/sync-helpers";
 import db, { type User, type TripTrail } from "./db";
 import { isSameRecording, legacyTrailRowId, trailDocId, trailRowId } from "./trail-ids";
 import { reassignRemovedUser } from "./reassign-user";
@@ -111,13 +111,14 @@ export async function flushPendingWishes(uid: string): Promise<void> {
  * Pull all wishes from Firestore, decrypt, and merge into Dexie.
  * Uses last-write-wins: remote wins if its updatedAt is newer.
  */
-export async function pullWishes(uid: string): Promise<number> {
+export async function pullWishes(uid: string, stamps?: Map<string, RemoteStamp>): Promise<number> {
   const key = await getKey(uid);
   const snapshot = await getDocs(wishesCol(uid));
   let updated = 0;
 
   for (const docSnap of snapshot.docs) {
     const remote = docSnap.data() as SyncedWishDoc;
+    stamps?.set(remote.id, { updatedAt: remote.updatedAt, deletedAt: remote.deletedAt });
 
     // Soft-deleted wish — remove wish and any orphaned selections locally
     if (remote.deletedAt) {
@@ -933,12 +934,15 @@ async function applyRemoteTripUser(remote: SyncedWishDoc, decrypted: SyncedTripU
   const localTime = localUpdatedAtISO(local?.updatedAt);
   if (local && remote.updatedAt <= localTime) return;
 
+  // The cloud copy's own time: stamping now made every downloaded profile
+  // look like a local edit, which startSync then pushed back at every load
+  const remoteTime = Date.parse(remote.updatedAt) || Date.now();
   if (local) {
     await db.users.update(decrypted.id, {
       name: decrypted.name,
       color: decrypted.color,
       role: decrypted.role,
-      updatedAt: Date.now(),
+      updatedAt: remoteTime,
     });
     return;
   }
@@ -965,16 +969,17 @@ async function applyRemoteTripUser(remote: SyncedWishDoc, decrypted: SyncedTripU
     color: decrypted.color,
     role: decrypted.role,
     createdAt: Date.now(),
-    updatedAt: Date.now(),
+    updatedAt: remoteTime,
     syncedFromMobile: true,
   });
 }
 
-export async function pullTripUsers(uid: string): Promise<void> {
+export async function pullTripUsers(uid: string, stamps?: Map<string, RemoteStamp>): Promise<void> {
   const key = await getKey(uid);
   const snapshot = await getDocs(tripUsersCol(uid));
   for (const docSnap of snapshot.docs) {
     const remote = docSnap.data() as SyncedWishDoc;
+    stamps?.set(remote.id, { updatedAt: remote.updatedAt, deletedAt: remote.deletedAt });
     const decrypted = remote.encryptedPayload ? await decrypt<SyncedTripUser>(remote.encryptedPayload, key) : null;
     if (!remote.deletedAt && !decrypted) continue;
     await applyRemoteTripUser(remote, decrypted);
@@ -1374,11 +1379,12 @@ export async function deletePackingItemRemote(id: string, uid: string): Promise<
   }, { merge: true });
 }
 
-export async function pullPackingItems(uid: string): Promise<void> {
+export async function pullPackingItems(uid: string, stamps?: Map<string, RemoteStamp>): Promise<void> {
   const key = await getKey(uid);
   const snapshot = await getDocs(packingItemsCol(uid));
   for (const docSnap of snapshot.docs) {
     const remote = docSnap.data() as SyncedWishDoc;
+    stamps?.set(remote.id, { updatedAt: remote.updatedAt, deletedAt: remote.deletedAt });
     if (remote.deletedAt) {
       await db.packingItems.delete(remote.id);
       await db.tripPackingSelections.where("itemId").equals(remote.id).delete();
@@ -1746,24 +1752,32 @@ export async function startSync(options: StartSyncOptions = {}): Promise<void> {
 
   stopSync();
 
-  // Pushing everything (not just pendingSync items) is intentional:
-  //   - pendingSync isn't an indexed Dexie field so where() on it is unreliable
-  //   - items added while sync was disabled are NOT marked pending
-  //   - a full push is idempotent and self-healing for any missed writes
+  // Push what the cloud lacks or has older (items made while sync was off,
+  // edits a failed push left behind), not everything: the cloud's stamp is
+  // the push time, so re-pushing every copy made this browser's copies the
+  // newest everywhere, over edits made in Pal and over its deletions (the
+  // rule is shared with Pal: shouldPushAtStartup in shared/sync-helpers.ts).
+  // A pull that failed records no stamps, so nothing of that kind is pushed.
+  const wishStamps = new Map<string, RemoteStamp>();
+  const packingStamps = new Map<string, RemoteStamp>();
+  const userStamps = new Map<string, RemoteStamp>();
   const [pullW, pullPI, pullU] = await Promise.allSettled([
-    pullWishes(uid), pullPackingItems(uid), pullTripUsers(uid),
+    pullWishes(uid, wishStamps), pullPackingItems(uid, packingStamps), pullTripUsers(uid, userStamps),
   ]);
   console.log("[wish-sync] pull — wishes:", pullW.status, "packingItems:", pullPI.status, "tripUsers:", pullU.status);
 
-  const [wishes, packingItems, tripUsers] = await Promise.all([
+  const [allWishes, allPacking, allUsers] = await Promise.all([
     db.wishes.toArray(), db.packingItems.toArray(), db.users.toArray(),
   ]);
+  const wishes = pullW.status === "fulfilled" ? allWishes.filter(w => shouldPushAtStartup(w.updatedAt, wishStamps.get(w.id))) : [];
+  const packingItems = pullPI.status === "fulfilled" ? allPacking.filter(p => shouldPushAtStartup(p.updatedAt, packingStamps.get(p.id))) : [];
+  const tripUsers = pullU.status === "fulfilled" ? allUsers.filter(u => shouldPushAtStartup(u.updatedAt, userStamps.get(u.id))) : [];
   await Promise.allSettled([
     ...wishes.map(w => pushWish(w, uid)),
     ...packingItems.map(p => pushPackingItem(p, uid)),
     ...tripUsers.map(u => pushTripUser(u, uid)),
   ]);
-  console.log(`[wish-sync] pushed ${wishes.length} wishes, ${packingItems.length} packingItems, ${tripUsers.length} tripUsers`);
+  console.log(`[wish-sync] pushed ${wishes.length} of ${allWishes.length} wishes, ${packingItems.length} of ${allPacking.length} packingItems, ${tripUsers.length} of ${allUsers.length} tripUsers`);
 
   await startTripCollaboration(uid, true, options.onPulled);
 

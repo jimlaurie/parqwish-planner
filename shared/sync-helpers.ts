@@ -102,6 +102,30 @@ export function localUpdatedAtISO(updatedAt: number | string | undefined | null)
   return updatedAt ? new Date(updatedAt).toISOString() : "";
 }
 
+// ==================== STARTUP PUSH ====================
+// Both apps used to re-upload everything they had when sync started. The
+// cloud's timestamp is when a copy was last pushed, so the re-upload made
+// every local copy the newest: an old copy wrote over newer edits made on
+// another device and brought back deletions (Pal until 25 Oct 2026, the
+// Planner until 30 Oct 2026). Push only what the cloud lacks or has older.
+
+/** What the cloud has for one document: when it was written, and whether it's a deletion. */
+export interface RemoteStamp {
+  updatedAt?: string;   // ISO
+  deletedAt?: string;   // ISO, set on a tombstone
+}
+
+/**
+ * Whether startup should push this local copy: yes when the cloud has none,
+ * or an older one; never over a deletion (the pull removes it here instead).
+ */
+export function shouldPushAtStartup(localUpdatedAt: number | string | undefined | null, remote: RemoteStamp | undefined): boolean {
+  if (!remote) return true;
+  if (remote.deletedAt) return false;
+  const local = localUpdatedAtISO(localUpdatedAt);
+  return !!local && (!remote.updatedAt || local > remote.updatedAt);
+}
+
 // ==================== PAYLOAD FACTORY ====================
 
 /**

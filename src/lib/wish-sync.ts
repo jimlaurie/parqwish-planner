@@ -714,8 +714,7 @@ async function pullWishSelectionsForTrip(tripId: string, uid: string): Promise<v
     const decrypted = await decrypt<TripWishSelection>(remote.encryptedPayload, tripKey);
     if (!decrypted) continue;
     const local = await db.tripWishSelections.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.tripWishSelections.put(decrypted);
     }
   }
@@ -738,8 +737,7 @@ function subscribeToWishSelectionsForTrip(tripId: string, uid: string): Unsubscr
           const decrypted = await decrypt<TripWishSelection>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.tripWishSelections.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.tripWishSelections.put(decrypted);
             console.log("[wish-sync] applied selection:", remote.id.slice(-16));
           }
@@ -1052,8 +1050,7 @@ async function pullDayItemsForTrip(tripId: string, uid: string): Promise<void> {
     const decrypted = await decrypt<DayItemRecord>(remote.encryptedPayload, tripKey);
     if (!decrypted) continue;
     const local = await db.dayItems.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyRemote(local, remote.updatedAt, { ...decrypted, tripId })) {
       // Preserve local photos — remote never carries them. Stamp tripId from
       // the collection path, not the payload — mobile-authored items never
       // carry one (mobile has no trip concept), so trusting the payload
@@ -1080,8 +1077,7 @@ function subscribeToDayItemsForTrip(tripId: string, uid: string): Unsubscribe {
           const decrypted = await decrypt<DayItemRecord>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.dayItems.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyRemote(local, remote.updatedAt, { ...decrypted, tripId })) {
             // See the matching comment in pullDayItemsForTrip — tripId comes
             // from the collection path, not the (possibly mobile-authored,
             // tripId-less) decrypted payload.
@@ -1322,6 +1318,22 @@ function packingSelectionDocRef(tripId: string, id: string) {
 
 /** Strip full/display photos before syncing — only thumbnail (300px) travels.
  *  Legacy `photos` array is also stripped per privacy policy. */
+/**
+ * shouldApplyRemote for a packing item. Its photos travel as thumbnails only
+ * (the apply keeps this browser's display and full sizes) and the legacy
+ * `photos` field is never taken from the cloud, so photos are compared by
+ * thumbnail; comparing them whole re-applied every item on every load.
+ */
+function shouldApplyPackingItem(local: PackingItem | undefined, remoteUpdatedAt: string, incoming: PackingItem): boolean {
+  const view = (item: PackingItem) => ({
+    ...item,
+    photos: undefined,
+    photoSets: undefined,
+    photoThumbnails: (item.photoSets ?? []).map((ps) => ps.thumbnail),
+  });
+  return shouldApplyRemote(local && view(local), remoteUpdatedAt, view(incoming));
+}
+
 function stripPackingPhotos(item: PackingItem): PackingItem {
   const thumbnailOnly = item.photoSets?.map((ps) => ({
     thumbnail: ps.thumbnail,
@@ -1383,8 +1395,7 @@ export async function pullPackingItems(uid: string, stamps?: Map<string, RemoteS
     const decrypted = await decrypt<PackingItem>(remote.encryptedPayload, key);
     if (!decrypted) continue;
     const local = await db.packingItems.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyPackingItem(local, remote.updatedAt, decrypted)) {
       // Preserve local full/display photos — remote only carries thumbnails
       const mergedPhotoSets = decrypted.photoSets?.map((remote_set, idx) => ({
         ...remote_set,
@@ -1418,8 +1429,7 @@ function subscribeToPackingItems(uid: string): Unsubscribe {
           const decrypted = await decrypt<PackingItem>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.packingItems.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyPackingItem(local, remote.updatedAt, decrypted)) {
             const mergedPhotoSets = decrypted.photoSets?.map((remote_set, idx) => ({
               ...remote_set,
               display: local?.photoSets?.[idx]?.display ?? remote_set.display,
@@ -1476,8 +1486,7 @@ async function pullPackingSelectionsForTrip(tripId: string, uid: string): Promis
     const decrypted = await decrypt<TripPackingSelection>(remote.encryptedPayload, tripKey);
     if (!decrypted) continue;
     const local = await db.tripPackingSelections.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.tripPackingSelections.put(decrypted);
     }
   }
@@ -1500,8 +1509,7 @@ function subscribeToPackingSelectionsForTrip(tripId: string, uid: string): Unsub
           const decrypted = await decrypt<TripPackingSelection>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.tripPackingSelections.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.tripPackingSelections.put(decrypted);
             console.log("[wish-sync] applied packingSelection:", remote.id.slice(-16));
           }
@@ -1561,8 +1569,7 @@ async function pullPackingItemMirrorForTrip(tripId: string, uid: string): Promis
     const decrypted = await decrypt<PackingItem>(remote.encryptedPayload, tripKey);
     if (!decrypted) continue;
     const local = await db.packingItems.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyPackingItem(local, remote.updatedAt, decrypted)) {
       const mergedPhotoSets = decrypted.photoSets?.map((remote_set, idx) => ({
         ...remote_set,
         display: local?.photoSets?.[idx]?.display ?? remote_set.display,
@@ -1592,8 +1599,7 @@ function subscribeToPackingItemMirrorForTrip(tripId: string, uid: string): Unsub
           const decrypted = await decrypt<PackingItem>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.packingItems.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyPackingItem(local, remote.updatedAt, decrypted)) {
             const mergedPhotoSets = decrypted.photoSets?.map((remote_set, idx) => ({
               ...remote_set,
               display: local?.photoSets?.[idx]?.display ?? remote_set.display,

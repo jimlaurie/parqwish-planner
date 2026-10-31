@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-30T11:15:08.032Z",
+  "generatedAt": "2026-10-31T11:15:08.229Z",
   "windowDays": 90,
-  "windowStart": "2026-08-01",
-  "windowEnd": "2026-10-30",
+  "windowStart": "2026-08-02",
+  "windowEnd": "2026-10-31",
   "minBreakdownMinutes": 10,
   "minRecoveryEpisodes": 3,
   "minDaysOpen": 5,
@@ -13,32 +13,15 @@
       "daysOpen": 90,
       "daysWithBreakdown": 86,
       "oddsOfBreakdownPct": 95.6,
-      "breakdownCount": 141,
-      "avgDowntimeMinutes": 209.7,
+      "breakdownCount": 140,
+      "avgDowntimeMinutes": 208.3,
       "recovery": {
         "episodeCount": 140,
-        "avgWaitBeforeDown": 9.7,
-        "avgWaitRightAfterReopen": 9.5,
-        "avgWaitPlus30min": 9.4,
-        "avgDropImmediate": 0.3,
-        "avgDropPlus30min": 0.3
-      }
-    },
-    "disneyland__roger-rabbit": {
-      "rideName": "Roger Rabbit's Car Toon Spin",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 82,
-      "oddsOfBreakdownPct": 91.1,
-      "breakdownCount": 242,
-      "avgDowntimeMinutes": 45.2,
-      "recovery": {
-        "episodeCount": 242,
-        "avgWaitBeforeDown": 27.2,
-        "avgWaitRightAfterReopen": 16.4,
-        "avgWaitPlus30min": 12.7,
-        "avgDropImmediate": 10.5,
-        "avgDropPlus30min": 14.2
+        "avgWaitBeforeDown": 9.9,
+        "avgWaitRightAfterReopen": 9.6,
+        "avgWaitPlus30min": 9.5,
+        "avgDropImmediate": 0.4,
+        "avgDropPlus30min": 0.5
       }
     },
     "disneyland__indiana-jones": {
@@ -48,14 +31,31 @@
       "daysWithBreakdown": 41,
       "oddsOfBreakdownPct": 91.1,
       "breakdownCount": 99,
-      "avgDowntimeMinutes": 36.6,
+      "avgDowntimeMinutes": 35.2,
       "recovery": {
         "episodeCount": 99,
-        "avgWaitBeforeDown": 32.5,
-        "avgWaitRightAfterReopen": 27.8,
-        "avgWaitPlus30min": 21.6,
-        "avgDropImmediate": 4.1,
-        "avgDropPlus30min": 10.5
+        "avgWaitBeforeDown": 32.8,
+        "avgWaitRightAfterReopen": 28.2,
+        "avgWaitPlus30min": 22.2,
+        "avgDropImmediate": 4,
+        "avgDropPlus30min": 10.2
+      }
+    },
+    "disneyland__roger-rabbit": {
+      "rideName": "Roger Rabbit's Car Toon Spin",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 82,
+      "oddsOfBreakdownPct": 91.1,
+      "breakdownCount": 244,
+      "avgDowntimeMinutes": 44.5,
+      "recovery": {
+        "episodeCount": 244,
+        "avgWaitBeforeDown": 27.3,
+        "avgWaitRightAfterReopen": 16.4,
+        "avgWaitPlus30min": 12.8,
+        "avgDropImmediate": 10.6,
+        "avgDropPlus30min": 14.2
       }
     },
     "californiaadventure__golden-zephyr": {
@@ -64,11 +64,11 @@
       "daysOpen": 90,
       "daysWithBreakdown": 77,
       "oddsOfBreakdownPct": 85.6,
-      "breakdownCount": 153,
-      "avgDowntimeMinutes": 128.3,
+      "breakdownCount": 150,
+      "avgDowntimeMinutes": 129.5,
       "recovery": {
-        "episodeCount": 153,
-        "avgWaitBeforeDown": 7.6,
+        "episodeCount": 150,
+        "avgWaitBeforeDown": 7.7,
         "avgWaitRightAfterReopen": 6.8,
         "avgWaitPlus30min": 6.7,
         "avgDropImmediate": 0.8,
@@ -81,15 +81,15 @@
       "daysOpen": 89,
       "daysWithBreakdown": 76,
       "oddsOfBreakdownPct": 85.4,
-      "breakdownCount": 198,
-      "avgDowntimeMinutes": 43.2,
+      "breakdownCount": 197,
+      "avgDowntimeMinutes": 44.7,
       "recovery": {
-        "episodeCount": 198,
-        "avgWaitBeforeDown": 17.2,
-        "avgWaitRightAfterReopen": 14.3,
+        "episodeCount": 197,
+        "avgWaitBeforeDown": 17.4,
+        "avgWaitRightAfterReopen": 14.4,
         "avgWaitPlus30min": 10.9,
-        "avgDropImmediate": 2.7,
-        "avgDropPlus30min": 6.3
+        "avgDropImmediate": 2.8,
+        "avgDropPlus30min": 6.5
       }
     },
     "disneyland__tianas-bayou-adventure": {
@@ -98,32 +98,15 @@
       "daysOpen": 90,
       "daysWithBreakdown": 73,
       "oddsOfBreakdownPct": 81.1,
-      "breakdownCount": 155,
-      "avgDowntimeMinutes": 64.9,
+      "breakdownCount": 153,
+      "avgDowntimeMinutes": 64.5,
       "recovery": {
-        "episodeCount": 155,
-        "avgWaitBeforeDown": 34.1,
-        "avgWaitRightAfterReopen": 29.8,
-        "avgWaitPlus30min": 19.1,
+        "episodeCount": 153,
+        "avgWaitBeforeDown": 33.5,
+        "avgWaitRightAfterReopen": 29.2,
+        "avgWaitPlus30min": 18.8,
         "avgDropImmediate": 4.5,
-        "avgDropPlus30min": 14.8
-      }
-    },
-    "californiaadventure__goofy-sky-school": {
-      "rideName": "Goofy's Sky School",
-      "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 72,
-      "oddsOfBreakdownPct": 80,
-      "breakdownCount": 164,
-      "avgDowntimeMinutes": 55.7,
-      "recovery": {
-        "episodeCount": 164,
-        "avgWaitBeforeDown": 24.3,
-        "avgWaitRightAfterReopen": 18.6,
-        "avgWaitPlus30min": 13.1,
-        "avgDropImmediate": 5.5,
-        "avgDropPlus30min": 11.4
+        "avgDropPlus30min": 14.5
       }
     },
     "disneyland__winnie-the-pooh": {
@@ -132,15 +115,32 @@
       "daysOpen": 90,
       "daysWithBreakdown": 72,
       "oddsOfBreakdownPct": 80,
-      "breakdownCount": 141,
-      "avgDowntimeMinutes": 26,
+      "breakdownCount": 143,
+      "avgDowntimeMinutes": 25.8,
       "recovery": {
-        "episodeCount": 141,
-        "avgWaitBeforeDown": 10.1,
-        "avgWaitRightAfterReopen": 9,
+        "episodeCount": 143,
+        "avgWaitBeforeDown": 10.2,
+        "avgWaitRightAfterReopen": 9.2,
         "avgWaitPlus30min": 6.3,
-        "avgDropImmediate": 1.1,
-        "avgDropPlus30min": 3.8
+        "avgDropImmediate": 1,
+        "avgDropPlus30min": 3.9
+      }
+    },
+    "californiaadventure__goofy-sky-school": {
+      "rideName": "Goofy's Sky School",
+      "park": "californiaadventure",
+      "daysOpen": 90,
+      "daysWithBreakdown": 72,
+      "oddsOfBreakdownPct": 80,
+      "breakdownCount": 167,
+      "avgDowntimeMinutes": 55.3,
+      "recovery": {
+        "episodeCount": 167,
+        "avgWaitBeforeDown": 24.3,
+        "avgWaitRightAfterReopen": 18.6,
+        "avgWaitPlus30min": 12.9,
+        "avgDropImmediate": 5.5,
+        "avgDropPlus30min": 11.6
       }
     },
     "disneyland__alice-in-wonderland": {
@@ -149,32 +149,15 @@
       "daysOpen": 90,
       "daysWithBreakdown": 69,
       "oddsOfBreakdownPct": 76.7,
-      "breakdownCount": 125,
-      "avgDowntimeMinutes": 43.2,
+      "breakdownCount": 127,
+      "avgDowntimeMinutes": 43,
       "recovery": {
-        "episodeCount": 125,
-        "avgWaitBeforeDown": 21.1,
-        "avgWaitRightAfterReopen": 16.6,
-        "avgWaitPlus30min": 14.9,
-        "avgDropImmediate": 4.5,
+        "episodeCount": 127,
+        "avgWaitBeforeDown": 21,
+        "avgWaitRightAfterReopen": 16.5,
+        "avgWaitPlus30min": 14.8,
+        "avgDropImmediate": 4.4,
         "avgDropPlus30min": 6.2
-      }
-    },
-    "californiaadventure__monsters-inc": {
-      "rideName": "Monsters, Inc. Mike & Sulley to the Rescue!",
-      "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 66,
-      "oddsOfBreakdownPct": 73.3,
-      "breakdownCount": 103,
-      "avgDowntimeMinutes": 28.6,
-      "recovery": {
-        "episodeCount": 103,
-        "avgWaitBeforeDown": 26.4,
-        "avgWaitRightAfterReopen": 18.5,
-        "avgWaitPlus30min": 11.7,
-        "avgDropImmediate": 7.9,
-        "avgDropPlus30min": 14.7
       }
     },
     "californiaadventure__inside-out-emotional-whirlwind": {
@@ -183,30 +166,47 @@
       "daysOpen": 90,
       "daysWithBreakdown": 65,
       "oddsOfBreakdownPct": 72.2,
-      "breakdownCount": 113,
-      "avgDowntimeMinutes": 19.3,
+      "breakdownCount": 116,
+      "avgDowntimeMinutes": 19.8,
       "recovery": {
-        "episodeCount": 113,
-        "avgWaitBeforeDown": 9.6,
-        "avgWaitRightAfterReopen": 8.5,
+        "episodeCount": 116,
+        "avgWaitBeforeDown": 9.8,
+        "avgWaitRightAfterReopen": 8.6,
         "avgWaitPlus30min": 7.5,
-        "avgDropImmediate": 1,
-        "avgDropPlus30min": 2.1
+        "avgDropImmediate": 1.1,
+        "avgDropPlus30min": 2.2
+      }
+    },
+    "californiaadventure__monsters-inc": {
+      "rideName": "Monsters, Inc. Mike & Sulley to the Rescue!",
+      "park": "californiaadventure",
+      "daysOpen": 90,
+      "daysWithBreakdown": 65,
+      "oddsOfBreakdownPct": 72.2,
+      "breakdownCount": 102,
+      "avgDowntimeMinutes": 28.6,
+      "recovery": {
+        "episodeCount": 102,
+        "avgWaitBeforeDown": 26.3,
+        "avgWaitRightAfterReopen": 18.4,
+        "avgWaitPlus30min": 11.7,
+        "avgDropImmediate": 7.9,
+        "avgDropPlus30min": 14.7
       }
     },
     "californiaadventure__silly-symphony-swings": {
       "rideName": "Silly Symphony Swings",
       "park": "californiaadventure",
-      "daysOpen": 63,
-      "daysWithBreakdown": 45,
-      "oddsOfBreakdownPct": 71.4,
-      "breakdownCount": 75,
-      "avgDowntimeMinutes": 57.5,
+      "daysOpen": 64,
+      "daysWithBreakdown": 46,
+      "oddsOfBreakdownPct": 71.9,
+      "breakdownCount": 76,
+      "avgDowntimeMinutes": 57.3,
       "recovery": {
-        "episodeCount": 75,
-        "avgWaitBeforeDown": 8.3,
-        "avgWaitRightAfterReopen": 6.8,
-        "avgWaitPlus30min": 6.5,
+        "episodeCount": 76,
+        "avgWaitBeforeDown": 8.4,
+        "avgWaitRightAfterReopen": 6.9,
+        "avgWaitPlus30min": 6.6,
         "avgDropImmediate": 1.6,
         "avgDropPlus30min": 1.8
       }
@@ -234,15 +234,15 @@
       "daysOpen": 90,
       "daysWithBreakdown": 63,
       "oddsOfBreakdownPct": 70,
-      "breakdownCount": 110,
+      "breakdownCount": 108,
       "avgDowntimeMinutes": 63.4,
       "recovery": {
-        "episodeCount": 110,
+        "episodeCount": 107,
         "avgWaitBeforeDown": 32.1,
-        "avgWaitRightAfterReopen": 24.4,
-        "avgWaitPlus30min": 15.3,
-        "avgDropImmediate": 8,
-        "avgDropPlus30min": 16.7
+        "avgWaitRightAfterReopen": 24.2,
+        "avgWaitPlus30min": 15.4,
+        "avgDropImmediate": 8.1,
+        "avgDropPlus30min": 16.6
       }
     },
     "disneyland__peter-pans-flight": {
@@ -251,49 +251,15 @@
       "daysOpen": 90,
       "daysWithBreakdown": 61,
       "oddsOfBreakdownPct": 67.8,
-      "breakdownCount": 117,
-      "avgDowntimeMinutes": 25.6,
+      "breakdownCount": 116,
+      "avgDowntimeMinutes": 25.7,
       "recovery": {
-        "episodeCount": 117,
-        "avgWaitBeforeDown": 28,
-        "avgWaitRightAfterReopen": 24.8,
-        "avgWaitPlus30min": 22.5,
-        "avgDropImmediate": 3.2,
+        "episodeCount": 116,
+        "avgWaitBeforeDown": 28.1,
+        "avgWaitRightAfterReopen": 25,
+        "avgWaitPlus30min": 22.6,
+        "avgDropImmediate": 3.1,
         "avgDropPlus30min": 5.5
-      }
-    },
-    "californiaadventure__incredicoaster": {
-      "rideName": "Incredicoaster",
-      "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 58,
-      "oddsOfBreakdownPct": 64.4,
-      "breakdownCount": 86,
-      "avgDowntimeMinutes": 127.6,
-      "recovery": {
-        "episodeCount": 86,
-        "avgWaitBeforeDown": 23.2,
-        "avgWaitRightAfterReopen": 18,
-        "avgWaitPlus30min": 14.9,
-        "avgDropImmediate": 5.4,
-        "avgDropPlus30min": 8.6
-      }
-    },
-    "disneyland__big-thunder-mountain": {
-      "rideName": "Big Thunder Mountain Railroad",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 58,
-      "oddsOfBreakdownPct": 64.4,
-      "breakdownCount": 91,
-      "avgDowntimeMinutes": 69,
-      "recovery": {
-        "episodeCount": 91,
-        "avgWaitBeforeDown": 23.3,
-        "avgWaitRightAfterReopen": 19.8,
-        "avgWaitPlus30min": 13.9,
-        "avgDropImmediate": 3.9,
-        "avgDropPlus30min": 9.4
       }
     },
     "californiaadventure__jessies-critter-carousel": {
@@ -303,7 +269,7 @@
       "daysWithBreakdown": 58,
       "oddsOfBreakdownPct": 64.4,
       "breakdownCount": 88,
-      "avgDowntimeMinutes": 33.5,
+      "avgDowntimeMinutes": 33.3,
       "recovery": {
         "episodeCount": 88,
         "avgWaitBeforeDown": 5.6,
@@ -311,6 +277,40 @@
         "avgWaitPlus30min": 5.3,
         "avgDropImmediate": 0.3,
         "avgDropPlus30min": 0.3
+      }
+    },
+    "californiaadventure__incredicoaster": {
+      "rideName": "Incredicoaster",
+      "park": "californiaadventure",
+      "daysOpen": 90,
+      "daysWithBreakdown": 57,
+      "oddsOfBreakdownPct": 63.3,
+      "breakdownCount": 85,
+      "avgDowntimeMinutes": 127.2,
+      "recovery": {
+        "episodeCount": 85,
+        "avgWaitBeforeDown": 23.3,
+        "avgWaitRightAfterReopen": 17.9,
+        "avgWaitPlus30min": 14.9,
+        "avgDropImmediate": 5.6,
+        "avgDropPlus30min": 8.7
+      }
+    },
+    "disneyland__big-thunder-mountain": {
+      "rideName": "Big Thunder Mountain Railroad",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 57,
+      "oddsOfBreakdownPct": 63.3,
+      "breakdownCount": 90,
+      "avgDowntimeMinutes": 69.6,
+      "recovery": {
+        "episodeCount": 90,
+        "avgWaitBeforeDown": 23.3,
+        "avgWaitRightAfterReopen": 19.7,
+        "avgWaitPlus30min": 13.8,
+        "avgDropImmediate": 4,
+        "avgDropPlus30min": 9.5
       }
     },
     "disneyland__rise-of-the-resistance": {
@@ -337,14 +337,14 @@
       "daysWithBreakdown": 56,
       "oddsOfBreakdownPct": 62.2,
       "breakdownCount": 88,
-      "avgDowntimeMinutes": 57.5,
+      "avgDowntimeMinutes": 57,
       "recovery": {
         "episodeCount": 88,
-        "avgWaitBeforeDown": 21.1,
-        "avgWaitRightAfterReopen": 15.3,
-        "avgWaitPlus30min": 11.1,
-        "avgDropImmediate": 5.7,
-        "avgDropPlus30min": 9.8
+        "avgWaitBeforeDown": 21.4,
+        "avgWaitRightAfterReopen": 15.5,
+        "avgWaitPlus30min": 11.3,
+        "avgDropImmediate": 5.8,
+        "avgDropPlus30min": 9.9
       }
     },
     "disneyland__space-mountain": {
@@ -370,14 +370,14 @@
       "daysOpen": 90,
       "daysWithBreakdown": 55,
       "oddsOfBreakdownPct": 61.1,
-      "breakdownCount": 86,
-      "avgDowntimeMinutes": 58.3,
+      "breakdownCount": 87,
+      "avgDowntimeMinutes": 57.8,
       "recovery": {
-        "episodeCount": 86,
-        "avgWaitBeforeDown": 60.9,
-        "avgWaitRightAfterReopen": 66.1,
-        "avgWaitPlus30min": 57.6,
-        "avgDropImmediate": -5.1,
+        "episodeCount": 87,
+        "avgWaitBeforeDown": 61.3,
+        "avgWaitRightAfterReopen": 66.4,
+        "avgWaitPlus30min": 57.9,
+        "avgDropImmediate": -5,
         "avgDropPlus30min": 3.4
       }
     },
@@ -402,17 +402,17 @@
       "rideName": "Grizzly River Run",
       "park": "californiaadventure",
       "daysOpen": 90,
-      "daysWithBreakdown": 48,
-      "oddsOfBreakdownPct": 53.3,
-      "breakdownCount": 78,
-      "avgDowntimeMinutes": 87.9,
+      "daysWithBreakdown": 47,
+      "oddsOfBreakdownPct": 52.2,
+      "breakdownCount": 77,
+      "avgDowntimeMinutes": 88.9,
       "recovery": {
-        "episodeCount": 78,
-        "avgWaitBeforeDown": 22.6,
-        "avgWaitRightAfterReopen": 17,
-        "avgWaitPlus30min": 10.6,
-        "avgDropImmediate": 6.1,
-        "avgDropPlus30min": 12
+        "episodeCount": 77,
+        "avgWaitBeforeDown": 22.1,
+        "avgWaitRightAfterReopen": 16.5,
+        "avgWaitPlus30min": 10.5,
+        "avgDropImmediate": 6.2,
+        "avgDropPlus30min": 11.7
       }
     },
     "disneyland__jungle-cruise": {
@@ -436,12 +436,12 @@
       "rideName": "Disneyland Railroad",
       "park": "disneyland",
       "daysOpen": 90,
-      "daysWithBreakdown": 44,
-      "oddsOfBreakdownPct": 48.9,
-      "breakdownCount": 59,
-      "avgDowntimeMinutes": 48.3,
+      "daysWithBreakdown": 45,
+      "oddsOfBreakdownPct": 50,
+      "breakdownCount": 60,
+      "avgDowntimeMinutes": 48.9,
       "recovery": {
-        "episodeCount": 59,
+        "episodeCount": 60,
         "avgWaitBeforeDown": 6.6,
         "avgWaitRightAfterReopen": 6.1,
         "avgWaitPlus30min": 6,
@@ -486,69 +486,35 @@
     "disneyland__its-a-small-world": {
       "rideName": "\"it's a small world\"",
       "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 41,
-      "oddsOfBreakdownPct": 45.6,
-      "breakdownCount": 56,
-      "avgDowntimeMinutes": 69.3,
+      "daysOpen": 89,
+      "daysWithBreakdown": 40,
+      "oddsOfBreakdownPct": 44.9,
+      "breakdownCount": 55,
+      "avgDowntimeMinutes": 69.8,
       "recovery": {
-        "episodeCount": 56,
-        "avgWaitBeforeDown": 12.4,
-        "avgWaitRightAfterReopen": 8.9,
-        "avgWaitPlus30min": 6.3,
-        "avgDropImmediate": 3.5,
-        "avgDropPlus30min": 6
+        "episodeCount": 55,
+        "avgWaitBeforeDown": 12.5,
+        "avgWaitRightAfterReopen": 9,
+        "avgWaitPlus30min": 6.4,
+        "avgDropImmediate": 3.6,
+        "avgDropPlus30min": 6.1
       }
     },
     "disneyland__pinocchio": {
       "rideName": "Pinocchio's Daring Journey",
       "park": "disneyland",
       "daysOpen": 90,
-      "daysWithBreakdown": 38,
-      "oddsOfBreakdownPct": 42.2,
-      "breakdownCount": 61,
-      "avgDowntimeMinutes": 16.9,
+      "daysWithBreakdown": 39,
+      "oddsOfBreakdownPct": 43.3,
+      "breakdownCount": 63,
+      "avgDowntimeMinutes": 17.4,
       "recovery": {
-        "episodeCount": 61,
-        "avgWaitBeforeDown": 8.9,
+        "episodeCount": 63,
+        "avgWaitBeforeDown": 8.8,
         "avgWaitRightAfterReopen": 8.1,
         "avgWaitPlus30min": 6.7,
         "avgDropImmediate": 0.7,
         "avgDropPlus30min": 2.1
-      }
-    },
-    "disneyland__sailing-ship-columbia": {
-      "rideName": "Sailing Ship Columbia",
-      "park": "disneyland",
-      "daysOpen": 19,
-      "daysWithBreakdown": 8,
-      "oddsOfBreakdownPct": 42.1,
-      "breakdownCount": 9,
-      "avgDowntimeMinutes": 100.8,
-      "recovery": {
-        "episodeCount": 9,
-        "avgWaitBeforeDown": 9.4,
-        "avgWaitRightAfterReopen": 10,
-        "avgWaitPlus30min": 10.6,
-        "avgDropImmediate": 0,
-        "avgDropPlus30min": 0
-      }
-    },
-    "californiaadventure__toy-story-mania": {
-      "rideName": "Toy Story Midway Mania!",
-      "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 37,
-      "oddsOfBreakdownPct": 41.1,
-      "breakdownCount": 45,
-      "avgDowntimeMinutes": 76.7,
-      "recovery": {
-        "episodeCount": 45,
-        "avgWaitBeforeDown": 30.1,
-        "avgWaitRightAfterReopen": 20,
-        "avgWaitPlus30min": 16.2,
-        "avgDropImmediate": 10.1,
-        "avgDropPlus30min": 13.9
       }
     },
     "disneyland__haunted-mansion": {
@@ -558,14 +524,31 @@
       "daysWithBreakdown": 32,
       "oddsOfBreakdownPct": 41,
       "breakdownCount": 40,
-      "avgDowntimeMinutes": 42.6,
+      "avgDowntimeMinutes": 40.4,
       "recovery": {
         "episodeCount": 40,
-        "avgWaitBeforeDown": 36.2,
-        "avgWaitRightAfterReopen": 31.3,
-        "avgWaitPlus30min": 25.7,
+        "avgWaitBeforeDown": 36.8,
+        "avgWaitRightAfterReopen": 31.9,
+        "avgWaitPlus30min": 25.8,
         "avgDropImmediate": 4.7,
-        "avgDropPlus30min": 10
+        "avgDropPlus30min": 10.6
+      }
+    },
+    "californiaadventure__toy-story-mania": {
+      "rideName": "Toy Story Midway Mania!",
+      "park": "californiaadventure",
+      "daysOpen": 90,
+      "daysWithBreakdown": 36,
+      "oddsOfBreakdownPct": 40,
+      "breakdownCount": 44,
+      "avgDowntimeMinutes": 76.8,
+      "recovery": {
+        "episodeCount": 44,
+        "avgWaitBeforeDown": 29.4,
+        "avgWaitRightAfterReopen": 19.8,
+        "avgWaitPlus30min": 15.9,
+        "avgDropImmediate": 9.7,
+        "avgDropPlus30min": 13.5
       }
     },
     "disneyland__casey-jr": {
@@ -583,6 +566,23 @@
         "avgWaitPlus30min": 6,
         "avgDropImmediate": 0.4,
         "avgDropPlus30min": 0.8
+      }
+    },
+    "disneyland__sailing-ship-columbia": {
+      "rideName": "Sailing Ship Columbia",
+      "park": "disneyland",
+      "daysOpen": 18,
+      "daysWithBreakdown": 7,
+      "oddsOfBreakdownPct": 38.9,
+      "breakdownCount": 8,
+      "avgDowntimeMinutes": 110.3,
+      "recovery": {
+        "episodeCount": 8,
+        "avgWaitBeforeDown": 9.3,
+        "avgWaitRightAfterReopen": 10,
+        "avgWaitPlus30min": 10.7,
+        "avgDropImmediate": 0,
+        "avgDropPlus30min": 0
       }
     },
     "disneyland__buzz-lightyear": {
@@ -636,23 +636,6 @@
         "avgDropPlus30min": 3.4
       }
     },
-    "disneyland__enchanted-tiki-room": {
-      "rideName": "Walt Disney's Enchanted Tiki Room",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 25,
-      "oddsOfBreakdownPct": 27.8,
-      "breakdownCount": 31,
-      "avgDowntimeMinutes": 37.1,
-      "recovery": {
-        "episodeCount": 31,
-        "avgWaitBeforeDown": 5,
-        "avgWaitRightAfterReopen": 0,
-        "avgWaitPlus30min": 0,
-        "avgDropImmediate": 5,
-        "avgDropPlus30min": 5
-      }
-    },
     "californiaadventure__jumpin-jellyfish": {
       "rideName": "Jumpin' Jellyfish",
       "park": "californiaadventure",
@@ -670,6 +653,23 @@
         "avgDropPlus30min": 0
       }
     },
+    "disneyland__enchanted-tiki-room": {
+      "rideName": "Walt Disney's Enchanted Tiki Room",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 24,
+      "oddsOfBreakdownPct": 26.7,
+      "breakdownCount": 30,
+      "avgDowntimeMinutes": 37.8,
+      "recovery": {
+        "episodeCount": 30,
+        "avgWaitBeforeDown": 5,
+        "avgWaitRightAfterReopen": 0,
+        "avgWaitPlus30min": 0,
+        "avgDropImmediate": 5,
+        "avgDropPlus30min": 5
+      }
+    },
     "disneyland__king-arthur-carrousel": {
       "rideName": "King Arthur Carrousel",
       "park": "disneyland",
@@ -677,14 +677,31 @@
       "daysWithBreakdown": 23,
       "oddsOfBreakdownPct": 25.6,
       "breakdownCount": 28,
-      "avgDowntimeMinutes": 44.1,
+      "avgDowntimeMinutes": 44.5,
       "recovery": {
-        "episodeCount": 27,
+        "episodeCount": 28,
         "avgWaitBeforeDown": 5.7,
         "avgWaitRightAfterReopen": 5.4,
         "avgWaitPlus30min": 5.4,
         "avgDropImmediate": 0.2,
         "avgDropPlus30min": 0.4
+      }
+    },
+    "disneyland__gadgets-go-coaster": {
+      "rideName": "Chip 'n' Dale's GADGETcoaster",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 20,
+      "oddsOfBreakdownPct": 22.2,
+      "breakdownCount": 24,
+      "avgDowntimeMinutes": 58.9,
+      "recovery": {
+        "episodeCount": 24,
+        "avgWaitBeforeDown": 16.4,
+        "avgWaitRightAfterReopen": 10.2,
+        "avgWaitPlus30min": 8.7,
+        "avgDropImmediate": 6,
+        "avgDropPlus30min": 7.6
       }
     },
     "disneyland__storybook-canal-boats": {
@@ -704,16 +721,33 @@
         "avgDropPlus30min": 2.4
       }
     },
+    "disneyland__dumbo": {
+      "rideName": "Dumbo the Flying Elephant",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 19,
+      "oddsOfBreakdownPct": 21.1,
+      "breakdownCount": 23,
+      "avgDowntimeMinutes": 30,
+      "recovery": {
+        "episodeCount": 23,
+        "avgWaitBeforeDown": 13.6,
+        "avgWaitRightAfterReopen": 12.8,
+        "avgWaitPlus30min": 11.3,
+        "avgDropImmediate": 0.5,
+        "avgDropPlus30min": 2
+      }
+    },
     "disneyland__mark-twain-riverboat": {
       "rideName": "Mark Twain Riverboat",
       "park": "disneyland",
       "daysOpen": 86,
-      "daysWithBreakdown": 19,
-      "oddsOfBreakdownPct": 22.1,
-      "breakdownCount": 19,
-      "avgDowntimeMinutes": 35.3,
+      "daysWithBreakdown": 18,
+      "oddsOfBreakdownPct": 20.9,
+      "breakdownCount": 18,
+      "avgDowntimeMinutes": 36.1,
       "recovery": {
-        "episodeCount": 19,
+        "episodeCount": 18,
         "avgWaitBeforeDown": 10,
         "avgWaitRightAfterReopen": 10.3,
         "avgWaitPlus30min": 10.3,
@@ -721,72 +755,38 @@
         "avgDropPlus30min": -0.3
       }
     },
-    "disneyland__gadgets-go-coaster": {
-      "rideName": "Chip 'n' Dale's GADGETcoaster",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 19,
-      "oddsOfBreakdownPct": 21.1,
-      "breakdownCount": 23,
-      "avgDowntimeMinutes": 60.1,
-      "recovery": {
-        "episodeCount": 23,
-        "avgWaitBeforeDown": 16.5,
-        "avgWaitRightAfterReopen": 10,
-        "avgWaitPlus30min": 8.9,
-        "avgDropImmediate": 6.3,
-        "avgDropPlus30min": 7.5
-      }
-    },
     "disneyland__finding-nemo-submarine": {
       "rideName": "Finding Nemo Submarine Voyage",
       "park": "disneyland",
       "daysOpen": 90,
-      "daysWithBreakdown": 18,
-      "oddsOfBreakdownPct": 20,
-      "breakdownCount": 21,
-      "avgDowntimeMinutes": 59.7,
+      "daysWithBreakdown": 17,
+      "oddsOfBreakdownPct": 18.9,
+      "breakdownCount": 20,
+      "avgDowntimeMinutes": 58.9,
       "recovery": {
-        "episodeCount": 21,
-        "avgWaitBeforeDown": 11.1,
-        "avgWaitRightAfterReopen": 9,
-        "avgWaitPlus30min": 7.4,
-        "avgDropImmediate": 1.4,
-        "avgDropPlus30min": 3.3
-      }
-    },
-    "disneyland__dumbo": {
-      "rideName": "Dumbo the Flying Elephant",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 18,
-      "oddsOfBreakdownPct": 20,
-      "breakdownCount": 22,
-      "avgDowntimeMinutes": 30.9,
-      "recovery": {
-        "episodeCount": 22,
-        "avgWaitBeforeDown": 14,
-        "avgWaitRightAfterReopen": 13.2,
-        "avgWaitPlus30min": 11.6,
-        "avgDropImmediate": 0.5,
-        "avgDropPlus30min": 2.1
+        "episodeCount": 20,
+        "avgWaitBeforeDown": 10.3,
+        "avgWaitRightAfterReopen": 8.3,
+        "avgWaitPlus30min": 7.5,
+        "avgDropImmediate": 1.5,
+        "avgDropPlus30min": 2.4
       }
     },
     "disneyland__mad-tea-party": {
       "rideName": "Mad Tea Party",
       "park": "disneyland",
       "daysOpen": 58,
-      "daysWithBreakdown": 7,
-      "oddsOfBreakdownPct": 12.1,
-      "breakdownCount": 10,
-      "avgDowntimeMinutes": 127.9,
+      "daysWithBreakdown": 8,
+      "oddsOfBreakdownPct": 13.8,
+      "breakdownCount": 11,
+      "avgDowntimeMinutes": 118.5,
       "recovery": {
-        "episodeCount": 10,
-        "avgWaitBeforeDown": 6.5,
-        "avgWaitRightAfterReopen": 5.6,
+        "episodeCount": 11,
+        "avgWaitBeforeDown": 6.4,
+        "avgWaitRightAfterReopen": 5.5,
         "avgWaitPlus30min": 5.5,
-        "avgDropImmediate": 0.6,
-        "avgDropPlus30min": 1
+        "avgDropImmediate": 0.5,
+        "avgDropPlus30min": 0.9
       }
     },
     "disneyland__pirate-lair": {
@@ -799,6 +799,74 @@
       "avgDowntimeMinutes": 86.6,
       "recovery": {
         "episodeCount": 10,
+        "avgWaitBeforeDown": 5,
+        "avgWaitRightAfterReopen": 5,
+        "avgWaitPlus30min": 5,
+        "avgDropImmediate": 0,
+        "avgDropPlus30min": 0
+      }
+    },
+    "disneyland__millennium-falcon": {
+      "rideName": "Millennium Falcon: Smugglers Run",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 7,
+      "oddsOfBreakdownPct": 7.8,
+      "breakdownCount": 7,
+      "avgDowntimeMinutes": 26.7,
+      "recovery": {
+        "episodeCount": 7,
+        "avgWaitBeforeDown": 16.4,
+        "avgWaitRightAfterReopen": 11.7,
+        "avgWaitPlus30min": 7.1,
+        "avgDropImmediate": 5,
+        "avgDropPlus30min": 9.3
+      }
+    },
+    "californiaadventure__maters-junkyard-jamboree": {
+      "rideName": "Mater's Junkyard Jamboree",
+      "park": "californiaadventure",
+      "daysOpen": 89,
+      "daysWithBreakdown": 6,
+      "oddsOfBreakdownPct": 6.7,
+      "breakdownCount": 6,
+      "avgDowntimeMinutes": 45.5,
+      "recovery": {
+        "episodeCount": 6,
+        "avgWaitBeforeDown": 14.2,
+        "avgWaitRightAfterReopen": 10,
+        "avgWaitPlus30min": 9.2,
+        "avgDropImmediate": 4.2,
+        "avgDropPlus30min": 5
+      }
+    },
+    "disneyland__star-tours": {
+      "rideName": "Star Tours - The Adventures Continue",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 6,
+      "oddsOfBreakdownPct": 6.7,
+      "breakdownCount": 6,
+      "avgDowntimeMinutes": 24.5,
+      "recovery": {
+        "episodeCount": 6,
+        "avgWaitBeforeDown": 5.8,
+        "avgWaitRightAfterReopen": 5,
+        "avgWaitPlus30min": 5,
+        "avgDropImmediate": 0.8,
+        "avgDropPlus30min": 0.8
+      }
+    },
+    "californiaadventure__redwood-creek-challenge": {
+      "rideName": "Redwood Creek Challenge Trail",
+      "park": "californiaadventure",
+      "daysOpen": 90,
+      "daysWithBreakdown": 6,
+      "oddsOfBreakdownPct": 6.7,
+      "breakdownCount": 6,
+      "avgDowntimeMinutes": 46.2,
+      "recovery": {
+        "episodeCount": 6,
         "avgWaitBeforeDown": 5,
         "avgWaitRightAfterReopen": 5,
         "avgWaitPlus30min": 5,
@@ -823,74 +891,6 @@
         "avgDropPlus30min": 10
       }
     },
-    "disneyland__millennium-falcon": {
-      "rideName": "Millennium Falcon: Smugglers Run",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 6,
-      "oddsOfBreakdownPct": 6.7,
-      "breakdownCount": 6,
-      "avgDowntimeMinutes": 28,
-      "recovery": {
-        "episodeCount": 6,
-        "avgWaitBeforeDown": 15,
-        "avgWaitRightAfterReopen": 9,
-        "avgWaitPlus30min": 7.5,
-        "avgDropImmediate": 6,
-        "avgDropPlus30min": 7.5
-      }
-    },
-    "disneyland__star-tours": {
-      "rideName": "Star Tours - The Adventures Continue",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 6,
-      "oddsOfBreakdownPct": 6.7,
-      "breakdownCount": 6,
-      "avgDowntimeMinutes": 24.5,
-      "recovery": {
-        "episodeCount": 6,
-        "avgWaitBeforeDown": 5.8,
-        "avgWaitRightAfterReopen": 5,
-        "avgWaitPlus30min": 5,
-        "avgDropImmediate": 0.8,
-        "avgDropPlus30min": 0.8
-      }
-    },
-    "californiaadventure__maters-junkyard-jamboree": {
-      "rideName": "Mater's Junkyard Jamboree",
-      "park": "californiaadventure",
-      "daysOpen": 89,
-      "daysWithBreakdown": 6,
-      "oddsOfBreakdownPct": 6.7,
-      "breakdownCount": 6,
-      "avgDowntimeMinutes": 45.5,
-      "recovery": {
-        "episodeCount": 6,
-        "avgWaitBeforeDown": 14.2,
-        "avgWaitRightAfterReopen": 10,
-        "avgWaitPlus30min": 9.2,
-        "avgDropImmediate": 4.2,
-        "avgDropPlus30min": 5
-      }
-    },
-    "californiaadventure__redwood-creek-challenge": {
-      "rideName": "Redwood Creek Challenge Trail",
-      "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 5,
-      "oddsOfBreakdownPct": 5.6,
-      "breakdownCount": 5,
-      "avgDowntimeMinutes": 43.4,
-      "recovery": {
-        "episodeCount": 5,
-        "avgWaitBeforeDown": 5,
-        "avgWaitRightAfterReopen": 5,
-        "avgWaitPlus30min": 5,
-        "avgDropImmediate": 0,
-        "avgDropPlus30min": 0
-      }
-    },
     "disneyland__davy-crockett-canoes": {
       "rideName": "Davy Crockett's Explorer Canoes",
       "park": "disneyland",
@@ -901,29 +901,9 @@
       "avgDowntimeMinutes": 234,
       "recovery": null
     },
-    "californiaadventure__animation-academy": {
-      "rideName": "Animation Academy",
+    "californiaadventure__turtle-talk": {
+      "rideName": "Turtle Talk with Crush",
       "park": "californiaadventure",
-      "daysOpen": 90,
-      "daysWithBreakdown": 0,
-      "oddsOfBreakdownPct": 0,
-      "breakdownCount": 0,
-      "avgDowntimeMinutes": null,
-      "recovery": null
-    },
-    "disneyland__minnies-house": {
-      "rideName": "Minnie's House",
-      "park": "disneyland",
-      "daysOpen": 90,
-      "daysWithBreakdown": 0,
-      "oddsOfBreakdownPct": 0,
-      "breakdownCount": 0,
-      "avgDowntimeMinutes": null,
-      "recovery": null
-    },
-    "disneyland__main-street-vehicles": {
-      "rideName": "Main Street Vehicles",
-      "park": "disneyland",
       "daysOpen": 90,
       "daysWithBreakdown": 0,
       "oddsOfBreakdownPct": 0,
@@ -941,8 +921,8 @@
       "avgDowntimeMinutes": null,
       "recovery": null
     },
-    "californiaadventure__games-of-pixar-pier": {
-      "rideName": "Games of Pixar Pier",
+    "californiaadventure__animation-academy": {
+      "rideName": "Animation Academy",
       "park": "californiaadventure",
       "daysOpen": 90,
       "daysWithBreakdown": 0,
@@ -951,8 +931,28 @@
       "avgDowntimeMinutes": null,
       "recovery": null
     },
-    "californiaadventure__turtle-talk": {
-      "rideName": "Turtle Talk with Crush",
+    "disneyland__main-street-vehicles": {
+      "rideName": "Main Street Vehicles",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 0,
+      "oddsOfBreakdownPct": 0,
+      "breakdownCount": 0,
+      "avgDowntimeMinutes": null,
+      "recovery": null
+    },
+    "disneyland__minnies-house": {
+      "rideName": "Minnie's House",
+      "park": "disneyland",
+      "daysOpen": 90,
+      "daysWithBreakdown": 0,
+      "oddsOfBreakdownPct": 0,
+      "breakdownCount": 0,
+      "avgDowntimeMinutes": null,
+      "recovery": null
+    },
+    "californiaadventure__games-of-pixar-pier": {
+      "rideName": "Games of Pixar Pier",
       "park": "californiaadventure",
       "daysOpen": 90,
       "daysWithBreakdown": 0,
@@ -967,19 +967,19 @@
     "Pixar Pal-A-Round – Non-Swinging",
     "Adventureland Treehouse inspired by Walt Disney’s Swiss Family Robinson",
     "Soarin’ Across America",
-    "Opera House - Walt Disney - A Magical Life",
     "Mickey's PhilharMagic",
+    "Opera House - Walt Disney - A Magical Life",
     "Walt Disney - A Magical Life",
     "Sorcerer's Workshop",
     "Great Moments with Mr. Lincoln",
     "Guardians of the Galaxy - Monsters After Dark",
     "Frontierland Shootin' Exposition",
     "Donald's Duck Pond",
-    "Main Street Cinema",
-    "Bluey’s Best Day Ever! at Fantasyland Theatre",
-    "The Bakery Tour",
     "The Disney Gallery",
     "Goofy's How-to-Play Yard",
-    "Villains Grove at Oogie Boogie Bash"
+    "Villains Grove at Oogie Boogie Bash",
+    "Main Street Cinema",
+    "Bluey’s Best Day Ever! at Fantasyland Theatre",
+    "The Bakery Tour"
   ]
 }

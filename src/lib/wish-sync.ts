@@ -42,7 +42,7 @@ import { stampOwnerAccounts } from "@shared/selection-owners";
 import { INVITE_TTL_MS, type Trip, type TripMember } from "@shared/types/trip";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
-import { localUpdatedAtISO, shouldPushAtStartup, type RemoteStamp } from "@shared/sync-helpers";
+import { localUpdatedAtISO, shouldApplyRemote, shouldPushAtStartup, type RemoteStamp } from "@shared/sync-helpers";
 import db, { type User, type TripTrail } from "./db";
 import { isSameRecording, legacyTrailRowId, trailDocId, trailRowId } from "./trail-ids";
 import { reassignRemovedUser } from "./reassign-user";
@@ -135,10 +135,7 @@ export async function pullWishes(uid: string, stamps?: Map<string, RemoteStamp>)
     if (!decrypted) continue; // decryption failure — skip
 
     const local = await db.wishes.get(remote.id);
-    const remoteTime = remote.updatedAt;
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-
-    if (!local || remoteTime > localTime) {
+    if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.wishes.put({ ...decrypted, pendingSync: 0 } as Wish);
       updated++;
     }
@@ -185,14 +182,9 @@ export function subscribeToWishes(uid: string): Unsubscribe {
             continue;
           }
 
-          // Only apply if remote is newer than our local copy
+          // Only apply if remote is newer than our local copy and changes it
           const local = await db.wishes.get(remote.id);
-          const remoteTime = remote.updatedAt;
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-
-          console.log("[wish-sync] remote:", remoteTime, "local:", localTime, "apply:", !local || remoteTime > localTime);
-
-          if (!local || remoteTime > localTime) {
+          if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.wishes.put({ ...decrypted, pendingSync: 0 } as Wish);
             console.log("[wish-sync] applied wish:", decrypted.title);
           }
@@ -816,8 +808,7 @@ async function pullWishMirrorForTrip(tripId: string, uid: string): Promise<void>
     const decrypted = await decrypt<Wish>(remote.encryptedPayload, tripKey);
     if (!decrypted) continue;
     const local = await db.wishes.get(remote.id);
-    const localTime = localUpdatedAtISO(local?.updatedAt);
-    if (!local || remote.updatedAt > localTime) {
+    if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.wishes.put({ ...decrypted, pendingSync: 0 } as Wish);
     }
   }
@@ -838,8 +829,7 @@ function subscribeToWishMirrorForTrip(tripId: string, uid: string): Unsubscribe 
           const decrypted = await decrypt<Wish>(remote.encryptedPayload, key);
           if (!decrypted) continue;
           const local = await db.wishes.get(remote.id);
-          const localTime = localUpdatedAtISO(local?.updatedAt);
-          if (!local || remote.updatedAt > localTime) {
+          if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.wishes.put({ ...decrypted, pendingSync: 0 } as Wish);
             console.log("[wish-sync] applied wish mirror:", decrypted.title);
           }

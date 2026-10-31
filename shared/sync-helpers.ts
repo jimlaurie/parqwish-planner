@@ -126,6 +126,34 @@ export function shouldPushAtStartup(localUpdatedAt: number | string | undefined 
   return !!local && (!remote.updatedAt || local > remote.updatedAt);
 }
 
+// ==================== REMOTE APPLY ====================
+// The other half: a pulled copy carries the edit's own updatedAt, which is
+// always before the cloud's push stamp, so "remote is newer" stayed true
+// forever and every pull and listener start rewrote the same items (Pal
+// until 30 Oct 2026; the Planner rewrote 65 wishes on each load). A copy
+// that would change nothing is skipped.
+
+/** Whether merging `incoming` over `local` ({ ...local, ...incoming }) would change any field. */
+export function wouldChange(local: object, incoming: object): boolean {
+  const before = local as Record<string, unknown>;
+  const after = incoming as Record<string, unknown>;
+  return Object.keys(after).some((k) => JSON.stringify(before[k]) !== JSON.stringify(after[k]));
+}
+
+/**
+ * Whether to apply a pulled copy: there's no local one, or the cloud's is
+ * newer (`remoteUpdatedAt`, the document's ISO stamp) and differs from it.
+ */
+export function shouldApplyRemote(
+  local: { updatedAt?: number | string } | undefined,
+  remoteUpdatedAt: string | undefined,
+  incoming: object,
+): boolean {
+  if (!local) return true;
+  if (!remoteUpdatedAt || remoteUpdatedAt <= localUpdatedAtISO(local.updatedAt)) return false;
+  return wouldChange(local, incoming);
+}
+
 // ==================== PAYLOAD FACTORY ====================
 
 /**

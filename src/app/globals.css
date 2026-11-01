@@ -615,3 +615,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .illo-animate:not(.illo-force) * { animation: none !important; }
 }
+
+/* ==================== PARTNER BRANDING ==================== */
+/* components/partner/: partner surfaces set --partner-accent-light/-dark
+   from the partner's published colours; this picks the one that reads on
+   the current theme (night is the default, day is [data-theme="light"]). */
+.partner-scope { --partner-accent: var(--partner-accent-dark); }
+[data-theme="light"] .partner-scope { --partner-accent: var(--partner-accent-light); }

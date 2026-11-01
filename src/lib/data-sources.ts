@@ -15,7 +15,7 @@ export type SourceKind = "live" | "bundled" | "deployed" | "cached" | "failed";
 
 export type SourceKey =
   | "parkData" | "shows" | "restaurants" | "showtimeHistory"
-  | "waitTimeStats" | "rideReliability" | "weatherForecast" | "weatherNormals";
+  | "waitTimeStats" | "rideReliability" | "weatherForecast" | "weatherNormals" | "partnerBranding";
 
 export interface DataSource {
   key: SourceKey;
@@ -36,6 +36,7 @@ export const SOURCE_LABELS: Record<SourceKey, string> = {
   rideReliability: "Ride reliability",
   weatherForecast: "Weather forecast",
   weatherNormals: "Typical weather",
+  partnerBranding: "Partner branding (from your partner link)",
 };
 
 const sources = new Map<SourceKey, DataSource>();

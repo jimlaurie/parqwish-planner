@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import UserPanel from "@/components/UserPanel";
 import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
+import PartnerSidebarCard from "@/components/partner/PartnerSidebarCard";
 import type { Trip } from "@/lib/db";
 import { formatTripDates } from "@/lib/trip-dates";
 
@@ -187,6 +188,9 @@ export default function TripSidebar({
 }: TripSidebarProps) {
   return (
     <div className="flex flex-col h-full py-4">
+      {/* A partner link's card, where the star compass used to be */}
+      <PartnerSidebarCard />
+
       {/* Trip sections */}
       <div className="flex-1 overflow-y-auto">
         <TripSection

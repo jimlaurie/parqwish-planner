@@ -10,6 +10,8 @@ import { useAppStore } from "@/lib/store";
 import { tripCountdown, type CountdownTrip } from "@/lib/trip-countdown";
 import ThemeToggle from "@/components/ThemeToggle";
 import SyncStatusIndicator from "@/components/SyncStatusIndicator";
+import PartnerBand from "@/components/partner/PartnerBand";
+import PartnerInfoPopup from "@/components/partner/PartnerInfoPopup";
 import { marketingUrl } from "@/lib/marketing-links";
 import { formatTripDates } from "@/lib/trip-dates";
 import { editTripHref } from "@/lib/return-path";
@@ -246,6 +248,8 @@ export default function TopNavBar() {
 
   return (
     <>
+      <PartnerBand />
+      <PartnerInfoPopup />
       <nav
         aria-label="Main"
         className="sticky top-0 z-40 w-full backdrop-blur-md"

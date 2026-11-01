@@ -12,6 +12,7 @@ import { quickTripName, nameFromTemplate } from "@/lib/new-trip";
 import { localToday } from "@/lib/trip-selection";
 import { showUndoToast } from "@/lib/undo-toast";
 import WelcomeCard from "@/components/WelcomeCard";
+import PartnerSidebarCard from "@/components/partner/PartnerSidebarCard";
 import HomeBanner from "@/components/home/HomeBanner";
 import { LazyIlloScene, type IlloArtLoader } from "@/components/home/illustrations/illo";
 import Link from "next/link";
@@ -281,10 +282,12 @@ export default function Home() {
     );
   }
 
-  // Welcome state — no trips yet (first-time visitor)
+  // Welcome state — no trips yet (first-time visitor). There's no sidebar
+  // yet, so a partner link's card shows above the welcome instead.
   if (!loading && trips.length === 0) {
     return (
       <main className="min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-xs"><PartnerSidebarCard /></div>
         <WelcomeCard newTrip={newTrip} />
       </main>
     );

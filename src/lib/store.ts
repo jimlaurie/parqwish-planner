@@ -96,6 +96,14 @@ interface AppState {
   hiddenCatalogStatuses: string[];
   setHiddenCatalogStatuses: (statuses: string[]) => void;
 
+  // Partner branding (lib/partners.ts): set by a /with/<id> partner link,
+  // persisted so the guest keeps seeing their partner; null = no partner
+  partnerId: string | null;
+  setPartnerId: (id: string | null) => void;
+  // Session-only: the partner info popup (opened from the band or the sidebar card)
+  partnerInfoOpen: boolean;
+  setPartnerInfoOpen: (open: boolean) => void;
+
   // Session-only: true while sync's first download of this account's trips
   // is still running, so Home shows "Restoring your trips…" instead of the
   // first-visit Welcome screen on a device that just signed in.
@@ -270,6 +278,11 @@ export const useAppStore = create<AppState>()(
       hiddenCatalogStatuses: [],
       setHiddenCatalogStatuses: (statuses) => set({ hiddenCatalogStatuses: statuses }),
 
+      partnerId: null,
+      setPartnerId: (id) => set({ partnerId: id }),
+      partnerInfoOpen: false,
+      setPartnerInfoOpen: (open) => set({ partnerInfoOpen: open }),
+
       tripsRestoring: false,
       setTripsRestoring: (restoring) => set({ tripsRestoring: restoring }),
 
@@ -320,6 +333,7 @@ export const useAppStore = create<AppState>()(
         cloudSyncEnabled: state.cloudSyncEnabled,
         catalogView: state.catalogView,
         hiddenCatalogStatuses: state.hiddenCatalogStatuses,
+        partnerId: state.partnerId,
       }),
     }
   )

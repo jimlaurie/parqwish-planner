@@ -39,10 +39,11 @@ export interface SyncedWishDoc {
 
   /**
    * Firebase Auth uid of whoever wrote this doc's real content — set only
-   * by trails/photos (mobile-authored-only collections whose Firestore
-   * security rules need a plaintext field to verify the true writer,
-   * since the payload itself is opaque ciphertext). Every other collection
-   * using this envelope leaves it unset.
+   * by trails/photos (mobile-authored-only collections) and completions
+   * (each account writes only its own; docs/completion-design.md), whose
+   * Firestore security rules need a plaintext field to verify the true
+   * writer, since the payload itself is opaque ciphertext. Every other
+   * collection using this envelope leaves it unset.
    */
   authorUid?: string;
 }

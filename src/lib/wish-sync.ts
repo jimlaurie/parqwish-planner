@@ -46,6 +46,9 @@ import { localUpdatedAtISO, shouldApplyRemote, shouldPushAtStartup, type RemoteS
 import db, { type User, type TripTrail } from "./db";
 import { isSameRecording, legacyTrailRowId, trailDocId, trailRowId } from "./trail-ids";
 import { reassignRemovedUser } from "./reassign-user";
+import { applyCompletion, carryOverTicks, claimLocalTicks, completionAccount, refreshTicks, withHouseholdPacked, withHouseholdTick } from "./completions";
+import { isValidCompletion } from "@shared/completions";
+import type { TripCompletion } from "@shared/types/completion";
 
 const firestore = getFirestore(app);
 
@@ -396,6 +399,13 @@ async function applyRemoteTrip(uid: string, remote: SyncedTripDoc): Promise<void
     // Content is locally newer, but membership is always Firestore's word.
     await db.trips.update(remote.id, { members: remote.members });
   }
+  // Households decide whose ticks count as ours (src/lib/completions.ts)
+  if (householdsKey(local?.members) !== householdsKey(remote.members)) await refreshTicks(remote.id, completionAccount());
+}
+
+/** Who is on the trip and in which household, to tell when ticks need working out again. */
+function householdsKey(members: Record<string, TripMember> | undefined): string {
+  return JSON.stringify(Object.entries(members ?? {}).map(([id, m]) => [id, m.household ?? id]).sort());
 }
 
 /** One-time pull of every shared trip this uid is a member of. Returns the
@@ -450,6 +460,7 @@ function subscribeToSharedTrips(uid: string): Unsubscribe {
               subscribeToPackingItemMirrorForTrip(remote.id, uid),
               subscribeToTrailsForTrip(remote.id, uid),
               subscribeToPhotoMetadataForTrip(remote.id, uid),
+              subscribeToCompletionsForTrip(remote.id, uid),
             ]);
           }
         }
@@ -655,6 +666,24 @@ export async function updateMemberRole(
 }
 
 /**
+ * Put a member in another member's household (`household`: that member's
+ * uid, or their household's), or back in their own (undefined). Accounts in
+ * one household share "done on this trip" ticks. Owner-only, enforced by
+ * firestore.rules like updateMemberRole.
+ */
+export async function updateMemberHousehold(tripId: string, targetUid: string, household: string | undefined): Promise<void> {
+  const tripSnap = await getDoc(sharedTripDocRef(tripId));
+  if (!tripSnap.exists()) throw new Error("This trip no longer exists.");
+  const remote = tripSnap.data() as SyncedTripDoc;
+  const existing = remote.members[targetUid];
+  if (!existing) throw new Error("That person is no longer a member.");
+  const entry: TripMember = { ...existing };
+  if (household && household !== targetUid) entry.household = household;
+  else delete entry.household;
+  await updateDoc(sharedTripDocRef(tripId), { members: { ...remote.members, [targetUid]: entry } });
+}
+
+/**
  * Revoke a member's access. Owner-only, same as updateMemberRole. Note this
  * only stops *future* sync for that member — any data they already pulled
  * to their device before removal stays there, decrypted, same tradeoff as
@@ -711,8 +740,9 @@ async function pullWishSelectionsForTrip(tripId: string, uid: string): Promise<v
   for (const docSnap of snapshot.docs) {
     const remote = docSnap.data() as SyncedWishDoc;
     if (remote.deletedAt) { await db.tripWishSelections.delete(remote.id); continue; }
-    const decrypted = await decrypt<TripWishSelection>(remote.encryptedPayload, tripKey);
-    if (!decrypted) continue;
+    const raw = await decrypt<TripWishSelection>(remote.encryptedPayload, tripKey);
+    if (!raw) continue;
+    const decrypted = await withHouseholdTick(raw);
     const local = await db.tripWishSelections.get(remote.id);
     if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.tripWishSelections.put(decrypted);
@@ -734,8 +764,9 @@ function subscribeToWishSelectionsForTrip(tripId: string, uid: string): Unsubscr
           if (change.type === "removed" || remote.deletedAt) {
             await db.tripWishSelections.delete(remote.id); continue;
           }
-          const decrypted = await decrypt<TripWishSelection>(remote.encryptedPayload, key);
-          if (!decrypted) continue;
+          const raw = await decrypt<TripWishSelection>(remote.encryptedPayload, key);
+          if (!raw) continue;
+          const decrypted = await withHouseholdTick(raw);
           const local = await db.tripWishSelections.get(remote.id);
           if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.tripWishSelections.put(decrypted);
@@ -1222,6 +1253,85 @@ function subscribeToTrailsForTrip(tripId: string, uid: string): Unsubscribe {
   );
 }
 
+// ==================== TRIP COMPLETIONS ====================
+// "Done on this trip" ticks, one doc per item, account and app
+// (src/lib/completions.ts). Each account writes only its own docs, so the
+// plaintext authorUid is set for firestore.rules to check, as for trails.
+// A pulled doc whose payload doesn't match its id and author is ignored.
+
+function completionsCol(tripId: string) {
+  return collection(firestore, "sharedTrips", tripId, "completions");
+}
+function completionDocRef(tripId: string, id: string) {
+  return doc(firestore, "sharedTrips", tripId, "completions", id);
+}
+
+export async function pushCompletion(record: TripCompletion, uid: string): Promise<void> {
+  if (record.authorUid !== uid) return; // another account's (or a local, unclaimed) tick isn't ours to write
+  const tripKey = await getTripKey(record.tripId, uid);
+  if (!tripKey) return; // trip not shared: the tick stays local until it is
+  await setDoc(completionDocRef(record.tripId, record.id), {
+    id: record.id,
+    encryptedPayload: await encrypt(record, tripKey),
+    updatedAt: new Date().toISOString(),
+    authorUid: uid,
+  });
+}
+
+export async function deleteCompletionRemote(tripId: string, id: string, uid: string): Promise<void> {
+  const tripKey = await getTripKey(tripId, uid);
+  if (!tripKey) return;
+  await setDoc(completionDocRef(tripId, id), {
+    id,
+    encryptedPayload: "",
+    updatedAt: new Date().toISOString(),
+    deletedAt: new Date().toISOString(),
+    authorUid: uid,
+  }, { merge: true });
+}
+
+async function applyRemoteCompletion(tripId: string, tripKey: Uint8Array, remote: SyncedWishDoc): Promise<void> {
+  if (remote.deletedAt) { await applyCompletion(tripId, remote.id, null); return; }
+  const decrypted = await decrypt<TripCompletion>(remote.encryptedPayload, tripKey);
+  if (!isValidCompletion(decrypted, remote.id, remote.authorUid) || decrypted.tripId !== tripId) {
+    console.warn("[wish-sync] ignored a completion that doesn't match its doc:", remote.id.slice(-24));
+    return;
+  }
+  await applyCompletion(tripId, remote.id, decrypted);
+}
+
+async function pullCompletionsForTrip(tripId: string, uid: string): Promise<void> {
+  const tripKey = await getTripKey(tripId, uid);
+  if (!tripKey) return;
+  const snapshot = await getDocs(completionsCol(tripId));
+  for (const docSnap of snapshot.docs) {
+    await applyRemoteCompletion(tripId, tripKey, docSnap.data() as SyncedWishDoc);
+  }
+}
+
+function subscribeToCompletionsForTrip(tripId: string, uid: string): Unsubscribe {
+  let _key: Uint8Array | null = null;
+  return onSnapshot(
+    completionsCol(tripId),
+    async (snapshot) => {
+      try {
+        if (!_key) _key = await getTripKey(tripId, uid);
+        if (!_key) return;
+        const key = _key;
+        for (const change of snapshot.docChanges()) {
+          const remote = change.doc.data() as SyncedWishDoc;
+          if (change.type === "removed") { await applyCompletion(tripId, remote.id, null); continue; }
+          await applyRemoteCompletion(tripId, key, remote);
+        }
+      } catch (err) {
+        console.error("[wish-sync] completions snapshot error:", err);
+        _key = null;
+      }
+    },
+    (err) => { if (!_stopping) console.error("[wish-sync] completions listener error:", err); }
+  );
+}
+
 // ==================== PHOTO METADATA (Phase 3C) — pull/subscribe only ====================
 //
 // Never the image bytes — id/itemId/itemType/timestamp/location only.
@@ -1483,8 +1593,9 @@ async function pullPackingSelectionsForTrip(tripId: string, uid: string): Promis
   for (const docSnap of snapshot.docs) {
     const remote = docSnap.data() as SyncedWishDoc;
     if (remote.deletedAt) { await db.tripPackingSelections.delete(remote.id); continue; }
-    const decrypted = await decrypt<TripPackingSelection>(remote.encryptedPayload, tripKey);
-    if (!decrypted) continue;
+    const raw = await decrypt<TripPackingSelection>(remote.encryptedPayload, tripKey);
+    if (!raw) continue;
+    const decrypted = await withHouseholdPacked(raw);
     const local = await db.tripPackingSelections.get(remote.id);
     if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
       await db.tripPackingSelections.put(decrypted);
@@ -1506,8 +1617,9 @@ function subscribeToPackingSelectionsForTrip(tripId: string, uid: string): Unsub
           if (change.type === "removed" || remote.deletedAt) {
             await db.tripPackingSelections.delete(remote.id); continue;
           }
-          const decrypted = await decrypt<TripPackingSelection>(remote.encryptedPayload, key);
-          if (!decrypted) continue;
+          const raw = await decrypt<TripPackingSelection>(remote.encryptedPayload, key);
+          if (!raw) continue;
+          const decrypted = await withHouseholdPacked(raw);
           const local = await db.tripPackingSelections.get(remote.id);
           if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
             await db.tripPackingSelections.put(decrypted);
@@ -1654,6 +1766,7 @@ export async function pullAllTripContent(uid: string, tripIds: string[]): Promis
       pullPackingItemMirrorForTrip(tripId, uid),
       pullTrailsForTrip(tripId, uid),
       pullPhotoMetadataForTrip(tripId, uid),
+      pullCompletionsForTrip(tripId, uid),
     ])
   );
 }
@@ -1671,8 +1784,12 @@ async function startTripCollaboration(uid: string, canOwnTrips: boolean, onPulle
     console.error("[wish-sync] pullSharedTrips failed:", err);
     return [] as string[];
   });
+  // Ticks made without Cloud Sync become this account's before anything is worked out
+  await claimLocalTicks(uid).catch((err) => console.error("[wish-sync] claiming local ticks failed:", err));
   const pullContent = await Promise.allSettled([pullAllTripContent(uid, tripIds)]);
   console.log("[wish-sync] pull — sharedTrips:", tripIds.length, "content:", pullContent[0].status);
+  // Once per account: the old shared ticks this device sees become this account's records
+  await carryOverTicks(uid, { once: true }).catch((err) => console.error("[wish-sync] carrying ticks over failed:", err));
   onPulled?.();
 
   // Push everything local so nothing added while offline is lost.
@@ -1684,13 +1801,14 @@ async function startTripCollaboration(uid: string, canOwnTrips: boolean, onPulle
   // device that turned sync on before signing in with Apple left behind a
   // cloud copy owned by a throwaway anonymous account. For a non-owner the
   // remaining pushes fail safely (permission-denied, caught below).
-  const [trips, selections, dayItems, packingSelections, wishes, packingItems] = await Promise.all([
+  const [trips, selections, dayItems, packingSelections, wishes, packingItems, myCompletions] = await Promise.all([
     db.trips.toArray(),
     db.tripWishSelections.toArray(),
     db.dayItems.toArray(),
     db.tripPackingSelections.toArray(),
     db.wishes.toArray(),
     db.packingItems.toArray(),
+    db.completions.where("authorUid").equals(uid).toArray(),
   ]);
   const wishById = new Map(wishes.map(w => [w.id, w]));
   const packingItemById = new Map(packingItems.map(p => [p.id, p]));
@@ -1717,8 +1835,9 @@ async function startTripCollaboration(uid: string, canOwnTrips: boolean, onPulle
       const item = packingItemById.get(ps.itemId);
       return item ? [pushPackingItemMirror(ps.tripId, item, uid)] : [];
     }),
+    ...myCompletions.map((c) => pushCompletion(c, uid)),
   ]);
-  console.log(`[wish-sync] pushed ${tripPushes.length} of ${trips.length} trips, ${selections.length} selections, ${dayItems.length} dayItems, ${packingSelections.length} packingSelections`);
+  console.log(`[wish-sync] pushed ${tripPushes.length} of ${trips.length} trips, ${selections.length} selections, ${dayItems.length} dayItems, ${packingSelections.length} packingSelections, ${myCompletions.length} completions`);
 
   // subscribeToSharedTrips manages per-trip content listeners (selections,
   // day items, mirrors) internally as this account's membership changes.

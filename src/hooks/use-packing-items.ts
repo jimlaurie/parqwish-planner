@@ -13,6 +13,9 @@ import db, {
 import { useAppStore } from "@/lib/store";
 import type { SelectionOwner } from "@shared/types/wish";
 import { selectionOwners, isLocalOwner, hasOwner, addSelectionOwner, removeSelectionOwner } from "@shared/selection-owners";
+import { othersDone } from "@shared/completions";
+import { completionAccount, tripHousehold } from "@/lib/completions";
+import { memberName, toggleTripTick } from "@/lib/trip-ticks";
 import { PRIORITY_SORT_ORDER, PACKING_TABS } from "@/lib/constants";
 import { auth, isSyncEnabled, canCollaborate } from "@/lib/auth";
 import {
@@ -132,6 +135,8 @@ export interface PackingItemWithStatus extends PackingItem {
   authorUid?: string;
   /** Everyone on the trip packing this item (see shared/selection-owners.ts). */
   owners: SelectionOwner[];
+  /** Names of the other households on the trip that have packed it (src/lib/completions.ts) */
+  doneByOthers?: string[];
 }
 
 // ==================== MAIN HOOK ====================
@@ -167,10 +172,17 @@ export function usePackingItems() {
   // Step 2: Join selections with catalog items
   const allItems = useLiveQuery(
     async () => {
-      if (!selections || selections.length === 0) return [];
+      if (!selections || selections.length === 0 || !currentTripId) return [];
       const itemIds = selections.map((s) => s.itemId);
-      const items = await db.packingItems.where("id").anyOf(itemIds).toArray();
+      const [items, trip, records, household] = await Promise.all([
+        db.packingItems.where("id").anyOf(itemIds).toArray(),
+        db.trips.get(currentTripId),
+        db.completions.where("tripId").equals(currentTripId).toArray(),
+        tripHousehold(currentTripId, completionAccount()),
+      ]);
       const selMap = new Map(selections.map((s) => [s.itemId, s]));
+      // Only current members' ticks: someone who left keeps their records in the trip
+      const current = (uid: string) => !!trip?.members?.[uid];
       return items
         .filter((item) => selMap.has(item.id))
         .map((item) => ({
@@ -180,9 +192,10 @@ export function usePackingItems() {
           userId: selMap.get(item.id)!.userId,
           authorUid: selMap.get(item.id)!.authorUid,
           owners: selectionOwners(selMap.get(item.id)!),
+          doneByOthers: othersDone(records, "packing", item.id, household).filter(current).map((uid) => memberName(trip, uid)),
         })) as PackingItemWithStatus[];
     },
-    [selections]
+    [selections, currentTripId]
   );
 
   // Step 3: Client-side filtering and sorting by active tabs (multi-select)
@@ -411,18 +424,10 @@ export function usePackingItems() {
     }
   };
 
-  /** Toggle completed on the junction record (per-trip state) */
+  /** Ticks or unticks the item as packed for this household (src/lib/trip-ticks.ts). */
   const toggleCompleted = async (itemId: string) => {
     if (!currentTripId) return;
-    const selId = `${currentTripId}__${itemId}`;
-    const sel = await db.tripPackingSelections.get(selId);
-    if (!sel) return;
-    await db.tripPackingSelections.update(selId, {
-      completed: !sel.completed,
-      updatedAt: Date.now(),
-    });
-    const updated = await db.tripPackingSelections.get(selId);
-    if (updated) syncPackingSelection(updated);
+    await toggleTripTick(currentTripId, "packing", itemId);
   };
 
   /** Removes the item from the current trip for the current person (catalog

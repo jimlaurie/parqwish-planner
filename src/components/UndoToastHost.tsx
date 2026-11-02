@@ -13,7 +13,7 @@ export default function UndoToastHost() {
   const [undoing, setUndoing] = useState(false);
 
   const handleUndo = async () => {
-    if (!toast || undoing) return;
+    if (!toast?.onUndo || undoing) return;
     setUndoing(true);
     try {
       await toast.onUndo();
@@ -40,16 +40,18 @@ export default function UndoToastHost() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.18 }}
-            className="pointer-events-auto flex items-center gap-4 rounded-full pl-5 pr-2 py-2 shadow-lg max-w-full"
+            className={`pointer-events-auto flex items-center gap-4 py-2 shadow-lg max-w-full ${
+              toast.onUndo ? "rounded-full pl-5 pr-2" : "rounded-2xl px-5"
+            }`}
             style={{
               backgroundColor: "var(--color-bg-card)",
               border: "1px solid var(--color-border-strong)",
             }}
           >
-            <span className="text-sm truncate" style={{ color: "var(--color-text-primary)" }}>
+            <span className={`text-sm ${toast.onUndo ? "truncate" : ""}`} style={{ color: "var(--color-text-primary)" }}>
               {toast.message}
             </span>
-            <button
+            {toast.onUndo && <button
               type="button"
               onClick={handleUndo}
               disabled={undoing}
@@ -58,7 +60,7 @@ export default function UndoToastHost() {
               style={{ color: "var(--color-gold)" }}
             >
               {undoing ? "Undoing…" : "Undo"}
-            </button>
+            </button>}
           </motion.div>
         )}
       </AnimatePresence>

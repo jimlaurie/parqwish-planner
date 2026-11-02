@@ -10,6 +10,9 @@ import { auth, isSyncEnabled, canCollaborate } from "@/lib/auth";
 import { pushWish, deleteWishRemote, pushSelection, deleteSelectionRemote, pushWishMirror, deleteWishMirrorRemote } from "@/lib/wish-sync";
 import type { SelectionOwner } from "@shared/types/wish";
 import { selectionOwners, isLocalOwner, hasOwner, addSelectionOwner, removeSelectionOwner } from "@shared/selection-owners";
+import { othersDone } from "@shared/completions";
+import { completionAccount, tripHousehold } from "@/lib/completions";
+import { memberName, toggleTripTick } from "@/lib/trip-ticks";
 
 // ==================== TYPES ====================
 
@@ -21,6 +24,8 @@ export interface WishWithStatus extends Wish {
   authorUid?: string;
   /** Everyone on the trip who wants this wish (see shared/selection-owners.ts). */
   owners: SelectionOwner[];
+  /** Names of the other households on the trip that have done it (src/lib/completions.ts) */
+  doneByOthers?: string[];
 }
 
 /** This account's uid, or undefined when signed out. */
@@ -46,7 +51,14 @@ export function useTripWishes() {
       if (selections.length === 0) return [];
 
       const wishIds = selections.map((s) => s.wishId);
-      const wishes = await db.wishes.bulkGet(wishIds);
+      const [wishes, trip, records, household] = await Promise.all([
+        db.wishes.bulkGet(wishIds),
+        db.trips.get(currentTripId),
+        db.completions.where("tripId").equals(currentTripId).toArray(),
+        tripHousehold(currentTripId, completionAccount()),
+      ]);
+      // Only current members' ticks: someone who left keeps their records in the trip
+      const current = (uid: string) => !!trip?.members?.[uid];
 
       const result: WishWithStatus[] = [];
       for (let i = 0; i < selections.length; i++) {
@@ -61,6 +73,7 @@ export function useTripWishes() {
             userId: sel.userId,
             authorUid: sel.authorUid,
             owners: selectionOwners(sel),
+            doneByOthers: othersDone(records, "wish", sel.wishId, household).filter(current).map((uid) => memberName(trip, uid)),
           });
         }
       }
@@ -230,18 +243,10 @@ export function useTripWishes() {
     }
   };
 
+  /** Ticks or unticks the wish as done on this trip for this household (src/lib/trip-ticks.ts). */
   const toggleCompleted = async (id: string) => {
     if (!currentTripId) return;
-    const selId = `${currentTripId}__${id}`;
-    const sel = await db.tripWishSelections.get(selId);
-    if (!sel) return;
-    const updates = { completed: !sel.completed, status: sel.completed ? "idea" : "completed", updatedAt: Date.now() } as Partial<TripWishSelection>;
-    await db.tripWishSelections.update(selId, updates);
-    const user = auth.currentUser;
-    if (user && canCollaborate(user)) {
-      const updated = await db.tripWishSelections.get(selId);
-      if (updated) pushSelection(updated, user.uid).catch(() => {});
-    }
+    await toggleTripTick(currentTripId, "wish", id);
   };
 
   /** Removes the wish from the current trip for the current person. When

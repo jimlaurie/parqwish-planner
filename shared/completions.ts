@@ -1,11 +1,13 @@
 // ==================== TRIP COMPLETIONS (pure) ====================
-// Whether a trip wish or packing item is done for an account, from its
-// completion records (shared/types/completion.ts). An item is done for an
-// account while it has a live record from either app; each app writes and
-// clears only its own. No I/O: used by the Planner and Pal.
-// Design: dland-wishes docs/completion-design.md.
+// Whether a trip wish or packing item is done for a household, from its
+// completion records (shared/types/completion.ts). Each account writes and
+// clears only its own records, one per app; a household (accounts the trip
+// Owner grouped, e.g. a family with Pal on two phones, else one account)
+// has done an item while any of its accounts has a live record. No I/O:
+// used by the Planner and Pal. Design: dland-wishes docs/completion-design.md.
 
 import type { CompletionKind, CompletionSource, TripCompletion } from "./types/completion";
+import type { TripMember } from "./types/trip";
 
 const KINDS: readonly CompletionKind[] = ["wish", "packing"];
 const SOURCES: readonly CompletionSource[] = ["pal", "planner"];
@@ -34,6 +36,22 @@ export function isValidCompletion(c: unknown, docId: string, docAuthorUid: strin
     && completionDocId(r.kind, r.itemId, r.authorUid, r.source) === docId;
 }
 
+// ==================== HOUSEHOLDS ====================
+
+/**
+ * The accounts in `uid`'s household on a trip: those whose household
+ * (`members[x].household`, else their own uid) is the same as uid's.
+ * Always includes uid; just [uid] when the trip has no members (not
+ * shared) or uid isn't one of them.
+ */
+export function householdAccounts(members: Record<string, Pick<TripMember, "household">> | undefined, uid: string): string[] {
+  const own = members?.[uid];
+  if (!members || !own) return [uid];
+  const anchor = own.household ?? uid;
+  const accounts = Object.keys(members).filter((id) => (members[id].household ?? id) === anchor);
+  return accounts.includes(uid) ? accounts : [uid, ...accounts];
+}
+
 // ==================== READING ====================
 
 /** The records for one item, from every account and app. */
@@ -41,29 +59,45 @@ export function completionsOf(completions: TripCompletion[], kind: CompletionKin
   return completions.filter((c) => c.kind === kind && c.itemId === itemId);
 }
 
-/** True when the account `uid` has done the item (a record from either app). */
-export function isDoneFor(completions: TripCompletion[], kind: CompletionKind, itemId: string, uid: string): boolean {
-  return completionsOf(completions, kind, itemId).some((c) => c.authorUid === uid);
+/** True when any of `accounts` (a household, or one account) has a record for the item, from either app. */
+export function isDoneFor(completions: TripCompletion[], kind: CompletionKind, itemId: string, accounts: readonly string[]): boolean {
+  return completionsOf(completions, kind, itemId).some((c) => accounts.includes(c.authorUid));
 }
 
-/** The other accounts that have done the item, in the order they first did. */
-export function othersDone(completions: TripCompletion[], kind: CompletionKind, itemId: string, uid: string): string[] {
+/** The accounts outside the household that have done the item, in the order they first did. */
+export function othersDone(completions: TripCompletion[], kind: CompletionKind, itemId: string, household: readonly string[]): string[] {
   const others = completionsOf(completions, kind, itemId)
-    .filter((c) => c.authorUid !== uid)
+    .filter((c) => !household.includes(c.authorUid))
     .sort((a, b) => a.completedAt.localeCompare(b.completedAt));
   return [...new Set(others.map((c) => c.authorUid))];
 }
 
 /**
- * The account's Pal record when only Pal has it ticked: the Planner can't
- * untick it, and says where it was ticked. Undefined otherwise.
+ * The household's records that the Planner on account `uid` can't clear:
+ * all of them except uid's own Planner record (uid's Pal, and the other
+ * accounts' Pal and Planner). While any is left, unticking in the Planner
+ * leaves the item done, and the Planner says where it was ticked.
  */
-export function palOnlyCompletion(
-  completions: TripCompletion[], kind: CompletionKind, itemId: string, uid: string,
-): TripCompletion | undefined {
-  const mine = completionsOf(completions, kind, itemId).filter((c) => c.authorUid === uid);
-  if (mine.some((c) => c.source === "planner")) return undefined;
-  return mine.find((c) => c.source === "pal");
+export function ticksPlannerCantClear(
+  completions: TripCompletion[], kind: CompletionKind, itemId: string, uid: string, household: readonly string[],
+): TripCompletion[] {
+  return completionsOf(completions, kind, itemId)
+    .filter((c) => household.includes(c.authorUid) && !(c.authorUid === uid && c.source === "planner"));
+}
+
+/**
+ * What a selection's local `completed` and `completedAt` say for a
+ * household: done, from its earliest record, or not done. The Planner keeps
+ * these on its selections so its many readers (filters, Play pool, Publish,
+ * PDF, exports) need no change; a pulled selection's own value is replaced.
+ */
+export function householdTick(
+  completions: TripCompletion[], kind: CompletionKind, itemId: string, household: readonly string[],
+): { completed: boolean; completedAt?: string } {
+  const first = completionsOf(completions, kind, itemId)
+    .filter((c) => household.includes(c.authorUid))
+    .sort((a, b) => a.completedAt.localeCompare(b.completedAt))[0];
+  return first ? { completed: true, completedAt: first.completedAt } : { completed: false, completedAt: undefined };
 }
 
 // ==================== PAL ROLL-UP ====================
@@ -110,28 +144,27 @@ export function palCompletionWrites(
 
 // ==================== MIGRATION ====================
 
-/** A selection as the migration needs it: TripWishSelection or TripPackingSelection. */
+/** A selection as the migration needs it: TripWishSelection or TripPackingSelection, with its item id. */
 interface MigratingSelection {
   tripId: string;
+  itemId: string;
   completed: boolean;
-  authorUid?: string;
   completedAt?: string;
 }
 
 /**
- * The Planner records that carry a trip's old shared ticks over, once: one
- * for each ticked selection this account has no record for yet, when this
- * account made the tick (it last pushed the selection, or the trip isn't
- * shared). Another household's old tick is theirs to carry over.
+ * The Planner records that carry the old shared ticks this account sees
+ * over, once: one for each ticked selection it has no record for yet.
+ * Every household carries over every old tick, since the old tick was
+ * shared and a selection's authorUid only says who pushed it last (the
+ * Planner re-pushed every selection at startup). Also used for ticks a
+ * sync file brings in.
  */
 export function migratedCompletions(
-  kind: CompletionKind,
-  selections: Array<MigratingSelection & { itemId: string }>,
-  existing: TripCompletion[], uid: string, tripShared: boolean, now: Date,
+  kind: CompletionKind, selections: MigratingSelection[], existing: TripCompletion[], uid: string, now: Date,
 ): TripCompletion[] {
   return selections
-    .filter((s) => s.completed && !isDoneFor(existing, kind, s.itemId, uid))
-    .filter((s) => (s.authorUid ? s.authorUid === uid : !tripShared))
+    .filter((s) => s.completed && !isDoneFor(existing, kind, s.itemId, [uid]))
     .map((s) => ({
       id: completionDocId(kind, s.itemId, uid, "planner"), tripId: s.tripId, kind, itemId: s.itemId,
       authorUid: uid, source: "planner" as const,

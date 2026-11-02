@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { PackingItemWithStatus } from "@/hooks/use-packing-items";
 import { TICKET_COLORS, ticketTitle } from "@/lib/constants";
 import UserBadge from "@/components/UserBadge";
+import DoneByOthers from "@/components/DoneByOthers";
 
 interface PackingCardProps {
   item: PackingItemWithStatus;
@@ -286,11 +287,12 @@ export default function PackingCard({
           )}
 
           {/* User badges — one per person packing it */}
-          {badges.length > 0 && (
+          {(badges.length > 0 || !!item.doneByOthers?.length) && (
             <div className="mt-1 flex items-center gap-1.5 flex-wrap">
               {badges.map((b) => (
                 <UserBadge key={`${b.name}_${b.color}`} color={b.color} name={b.name} size="sm" />
               ))}
+              <DoneByOthers names={item.doneByOthers} verb="Packed" />
             </div>
           )}
         </div>

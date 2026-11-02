@@ -35,6 +35,14 @@ export interface TripMember {
    * so there's no way to check for collisions before joining.
    */
   displayName?: string;
+  /**
+   * The household this account belongs to on this trip: another member's
+   * uid (the household's first account). Unset means its own household.
+   * Accounts in one household share "done on this trip" ticks, e.g. a
+   * family with Pal on two phones (docs/completion-design.md). Only the
+   * Owner sets it (firestore.rules).
+   */
+  household?: string;
 }
 
 /** Hard cap on collaborating accounts per trip: Owner + 12. */

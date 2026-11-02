@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { ScheduledEventRecord } from "@shared/types/scheduled-event";
 import type { DayItemRecord } from "@shared/types/day-item";
+import type { TripCompletion } from "@shared/types/completion";
 import { normalizePackingCategory } from "@shared/constants/packing";
 
 // ==================== TYPE DEFINITIONS ====================
@@ -12,6 +13,7 @@ export type { PackingItem, PackingType, TripPackingSelection, Ensemble } from "@
 export type { ItineraryItem } from "@shared/types/itinerary";
 export type { DayItemRecord, DayItemType, DayItem } from "@shared/types/day-item";
 export type { Trip, TripPhase, FlightLeg, HotelStay, TransportLeg } from "@shared/types/trip";
+export type { TripCompletion, CompletionKind } from "@shared/types/completion";
 
 // Import types needed for Dexie table definitions
 import type { Trip } from "@shared/types/trip";
@@ -127,6 +129,7 @@ const db = new Dexie("ParQwishPWA") as Dexie & {
   dayItems: EntityTable<DayItemRecord, "id">;
   photoMetadata: EntityTable<PhotoMetadata, "id">;
   tripPhotos: EntityTable<TripPhoto, "id">;
+  completions: EntityTable<TripCompletion, "id">;
 };
 
 db.version(1).stores({
@@ -734,6 +737,28 @@ db.version(23).stores({
   dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
   photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
   tripPhotos: "id, tripId, date, [tripId+date]",
+});
+
+// v24: Add completions table — "done on this trip" ticks, one record per
+// item, account and app (src/lib/completions.ts, dland-wishes
+// docs/completion-design.md). Selections keep a local `completed` worked
+// out from them, so no existing row changes here.
+db.version(24).stores({
+  trips: "id, name, startDate, phase, isTemplate, isArchived",
+  wishes: "id, *tags, pendingSync, userId",
+  tripWishSelections: "id, tripId, wishId, userId",
+  packingItems: "id, type, category, userId",
+  tripPackingSelections: "id, tripId, itemId, userId",
+  itineraryItems: "id, tripId, date, [tripId+date], startTime, userId",
+  users: "id, name, role",
+  ensembles: "id, name, userId",
+  syncHistory: "id, type, date",
+  trails: "id, tripId, userId, date, [tripId+date]",
+  scheduledEvents: "id, tripId, userId, date, sourceId, itemType, [tripId+date]",
+  dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
+  photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
+  tripPhotos: "id, tripId, date, [tripId+date]",
+  completions: "id, tripId, authorUid",
 });
 
 // ==================== PACKING SUB-CATEGORIES ====================

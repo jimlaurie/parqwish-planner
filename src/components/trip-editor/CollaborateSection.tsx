@@ -1,8 +1,10 @@
 "use client";
 
 // ==================== COLLABORATE ====================
-// Who has access to the trip, and (for its owner) invite links and role
-// changes. These act straight away rather than waiting for the page's Save.
+// Who has access to the trip, and (for its owner) invite links, role
+// changes and households (accounts that share "done" ticks, e.g. a family
+// with Pal on two phones; src/lib/completions.ts). These act straight away
+// rather than waiting for the page's Save.
 // A new, unsaved trip can't have collaborators yet: invites need the trip to
 // exist in Cloud Sync.
 
@@ -10,7 +12,7 @@ import { useEffect, useState } from "react";
 import type { Trip } from "@/lib/db";
 import type { TripMember, TripMemberRole } from "@shared/types/trip";
 import { auth, canCollaborate } from "@/lib/auth";
-import { createInvite, updateMemberRole, updateMemberDisplayName, removeMember } from "@/lib/wish-sync";
+import { createInvite, updateMemberRole, updateMemberDisplayName, updateMemberHousehold, removeMember } from "@/lib/wish-sync";
 import { Section, labelClass } from "./fields";
 
 const ROLE_LABEL: Record<TripMemberRole, string> = { owner: "👑 Owner", editor: "✏️ Editor", viewer: "👀 Viewer" };
@@ -78,8 +80,12 @@ function Roster({ trip, isOwnerView }: { trip: Trip; isOwnerView: boolean }) {
     run(uid, async () => { await updateMemberDisplayName(trip.id, uid, nameDraft.trim()); setEditingNameUid(null); }, "Couldn't save that name — please try again.");
   };
 
+  const changeHousehold = (uid: string, household: string) =>
+    run(uid, () => updateMemberHousehold(trip.id, uid, household || undefined), "Couldn't change that person's family — please try again.");
+
   const rows = Object.entries(trip.members).sort(([, a], [, b]) =>
     a.role === "owner" ? -1 : b.role === "owner" ? 1 : a.joinedAt.localeCompare(b.joinedAt));
+  const households = memberHouseholds(trip.members);
   return (
     <div className="flex flex-col gap-2">
       <span className={labelClass} style={{ color: "var(--color-text-secondary)" }}>Who has access</span>
@@ -91,11 +97,55 @@ function Roster({ trip, isOwnerView }: { trip: Trip; isOwnerView: boolean }) {
           onStartEditName={() => { setEditingNameUid(uid); setNameDraft(member.displayName ?? ""); setError(null); }}
           onCancelEditName={() => setEditingNameUid(null)} onSaveName={() => saveName(uid)}
           onChangeRole={() => changeRole(uid, member.role === "editor" ? "viewer" : "editor")} onRemove={() => remove(uid)}
+          household={households.of(uid)} canChangeHousehold={isOwnerView && rows.length > 1}
+          onChangeHousehold={(h) => changeHousehold(uid, h)}
         />
       ))}
+      {rows.length > 1 && (
+        <p className="text-[11px]" style={{ color: "var(--color-text-dim)" }}>
+          {"\u{1F3E0}"} A family shares its ticks: when any of them does something, it&apos;s done for all of them. Everyone else on the trip has their own.
+          {isOwnerView ? " Put anyone with ParQwish on their own phone in the right family." : ""}
+        </p>
+      )}
       {error && <p className="text-xs text-center" style={{ color: "var(--color-error)" }}>{error}</p>}
     </div>
   );
+}
+
+// ==================== HOUSEHOLDS ====================
+
+/** A member's household on the roster: who else is in it, and the families they could join. */
+interface MemberHousehold {
+  /** "" when they head their own family, else the uid of the family's first account */
+  value: string;
+  /** The others in their family */
+  with: string[];
+  options: Array<{ value: string; label: string }>;
+}
+
+const memberLabel = (members: Record<string, TripMember>, uid: string): string =>
+  uid === auth.currentUser?.uid ? "You" : members[uid]?.displayName || `…${uid.slice(-8)}`;
+
+/** Each member's family on the trip (TripMember.household), for the roster. */
+function memberHouseholds(members: Record<string, TripMember>): { of: (uid: string) => MemberHousehold } {
+  const anchorOf = (uid: string) => members[uid]?.household ?? uid;
+  const accountsIn = (anchor: string) => Object.keys(members).filter((id) => anchorOf(id) === anchor);
+  const names = (ids: string[]) => ids.map((id) => memberLabel(members, id)).join(", ");
+  const anchors = [...new Set(Object.keys(members).map(anchorOf))];
+  return {
+    of: (uid) => {
+      const mine = anchorOf(uid);
+      const others = accountsIn(mine).filter((id) => id !== uid);
+      const joinable = anchors.filter((a) => a !== mine && a !== uid)
+        .map((a) => ({ value: a, label: `Same family as ${names(accountsIn(a))}` }));
+      const current = mine === uid ? [] : [{ value: mine, label: `Same family as ${names(others)}` }];
+      return {
+        value: mine === uid ? "" : mine,
+        with: others.map((id) => memberLabel(members, id)),
+        options: [{ value: "", label: "Own family" }, ...current, ...joinable],
+      };
+    },
+  };
 }
 
 interface MemberRowProps {
@@ -103,6 +153,7 @@ interface MemberRowProps {
   editingName: boolean; nameDraft: string; onNameDraft: (v: string) => void;
   onStartEditName: () => void; onCancelEditName: () => void; onSaveName: () => void;
   onChangeRole: () => void; onRemove: () => void;
+  household: MemberHousehold; canChangeHousehold: boolean; onChangeHousehold: (household: string) => void;
 }
 
 function MemberRow(p: MemberRowProps) {
@@ -134,7 +185,16 @@ function MemberRow(p: MemberRowProps) {
           </p>
           <p className="text-[11px]" style={{ color: "var(--color-text-dim)" }}>
             {ROLE_LABEL[p.member.role]} · joined {new Date(p.member.joinedAt).toLocaleDateString()}
+            {!p.canChangeHousehold && p.household.with.length > 0 && ` · \u{1F3E0} family with ${p.household.with.join(", ")}`}
           </p>
+          {p.canChangeHousehold && (
+            <select value={p.household.value} disabled={p.busy} onChange={(e) => p.onChangeHousehold(e.target.value)}
+                    aria-label={`${label}'s family on this trip`}
+                    className="mt-1 max-w-full text-[11px] rounded-lg px-2 py-1 border cursor-pointer disabled:opacity-40"
+                    style={{ backgroundColor: "var(--color-bg-deep)", color: "var(--color-text-secondary)", borderColor: "var(--color-border-input)" }}>
+              {p.household.options.map((o) => <option key={o.value} value={o.value}>{"\u{1F3E0}"} {o.label}</option>)}
+            </select>
+          )}
         </div>
       )}
       {canManage && !p.editingName && (

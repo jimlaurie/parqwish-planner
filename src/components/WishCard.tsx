@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { WishWithStatus } from "@/hooks/use-trip-wishes";
 import { TICKET_COLORS, getTagIcon, ticketTitle } from "@/lib/constants";
 import UserBadge from "@/components/UserBadge";
+import DoneByOthers from "@/components/DoneByOthers";
 
 interface WishCardProps {
   wish: WishWithStatus;
@@ -161,11 +162,12 @@ export default function WishCard({
           )}
 
           {/* User badge + Park / Land badge + Max Wait */}
-          {(badges.length > 0 || wish.park || wish.land || wish.maxWaitTime) && (
+          {(badges.length > 0 || wish.park || wish.land || wish.maxWaitTime || wish.doneByOthers?.length) && (
             <div className="mt-1 flex items-center gap-1.5 flex-wrap">
               {badges.map((b) => (
                 <UserBadge key={`${b.name}_${b.color}`} color={b.color} name={b.name} size="sm" />
               ))}
+              <DoneByOthers names={wish.doneByOthers} verb="Done" />
               {(wish.park || wish.land) && (
                 <span
                   className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full"

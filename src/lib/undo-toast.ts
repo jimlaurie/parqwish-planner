@@ -11,7 +11,8 @@ import { useSyncExternalStore } from "react";
 export interface UndoToast {
   id: number;
   message: string;
-  onUndo: () => Promise<void> | void;
+  /** Absent for a toast that only tells (showInfoToast): no Undo button */
+  onUndo?: () => Promise<void> | void;
 }
 
 const DISMISS_AFTER_MS = 6000;
@@ -26,8 +27,16 @@ function emit(): void {
 }
 
 export function showUndoToast(message: string, onUndo: UndoToast["onUndo"]): void {
+  show({ id: nextId++, message, onUndo });
+}
+
+/** A toast with a message and no Undo, e.g. why a tick can't be taken off here. */
+export function showInfoToast(message: string): void {
+  show({ id: nextId++, message });
+}
+
+function show(toast: UndoToast): void {
   if (dismissTimer) clearTimeout(dismissTimer);
-  const toast: UndoToast = { id: nextId++, message, onUndo };
   current = toast;
   emit();
   dismissTimer = setTimeout(() => dismissUndoToast(toast.id), DISMISS_AFTER_MS);

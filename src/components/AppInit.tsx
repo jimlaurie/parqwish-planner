@@ -10,6 +10,7 @@ import { startSync, startCollaboratorSync, stopSync, pullWishes, pullSharedTrips
 import { useAppStore } from "@/lib/store";
 import { cleanUpDiningDuplicates } from "@/lib/dining-duplicates";
 import { migratePackingCategories } from "@/lib/category-migration";
+import { carryOverTicks, completionAccount } from "@/lib/completions";
 import { pruneOldParkDataCaches } from "@/lib/park-data";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "0";
@@ -364,6 +365,12 @@ function useDiningDuplicateCleanup() {
   useRunOnceAfterFirstSync("parqwish:diningDupCleanup:v1", "Dining duplicate cleanup", cleanUpDiningDuplicates);
 }
 
+/** Old shared ticks become this account's completion records (src/lib/completions.ts); with Cloud Sync, startSync does it first. */
+const carryOverTicksNow = () => carryOverTicks(completionAccount(), { once: true }).then((written) => written.length);
+function useTickCarryOver() {
+  useRunOnceAfterFirstSync("parqwish:tickCarryOver:v1", "Tick carry-over", carryOverTicksNow);
+}
+
 /** Rename packing items to the sub-category list shared with Pal (category-migration.ts). */
 function usePackingCategoryMigration() {
   useRunOnceAfterFirstSync("parqwish:packingCategories:v1", "Packing category rename", migratePackingCategories);
@@ -402,6 +409,7 @@ export default function AppInit() {
   useSyncInit();
   useDiningDuplicateCleanup();
   usePackingCategoryMigration();
+  useTickCarryOver();
   useTripSelection();
   useFocusPull();
   useVersionCheck();

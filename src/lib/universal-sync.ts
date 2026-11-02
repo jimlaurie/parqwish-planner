@@ -4,6 +4,7 @@
 
 import { pwaToSyncPayload, syncPayloadToPwa, linkPhotoManifest } from "./sync-translate";
 import db from "./db";
+import { adoptImportedTicks } from "./trip-ticks";
 import { useAppStore } from "./store";
 import type {
   SyncEnvelopeV2,
@@ -388,7 +389,7 @@ export async function executeImport(
   // hand-picking the ones the importers touch today and risking a missed
   // one) so a bad or partial import file can't leave a trip half-deleted —
   // either the whole replace commits or Dexie rolls the deletes back too.
-  return db.transaction("rw", db.tables, async () => {
+  const imported = await db.transaction("rw", db.tables, async () => {
   if (mode === "replace") {
     // For replace mode, clear existing trip data for the matching categories
     // only — not the whole junction table. tripWishSelections holds rides,
@@ -501,6 +502,9 @@ export async function executeImport(
   const counts = await syncPayloadToPwa(data, tripId, userId);
   return counts;
   });
+  // Ticks in the file become this account's "done on this trip" records (only added, never removed)
+  await adoptImportedTicks().catch((err) => console.error("[universal-sync] adopting imported ticks failed:", err));
+  return imported;
 }
 
 // ==================== PHOTO ZIP IMPORT ====================

@@ -268,9 +268,16 @@
       ],
       "land": "Hollywood Land",
       "longitude": -117.9183444,
-      "times": [],
+      "times": [
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:45",
+        "14:45",
+        "15:40"
+      ],
       "duration": 20,
-      "status": "closed"
+      "status": "operating"
     },
     "ancient-sanctum": {
       "times": [],
@@ -437,20 +444,16 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-11-01T14:00:06.364Z",
+  "lastUpdated": "2026-11-02T14:00:24.126Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "timeRanges": [],
       "name": "Pearly Band near \"it's a small world\"",
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "11:50",
-        "13:05",
-        "14:05"
-      ],
+      "times": [],
       "land": "Fantasyland",
       "types": [
         "street show"
@@ -833,8 +836,8 @@
       "apiEntityId": "5a107a57-9174-4f3f-9be7-625a5d5bb899",
       "timeRanges": [
         {
-          "start": "08:00",
-          "end": "19:30"
+          "start": "10:00",
+          "end": "19:00"
         }
       ],
       "duration": 15,
@@ -891,7 +894,8 @@
       ],
       "longitude": -117.921242,
       "times": [
-        "20:30"
+        "20:30",
+        "21:25"
       ],
       "duration": 12,
       "status": "operating"
@@ -926,14 +930,9 @@
       "timeRanges": []
     },
     "pearly-band-castle": {
-      "status": "operating",
+      "status": "closed",
       "duration": 20,
-      "times": [
-        "09:15",
-        "10:05",
-        "11:00",
-        "15:05"
-      ],
+      "times": [],
       "types": [
         "street show"
       ],
@@ -977,12 +976,10 @@
         "nighttime spectacular"
       ],
       "longitude": -117.9213958,
-      "times": [
-        "21:30"
-      ],
+      "times": [],
       "duration": 15,
-      "status": "operating"
+      "status": "closed"
     }
   },
-  "lastShowtimeSync": "2026-11-01T14:00:06.364Z"
+  "lastShowtimeSync": "2026-11-02T14:00:24.126Z"
 }

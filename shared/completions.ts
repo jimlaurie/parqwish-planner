@@ -5,6 +5,10 @@
 // Owner grouped, e.g. a family with Pal on two phones, else one account)
 // has done an item while any of its accounts has a live record. No I/O:
 // used by the Planner and Pal. Design: dland-wishes docs/completion-design.md.
+//
+// The reading helpers take ONE trip's records: an item packed or done on
+// one trip isn't on another. Filter by tripId first (found 1 Nov 2026,
+// when Pal passed every trip's records and one trip's "packed" showed on all).
 
 import type { CompletionKind, CompletionSource, TripCompletion } from "./types/completion";
 import type { TripMember } from "./types/trip";
@@ -164,7 +168,7 @@ export function migratedCompletions(
   kind: CompletionKind, selections: MigratingSelection[], existing: TripCompletion[], uid: string, now: Date,
 ): TripCompletion[] {
   return selections
-    .filter((s) => s.completed && !isDoneFor(existing, kind, s.itemId, [uid]))
+    .filter((s) => s.completed && !isDoneFor(existing.filter((c) => c.tripId === s.tripId), kind, s.itemId, [uid]))
     .map((s) => ({
       id: completionDocId(kind, s.itemId, uid, "planner"), tripId: s.tripId, kind, itemId: s.itemId,
       authorUid: uid, source: "planner" as const,

@@ -27,8 +27,9 @@ export default function UndoToastHost() {
 
   return (
     <div
-      className="fixed inset-x-0 z-[60] flex justify-center px-4 pointer-events-none"
-      style={{ bottom: "calc(var(--mobile-tabbar-h) + 1.5rem)" }}
+      className="fixed inset-x-0 flex justify-center px-4 pointer-events-none"
+      // Above the install banner (--z-overlay), which sits in the same spot
+      style={{ bottom: "calc(var(--mobile-tabbar-h) + 1.5rem)", zIndex: "var(--z-toast)" }}
       role="status"
       aria-live="polite"
     >

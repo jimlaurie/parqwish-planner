@@ -187,4 +187,9 @@ describe('carrying old shared ticks over', () => {
     const theirs = [record({ itemId: 'w1', authorUid: 'smiths', source: 'pal' })];
     expect(migratedCompletions('packing', [sel('w1')], theirs, 'me', NOW)).toHaveLength(1);
   });
+
+  it("isn't stopped by a record for the same item on another trip", () => {
+    const otherTrip = [{ ...record({ itemId: 'w1', authorUid: 'me', source: 'planner' }), tripId: 'trip_other' }];
+    expect(migratedCompletions('wish', [sel('w1')], otherTrip, 'me', NOW)).toHaveLength(1);
+  });
 });

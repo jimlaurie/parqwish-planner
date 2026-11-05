@@ -13,8 +13,8 @@ export function marketingUrl(path: string): string {
   return `https://parqwish.com${path}?ref=app`;
 }
 
-// App Store listing for the iOS app (ParQwish Pal). null until 1.0.0 is
-// approved and live — set it to the real https://apps.apple.com/... URL on
-// launch day and the WelcomeCard's "in App Store review" note switches to a
-// download link automatically.
-export const IOS_APP_STORE_URL: string | null = null;
+// App Store listing for the iOS app (ParQwish Pal), live since 5 Nov 2026
+// (1.0.0; US, Canada, UK, Australia, New Zealand). The WelcomeCard shows a
+// download link when this is set, and its "in App Store review" note when null.
+export const IOS_APP_STORE_URL: string | null =
+  "https://apps.apple.com/app/parqwish-pal/id6764206576";

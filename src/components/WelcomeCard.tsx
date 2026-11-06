@@ -22,6 +22,19 @@ const FEATURES = [
   { icon: "🔄", text: "Sync with the ParQwish Pal iOS app and your travel group" },
 ];
 
+// Labels which app a link belongs to, so the Planner's buttons and the Pal
+// App Store link don't read as one thing (same as parqwish.com's home page).
+function AppLabel({ children }: { children: string }) {
+  return (
+    <p
+      className="text-xs font-bold uppercase tracking-widest"
+      style={{ margin: "0 0 8px", color: "var(--color-gold)", textAlign: "center" }}
+    >
+      {children}
+    </p>
+  );
+}
+
 export default function WelcomeCard({ newTrip }: WelcomeCardProps) {
   const router = useRouter();
   return (
@@ -151,105 +164,114 @@ export default function WelcomeCard({ newTrip }: WelcomeCardProps) {
           </button>
         </div>
 
-        {/* CTAs */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {/* Primary: Create trip (opens the New Trip menu) */}
-          <NewTripMenu
-            {...newTrip}
-            placement="down"
-            trigger={(props) => (
-          <button
-            type="button"
-            {...props}
-            style={{
-              width: "100%",
-              padding: "13px 20px",
-              borderRadius: "var(--radius-full)",
-              border: "none",
-              background: "var(--color-gold)",
-              color: "var(--color-purple-dark)",
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--font-bold)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <span>+</span> Create Your First Trip
-          </button>
-            )}
-          />
+        {/* Planner: create the first trip (opens the New Trip menu) */}
+        <AppLabel>Planner</AppLabel>
+        <NewTripMenu
+          {...newTrip}
+          placement="down"
+          trigger={(props) => (
+            <button
+              type="button"
+              {...props}
+              style={{
+                width: "100%",
+                padding: "13px 20px",
+                borderRadius: "var(--radius-full)",
+                border: "none",
+                background: "var(--color-gold)",
+                color: "var(--color-purple-dark)",
+                fontSize: "var(--text-base)",
+                fontWeight: "var(--font-bold)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+              }}
+            >
+              <span>+</span> Create Your First Trip
+            </button>
+          )}
+        />
 
-          {/* Secondary: Guide */}
-          <Link
-            href={marketingUrl("/guide")}
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Pal: the iOS app, with Apple's official badge (public/images/app-store-badge.svg, unaltered) */}
+        <div style={{ marginTop: "24px", textAlign: "center" }}>
+          <AppLabel>Pal</AppLabel>
+          <p
             style={{
-              width: "100%",
-              padding: "11px 20px",
-              borderRadius: "var(--radius-full)",
-              border: "1px solid var(--color-border-default)",
-              background: "transparent",
-              color: "var(--color-text-secondary)",
-              fontSize: "var(--text-sm)",
-              fontWeight: "var(--font-medium)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              textDecoration: "none",
-              boxSizing: "border-box",
+              margin: 0,
+              fontSize: "var(--text-xs)",
+              color: "var(--color-text-dim)",
+              lineHeight: "var(--leading-relaxed)",
             }}
           >
-            <span>📖</span> Browse the Guide
-          </Link>
+            {IOS_APP_STORE_URL ? (
+              <>
+                New to ParQwish? Take the plan into the park with the iOS app,
+                ParQwish Pal: live wait times, GPS trail recording, and your day
+                at a glance.
+              </>
+            ) : (
+              <>
+                New to ParQwish? The iOS companion app — in-park wait times, GPS
+                trail recording, and real-time scheduling — is in App Store review
+                now. Check back soon, or watch{" "}
+                <Link
+                  href={marketingUrl("/blog")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "var(--color-gold)", textDecoration: "none" }}
+                >
+                  the blog
+                </Link>{" "}
+                for the announcement.
+              </>
+            )}
+          </p>
+          {IOS_APP_STORE_URL && (
+            <a
+              href={IOS_APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "inline-block", marginTop: "12px", lineHeight: 0 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- static export; Apple's badge must stay unaltered */}
+              <img
+                src="/images/app-store-badge.svg"
+                alt="Download ParQwish Pal on the App Store"
+                width={138}
+                height={46}
+              />
+            </a>
+          )}
         </div>
 
-        {/* Mobile app nudge */}
-        <p
+        {/* Guide: covers both apps, so it sits below them */}
+        <Link
+          href={marketingUrl("/guide")}
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
-            margin: "20px 0 0",
-            fontSize: "var(--text-xs)",
-            color: "var(--color-text-dim)",
-            textAlign: "center",
-            lineHeight: "var(--leading-relaxed)",
+            marginTop: "24px",
+            width: "100%",
+            padding: "11px 20px",
+            borderRadius: "var(--radius-full)",
+            border: "1px solid var(--color-border-default)",
+            background: "transparent",
+            color: "var(--color-text-secondary)",
+            fontSize: "var(--text-sm)",
+            fontWeight: "var(--font-medium)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            textDecoration: "none",
+            boxSizing: "border-box",
           }}
         >
-          {IOS_APP_STORE_URL ? (
-            <>
-              New to ParQwish? Take the plan into the park with the iOS app,
-              ParQwish Pal: live wait times, GPS trail recording, and your day
-              at a glance.{" "}
-              <Link
-                href={IOS_APP_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--color-gold)", textDecoration: "none" }}
-              >
-                Get it on the App Store
-              </Link>
-            </>
-          ) : (
-            <>
-              New to ParQwish? The iOS companion app — in-park wait times, GPS
-              trail recording, and real-time scheduling — is in App Store review
-              now. Check back soon, or watch{" "}
-              <Link
-                href={marketingUrl("/blog")}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--color-gold)", textDecoration: "none" }}
-              >
-                the blog
-              </Link>{" "}
-              for the announcement.
-            </>
-          )}
-        </p>
+          <span>📖</span> Browse the Guide
+        </Link>
       </div>
     </div>
   );

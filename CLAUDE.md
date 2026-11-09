@@ -17,7 +17,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 - **Framework:** Next.js 15 (App Router, static export via `next build`)
 - **UI:** React 19, Tailwind CSS 4, Framer Motion
 - **State:** Zustand (persisted to localStorage — theme, currentTripId, currentUserId, Cloud Sync on/off, catalog view, excluded photos)
-- **Database:** Dexie.js v4 (IndexedDB wrapper), currently at schema v22 — local-first, no server required for core planning features
+- **Database:** Dexie.js v4 (IndexedDB wrapper), currently at schema v25 — local-first, no server required for core planning features
 - **Auth/Cloud:** Firebase Auth (anonymous/Apple/Google/email-link) + Firestore, opt-in only (Cloud Sync + park data catalog fetch)
 - **Maps:** Leaflet + react-leaflet (GPS trail playback), plus a hand-authored abstract SVG park map (`resort-map-svg.ts`) for Plan/Preview
 - **PDF/export:** jsPDF + html2canvas-pro (trip PDF recap), jszip (photo zip export/import), qrcode.react (sync pairing code)
@@ -31,7 +31,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 npm run dev      # Start Next.js dev server (port 3000, Turbopack)
 npm run build    # Production build (static export to out/), writes out/version.json
 npm run lint     # ESLint check
-npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (37 checks, ~85 s; ship runs them)
+npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (61 checks, ~2.5 min; ship runs them)
 npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
 npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check
@@ -57,6 +57,7 @@ src/
 │       ├── plan/, prepare/, preview/, play/, publish/   # The five trip-phase pages
 │       ├── preview/analytics/, heat-map/, reliability/  # Wait-time Analytics gallery and its two pages
 │       ├── catalog/          # Browse full park-data catalog, independent of any trip
+│       ├── collection/       # The memorabilia collection (hidden behind a feature flag until it ships; see State & Data)
 │       ├── trip/             # Edit Trip page: /trip?id=… (edit), ?id=…&dates=1 (just created, dates highlighted), ?new=1 (unsaved draft)
 │       ├── join/             # Cross-account trip-collaboration invite acceptance
 │       ├── share/            # Web Share Target landing page
@@ -158,6 +159,7 @@ background: `${ACCENT}20`  // broken — ACCENT is now a var(), not a hex
 - Multi-user: `userId` on junction tables (`tripWishSelections`, `tripPackingSelections`, `dayItems`) for ownership; `activeUserFilter` in Zustand filters the UI, doesn't touch storage
 - **Removing a Trip User** goes through `reassignRemovedUser()` (`src/lib/reassign-user.ts`), both locally (`deleteUser`) and when a removal syncs down: their selections (shared owners too), day items, and the wishes, packing items and ensembles they created (`userId` = creator; the Catalog filters by it) go to `user_primary` with a new `updatedAt`. A new store with a `userId` belongs there too, and in Pal's `LocalStorageManager.deleteUser`
 - **Dates:** calendar dates ("YYYY-MM-DD") and "today" come from `src/lib/dates.ts` (`parkToday`, `parkDate`, `parkClock`, `addDays`, `daysBetween`, `datesBetween`), in the park's time zone (Pacific). Never `toISOString().slice(0, 10)` / `.split("T")[0]`: that's UTC, already tomorrow after 5 PM Pacific, and a day early for anyone east of UTC. ESLint rejects it outside `dates.ts`
+- **Feature flags** (`src/lib/feature-flags.ts`): a feature built ahead of its release is read from a `NEXT_PUBLIC_` build variable and hidden without it; `npm run ship` sets none, so app.parqwish.com never shows one. Collections: `NEXT_PUBLIC_COLLECTIONS=1 npm run dev` (dland-wishes `docs/collections-design.md` §12)
 - **Park data caches** (`src/lib/park-data.ts`, localStorage) are keyed to the build's version with `cacheKey(name)`, so every deploy starts fresh; don't add hand-versioned keys (`-v2`). `pruneOldParkDataCaches()` (run in AppInit) removes earlier builds' keys
 - **Weather** (`src/lib/weather-data.ts`, `useTripWeather`, `src/components/weather/`): Disneyland's `weather/forecast.json` live with the deploy's copy as fallback, `weather/normals.json` from the deploy; the pure logic is `shared/weather.ts` (shared with Pal). Files are always °F; `store.temperatureUnit` is display only. Say where the numbers came from (Forecast/Typical, updated when, or fallback)
 - **Say where data came from** (`src/lib/data-sources.ts`): a loader that can fall back calls `reportSource()` with the kind (live, bundled, cached, deployed, failed) and the data's own date; Play › Park Data lists them, and a page that depends on one shows `<DataSourceNote source=…>`. Don't save a fallback result for the day (retry live on the next load)

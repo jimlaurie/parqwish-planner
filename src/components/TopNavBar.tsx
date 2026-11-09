@@ -15,6 +15,7 @@ import PartnerInfoPopup from "@/components/partner/PartnerInfoPopup";
 import { marketingUrl } from "@/lib/marketing-links";
 import { formatTripDates } from "@/lib/trip-dates";
 import { editTripHref } from "@/lib/return-path";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
 // ==================== NAVIGATION ====================
 // The five trip phases follow the same journey as the marketing site's
@@ -33,7 +34,7 @@ import { editTripHref } from "@/lib/return-path";
 
 // ==================== TYPES ====================
 
-type NavPhase = "home" | "plan" | "preview" | "prepare" | "play" | "publish" | "catalog";
+type NavPhase = "home" | "plan" | "preview" | "prepare" | "play" | "publish" | "catalog" | "collection";
 
 interface PhaseLink {
   id: NavPhase;
@@ -61,6 +62,11 @@ const CATALOG_LINK: PhaseLink = {
   id: "catalog", label: "Catalog", icon: "\u{1F4E6}", href: "/catalog", accent: "var(--color-accent-catalog)", requiresTrip: false,
 };
 
+// The memorabilia collection, beside Catalog; hidden until Collections ship (lib/feature-flags.ts)
+const COLLECTION_LINK: PhaseLink = {
+  id: "collection", label: "Collection", icon: "\u{1F4CC}", href: "/collection", accent: "var(--color-gold)", requiresTrip: false,
+};
+
 const HELP_LINKS = [
   { label: "Guide", description: "How everything works", href: marketingUrl("/guide") },
   { label: "Story", description: "Why ParQwish exists", href: marketingUrl("/story") },
@@ -71,7 +77,7 @@ const HELP_LINKS = [
 
 function getActivePhase(pathname: string): NavPhase {
   if (pathname === "/") return "home";
-  for (const id of ["catalog", "plan", "prepare", "preview", "play", "publish"] as const) {
+  for (const id of ["catalog", "collection", "plan", "prepare", "preview", "play", "publish"] as const) {
     if (pathname.startsWith(`/${id}`)) return id;
   }
   return "home";
@@ -109,7 +115,9 @@ function TopLink({ link, isActive, disabled }: { link: PhaseLink; isActive: bool
 // ==================== HELP MENU ====================
 
 /** Help links (Guide / Story / Blog). On phones the same menu is labelled
- *  "More" and also carries Catalog, which the desktop bar shows inline. */
+ *  "More" and also carries Catalog, which the desktop bar shows inline.
+ *  Collection (when available) is in the phone menu too, and in the desktop
+ *  one below xl, where the bar has no room for it inline. */
 function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; includeCatalog?: boolean }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,6 +166,19 @@ function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; 
                 {CATALOG_LINK.label}
               </span>
               <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>Your saved wishes and packing items</span>
+            </Link>
+          )}
+          {COLLECTIONS_AVAILABLE && (
+            <Link
+              href={COLLECTION_LINK.href}
+              onClick={() => setOpen(false)}
+              className={`flex flex-col px-4 py-2 transition-colors duration-150 hover:bg-white/5 ${includeCatalog ? "" : "xl:hidden"}`}
+              style={{ borderBottom: "1px solid var(--color-border-subtle)" }}
+            >
+              <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+                {COLLECTION_LINK.label}
+              </span>
+              <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>Pins, buckets and more you have, want or trade</span>
             </Link>
           )}
           {HELP_LINKS.map((item) => (
@@ -306,6 +327,12 @@ export default function TopNavBar() {
               ))}
               <span aria-hidden="true" className="mx-1.5 h-5 w-px" style={{ backgroundColor: "var(--color-border-default)" }} />
               <TopLink link={CATALOG_LINK} isActive={activePhase === "catalog"} disabled={false} />
+              {/* Inline from xl; below that it's in the Help menu, as the bar has no room for it at 1024 px */}
+              {COLLECTIONS_AVAILABLE && (
+                <div className="hidden xl:block">
+                  <TopLink link={COLLECTION_LINK} isActive={activePhase === "collection"} disabled={false} />
+                </div>
+              )}
               <HelpMenu />
             </div>
 

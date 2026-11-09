@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from "dexie";
 import type { ScheduledEventRecord } from "@shared/types/scheduled-event";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { TripCompletion } from "@shared/types/completion";
+import type { CollectionItem, CollectionSettings } from "@shared/types/collection";
 import { normalizePackingCategory } from "@shared/constants/packing";
 
 // ==================== TYPE DEFINITIONS ====================
@@ -14,6 +15,7 @@ export type { ItineraryItem } from "@shared/types/itinerary";
 export type { DayItemRecord, DayItemType, DayItem } from "@shared/types/day-item";
 export type { Trip, TripPhase, FlightLeg, HotelStay, TransportLeg } from "@shared/types/trip";
 export type { TripCompletion, CompletionKind } from "@shared/types/completion";
+export type { CollectionItem, CollectionSettings } from "@shared/types/collection";
 
 // Import types needed for Dexie table definitions
 import type { Trip } from "@shared/types/trip";
@@ -112,6 +114,9 @@ export interface SyncHistoryEntry {
   itemCount: number;
 }
 
+/** The account's collection settings, stored as one row (id "settings"). */
+export type CollectionSettingsRecord = CollectionSettings & { id: string };
+
 // ==================== DATABASE ====================
 
 const db = new Dexie("ParQwishPWA") as Dexie & {
@@ -130,6 +135,8 @@ const db = new Dexie("ParQwishPWA") as Dexie & {
   photoMetadata: EntityTable<PhotoMetadata, "id">;
   tripPhotos: EntityTable<TripPhoto, "id">;
   completions: EntityTable<TripCompletion, "id">;
+  collectionItems: EntityTable<CollectionItem, "id">;
+  collectionSettings: EntityTable<CollectionSettingsRecord, "id">;
 };
 
 db.version(1).stores({
@@ -759,6 +766,30 @@ db.version(24).stores({
   photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
   tripPhotos: "id, tripId, date, [tripId+date]",
   completions: "id, tripId, authorUid",
+});
+
+// v25: Add the memorabilia collection (dland-wishes docs/collections-design.md):
+// collectionItems (one row per item, not trip-scoped) and collectionSettings
+// (one row, id "settings": categories switched on, the user's own categories
+// and fields). Nothing existing changes.
+db.version(25).stores({
+  trips: "id, name, startDate, phase, isTemplate, isArchived",
+  wishes: "id, *tags, pendingSync, userId",
+  tripWishSelections: "id, tripId, wishId, userId",
+  packingItems: "id, type, category, userId",
+  tripPackingSelections: "id, tripId, itemId, userId",
+  itineraryItems: "id, tripId, date, [tripId+date], startTime, userId",
+  users: "id, name, role",
+  ensembles: "id, name, userId",
+  syncHistory: "id, type, date",
+  trails: "id, tripId, userId, date, [tripId+date]",
+  scheduledEvents: "id, tripId, userId, date, sourceId, itemType, [tripId+date]",
+  dayItems: "id, tripId, userId, date, [tripId+date], scheduledTime, itemType, sourceId",
+  photoMetadata: "id, tripId, itemId, [tripId+itemId], date",
+  tripPhotos: "id, tripId, date, [tripId+date]",
+  completions: "id, tripId, authorUid",
+  collectionItems: "id, category, state, userId",
+  collectionSettings: "id",
 });
 
 // ==================== PACKING SUB-CATEGORIES ====================

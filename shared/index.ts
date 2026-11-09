@@ -8,3 +8,4 @@ export * from "./sync-helpers";
 export * from "./sync-mappers";
 export * from "./selection-owners";
 export * from "./completions";
+export * from "./collections";

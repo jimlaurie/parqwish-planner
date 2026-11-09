@@ -13,3 +13,4 @@ export * from "./day-item";
 export * from "./weather";
 export * from "./partner";
 export * from "./completion";
+export * from "./collection";

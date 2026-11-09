@@ -1,5 +1,6 @@
 import {
   addCustomField,
+  applyCollectionCategoryChoice,
   addUserCollectionCategory,
   allCollectionCategories,
   canConvertCollectionFieldType,
@@ -12,6 +13,7 @@ import {
   deleteUserCollectionCategory,
   emptyCollectionSettings,
   enabledCollectionCategories,
+  finishCollectionFirstRun,
   isCollectionsOn,
   liveCustomFields,
   mergeImportedCollectionFields,
@@ -298,5 +300,38 @@ describe("importing collection fields", () => {
     expect(remapCollectionDetails({ field_theirs: "Paris", year: 2020, field_x: true },
       { field_theirs: "field_mine", year: "year" })).toEqual({ field_mine: "Paris", year: 2020, field_x: true });
     expect(remapCollectionDetails(undefined, {})).toBeUndefined();
+  });
+});
+
+// ==================== FIRST VISIT ====================
+
+describe("the collection category picker", () => {
+  it("switches on what was picked, keeps the order of those already on, and marks the first visit done", () => {
+    const before = settingsWith("plush", "pins", "ears");
+    const out = applyCollectionCategoryChoice(before, ["paper", "pins", "plush"], [], T0 + 1);
+    expect(out.enabled).toEqual(["plush", "pins", "paper"]);
+    expect(out.firstRunDone).toBe(true);
+    expect(out.updatedAt).toBe(T0 + 1);
+  });
+
+  it("creates the user's own categories picked with it", () => {
+    const out = applyCollectionCategoryChoice(settingsWith(), ["user_mugs", "pins"],
+      [{ id: "user_mugs", name: "Mugs", icon: "☕", layout: "shelf", trades: false }], T0);
+    expect(enabledCollectionCategories(out).map((c) => c.name)).toEqual(["Mugs", "Pins"]);
+  });
+
+  it("allows picking none, and refuses ids it doesn't know", () => {
+    const out = applyCollectionCategoryChoice(settingsWith("pins"), [], [], T0);
+    expect(out.enabled).toEqual([]);
+    expect(out.firstRunDone).toBe(true);
+    expect(() => applyCollectionCategoryChoice(settingsWith(), ["nope"], [], T0)).toThrow(/unknown/);
+  });
+
+  it("marks the first visit done for Not now, only once", () => {
+    const s = emptyCollectionSettings(T0);
+    const done = finishCollectionFirstRun(s, T0 + 1);
+    expect(done.firstRunDone).toBe(true);
+    expect(done.enabled).toEqual([]);
+    expect(finishCollectionFirstRun(done, T0 + 2)).toBe(done);
   });
 });

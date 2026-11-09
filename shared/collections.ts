@@ -507,3 +507,33 @@ export function remapCollectionDetails(
   for (const [id, value] of Object.entries(details)) out[mapping[id] ?? id] = value;
   return out;
 }
+
+// ==================== FIRST VISIT ====================
+
+/**
+ * Save the category picker's choice (the first visit, or "Edit" later):
+ * `chosen` is every category id ticked, in the order ticked, including the
+ * user categories in `added`, which are created here. Categories already on
+ * keep their place; newly ticked ones follow in `chosen`'s order; unticked
+ * ones are switched off (nothing deleted). Marks the first visit done, so
+ * picking none is fine.
+ */
+export function applyCollectionCategoryChoice(
+  settings: CollectionSettings,
+  chosen: string[],
+  added: Omit<UserCollectionCategory, "deletedAt">[],
+  now: number,
+): CollectionSettings {
+  const withAdded = added.reduce((s, cat) => addUserCollectionCategory(s, cat, now), settings);
+  const wanted = [...new Set(chosen)];
+  const unknown = wanted.filter((id) => !resolveCollectionCategory(withAdded, id));
+  if (unknown.length) throw new Error(`[collections] unknown categories ${unknown.join(", ")}`);
+  const kept = settings.enabled.filter((id) => wanted.includes(id));
+  const fresh = wanted.filter((id) => !kept.includes(id));
+  return touch(withAdded, now, { enabled: [...kept, ...fresh], firstRunDone: true });
+}
+
+/** "Not now" on the first-visit picker: don't show it by itself again. */
+export function finishCollectionFirstRun(settings: CollectionSettings, now: number): CollectionSettings {
+  return settings.firstRunDone ? settings : touch(settings, now, { firstRunDone: true });
+}

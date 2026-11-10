@@ -94,9 +94,10 @@ describe("an item arriving from the cloud", () => {
 describe("settings", () => {
   const blank = settings({ enabled: [], firstRunDone: false });
 
-  it("a new device's blank settings never go over the cloud's, and take them", () => {
+  it("a new device's blank settings are never pushed or applied, and take the cloud's", () => {
     expect(shouldPushCollectionSettings(blank, { updatedAt: iso(T - 1000) })).toBe(false);
-    expect(shouldPushCollectionSettings(blank, undefined)).toBe(true);
+    expect(shouldPushCollectionSettings(blank, undefined)).toBe(false);
+    expect(collectionSettingsFromCloud({ ...blank, updatedAt: T + 99 }, iso(T + 99), settings())).toBeNull();
     expect(collectionSettingsFromCloud(settings(), iso(T - 1000), blank)).toEqual(settings());
     expect(collectionSettingsFromCloud(settings(), iso(T), undefined)).toEqual(settings());
   });

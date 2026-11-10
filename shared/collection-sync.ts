@@ -121,15 +121,14 @@ export function collectionItemFromCloud(
 
 // ==================== SETTINGS ====================
 
-/** Settings that hold nothing chosen yet: a new device's, never pushed over the cloud's. */
+/** Settings that hold nothing chosen yet (a new device's): never pushed, never applied over real ones. */
 export function isBlankCollectionSettings(settings: CollectionSettings): boolean {
   return !settings.firstRunDone && settings.enabled.length === 0 && settings.userCategories.length === 0;
 }
 
-/** Whether startup pushes this device's settings: never blank ones over a cloud copy, otherwise when newer. */
+/** Whether startup pushes this device's settings: never blank ones, otherwise when newer than the cloud's. */
 export function shouldPushCollectionSettings(settings: CollectionSettings | undefined, remote: RemoteStamp | undefined): boolean {
-  if (!settings) return false;
-  if (remote && isBlankCollectionSettings(settings)) return false;
+  if (!settings || isBlankCollectionSettings(settings)) return false;
   return shouldPushAtStartup(settings.updatedAt, remote);
 }
 
@@ -137,8 +136,8 @@ export function shouldPushCollectionSettings(settings: CollectionSettings | unde
 export function collectionSettingsFromCloud(
   incoming: CollectionSettings, remoteUpdatedAt: string | undefined, local: CollectionSettings | undefined,
 ): CollectionSettings | null {
-  const blankHere = !local || isBlankCollectionSettings(local);
-  if (blankHere) return incoming;
+  if (isBlankCollectionSettings(incoming)) return null;
+  if (!local || isBlankCollectionSettings(local)) return incoming;
   return shouldApplyRemote(local, remoteUpdatedAt, incoming) ? incoming : null;
 }
 

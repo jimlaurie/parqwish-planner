@@ -13,7 +13,7 @@
 // (CollectionTable); the choice is remembered. The rules are shared with Pal
 // (@shared/collection-view). Hidden until Collections ship (lib/feature-flags.ts).
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
 import CollectionCategoryPicker from "@/components/collection/CollectionCategoryPicker";
 import CollectionTile from "@/components/collection/CollectionTile";
@@ -60,9 +60,14 @@ function Collection() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const { collectionView, setCollectionView } = useAppStore();
 
-  // The first visit opens the picker by itself
+  // The first visit opens the picker by itself, and closes it again if Cloud
+  // Sync brings settings whose first visit was done on another device
   const firstVisit = settings ? !settings.firstRunDone : false;
-  useEffect(() => { if (firstVisit) setPickerOpen(true); }, [firstVisit]);
+  const autoOpened = useRef(false);
+  useEffect(() => {
+    if (firstVisit) { autoOpened.current = true; setPickerOpen(true); }
+    else if (autoOpened.current) { autoOpened.current = false; setPickerOpen(false); }
+  }, [firstVisit]);
 
   const items = useMemo(() => (settings ? itemsForView(settings, storedItems) : []), [settings, storedItems]);
   const categories = useMemo(() => (settings ? viewCategories(settings, storedItems) : []), [settings, storedItems]);
@@ -104,7 +109,7 @@ function Collection() {
               onClose={() => setBulkOpen(false)} />
           </>
         ) : (
-          <Invitation onChoose={() => setPickerOpen(true)} />
+          <Invitation onChoose={() => { autoOpened.current = false; setPickerOpen(true); }} />
         )}
       </div>
       <CollectionCategoryPicker visible={pickerOpen} settings={settings} onClose={() => setPickerOpen(false)} />

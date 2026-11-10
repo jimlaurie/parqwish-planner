@@ -6,13 +6,16 @@
 // too while it holds items), Have / Want / Trade tabs (Trade where the
 // category trades, Gone once there's history), and the items in the
 // category's layout. The category picker opens by itself on the first visit
-// and from "Edit categories". The rules are shared with Pal
+// and from "Edit categories"; "+ Add" and "Add several" add items, and a tile
+// opens its item (CollectionItemModal, CollectionBulkAddModal). The rules are shared with Pal
 // (@shared/collection-view). Hidden until Collections ship (lib/feature-flags.ts).
 
 import { useEffect, useMemo, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
 import CollectionCategoryPicker from "@/components/collection/CollectionCategoryPicker";
 import CollectionTile from "@/components/collection/CollectionTile";
+import CollectionItemModal from "@/components/collection/CollectionItemModal";
+import CollectionBulkAddModal from "@/components/collection/CollectionBulkAddModal";
 import { useCollection } from "@/hooks/use-collection";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
@@ -45,6 +48,8 @@ function Collection() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [shownCategory, setShownCategory] = useState<string>();
   const [shownTab, setShownTab] = useState<CollectionState>();
+  const [editor, setEditor] = useState<{ open: boolean; item?: CollectionItem }>({ open: false });
+  const [bulkOpen, setBulkOpen] = useState(false);
 
   // The first visit opens the picker by itself
   const firstVisit = settings ? !settings.firstRunDone : false;
@@ -70,11 +75,22 @@ function Collection() {
       <div className="px-6 py-8 max-w-5xl">
         {category ? (
           <>
-            <h1 className="text-xl font-bold mb-4" style={{ color: "var(--color-heading)" }}>
-              <span aria-hidden="true">{category.icon}</span> {category.name}
-            </h1>
+            <div className="flex items-center gap-2 mb-4">
+              <h1 className="text-xl font-bold mr-auto" style={{ color: "var(--color-heading)" }}>
+                <span aria-hidden="true">{category.icon}</span> {category.name}
+              </h1>
+              <button onClick={() => setBulkOpen(true)} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
+                style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>Add several</button>
+              <button onClick={() => setEditor({ open: true })} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
+                style={{ backgroundColor: ACCENT, color: "var(--color-bg-deep)" }}>+ Add</button>
+            </div>
             <StateTabs tabs={tabs} counts={counts} selected={tab} onSelect={setShownTab} />
-            <ItemGrid settings={settings} items={items} category={category} tab={tab} />
+            <ItemGrid settings={settings} items={items} category={category} tab={tab}
+              onOpen={(shown) => setEditor({ open: true, item: storedItems.find((i) => i.id === shown.id) ?? shown })} />
+            <CollectionItemModal visible={editor.open} settings={settings} item={editor.item} defaultCategory={category.id}
+              defaultState={tab} onClose={() => setEditor((e) => ({ ...e, open: false }))} />
+            <CollectionBulkAddModal visible={bulkOpen} settings={settings} defaultCategory={category.id} defaultState={tab}
+              onClose={() => setBulkOpen(false)} />
           </>
         ) : (
           <Invitation onChoose={() => setPickerOpen(true)} />
@@ -143,8 +159,9 @@ function StateTabs({ tabs, counts, selected, onSelect }: {
   );
 }
 
-function ItemGrid({ settings, items, category, tab }: {
+function ItemGrid({ settings, items, category, tab, onOpen }: {
   settings: CollectionSettings; items: CollectionItem[]; category: ResolvedCollectionCategory; tab: CollectionState;
+  onOpen: (item: CollectionItem) => void;
 }) {
   const shown = useMemo(() => visibleCollectionItems(items, category.id, tab), [items, category.id, tab]);
   const fields = useMemo(() => collectionFormFields(settings, category.id), [settings, category.id]);
@@ -155,7 +172,7 @@ function ItemGrid({ settings, items, category, tab }: {
     <div className={GRID[category.layout]}>
       {shown.map((item) => (
         <CollectionTile key={item.id} item={item} layout={category.layout} icon={category.icon}
-          summary={collectionItemSummary(item, fields)} date={collectionItemDate(item)} />
+          summary={collectionItemSummary(item, fields)} date={collectionItemDate(item)} onOpen={() => onOpen(item)} />
       ))}
     </div>
   );

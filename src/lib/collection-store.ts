@@ -9,8 +9,14 @@
 
 import db, { type CollectionItem, type CollectionSettings, type CollectionSettingsRecord } from "@/lib/db";
 import { emptyCollectionSettings } from "@shared/collections";
+import { COLLECTION_ITEM_PREFIX } from "@shared/constants/collections";
 
 export const COLLECTION_SETTINGS_ID = "settings";
+
+/** A new item's id: "col_" + time + random, the same shape Pal makes. */
+export function newCollectionItemId(now: number, random: () => number = Math.random): string {
+  return `${COLLECTION_ITEM_PREFIX}${now.toString(36)}${random().toString(36).slice(2, 8)}`;
+}
 
 /** The stored settings without their row id, or empty settings when there are none yet. */
 export function settingsFromRecord(record: CollectionSettingsRecord | undefined, now: number): CollectionSettings {

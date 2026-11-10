@@ -10,3 +10,4 @@ export * from "./selection-owners";
 export * from "./completions";
 export * from "./collections";
 export * from "./collection-view";
+export * from "./collection-editor";

@@ -8,7 +8,9 @@
 // category's layout. The category picker opens by itself on the first visit
 // and from the invitation; the sidebar's "Categories" manages them and their
 // fields (CollectionCategoriesModal); "+ Add" and "Add several" add items, and a tile
-// opens its item (CollectionItemModal, CollectionBulkAddModal). The rules are shared with Pal
+// opens its item (CollectionItemModal, CollectionBulkAddModal). Grid shows the
+// category's own layout, List a sortable, filterable table of every field
+// (CollectionTable); the choice is remembered. The rules are shared with Pal
 // (@shared/collection-view). Hidden until Collections ship (lib/feature-flags.ts).
 
 import { useEffect, useMemo, useState } from "react";
@@ -18,8 +20,10 @@ import CollectionTile from "@/components/collection/CollectionTile";
 import CollectionItemModal from "@/components/collection/CollectionItemModal";
 import CollectionBulkAddModal from "@/components/collection/CollectionBulkAddModal";
 import CollectionCategoriesModal from "@/components/collection/CollectionCategoriesModal";
+import CollectionTable from "@/components/collection/CollectionTable";
 import { useCollection } from "@/hooks/use-collection";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
+import { useAppStore } from "@/lib/store";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
 import { collectionFormFields, type ResolvedCollectionCategory } from "@shared/collections";
 import {
@@ -53,6 +57,7 @@ function Collection() {
   const [editor, setEditor] = useState<{ open: boolean; item?: CollectionItem }>({ open: false });
   const [bulkOpen, setBulkOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const { collectionView, setCollectionView } = useAppStore();
 
   // The first visit opens the picker by itself
   const firstVisit = settings ? !settings.firstRunDone : false;
@@ -82,13 +87,14 @@ function Collection() {
               <h1 className="text-xl font-bold mr-auto" style={{ color: "var(--color-heading)" }}>
                 <span aria-hidden="true">{category.icon}</span> {category.name}
               </h1>
+              <ViewSwitch view={collectionView} onChange={setCollectionView} />
               <button onClick={() => setBulkOpen(true)} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
                 style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>Add several</button>
               <button onClick={() => setEditor({ open: true })} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
                 style={{ backgroundColor: ACCENT, color: "var(--color-bg-deep)" }}>+ Add</button>
             </div>
             <StateTabs tabs={tabs} counts={counts} selected={tab} onSelect={setShownTab} />
-            <ItemGrid settings={settings} items={items} category={category} tab={tab}
+            <ItemGrid settings={settings} items={items} category={category} tab={tab} view={collectionView}
               onOpen={(shown) => setEditor({ open: true, item: storedItems.find((i) => i.id === shown.id) ?? shown })} />
             <CollectionItemModal visible={editor.open} settings={settings} item={editor.item} defaultCategory={category.id}
               defaultState={tab} onClose={() => setEditor((e) => ({ ...e, open: false }))} />
@@ -163,14 +169,34 @@ function StateTabs({ tabs, counts, selected, onSelect }: {
   );
 }
 
-function ItemGrid({ settings, items, category, tab, onOpen }: {
+function ViewSwitch({ view, onChange }: { view: "tiles" | "table"; onChange: (v: "tiles" | "table") => void }) {
+  return (
+    <div className="flex rounded-lg overflow-hidden" role="group" aria-label="View" style={{ border: "1px solid var(--color-border-subtle)" }}>
+      {(["tiles", "table"] as const).map((v) => (
+        <button key={v} onClick={() => onChange(v)} aria-pressed={view === v} title={v === "tiles" ? "Grid view" : "List view"}
+          className="px-2.5 py-1.5 text-xs font-medium cursor-pointer transition-colors duration-150"
+          style={{
+            backgroundColor: view === v ? `color-mix(in srgb, ${ACCENT} 14%, transparent)` : "transparent",
+            color: view === v ? ACCENT : "var(--color-text-dim)",
+          }}>
+          {v === "tiles" ? "▦ Grid" : "☰ List"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ItemGrid({ settings, items, category, tab, view, onOpen }: {
   settings: CollectionSettings; items: CollectionItem[]; category: ResolvedCollectionCategory; tab: CollectionState;
-  onOpen: (item: CollectionItem) => void;
+  view: "tiles" | "table"; onOpen: (item: CollectionItem) => void;
 }) {
   const shown = useMemo(() => visibleCollectionItems(items, category.id, tab), [items, category.id, tab]);
   const fields = useMemo(() => collectionFormFields(settings, category.id), [settings, category.id]);
   if (shown.length === 0) {
     return <p className="mt-8 text-sm text-center" style={{ color: "var(--color-text-secondary)" }}>{emptyCollectionTabText(tab, category.name)}</p>;
+  }
+  if (view === "table") {
+    return <CollectionTable key={category.id} items={shown} fields={fields} icon={category.icon} tab={tab} onOpen={onOpen} />;
   }
   return (
     <div className={GRID[category.layout]}>

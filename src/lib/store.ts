@@ -90,6 +90,11 @@ interface AppState {
   catalogView: "gallery" | "list";
   setCatalogView: (view: "gallery" | "list") => void;
 
+  // Collection page: each category's own layout ("tiles") or the sortable
+  // table of every field ("table"); persisted like catalogView
+  collectionView: "tiles" | "table";
+  setCollectionView: (view: "tiles" | "table") => void;
+
   // Statuses ("closed", "seasonal") unticked in the park catalog lists
   // (CatalogStatusFilter.tsx: Plan's catalog panel and Preview's Add to
   // Day); one choice for every tab; empty = all shown
@@ -275,6 +280,9 @@ export const useAppStore = create<AppState>()(
       catalogView: "gallery",
       setCatalogView: (view) => set({ catalogView: view }),
 
+      collectionView: "tiles",
+      setCollectionView: (view) => set({ collectionView: view }),
+
       hiddenCatalogStatuses: [],
       setHiddenCatalogStatuses: (statuses) => set({ hiddenCatalogStatuses: statuses }),
 
@@ -332,6 +340,7 @@ export const useAppStore = create<AppState>()(
         excludedPhotoIds: state.excludedPhotoIds,
         cloudSyncEnabled: state.cloudSyncEnabled,
         catalogView: state.catalogView,
+        collectionView: state.collectionView,
         hiddenCatalogStatuses: state.hiddenCatalogStatuses,
         partnerId: state.partnerId,
       }),

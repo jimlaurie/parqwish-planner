@@ -32,7 +32,7 @@ function label(item: CollectionItem, summary: string, date: string): string {
   return parts.join(", ");
 }
 
-function Photo({ item, icon, className }: { item: CollectionItem; icon: string; className: string }) {
+export function CollectionPhoto({ item, icon, className }: { item: CollectionItem; icon: string; className: string }) {
   const src = getFirstThumbnail(item);
   if (src) {
     // Photos are the user's own data URLs, so next/image adds nothing here
@@ -78,7 +78,7 @@ export default function CollectionTile({ item, layout, icon, summary, date, onOp
       <button type="button" onClick={onOpen} aria-label={a11y} data-testid="collection-item"
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left cursor-pointer transition-colors hover:brightness-110"
         style={{ backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border-subtle)" }}>
-        <div className="relative shrink-0"><Photo item={item} icon={icon} className="w-12 h-12 rounded-lg" /><Badges item={item} /></div>
+        <div className="relative shrink-0"><CollectionPhoto item={item} icon={icon} className="w-12 h-12 rounded-lg" /><Badges item={item} /></div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold truncate" style={{ color: "var(--color-text-primary)" }}>{item.name || "Unnamed"}</div>
           {summary && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{summary}</div>}
@@ -92,7 +92,7 @@ export default function CollectionTile({ item, layout, icon, summary, date, onOp
     <button type="button" onClick={onOpen} aria-label={a11y} data-testid="collection-item"
       className={`text-left cursor-pointer transition-colors hover:brightness-110 ${shelf ? "p-2 rounded-xl" : ""}`}
       style={shelf ? { backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border-subtle)" } : undefined}>
-      <div className="relative"><Photo item={item} icon={icon} className="w-full aspect-square rounded-lg" /><Badges item={item} /></div>
+      <div className="relative"><CollectionPhoto item={item} icon={icon} className="w-full aspect-square rounded-lg" /><Badges item={item} /></div>
       <div className={`mt-1.5 font-semibold truncate ${shelf ? "text-sm" : "text-xs text-center"}`} style={{ color: "var(--color-text-primary)" }}>
         {item.name || "Unnamed"}
       </div>

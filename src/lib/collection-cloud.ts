@@ -32,7 +32,7 @@ import type { RemoteStamp } from "@shared/sync-helpers";
 import {
   COLLECTION_ITEMS_COLLECTION, COLLECTION_PAGE_SIZE, COLLECTION_SETTINGS_COLLECTION, COLLECTION_SETTINGS_DOC,
   MAX_COLLECTION_PAYLOAD_CHARS, collectionDocStamp, collectionItemForCloud, collectionItemFromCloud,
-  collectionSettingsFromCloud, collectionStartupPush, shouldPushCollectionSettings,
+  collectionSettingsFromCloud, collectionSettingsNeedPushBack, collectionStartupPush, shouldPushCollectionSettings,
 } from "@shared/collection-sync";
 
 const firestore = getFirestore(app);
@@ -167,15 +167,30 @@ async function applyItemDoc(data: DocumentData, key: Uint8Array): Promise<Remote
   return stamp;
 }
 
-async function applySettingsDoc(data: DocumentData | undefined, key: Uint8Array): Promise<RemoteStamp | undefined> {
+/** Merge the cloud's settings into the stored ones (part by part), in one transaction; returns them as stored after. */
+function mergeSettings(incoming: CollectionSettings): Promise<CollectionSettings | undefined> {
+  return db.transaction("rw", db.collectionSettings, async () => {
+    const record = await db.collectionSettings.get(COLLECTION_SETTINGS_ID);
+    const local = record ? settingsFromRecord(record, Date.now()) : undefined;
+    const next = collectionSettingsFromCloud(incoming, local);
+    if (next) await db.collectionSettings.put({ ...next, id: COLLECTION_SETTINGS_ID });
+    return next ?? local;
+  });
+}
+
+/**
+ * Merge the cloud's settings in; when this browser had newer parts, push the
+ * merged settings back so both apps end up the same.
+ */
+async function applySettingsDoc(data: DocumentData | undefined, key: Uint8Array, uid: string): Promise<RemoteStamp | undefined> {
   if (!data) return undefined;
   const remote = data as SyncedCollectionDoc;
   const incoming = await decrypt<CollectionSettings>(remote.encryptedPayload, key);
   if (!incoming) { console.error("[collection-cloud] couldn't decrypt the collection settings"); return { updatedAt: remote.updatedAt }; }
-  const record = await db.collectionSettings.get(COLLECTION_SETTINGS_ID);
-  const local = record ? settingsFromRecord(record, Date.now()) : undefined;
-  const next = collectionSettingsFromCloud(incoming, remote.updatedAt, local);
-  if (next) await db.collectionSettings.put({ ...next, id: COLLECTION_SETTINGS_ID });
+  const stored = await mergeSettings(incoming);
+  if (stored && collectionSettingsNeedPushBack(stored, incoming)) {
+    await pushSettings(stored, uid).catch((err) => console.error("[collection-cloud] pushing merged settings failed:", err));
+  }
   return { updatedAt: remote.updatedAt };
 }
 
@@ -260,7 +275,7 @@ function listen(uid: string, key: Uint8Array): void {
     writeWatermark(uid, await applyItemDocs(docs, key, new Map()));
   }, onError("items")));
   _unsubscribe.push(onSnapshot(settingsDoc(uid), (snap) => {
-    applySettingsDoc(snap.data(), key).catch((err) => console.error("[collection-cloud] applying settings failed:", err));
+    applySettingsDoc(snap.data(), key, uid).catch((err) => console.error("[collection-cloud] applying settings failed:", err));
   }, onError("settings")));
 }
 
@@ -278,7 +293,7 @@ export async function startCollectionSync(uid: string): Promise<void> {
   const run = _run;
   const key = await getKey(uid);
   const since = readWatermark(uid);
-  const settingsStamp = await applySettingsDoc((await getDoc(settingsDoc(uid))).data(), key);
+  const settingsStamp = await applySettingsDoc((await getDoc(settingsDoc(uid))).data(), key, uid);
   const pulled = await pullItems(uid, key, since);
   if (run !== _run) return;
   writeWatermark(uid, pulled.newest);

@@ -5,6 +5,7 @@ import {
   collectionPhotoKey,
   collectionPhotoKeyFromPath,
   collectionSettingsFromCloud,
+  collectionSettingsNeedPushBack,
   collectionStartupPush,
   collectionThumbnailFileName,
   mergeCollectionPhotos,
@@ -97,9 +98,9 @@ describe("settings", () => {
   it("a new device's blank settings are never pushed or applied, and take the cloud's", () => {
     expect(shouldPushCollectionSettings(blank, { updatedAt: iso(T - 1000) })).toBe(false);
     expect(shouldPushCollectionSettings(blank, undefined)).toBe(false);
-    expect(collectionSettingsFromCloud({ ...blank, updatedAt: T + 99 }, iso(T + 99), settings())).toBeNull();
-    expect(collectionSettingsFromCloud(settings(), iso(T - 1000), blank)).toEqual(settings());
-    expect(collectionSettingsFromCloud(settings(), iso(T), undefined)).toEqual(settings());
+    expect(collectionSettingsFromCloud({ ...blank, updatedAt: T + 99 }, settings())).toBeNull();
+    expect(collectionSettingsFromCloud(settings(), blank)).toEqual(settings());
+    expect(collectionSettingsFromCloud(settings(), undefined)).toEqual(settings());
   });
 
   it("otherwise the newer copy wins", () => {
@@ -107,8 +108,20 @@ describe("settings", () => {
     expect(shouldPushCollectionSettings(settings(), { updatedAt: iso(T + 1) })).toBe(false);
     expect(shouldPushCollectionSettings(undefined, undefined)).toBe(false);
     const newer = settings({ enabled: ["pins", "plush"], updatedAt: T + 1 });
-    expect(collectionSettingsFromCloud(newer, iso(T + 1), settings())).toEqual(newer);
-    expect(collectionSettingsFromCloud(settings(), iso(T), newer)).toBeNull();
+    expect(collectionSettingsFromCloud(newer, settings())?.enabled).toEqual(["pins", "plush"]);
+    expect(collectionSettingsFromCloud(settings(), newer)).toBeNull();
+  });
+
+  it("merges a cloud copy part by part, and pushes back what the cloud lacks", () => {
+    const mine = settings({ enabled: ["pins"], stamps: { "on:pins": T, "on:plush": T + 5, order: T + 5, firstRun: T } });
+    const cloud = settings({ enabled: ["pins", "ears"], stamps: { "on:pins": T, "on:ears": T + 9, order: T + 9, firstRun: T } });
+    const stored = collectionSettingsFromCloud(cloud, mine)!;
+    expect(stored.enabled).toEqual(["pins", "ears"]);
+    expect(collectionSettingsNeedPushBack(stored, cloud)).toBe(false);
+    const mineWithPlush = settings({ enabled: ["pins", "plush"], stamps: { "on:pins": T, "on:plush": T + 12, order: T + 12, firstRun: T } });
+    const both = collectionSettingsFromCloud(cloud, mineWithPlush)!;
+    expect(both.enabled).toEqual(["pins", "plush", "ears"]);
+    expect(collectionSettingsNeedPushBack(both, cloud)).toBe(true);
   });
 
   it("documents carry the item's own time", () => {

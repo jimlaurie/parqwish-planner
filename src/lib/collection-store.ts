@@ -15,6 +15,7 @@ import db, { type CollectionItem, type CollectionSettings, type CollectionSettin
 import { emptyCollectionSettings } from "@shared/collections";
 import { COLLECTION_ITEM_PREFIX } from "@shared/constants/collections";
 import type { CollectionPendingItems } from "@shared/collection-sync";
+import { stampCollectionSettings } from "@shared/collection-settings-merge";
 
 export const COLLECTION_SETTINGS_ID = "settings";
 
@@ -94,9 +95,12 @@ export async function updateCollectionSettings(rule: (current: CollectionSetting
   let changed = false;
   const next = await db.transaction("rw", db.collectionSettings, async () => {
     const current = settingsFromRecord(await db.collectionSettings.get(COLLECTION_SETTINGS_ID), Date.now());
-    const result = rule(current);
-    changed = result !== current;
-    if (changed) await db.collectionSettings.put({ ...result, id: COLLECTION_SETTINGS_ID });
+    const ruled = rule(current);
+    changed = ruled !== current;
+    if (!changed) return current;
+    // Stamp the parts this change touched, so a sync merges per category (@shared/collection-settings-merge)
+    const result = stampCollectionSettings(current, ruled, Date.now());
+    await db.collectionSettings.put({ ...result, id: COLLECTION_SETTINGS_ID });
     return result;
   });
   if (changed) recordWrite({ settings: next });

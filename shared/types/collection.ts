@@ -118,4 +118,11 @@ export interface CollectionSettings extends Timestamped {
   hiddenBuiltInFields?: Record<string, string[]>;
   /** The first-visit category picker has been shown. */
   firstRunDone: boolean;
+  /**
+   * When each part last changed here (epoch ms), so two devices' changes to
+   * different categories both survive a sync (shared/collection-settings-merge.ts):
+   * "on:{id}", "override:{id}", "usercat:{id}", "fields:{id}", "order", "firstRun".
+   * Missing parts fall back to updatedAt.
+   */
+  stamps?: Record<string, number>;
 }

@@ -16,6 +16,7 @@
 import type { CollectionItem, CollectionSettings } from "./types/collection";
 import type { PhotoSet } from "./types/wish";
 import { localUpdatedAtISO, shouldApplyRemote, shouldPushAtStartup, type RemoteStamp } from "./sync-helpers";
+import { mergeCollectionSettings, sameCollectionSettings } from "./collection-settings-merge";
 
 /** users/{uid}/{COLLECTION_ITEMS_COLLECTION}/{itemId} */
 export const COLLECTION_ITEMS_COLLECTION = "collectionItems";
@@ -132,13 +133,23 @@ export function shouldPushCollectionSettings(settings: CollectionSettings | unde
   return shouldPushAtStartup(settings.updatedAt, remote);
 }
 
-/** The settings to store after a cloud copy arrives, or null to keep this device's. */
-export function collectionSettingsFromCloud(
-  incoming: CollectionSettings, remoteUpdatedAt: string | undefined, local: CollectionSettings | undefined,
-): CollectionSettings | null {
+/**
+ * The settings to store after a cloud copy arrives, merged part by part
+ * (shared/collection-settings-merge.ts: each category from the device that
+ * changed it last), or null when that changes nothing here. A blank cloud
+ * copy is never taken; blank settings here take the cloud's.
+ */
+export function collectionSettingsFromCloud(incoming: CollectionSettings, local: CollectionSettings | undefined): CollectionSettings | null {
   if (isBlankCollectionSettings(incoming)) return null;
   if (!local || isBlankCollectionSettings(local)) return incoming;
-  return shouldApplyRemote(local, remoteUpdatedAt, incoming) ? incoming : null;
+  const merged = mergeCollectionSettings(local, incoming);
+  // Same choices: nothing to store (an older stamp here only matters where the choice differs)
+  return sameCollectionSettings(merged, local) ? null : merged;
+}
+
+/** Whether this device's settings, after a merge, hold changes the cloud's copy lacks (so they're pushed back). */
+export function collectionSettingsNeedPushBack(stored: CollectionSettings, incoming: CollectionSettings): boolean {
+  return !isBlankCollectionSettings(stored) && !sameCollectionSettings(stored, incoming);
 }
 
 /** The stamp a document carries: the item's or settings' own updatedAt, so an unchanged copy is never "newer". */

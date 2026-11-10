@@ -11,3 +11,4 @@ export * from "./completions";
 export * from "./collections";
 export * from "./collection-view";
 export * from "./collection-editor";
+export * from "./collection-categories";

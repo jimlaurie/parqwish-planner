@@ -179,7 +179,7 @@ function ViewSwitch({ view, onChange }: { view: "tiles" | "table"; onChange: (v:
             backgroundColor: view === v ? `color-mix(in srgb, ${ACCENT} 14%, transparent)` : "transparent",
             color: view === v ? ACCENT : "var(--color-text-dim)",
           }}>
-          {v === "tiles" ? "▦ Grid" : "☰ List"}
+          <span aria-hidden="true">{v === "tiles" ? "▦" : "☰"}</span> {v === "tiles" ? "Grid" : "List"}
         </button>
       ))}
     </div>

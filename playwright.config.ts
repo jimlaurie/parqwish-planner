@@ -23,6 +23,9 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run dev",
+    // Hidden features the checks cover (src/lib/feature-flags.ts); a server
+    // already running without them skips those checks (collection.spec.ts)
+    env: { NEXT_PUBLIC_COLLECTIONS: "1" },
     url: "http://localhost:3000",
     reuseExistingServer: true,
     timeout: 180_000,

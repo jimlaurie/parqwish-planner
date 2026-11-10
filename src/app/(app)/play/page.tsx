@@ -17,6 +17,8 @@ import {
 import { clearParkDataCache, getParkData } from "@/lib/park-data";
 import type { CatalogExportEnvelope, TemplateExportEnvelope } from "@/lib/universal-sync";
 import DataSourceList from "@/components/DataSourceList";
+import CollectionTransferSection from "@/components/collection/CollectionTransferSection";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
 // ==================== CONSTANTS ====================
 
@@ -678,6 +680,9 @@ export default function PlayPage() {
 
         {/* ==================== CATALOG SECTION ==================== */}
         <CatalogSection onComplete={addHistoryEntry} />
+
+        {/* ==================== COLLECTION SECTION (hidden until Collections ship) ==================== */}
+        {COLLECTIONS_AVAILABLE && <CollectionTransferSection onComplete={addHistoryEntry} />}
 
         {/* ==================== TEMPLATE SECTION ==================== */}
         <TemplateSection onComplete={addHistoryEntry} />

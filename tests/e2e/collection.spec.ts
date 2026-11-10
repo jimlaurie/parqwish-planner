@@ -1,6 +1,7 @@
 // The Collection page (dland-wishes docs/collections-design.md §7): the
 // first visit's category picker, adding an item, the list view's sorting and
-// filters, and a field added in Categories becoming a column and a filter.
+// filters, a field added in Categories becoming a column and a filter, and
+// Play's collection zip export and import (§8b).
 // Collections are hidden unless the dev server has NEXT_PUBLIC_COLLECTIONS=1
 // (Playwright's own server sets it, playwright.config.ts); against a server
 // started without it these checks are skipped, and say why.
@@ -128,4 +129,21 @@ test("A choice field added in Categories becomes a list column and a filter", as
   await expect(page.getByTestId("collection-row")).toHaveCount(4);
   await page.getByLabel("Filter by Size").selectOption("Small");
   await expect(page.getByText("No items match these filters.")).toBeVisible();
+});
+
+test("Play exports the collection as a zip, and importing it back finds every item already there", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.goto("/play");
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download 4 items" }).click();
+  const file = await (await download).path();
+  await expect(page.getByRole("status").filter({ hasText: "Exported" })).toContainText("Exported 4 items and 0 photos");
+
+  await page.getByLabel("Collection zip").setInputFiles(file);
+  await expect(page.getByText(/4 items and 0 photos, from Planner/)).toBeVisible();
+  await page.getByRole("button", { name: "Keep mine" }).click();
+  await page.getByRole("button", { name: "Import collection" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Added" })).toContainText("Added 0, updated 0, skipped 4");
+  expect(await rows<Item>(page, "collectionItems")).toHaveLength(4);
 });

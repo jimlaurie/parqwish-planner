@@ -31,7 +31,7 @@ See `README.md` for the public-facing pitch and `CONTRIBUTING.md` for setup/PR c
 npm run dev      # Start Next.js dev server (port 3000, Turbopack)
 npm run build    # Production build (static export to out/), writes out/version.json
 npm run lint     # ESLint check
-npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (64 checks, ~2.5 min; ship runs them)
+npm run check    # headless checks: Playwright + the installed Chrome, tests/e2e/ (65 checks, ~2.5 min; ship runs them)
 npm run start    # Serve the Next.js build (not the static export)
 npm run serve    # Serve the static out/ dir directly (matches production hosting)
 npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check

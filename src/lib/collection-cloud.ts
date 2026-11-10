@@ -152,10 +152,15 @@ async function pushSettingsNow(settings: CollectionSettings, uid: string): Promi
 
 // ==================== APPLY ====================
 
-/** Apply one item document from the cloud; returns its stamp. Throws if it can't be read. */
+/**
+ * Apply one item document from the cloud; returns its stamp. Throws if it
+ * can't be read. An item deleted in this browser whose delete isn't pushed
+ * yet is left deleted: the pending delete goes up instead.
+ */
 async function applyItemDoc(data: DocumentData, key: Uint8Array): Promise<RemoteStamp> {
   const remote = data as SyncedCollectionDoc;
   const stamp = { updatedAt: remote.updatedAt, deletedAt: remote.deletedAt };
+  if (!remote.deletedAt && readCollectionPending().items[remote.id] === "delete") return stamp;
   if (remote.deletedAt) {
     await db.collectionItems.delete(remote.id);
     return stamp;

@@ -24,6 +24,7 @@ import CollectionTable from "@/components/collection/CollectionTable";
 import { useCollection } from "@/hooks/use-collection";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
+import { useCollectionRestore } from "@/lib/collection-cloud";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
 import { collectionFormFields, type ResolvedCollectionCategory } from "@shared/collections";
 import {
@@ -81,6 +82,7 @@ function Collection() {
   return (
     <SidebarLayout sidebar={sidebar} sidebarWidth={220}>
       <div className="px-6 py-8 max-w-5xl">
+        <RestoreNote />
         {category ? (
           <>
             <div className="flex items-center gap-2 mb-4">
@@ -205,6 +207,17 @@ function ItemGrid({ settings, items, category, tab, view, onOpen }: {
           summary={collectionItemSummary(item, fields)} date={collectionItemDate(item)} onOpen={() => onOpen(item)} />
       ))}
     </div>
+  );
+}
+
+/** The first download's progress, while a large collection comes down from Cloud Sync. */
+function RestoreNote() {
+  const restore = useCollectionRestore();
+  if (!restore) return null;
+  return (
+    <p role="status" className="mb-4 px-4 py-2.5 rounded-xl text-sm" style={{ color: "var(--color-text-secondary)", backgroundColor: "var(--color-surface-raised)" }}>
+      Restoring your collection… {restore.done.toLocaleString("en-US")} of {restore.total.toLocaleString("en-US")}
+    </p>
   );
 }
 

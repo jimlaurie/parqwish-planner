@@ -48,6 +48,19 @@ export interface SyncedWishDoc {
   authorUid?: string;
 }
 
+/**
+ * A collection item (users/{uid}/collectionItems/{itemId}) or the collection
+ * settings (users/{uid}/collectionSettings/settings), encrypted with the
+ * account key (shared/collection-sync.ts). `updatedAt` is the item's own
+ * updatedAt, or the deletion time on a tombstone; `serverUpdatedAt` is the
+ * server's write time (serverTimestamp()), which the incremental pull and
+ * the listener query on, so other devices' clocks don't matter.
+ */
+export interface SyncedCollectionDoc extends SyncedWishDoc {
+  /** A Firestore Timestamp when read; serverTimestamp() when written. */
+  serverUpdatedAt: unknown;
+}
+
 // ==================== SHARED TRIP KEY WRAP (Phase D) ====================
 
 /**

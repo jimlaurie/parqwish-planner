@@ -49,6 +49,8 @@ import { reassignRemovedUser } from "./reassign-user";
 import { applyCompletion, carryOverTicks, claimLocalTicks, completionAccount, refreshTicks, withHouseholdPacked, withHouseholdTick } from "./completions";
 import { isValidCompletion } from "@shared/completions";
 import type { TripCompletion } from "@shared/types/completion";
+import { startCollectionSync, stopCollectionSync } from "./collection-cloud";
+import { COLLECTIONS_AVAILABLE } from "./feature-flags";
 
 const firestore = getFirestore(app);
 
@@ -1896,6 +1898,9 @@ export async function startSync(options: StartSyncOptions = {}): Promise<void> {
 
   await startTripCollaboration(uid, true, options.onPulled);
 
+  // The collection runs on its own: its first download can take a while (lib/collection-cloud.ts)
+  if (COLLECTIONS_AVAILABLE) startCollectionSync(uid).catch((err) => console.error("[wish-sync] collection sync failed:", err));
+
   _unsubscribeWishes       = subscribeToWishes(uid);
   _unsubscribePackingItems = subscribeToPackingItems(uid);
   _unsubscribeTripUsers    = subscribeToTripUsers(uid);
@@ -1932,6 +1937,7 @@ export function stopSync(): void {
   _unsubscribePackingItems?.();   _unsubscribePackingItems   = null;
   _unsubscribeTripUsers?.();      _unsubscribeTripUsers      = null;
   unsubscribeAllTripContent();
+  stopCollectionSync();
   // Reset after a tick — any pending error callbacks will have fired by then
   setTimeout(() => { _stopping = false; }, 500);
 }

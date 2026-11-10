@@ -64,9 +64,17 @@ function readWatermark(uid: string): number | undefined {
   } catch { return undefined; }
 }
 
+/** The server time of the first document this run couldn't apply: no watermark at or past it is saved, so the next start reads it again. */
+let _failureFloor: number | undefined;
+
+function noteFailure(ms: number | undefined): void {
+  if (ms && ms < (_failureFloor ?? Infinity)) _failureFloor = ms;
+}
+
 function writeWatermark(uid: string, ms: number | undefined): void {
-  if (!ms) return;
-  try { localStorage.setItem(watermarkKey(uid), String(Math.max(ms, readWatermark(uid) ?? 0))); } catch (err) {
+  const capped = ms && _failureFloor ? Math.min(ms, _failureFloor - 1) : ms;
+  if (!capped) return;
+  try { localStorage.setItem(watermarkKey(uid), String(Math.max(capped, readWatermark(uid) ?? 0))); } catch (err) {
     console.error("[collection-cloud] the watermark couldn't be saved:", err);
   }
 }
@@ -144,7 +152,7 @@ async function pushSettingsNow(settings: CollectionSettings, uid: string): Promi
 
 // ==================== APPLY ====================
 
-/** Apply one item document from the cloud; returns its stamp. */
+/** Apply one item document from the cloud; returns its stamp. Throws if it can't be read. */
 async function applyItemDoc(data: DocumentData, key: Uint8Array): Promise<RemoteStamp> {
   const remote = data as SyncedCollectionDoc;
   const stamp = { updatedAt: remote.updatedAt, deletedAt: remote.deletedAt };
@@ -153,7 +161,7 @@ async function applyItemDoc(data: DocumentData, key: Uint8Array): Promise<Remote
     return stamp;
   }
   const incoming = await decrypt<CollectionItem>(remote.encryptedPayload, key);
-  if (!incoming) { console.error("[collection-cloud] couldn't decrypt item", remote.id); return stamp; }
+  if (!incoming) throw new Error(`couldn't decrypt item ${remote.id}`);
   const next = collectionItemFromCloud(incoming, remote.updatedAt, await db.collectionItems.get(remote.id));
   if (next) await db.collectionItems.put(next);
   return stamp;
@@ -181,6 +189,22 @@ function changesSince(uid: string, since: number | undefined): Query {
 
 interface PullResult { stamps: Map<string, RemoteStamp>; newest: number | undefined }
 
+/** Apply documents one by one; one that fails is logged, skipped and noted (noteFailure). Returns the newest applied. */
+async function applyItemDocs(docs: DocumentData[], key: Uint8Array, stamps: Map<string, RemoteStamp>): Promise<number | undefined> {
+  let newest: number | undefined;
+  for (const data of docs) {
+    const ms = serverMillis(data);
+    try {
+      stamps.set(data.id, await applyItemDoc(data, key));
+      if (ms && ms > (newest ?? 0)) newest = ms;
+    } catch (err) {
+      console.error(`[collection-cloud] item ${data.id} could not be applied (tried again next start):`, err);
+      noteFailure(ms);
+    }
+  }
+  return newest;
+}
+
 /** Read changed items in pages, applying each, with progress for a large download. */
 async function pullItems(uid: string, key: Uint8Array, since: number | undefined): Promise<PullResult> {
   const changes = changesSince(uid, since);
@@ -192,11 +216,8 @@ async function pullItems(uid: string, key: Uint8Array, since: number | undefined
   try {
     for (;;) {
       const page = await getDocs(query(changes, ...(last ? [startAfter(last)] : []), limit(COLLECTION_PAGE_SIZE)));
-      for (const d of page.docs) {
-        stamps.set(d.id, await applyItemDoc(d.data(), key));
-        const ms = serverMillis(d.data());
-        if (ms && ms > (newest ?? 0)) newest = ms;
-      }
+      const applied = await applyItemDocs(page.docs.map((d) => d.data()), key, stamps);
+      if (applied && applied > (newest ?? 0)) newest = applied;
       if (_restore) setRestore({ done: Math.min(total, stamps.size), total });
       if (page.docs.length < COLLECTION_PAGE_SIZE) break;
       last = page.docs[page.docs.length - 1];
@@ -233,13 +254,10 @@ function listen(uid: string, key: Uint8Array): void {
   const since = readWatermark(uid);
   const onError = (what: string) => (err: Error) => { if (!_stopping) console.error(`[collection-cloud] ${what} listener error:`, err); };
   _unsubscribe.push(onSnapshot(changesSince(uid, since), async (snap) => {
-    try {
-      for (const change of snap.docChanges()) {
-        if (change.type === "removed") continue; // left the query, not deleted (deletions are tombstones)
-        await applyItemDoc(change.doc.data(), key);
-        writeWatermark(uid, serverMillis(change.doc.data()));
-      }
-    } catch (err) { console.error("[collection-cloud] applying a change failed:", err); }
+    // "removed" means a document left the query, not a deletion (deletions are tombstones)
+    const docs = snap.docChanges().filter((c) => c.type !== "removed").map((c) => c.doc.data());
+    if (!docs.length) return;
+    writeWatermark(uid, await applyItemDocs(docs, key, new Map()));
   }, onError("items")));
   _unsubscribe.push(onSnapshot(settingsDoc(uid), (snap) => {
     applySettingsDoc(snap.data(), key).catch((err) => console.error("[collection-cloud] applying settings failed:", err));
@@ -272,6 +290,7 @@ export async function startCollectionSync(uid: string): Promise<void> {
 
 export function stopCollectionSync(): void {
   _run++;
+  _failureFloor = undefined;
   _stopping = true;
   onCollectionWrite(null);
   _unsubscribe.forEach((u) => u());

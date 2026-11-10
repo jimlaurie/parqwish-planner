@@ -147,3 +147,16 @@ test("Play exports the collection as a zip, and importing it back finds every it
   await expect(page.getByRole("status").filter({ hasText: "Added" })).toContainText("Added 0, updated 0, skipped 4");
   expect(await rows<Item>(page, "collectionItems")).toHaveLength(4);
 });
+
+test("Categories' “I trade these” box saves what was clicked", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.getByRole("button", { name: "Categories", exact: true }).click();
+  const box = page.getByRole("dialog", { name: "Collection categories" }).getByLabel("I trade these");
+  await expect(box).toBeChecked(); // Pins trade by default
+  await box.click();
+  await expect(box).not.toBeChecked();
+  await expect.poll(async () => (await rows<Settings & { builtInOverrides?: Record<string, { trades?: boolean }> }>(page, "collectionSettings"))[0].builtInOverrides?.pins?.trades).toBe(false);
+  await box.click();
+  await expect(box).toBeChecked();
+});

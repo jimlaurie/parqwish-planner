@@ -59,7 +59,11 @@ export default function CollectionCategoryDetail({ settings, categoryId, items, 
           onChange={(v) => v && save((s) => updateCollectionCategory(s, categoryId, { layout: v }, now()))} /></div>
       <label className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "var(--color-text-primary)" }}>
         <input type="checkbox" checked={category.trades} className="w-4 h-4" style={{ accentColor: ACCENT }}
-          onChange={(e) => save((s) => updateCollectionCategory(s, categoryId, { trades: e.target.checked }, now()))} />
+          onChange={(e) => {
+            // Read it now: the rule runs later, inside the settings transaction, when the box shows the old value again
+            const trades = e.target.checked;
+            save((s) => updateCollectionCategory(s, categoryId, { trades }, now()));
+          }} />
         I trade these
       </label>
       <FieldList settings={settings} categoryId={categoryId} onEditField={onEditField} save={save} />

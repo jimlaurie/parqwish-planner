@@ -37,13 +37,14 @@ npm run serve    # Serve the static out/ dir directly (matches production hostin
 npm run ship     # THE way to release: checks → deploy → "Bump version" commit → push → live check
 npm run ship -- --check   # just the checks (branch, clean tree, origin, .env.local, lint)
 npm run ship -- --retry   # after a failed Firebase upload: re-upload the build, no second bump
+npm run ship:beta         # the beta: checks, build with hidden features on, deploy to the "beta" preview channel only
 npm run deploy   # the raw steps ship runs: bump-version.mjs (patch-bump package.json)
                   #   → download-park-data.mjs → npm run build → firebase deploy --only hosting:pwa
 npm run illustrations          # Home banner: art/home-illustrations/banner.svg → generated/banner.ts
 npm run illustrations:traced   # Home cards: art/home-illustrations/traced/*.svg → generated/<card>.ts
 ```
 
-**Release with `npm run ship`** (`scripts/ship.mjs`): commit and push the feature first, then ship. It refuses to run off `main` (the local `partner-demo` branch must never be deployed or pushed; see `dland-wishes/CLAUDE.md`), with uncommitted tracked changes, behind origin, without real Firebase values in `.env.local`, or with lint errors; warns if `shared/` source differs from `dland-wishes/shared`. Then it runs the deploy steps one at a time (a failure names the step and how to undo or retry), commits "Bump version" with only `package.json`, `package-lock.json` and `public/data`, pushes, waits for `https://app.parqwish.com/version.json` to show the new version, and warns if a dev server needs restarting (the build replaces `.next`). It replaces the hand-typed commit/deploy/commit chain, which broke `main` twice. Bare `npm run deploy` still works but commits nothing. Firebase project `my-tour-guide-backend`, hosting target `parqwish-app` (`firebase.json`), live at `https://parqwish-app.web.app` (custom domain `parqwish.com`).
+**Release with `npm run ship`** (`scripts/ship.mjs`): commit and push the feature first, then ship. It refuses to run off `main` (the local `partner-demo` branch must never be deployed or pushed; see `dland-wishes/CLAUDE.md`), with uncommitted tracked changes, behind origin, without real Firebase values in `.env.local`, or with lint errors; warns if `shared/` source differs from `dland-wishes/shared`. Then it runs the deploy steps one at a time (a failure names the step and how to undo or retry), commits "Bump version" with only `package.json`, `package-lock.json` and `public/data`, pushes, waits for `https://app.parqwish.com/version.json` to show the new version, and warns if a dev server needs restarting (the build replaces `.next`). It replaces the hand-typed commit/deploy/commit chain, which broke `main` twice. Bare `npm run deploy` still works but commits nothing. **Beta with `npm run ship:beta`** (`scripts/ship-beta.mjs`, since 10 Nov 2026): the same branch, clean-tree, in-sync, `.env.local`, lint and headless checks; then a build with the hidden features on (`NEXT_PUBLIC_COLLECTIONS=1`) deployed only to the Firebase Hosting preview channel `beta` (`parqwish-app--beta-….web.app`, expires 30 days after each deploy); no version bump, park data download or commit, and app.parqwish.com is untouched. The channel's address must be in Firebase Auth's authorized domains and the Storage CORS origins. Beta and production share Firestore and Cloud Functions, so a beta may only add paths and fields. Firebase project `my-tour-guide-backend`, hosting target `parqwish-app` (`firebase.json`), live at `https://parqwish-app.web.app` (custom domain `parqwish.com`).
 
 ## Project Structure
 
@@ -90,6 +91,7 @@ shared/                        # Copy of the mobile repo's shared/ — see Proje
 scripts/
 ├── bump-version.mjs            # Patch-bumps package.json version (run by npm run deploy / ship)
 ├── ship.mjs                    # npm run ship: checks, deploy, "Bump version" commit, live check
+├── ship-beta.mjs               # npm run ship:beta: checks, flagged build, deploy to the "beta" preview channel
 ├── download-park-data.mjs      # Refreshes public/data/*.json from the live source
 ├── import-illustrations.mjs    # Home banner importer (named layers, palette → --illo-* tokens)
 └── import-traced-art.mjs       # Home card importer (traced art, moving parts by path number)

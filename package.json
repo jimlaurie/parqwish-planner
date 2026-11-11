@@ -8,6 +8,7 @@
     "start": "next start",
     "serve": "serve out -l 3000 --cors",
     "ship": "node scripts/ship.mjs",
+    "ship:beta": "node scripts/ship-beta.mjs",
     "deploy": "node scripts/bump-version.mjs && node scripts/download-park-data.mjs && npm run build && firebase deploy --only hosting:pwa",
     "lint": "eslint",
     "check": "playwright test",

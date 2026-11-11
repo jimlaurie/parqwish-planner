@@ -17,6 +17,7 @@ import {
 import { clearParkDataCache, getParkData } from "@/lib/park-data";
 import type { CatalogExportEnvelope, TemplateExportEnvelope } from "@/lib/universal-sync";
 import DataSourceList from "@/components/DataSourceList";
+import StorageStatusCard from "@/components/StorageStatusCard";
 import CollectionTransferSection from "@/components/collection/CollectionTransferSection";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
@@ -654,6 +655,7 @@ export default function PlayPage() {
             Cloud Sync
           </h2>
           <SyncPanel />
+          <StorageStatusCard />
         </div>
 
         {/* ==================== TRIP DATA SECTION ==================== */}

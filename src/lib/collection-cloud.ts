@@ -32,7 +32,7 @@ import type { RemoteStamp } from "@shared/sync-helpers";
 import {
   COLLECTION_ITEMS_COLLECTION, COLLECTION_PAGE_SIZE, COLLECTION_SETTINGS_COLLECTION, COLLECTION_SETTINGS_DOC,
   MAX_COLLECTION_PAYLOAD_CHARS, collectionDocStamp, collectionItemForCloud, collectionItemFromCloud,
-  collectionSettingsFromCloud, collectionSettingsNeedPushBack, collectionStartupPush, shouldPushCollectionSettings,
+  collectionSettingsFromCloud, collectionSettingsNeedPushBack, collectionStartupPush, collectionSyncRetryDelay, shouldPushCollectionSettings,
 } from "@shared/collection-sync";
 
 const firestore = getFirestore(app);
@@ -225,20 +225,34 @@ async function applyItemDocs(docs: DocumentData[], key: Uint8Array, stamps: Map<
   return newest;
 }
 
+/**
+ * How many changes the pull will read, for the progress line. Optional: when
+ * the count fails (Firestore answers "unavailable" to it at times just after
+ * launch) the pull goes ahead without progress rather than failing.
+ */
+async function countChanges(changes: Query): Promise<number | undefined> {
+  try {
+    return (await getCountFromServer(changes)).data().count;
+  } catch (error) {
+    console.warn("[collection-cloud] counting changes failed, so no progress is shown:", error);
+    return undefined;
+  }
+}
+
 /** Read changed items in pages, applying each, with progress for a large download. */
 async function pullItems(uid: string, key: Uint8Array, since: number | undefined): Promise<PullResult> {
   const changes = changesSince(uid, since);
-  const total = (await getCountFromServer(changes)).data().count;
+  const total = await countChanges(changes);
   const stamps = new Map<string, RemoteStamp>();
   let newest: number | undefined;
   let last: QueryDocumentSnapshot | undefined;
-  if (total > COLLECTION_PAGE_SIZE) setRestore({ done: 0, total });
+  if (total !== undefined && total > COLLECTION_PAGE_SIZE) setRestore({ done: 0, total });
   try {
     for (;;) {
       const page = await getDocs(query(changes, ...(last ? [startAfter(last)] : []), limit(COLLECTION_PAGE_SIZE)));
       const applied = await applyItemDocs(page.docs.map((d) => d.data()), key, stamps);
       if (applied && applied > (newest ?? 0)) newest = applied;
-      if (_restore) setRestore({ done: Math.min(total, stamps.size), total });
+      if (_restore && total !== undefined) setRestore({ done: Math.min(total, stamps.size), total });
       if (page.docs.length < COLLECTION_PAGE_SIZE) break;
       last = page.docs[page.docs.length - 1];
     }
@@ -292,10 +306,30 @@ function pushWrites(uid: string): (write: CollectionWrite) => void {
   };
 }
 
-/** Pull, push this browser's changes, then listen. Call for an Apple account (wish-sync's startSync). */
-export async function startCollectionSync(uid: string): Promise<void> {
+let _retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+/**
+ * Pull, push this browser's changes, then listen. Call for an Apple account
+ * (wish-sync's startSync). A start that fails (offline at load) tries again
+ * after `collectionSyncRetryDelay`, until it works or sync stops.
+ */
+export async function startCollectionSync(uid: string, attempt = 0): Promise<void> {
   stopCollectionSync();
   const run = _run;
+  try {
+    await startOnce(uid, run);
+  } catch (error) {
+    if (run !== _run) return;
+    const delay = collectionSyncRetryDelay(attempt);
+    console.warn(`[collection-cloud] start failed (try ${attempt + 1}), trying again in ${delay / 1000} s:`, error);
+    _retryTimer = setTimeout(() => {
+      _retryTimer = null;
+      startCollectionSync(uid, attempt + 1).catch((e) => console.error("[collection-cloud] retry failed:", e));
+    }, delay);
+  }
+}
+
+async function startOnce(uid: string, run: number): Promise<void> {
   const key = await getKey(uid);
   const since = readWatermark(uid);
   const settingsStamp = await applySettingsDoc((await getDoc(settingsDoc(uid))).data(), key, uid);
@@ -310,6 +344,7 @@ export async function startCollectionSync(uid: string): Promise<void> {
 
 export function stopCollectionSync(): void {
   _run++;
+  if (_retryTimer) { clearTimeout(_retryTimer); _retryTimer = null; }
   _failureFloor = undefined;
   _stopping = true;
   onCollectionWrite(null);

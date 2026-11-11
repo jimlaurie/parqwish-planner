@@ -193,3 +193,17 @@ export function collectionStartupPush(
   const pushed = new Set([...save.map((i) => i.id), ...deleted]);
   return { save, delete: deleted, settled: Object.keys(pending).filter((id) => !pushed.has(id)) };
 }
+
+/**
+ * How long to wait before trying a failed collection sync start again: 5 s,
+ * 15 s, a minute, then every 5 minutes. A start that fails (no connection at
+ * launch, Firestore "unavailable") would otherwise leave Collections unsynced
+ * until the next sign-in or launch, with no listener and no pushes.
+ */
+export const COLLECTION_SYNC_RETRY_DELAYS_MS = [5_000, 15_000, 60_000, 300_000] as const;
+
+export function collectionSyncRetryDelay(attempt: number): number {
+  const last = COLLECTION_SYNC_RETRY_DELAYS_MS.length - 1;
+  const i = Number.isFinite(attempt) ? Math.min(Math.max(0, Math.floor(attempt)), last) : last;
+  return COLLECTION_SYNC_RETRY_DELAYS_MS[i];
+}

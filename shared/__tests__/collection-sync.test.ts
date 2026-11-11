@@ -7,6 +7,7 @@ import {
   collectionSettingsFromCloud,
   collectionSettingsNeedPushBack,
   collectionStartupPush,
+  collectionSyncRetryDelay,
   collectionThumbnailFileName,
   mergeCollectionPhotos,
   shouldPushCollectionSettings,
@@ -151,5 +152,16 @@ describe("the startup push", () => {
     const plan = collectionStartupPush([one], stamps, { x: "delete", y: "delete", a: "delete" }, false);
     expect(plan.delete).toEqual(["y"]);
     expect(plan.settled).toEqual(["x", "a"]);
+  });
+});
+
+describe("collectionSyncRetryDelay", () => {
+  it("waits 5 s, 15 s, a minute, then every 5 minutes", () => {
+    expect([0, 1, 2, 3, 4, 50].map(collectionSyncRetryDelay)).toEqual([5_000, 15_000, 60_000, 300_000, 300_000, 300_000]);
+  });
+  it("treats odd attempt numbers safely", () => {
+    expect(collectionSyncRetryDelay(-3)).toBe(5_000);
+    expect(collectionSyncRetryDelay(1.7)).toBe(15_000);
+    expect(collectionSyncRetryDelay(Number.NaN)).toBe(300_000);
   });
 });

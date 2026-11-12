@@ -11,6 +11,7 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type TripTrail } from "@/lib/db";
 import type { ItineraryItem } from "@/lib/db";
@@ -412,7 +413,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
       {/* Delete confirmation modal */}
       <AnimatePresence>
         {deletingTrail && (
-          <motion.div
+          <DialogOverlay
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -452,7 +453,7 @@ export default function TrailGallery({ onTimeRangesChange }: TrailGalleryProps) 
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </DialogOverlay>
         )}
       </AnimatePresence>
     </section>

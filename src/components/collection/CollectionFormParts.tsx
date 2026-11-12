@@ -9,6 +9,7 @@
 
 import { useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import type { CollectionFieldDef } from "@shared/types/collection";
 
 export const ACCENT = "var(--color-gold)";
@@ -30,7 +31,7 @@ export function Dialog({ visible, label, onClose, wide, children }: {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <DialogOverlay
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           style={{ backgroundColor: "var(--color-overlay)" }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -45,7 +46,7 @@ export function Dialog({ visible, label, onClose, wide, children }: {
           >
             {children}
           </motion.div>
-        </motion.div>
+        </DialogOverlay>
       )}
     </AnimatePresence>
   );

@@ -8,6 +8,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import { useAppStore } from "@/lib/store";
 import { usePartner } from "@/lib/partners";
 import { usePlanPartnerStay } from "@/hooks/use-plan-partner-stay";
@@ -30,7 +31,7 @@ export default function PartnerInfoPopup() {
   return (
     <AnimatePresence>
       {visible && partner && (
-        <motion.div
+        <DialogOverlay
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           style={{ backgroundColor: "var(--color-overlay)" }}
           initial={{ opacity: 0 }}
@@ -98,7 +99,7 @@ export default function PartnerInfoPopup() {
               Shown because you opened their ParQwish link. Nothing you plan is shared with them.
             </p>
           </motion.div>
-        </motion.div>
+        </DialogOverlay>
       )}
     </AnimatePresence>
   );

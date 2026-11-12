@@ -160,3 +160,41 @@ test("Categories' “I trade these” box saves what was clicked", async ({ page
   await box.click();
   await expect(box).toBeChecked();
 });
+
+test("Straight after an item is deleted, the next one opens and deletes: a closing editor takes no clicks", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await page.getByTestId("collection-item").filter({ hasText: "Figment 50th" }).click();
+  await editor.getByRole("button", { name: "Delete" }).click();
+  await editor.getByRole("button", { name: "Delete" }).click();
+  // A person's next click comes while the editor is still fading out; force skips Playwright's wait for it
+  await page.waitForTimeout(100);
+  await page.getByTestId("collection-item").filter({ hasText: "Hatbox Ghost" }).click({ force: true });
+  await expect(editor.getByLabel("Name")).toHaveValue("Hatbox Ghost");
+  await expect(editor.getByText("Delete this item from your collection?")).toBeHidden();
+  await editor.getByRole("button", { name: "Delete" }).click();
+  await editor.getByRole("button", { name: "Delete" }).click();
+  await expect.poll(async () => (await rows<Item>(page, "collectionItems")).map((i) => i.name).sort()).toEqual(["Castle 70th", "Dumbo"]);
+});
+
+test("At 1024 px the top bar shows Collection beside Catalog, with room for everything", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 800 });
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  const catalog = page.getByRole("link", { name: "Catalog", exact: true });
+  const collection = page.getByRole("link", { name: "Collection", exact: true });
+  await expect(catalog).toBeVisible();
+  await expect(collection).toBeVisible();
+  const [a, b] = [await catalog.boundingBox(), await collection.boundingBox()];
+  expect(b!.x).toBeGreaterThan(a!.x + a!.width - 1);
+  expect(Math.abs(b!.y - a!.y)).toBeLessThan(2); // same row
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  for (const name of ["Home", "Publish", "Help"]) {
+    const box = await page.getByRole(name === "Help" ? "button" : "link", { name: new RegExp(`^${name}`) }).first().boundingBox();
+    expect(box!.y).toBeLessThan(56);
+  }
+  await page.getByRole("button", { name: /^Help/ }).click();
+  await expect(page.getByRole("link", { name: /Pins, buckets/ })).toHaveCount(0);
+  await page.screenshot({ path: "test-results/topbar-1024.png", clip: { x: 0, y: 0, width: 1024, height: 60 } });
+});

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import type { PackingType, PackingItem } from "@/lib/db";
 import { useCatalogItems } from "@/hooks/use-packing-items";
@@ -92,7 +93,7 @@ export default function CatalogPickerModal({
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <DialogOverlay
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           style={{ backgroundColor: "var(--color-overlay)", willChange: "opacity" }}
           initial={{ opacity: 0 }}
@@ -346,7 +347,7 @@ export default function CatalogPickerModal({
               </button>
             </div>
           </motion.div>
-        </motion.div>
+        </DialogOverlay>
       )}
     </AnimatePresence>
   );

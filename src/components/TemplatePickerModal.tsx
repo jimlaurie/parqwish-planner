@@ -7,6 +7,7 @@
 
 import { useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type Trip } from "@/lib/db";
 import { nameFromTemplate, templateSummary } from "@/lib/new-trip";
@@ -53,7 +54,7 @@ export default function TemplatePickerModal({ visible, templates, onPick, onClos
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <DialogOverlay
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           style={{ backgroundColor: "var(--color-overlay)", willChange: "opacity" }}
           initial={{ opacity: 0 }}
@@ -118,7 +119,7 @@ export default function TemplatePickerModal({ visible, templates, onPick, onClos
               </button>
             </div>
           </motion.div>
-        </motion.div>
+        </DialogOverlay>
       )}
     </AnimatePresence>
   );

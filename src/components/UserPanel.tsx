@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import { useUsers, USER_COLORS } from "@/hooks/use-users";
 import { useAppStore } from "@/lib/store";
 import type { User } from "@/lib/db";
@@ -340,7 +341,7 @@ export default function UserPanel() {
       {/* Delete confirmation modal */}
       <AnimatePresence>
         {deletingUser && (
-          <motion.div
+          <DialogOverlay
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -384,7 +385,7 @@ export default function UserPanel() {
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </DialogOverlay>
         )}
       </AnimatePresence>
     </div>

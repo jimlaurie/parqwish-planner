@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DialogOverlay from "@/components/DialogOverlay";
 import type { DayItemRecord } from "@/lib/db";
 import { DAY_ITEM_TYPE_ICONS } from "@shared/types/day-item";
 import { formatTime12 } from "@/lib/time-format";
@@ -96,7 +97,7 @@ export default function DayItemEditModal({
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <DialogOverlay
           className="fixed inset-0 flex items-center justify-center px-4"
           style={{ zIndex: 10000 }}
           initial={{ opacity: 0 }}
@@ -308,7 +309,7 @@ export default function DayItemEditModal({
               </div>
             </div>
           </motion.div>
-        </motion.div>
+        </DialogOverlay>
       )}
     </AnimatePresence>
   );

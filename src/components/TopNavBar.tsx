@@ -24,9 +24,9 @@ import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 // sync — which is why it gets an explicit hint rather than being left to
 // read as "a game" or "an in-park screen".
 //
-// Desktop (lg+, 1024px): one top bar — logo/trip, phases + Catalog + Help menu,
+// Desktop (lg+, 1024px): one top bar — logo/trip, phases + Catalog (+ Collection) + Help menu,
 // sync status + theme toggle.
-// Phone and tablet (<lg): the top bar keeps logo/trip, a "More" menu (Catalog + help
+// Phone and tablet (<lg): the top bar keeps logo/trip, a "More" menu (Catalog, Collection, help
 // links) and the toggles;
 // the phases move to a fixed bottom tab bar (MobilePhaseBar) instead of
 // wrapping the top bar onto two rows. The (app) layout pads <main> so page
@@ -99,7 +99,7 @@ function TopLink({ link, isActive, disabled }: { link: PhaseLink; isActive: bool
       aria-label={linkLabel(link, disabled)}
       title={disabled ? "Select a trip first" : link.hint}
       onClick={(e) => { if (disabled) e.preventDefault(); }}
-      className={`flex items-center px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap
+      className={`flex items-center px-2 xl:px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap
                  transition-all duration-200
                  ${disabled ? "opacity-30 cursor-default" : isActive ? "" : "hover:bg-white/5"}`}
       style={{
@@ -115,9 +115,8 @@ function TopLink({ link, isActive, disabled }: { link: PhaseLink; isActive: bool
 // ==================== HELP MENU ====================
 
 /** Help links (Guide / Story / Blog). On phones the same menu is labelled
- *  "More" and also carries Catalog, which the desktop bar shows inline.
- *  Collection (when available) is in the phone menu too, and in the desktop
- *  one below xl, where the bar has no room for it inline. */
+ *  "More" and also carries Catalog and Collection (when available), which the
+ *  desktop bar shows inline beside each other. */
 function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; includeCatalog?: boolean }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -168,11 +167,11 @@ function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; 
               <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>Your saved wishes and packing items</span>
             </Link>
           )}
-          {COLLECTIONS_AVAILABLE && (
+          {includeCatalog && COLLECTIONS_AVAILABLE && (
             <Link
               href={COLLECTION_LINK.href}
               onClick={() => setOpen(false)}
-              className={`flex flex-col px-4 py-2 transition-colors duration-150 hover:bg-white/5 ${includeCatalog ? "" : "xl:hidden"}`}
+              className="flex flex-col px-4 py-2 transition-colors duration-150 hover:bg-white/5"
               style={{ borderBottom: "1px solid var(--color-border-subtle)" }}
             >
               <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
@@ -316,7 +315,7 @@ export default function TopNavBar() {
             </div>
 
             {/* CENTER (desktop): phases, then Catalog + Help after a divider */}
-            <div className="hidden lg:flex flex-1 items-center justify-center gap-1">
+            <div className="hidden lg:flex flex-1 items-center justify-center gap-0.5 xl:gap-1">
               {PHASE_LINKS.map((link) => (
                 <TopLink
                   key={link.id}
@@ -325,14 +324,9 @@ export default function TopNavBar() {
                   disabled={link.requiresTrip && !hasTrip}
                 />
               ))}
-              <span aria-hidden="true" className="mx-1.5 h-5 w-px" style={{ backgroundColor: "var(--color-border-default)" }} />
+              <span aria-hidden="true" className="mx-1 xl:mx-1.5 h-5 w-px" style={{ backgroundColor: "var(--color-border-default)" }} />
               <TopLink link={CATALOG_LINK} isActive={activePhase === "catalog"} disabled={false} />
-              {/* Inline from xl; below that it's in the Help menu, as the bar has no room for it at 1024 px */}
-              {COLLECTIONS_AVAILABLE && (
-                <div className="hidden xl:block">
-                  <TopLink link={COLLECTION_LINK} isActive={activePhase === "collection"} disabled={false} />
-                </div>
-              )}
+              {COLLECTIONS_AVAILABLE && <TopLink link={COLLECTION_LINK} isActive={activePhase === "collection"} disabled={false} />}
               <HelpMenu />
             </div>
 

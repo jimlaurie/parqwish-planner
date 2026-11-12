@@ -1,6 +1,8 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore, type Firestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import type { FirebaseApp } from "firebase/app";
+import { hasWebKit7DayRule } from "./storage-safety";
 
 // Falls back to inert placeholders when unset (no .env.local — e.g. a fresh
 // contributor checkout, or the guide/* static pages prerendering at build
@@ -35,6 +37,25 @@ if (!FIREBASE_CONFIGURED && typeof window !== "undefined") {
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-export const db = getFirestore(app);
+/**
+ * Firestore, long-polling in WebKit (Safari on a Mac, every browser on iPhone
+ * and iPad). Its default streamed connection held back small updates there:
+ * a Collection state change from Pal took 20–30 s to reach the Planner in
+ * Safari but about 1 s in Chrome (12 Nov 2026), since Safari can buffer a
+ * stream's small chunks. Long polling answers each update as a whole
+ * response. Created here, before any getFirestore() elsewhere, which then
+ * returns this instance.
+ */
+function createFirestore(firebaseApp: FirebaseApp): Firestore {
+  if (typeof window === "undefined") return getFirestore(firebaseApp);
+  if (!hasWebKit7DayRule(navigator.userAgent, navigator.maxTouchPoints ?? 0)) return getFirestore(firebaseApp);
+  try {
+    return initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+  } catch {
+    return getFirestore(firebaseApp); // already created (hot reload)
+  }
+}
+
+export const db = createFirestore(app);
 export const auth = getAuth(app);
 export default app;

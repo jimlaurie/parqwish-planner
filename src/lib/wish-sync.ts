@@ -42,7 +42,7 @@ import { stampOwnerAccounts } from "@shared/selection-owners";
 import { INVITE_TTL_MS, type Trip, type TripMember } from "@shared/types/trip";
 import type { DayItemRecord } from "@shared/types/day-item";
 import type { PackingItem, TripPackingSelection } from "@shared/types/packing";
-import { localUpdatedAtISO, shouldApplyRemote, shouldPushAtStartup, type RemoteStamp } from "@shared/sync-helpers";
+import { shouldApplyRemote, shouldPushAtStartup, type RemoteStamp } from "@shared/sync-helpers";
 import db, { type User, type TripTrail } from "./db";
 import { isSameRecording, legacyTrailRowId, trailDocId, trailRowId } from "./trail-ids";
 import { reassignRemovedUser } from "./reassign-user";
@@ -394,8 +394,9 @@ async function applyRemoteTrip(uid: string, remote: SyncedTripDoc): Promise<void
   const decrypted = await decrypt<Omit<Trip, "members">>(remote.encryptedPayload, tripKey);
   if (!decrypted) return;
   const local = await db.trips.get(remote.id);
-  const localTime = localUpdatedAtISO(local?.updatedAt);
-  if (!local || remote.updatedAt > localTime) {
+  // Only a copy that changes something: every load re-applied every trip
+  // (shared/sync-conformance.ts, "skips a re-sent copy with nothing new")
+  if (shouldApplyRemote(local, remote.updatedAt, decrypted)) {
     await db.trips.put({ ...decrypted, members: remote.members } as Trip);
   } else {
     // Content is locally newer, but membership is always Firestore's word.
@@ -952,8 +953,8 @@ async function applyRemoteTripUser(remote: SyncedWishDoc, decrypted: SyncedTripU
   if (!decrypted) return;
 
   const local = await db.users.get(decrypted.id);
-  const localTime = localUpdatedAtISO(local?.updatedAt);
-  if (local && remote.updatedAt <= localTime) return;
+  // The stored copy keeps the cloud's time (below), so the same copy is never applied twice
+  if (local && !shouldApplyRemote(local, remote.updatedAt, { name: decrypted.name, color: decrypted.color, role: decrypted.role })) return;
 
   // The cloud copy's own time: stamping now made every downloaded profile
   // look like a local edit, which startSync then pushed back at every load

@@ -123,6 +123,7 @@ export function shouldPushAtStartup(localUpdatedAt: number | string | undefined 
   if (!remote) return true;
   if (remote.deletedAt) return false;
   const local = localUpdatedAtISO(localUpdatedAt);
+  // eslint-disable-next-line no-restricted-syntax -- the one place this comparison belongs
   return !!local && (!remote.updatedAt || local > remote.updatedAt);
 }
 

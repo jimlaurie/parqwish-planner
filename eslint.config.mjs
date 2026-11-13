@@ -24,6 +24,14 @@ const eslintConfig = [
           selector: "CallExpression[callee.property.name='split'][callee.object.callee.property.name='toISOString']",
           message: "toISOString() is UTC (tomorrow after 5 PM Pacific). Use parkDate/parkToday/addDays/datesBetween from @/lib/dates.",
         },
+        {
+          selector: "BinaryExpression[operator=/^[<>]=?$/][left.object.name='remote'][left.property.name='updatedAt']",
+          message: "A cloud copy's updatedAt is when it was pushed, not edited. Use shouldApplyRemote / shouldPushAtStartup from @shared/sync-helpers (shared/sync-conformance.ts).",
+        },
+        {
+          selector: "BinaryExpression[operator=/^[<>]=?$/][right.object.name='remote'][right.property.name='updatedAt']",
+          message: "A cloud copy's updatedAt is when it was pushed, not edited. Use shouldApplyRemote / shouldPushAtStartup from @shared/sync-helpers (shared/sync-conformance.ts).",
+        },
       ],
     },
   },

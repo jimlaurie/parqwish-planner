@@ -114,7 +114,7 @@ function TopLink({ link, isActive, disabled }: { link: PhaseLink; isActive: bool
 
 // ==================== HELP MENU ====================
 
-/** Help links (Guide / Story / Blog). On phones the same menu is labelled
+/** Help links (Save pages to ParQwish, Guide / Story / Blog). On phones the same menu is labelled
  *  "More" and also carries Catalog and Collection (when available), which the
  *  desktop bar shows inline beside each other. */
 function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; includeCatalog?: boolean }) {
@@ -180,6 +180,14 @@ function HelpMenu({ label = "Help", includeCatalog = false }: { label?: string; 
               <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>Pins, buckets and more you have, want or trade</span>
             </Link>
           )}
+          <Link
+            href="/share"
+            onClick={() => setOpen(false)}
+            className="flex flex-col px-4 py-2 transition-colors duration-150 hover:bg-white/5"
+          >
+            <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>Save pages to ParQwish</span>
+            <span className="text-xs" style={{ color: "var(--color-text-dim)" }}>A bookmark or Shortcut for any web page</span>
+          </Link>
           {HELP_LINKS.map((item) => (
             <a
               key={item.label}

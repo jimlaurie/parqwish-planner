@@ -77,8 +77,38 @@ test("A pin site suggests Collection; on the first visit the editor opens once t
   await expect(page.getByRole("dialog").getByRole("textbox").first()).toHaveValue("Figment 50th pin");
 });
 
-test("Opening /share with nothing shared says so", async ({ page }) => {
+test("Opening /share with nothing shared explains the bookmark and the Shortcut, from Help too", async ({ page }) => {
+  await seedTrip(page, SEED);
+  await page.goto("/");
+  await page.getByRole("button", { name: /^(Help|More)/ }).first().click();
+  await page.getByRole("link", { name: /Save pages to ParQwish/ }).click();
+  await expect(page.getByRole("heading", { name: "Save pages to ParQwish" })).toBeVisible();
+  const origin = new URL(page.url()).origin;
+  await expect(page.getByTestId("bookmarklet")).toHaveAttribute("href", new RegExp(`^javascript:.*${origin.replace(/[.:/]/g, "\\$&")}/share\\?`));
+  await expect(page.getByText(`${origin}/share?url=`)).toBeVisible();
+});
+
+test("The bookmark sends the page it's clicked on: its og:title, address and selected text", async ({ page, context }) => {
   await seedTrip(page, SEED);
   await page.goto("/share");
-  await expect(page.getByRole("heading", { name: "Nothing was shared" })).toBeVisible();
+  const code = await page.getByTestId("bookmarklet").getAttribute("href");
+  const shop = "https://shop.example.test/haunted-mansion-ears-123.html";
+  await context.route(shop, (route) => route.fulfill({
+    contentType: "text/html",
+    body: `<html><head><title>Haunted Mansion Ear Hat | Example Shop</title><meta property="og:title" content="Haunted Mansion Ear Hat"></head><body><p id="p">Glows in the dark</p></body></html>`,
+  }));
+  await page.goto(shop);
+  await page.evaluate(() => { const r = document.createRange(); r.selectNodeContents(document.getElementById("p")!); getSelection()!.addRange(r); });
+  const [shared] = await Promise.all([context.waitForEvent("page"), page.evaluate(code!.replace(/^javascript:/, ""))]);
+  await expect(shared.getByLabel("Name")).toHaveValue("Haunted Mansion Ear Hat");
+  const params = new URL(shared.url()).searchParams;
+  expect(params.get("url")).toBe(shop);
+  expect(params.get("text")).toBe("Glows in the dark");
+});
+
+test("A Shortcut's address-only link is named from the address", async ({ page }) => {
+  await seedTrip(page, SEED);
+  await page.goto(share({ url: "https://www.shopdisney.com/haunted-mansion-ears-123.html" }));
+  await expect(page.getByLabel("Name")).toHaveValue("Haunted mansion ears");
+  await expect(pressed(page)).toHaveText(/Shopping/);
 });

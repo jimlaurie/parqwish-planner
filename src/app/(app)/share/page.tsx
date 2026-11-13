@@ -7,6 +7,8 @@
 // Collection, Shopping, Outfits, Gear, Sundries, @shared/share-targets) plus
 // Dining; the site suggests one. "Add" saves the item (src/lib/share-save.ts)
 // and opens its editor on the Catalog or Collection page (src/lib/pending-share.ts).
+// With nothing shared it explains how to send pages here (ShareHelp: a
+// bookmarklet, an iPhone/iPad Shortcut, the installed app's Share entry).
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -15,6 +17,7 @@ import { plannerShareChoices, plannerSuggestedDestination, saveSharedPage, type 
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
 import { sharedTitle } from "@shared/share-targets";
+import ShareHelp from "@/components/share/ShareHelp";
 
 const CHOICES = plannerShareChoices(COLLECTIONS_AVAILABLE);
 
@@ -60,16 +63,8 @@ function ShareSelector() {
     }
   }
 
-  if (nothingShared) {
-    return (
-      <div className="max-w-md mx-auto px-4 py-12 text-center">
-        <h1 className="text-xl font-bold mb-2" style={{ color: "var(--color-heading)" }}>Nothing was shared</h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Share a page to ParQwish from your browser&apos;s Share menu and it opens here.
-        </p>
-      </div>
-    );
-  }
+  // Opened with nothing shared (or from Help): how to send pages here
+  if (nothingShared) return <ShareHelp />;
 
   return (
     <div className="max-w-md mx-auto px-4 py-8">

@@ -3,10 +3,13 @@
 // another one and synced down (wish-sync applyRemoteTripUser) — everything
 // that was theirs goes to the primary user instead of being orphaned:
 // trip selections and day items, and the saved wishes, packing items and
-// ensembles they created (the Catalog page filters and badges by those).
+// ensembles they created (the Catalog page filters and badges by those), and
+// their collection items (@shared/collection-owners).
 
 import db from "./db";
 import { reassignSelectionOwner } from "@shared/selection-owners";
+import { reassignCollectionOwner } from "@shared/collection-owners";
+import { saveCollectionItems } from "./collection-store";
 import type { SelectionOwner } from "@shared/types/wish";
 
 const PRIMARY_USER_ID = "user_primary";
@@ -38,7 +41,7 @@ export async function reassignRemovedUser(removedUserId: string, myUid?: string)
   const toPrimary = { userId: PRIMARY_USER_ID, updatedAt: Date.now() };
   const created = (row: { userId?: string }) => row.userId === removedUserId;
 
-  return db.transaction("rw", [db.tripWishSelections, db.tripPackingSelections, db.dayItems, db.wishes, db.packingItems, db.ensembles], async () => {
+  const reassigned = await db.transaction("rw", [db.tripWishSelections, db.tripPackingSelections, db.dayItems, db.wishes, db.packingItems, db.ensembles], async () => {
     await db.tripWishSelections.toCollection().modify(reassignSelection);
     await db.tripPackingSelections.toCollection().modify(reassignSelection);
     await db.dayItems.where("userId").equals(removedUserId).modify({ userId: PRIMARY_USER_ID });
@@ -50,4 +53,8 @@ export async function reassignRemovedUser(removedUserId: string, myUid?: string)
     await db.ensembles.where("userId").equals(removedUserId).modify(toPrimary);
     return { wishIds, packingItemIds };
   });
+  // Saved through the collection store, so Cloud Sync sends them
+  const collection = reassignCollectionOwner(await db.collectionItems.toArray(), removedUserId, Date.now());
+  if (collection.length) await saveCollectionItems(collection);
+  return reassigned;
 }

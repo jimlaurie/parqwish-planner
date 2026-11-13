@@ -16,12 +16,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
 import CollectionCategoryPicker from "@/components/collection/CollectionCategoryPicker";
-import CollectionTile from "@/components/collection/CollectionTile";
+import CollectionTile, { type CollectionTileOwner } from "@/components/collection/CollectionTile";
 import CollectionItemModal from "@/components/collection/CollectionItemModal";
 import CollectionBulkAddModal from "@/components/collection/CollectionBulkAddModal";
 import CollectionCategoriesModal from "@/components/collection/CollectionCategoriesModal";
 import CollectionTable from "@/components/collection/CollectionTable";
 import { useCollection } from "@/hooks/use-collection";
+import { useUsers } from "@/hooks/use-users";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
 import { useCollectionRestore } from "@/lib/collection-cloud";
@@ -32,6 +33,10 @@ import {
   countCollectionItemsByCategory, emptyCollectionTabText, itemsForView, pickCollectionCategory, pickCollectionTab,
   viewCategories, visibleCollectionItems,
 } from "@shared/collection-view";
+import {
+  COLLECTION_SHARED_OWNER, collectionOwnerChips, collectionOwnerOf, filterCollectionByOwner, orderCollectionTripUsers,
+  pickCollectionOwnerFilter, type CollectionOwnerChip, type CollectionTripUser,
+} from "@shared/collection-owners";
 import type { CollectionLayout, CollectionState } from "@shared/types/collection";
 
 const ACCENT = "var(--color-gold)";
@@ -42,6 +47,20 @@ const GRID: Record<CollectionLayout, string> = {
   shelf: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3",
   list: "flex flex-col gap-2",
 };
+
+type OwnerOf = (item: CollectionItem) => CollectionTileOwner | undefined;
+
+/** Each item's owner for its dot, only while the person filter shows (several owners). */
+function ownerLookup(chips: CollectionOwnerChip[], users: CollectionTripUser[]): OwnerOf {
+  if (!chips.length) return () => undefined;
+  const byId = new Map(users.map((u) => [u.id, u]));
+  return (item) => {
+    const id = collectionOwnerOf(item);
+    if (id === COLLECTION_SHARED_OWNER) return { name: "Shared" };
+    const user = byId.get(id);
+    return user ? { name: user.name, color: user.color } : undefined;
+  };
+}
 
 export default function CollectionPage() {
   if (!COLLECTIONS_AVAILABLE) {
@@ -55,6 +74,9 @@ function Collection() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [shownCategory, setShownCategory] = useState<string>();
   const [shownTab, setShownTab] = useState<CollectionState>();
+  const [shownOwner, setShownOwner] = useState<string>();
+  const currentUserId = useAppStore((s) => s.currentUserId);
+  const { users: tripUsers } = useUsers();
   const [editor, setEditor] = useState<{ open: boolean; item?: CollectionItem }>({ open: false });
   const [bulkOpen, setBulkOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -69,7 +91,13 @@ function Collection() {
     else if (autoOpened.current) { autoOpened.current = false; setPickerOpen(false); }
   }, [firstVisit]);
 
-  const items = useMemo(() => (settings ? itemsForView(settings, storedItems) : []), [settings, storedItems]);
+  const allItems = useMemo(() => (settings ? itemsForView(settings, storedItems) : []), [settings, storedItems]);
+  // The person filter (Everyone by default) shows once the items have two or more owners
+  const users = useMemo(() => orderCollectionTripUsers(tripUsers.map((u) => ({ id: u.id, name: u.name, color: u.color }))), [tripUsers]);
+  const ownerChips = useMemo(() => collectionOwnerChips(allItems, users), [allItems, users]);
+  const owner = pickCollectionOwnerFilter(ownerChips, shownOwner);
+  const items = useMemo(() => filterCollectionByOwner(allItems, owner), [allItems, owner]);
+  const ownerOf = useMemo(() => ownerLookup(ownerChips, users), [ownerChips, users]);
   const categories = useMemo(() => (settings ? viewCategories(settings, storedItems) : []), [settings, storedItems]);
   const categoryId = pickCollectionCategory(categories.map((c) => c.id), shownCategory);
   const category = categories.find((c) => c.id === categoryId);
@@ -100,11 +128,13 @@ function Collection() {
               <button onClick={() => setEditor({ open: true })} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
                 style={{ backgroundColor: ACCENT, color: "var(--color-bg-deep)" }}>+ Add</button>
             </div>
+            <OwnerFilter chips={ownerChips} selected={owner} onSelect={setShownOwner} />
             <StateTabs tabs={tabs} counts={counts} selected={tab} onSelect={setShownTab} />
-            <ItemGrid settings={settings} items={items} category={category} tab={tab} view={collectionView}
+            <ItemGrid settings={settings} items={items} category={category} tab={tab} view={collectionView} ownerOf={ownerOf}
               onOpen={(shown) => setEditor({ open: true, item: storedItems.find((i) => i.id === shown.id) ?? shown })} />
             <CollectionItemModal visible={editor.open} settings={settings} item={editor.item} defaultCategory={category.id}
-              defaultState={tab} onClose={() => setEditor((e) => ({ ...e, open: false }))} />
+              defaultState={tab} users={users} defaultOwner={currentUserId ?? undefined}
+              onClose={() => setEditor((e) => ({ ...e, open: false }))} />
             <CollectionBulkAddModal visible={bulkOpen} settings={settings} defaultCategory={category.id} defaultState={tab}
               onClose={() => setBulkOpen(false)} />
           </>
@@ -157,6 +187,30 @@ function CategorySidebar({ categories, items, selected, onSelect, onEdit }: {
   );
 }
 
+/** The person filter: Everyone, each Trip User who owns items, Shared. Hidden for one owner. */
+function OwnerFilter({ chips, selected, onSelect }: { chips: CollectionOwnerChip[]; selected: string; onSelect: (id: string) => void }) {
+  if (!chips.length) return null;
+  return (
+    <div role="group" aria-label="Whose items" className="flex flex-wrap gap-2 mb-3">
+      {chips.map((chip) => {
+        const on = chip.id === selected;
+        return (
+          <button key={chip.id} type="button" onClick={() => onSelect(chip.id)} aria-pressed={on}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-colors"
+            style={{
+              color: on ? "var(--color-bg-deep)" : "var(--color-text-primary)",
+              backgroundColor: on ? ACCENT : "var(--color-surface-raised)",
+              border: `1px solid ${on ? ACCENT : "var(--color-border-default)"}`,
+            }}>
+            {chip.color && <span aria-hidden="true" className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chip.color }} />}
+            {chip.label} <span style={{ opacity: 0.7 }}>{chip.count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function StateTabs({ tabs, counts, selected, onSelect }: {
   tabs: CollectionState[]; counts: Record<CollectionState, number>; selected: CollectionState; onSelect: (s: CollectionState) => void;
 }) {
@@ -193,9 +247,9 @@ function ViewSwitch({ view, onChange }: { view: "tiles" | "table"; onChange: (v:
   );
 }
 
-function ItemGrid({ settings, items, category, tab, view, onOpen }: {
+function ItemGrid({ settings, items, category, tab, view, ownerOf, onOpen }: {
   settings: CollectionSettings; items: CollectionItem[]; category: ResolvedCollectionCategory; tab: CollectionState;
-  view: "tiles" | "table"; onOpen: (item: CollectionItem) => void;
+  view: "tiles" | "table"; ownerOf: OwnerOf; onOpen: (item: CollectionItem) => void;
 }) {
   const shown = useMemo(() => visibleCollectionItems(items, category.id, tab), [items, category.id, tab]);
   const fields = useMemo(() => collectionFormFields(settings, category.id), [settings, category.id]);
@@ -203,13 +257,13 @@ function ItemGrid({ settings, items, category, tab, view, onOpen }: {
     return <p className="mt-8 text-sm text-center" style={{ color: "var(--color-text-secondary)" }}>{emptyCollectionTabText(tab, category.name)}</p>;
   }
   if (view === "table") {
-    return <CollectionTable key={category.id} items={shown} fields={fields} icon={category.icon} tab={tab} onOpen={onOpen} />;
+    return <CollectionTable key={category.id} items={shown} fields={fields} icon={category.icon} tab={tab} onOpen={onOpen} ownerOf={ownerOf} />;
   }
   return (
     <div className={GRID[category.layout]}>
       {shown.map((item) => (
         <CollectionTile key={item.id} item={item} layout={category.layout} icon={category.icon}
-          summary={collectionItemSummary(item, fields)} date={collectionItemDate(item)} onOpen={() => onOpen(item)} />
+          summary={collectionItemSummary(item, fields)} date={collectionItemDate(item)} owner={ownerOf(item)} onOpen={() => onOpen(item)} />
       ))}
     </div>
   );

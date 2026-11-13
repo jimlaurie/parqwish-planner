@@ -24,6 +24,7 @@ import {
 import { COLLECTION_TAB_LABELS } from "@shared/collection-view";
 import type { Priority } from "@shared/types/common";
 import type { CollectionFieldDef, CollectionState } from "@shared/types/collection";
+import { collectionOwnerChoices, type CollectionTripUser } from "@shared/collection-owners";
 
 interface Props {
   visible: boolean;
@@ -32,6 +33,10 @@ interface Props {
   item?: CollectionItem;
   defaultCategory: string;
   defaultState: CollectionState;
+  /** The account's Trip Users: with more than one, the editor asks whose it is. */
+  users?: CollectionTripUser[];
+  /** A new item's owner (the active Trip User). */
+  defaultOwner?: string;
   onClose: () => void;
 }
 
@@ -44,16 +49,17 @@ function categoryOptions(settings: CollectionSettings, current: string) {
   return [...on, ...(own ? [own] : [])];
 }
 
-export default function CollectionItemModal({ visible, settings, item, defaultCategory, defaultState, onClose }: Props) {
+export default function CollectionItemModal({ visible, settings, item, defaultCategory, defaultState, users, defaultOwner, onClose }: Props) {
   const currentUserId = useAppStore((s) => s.currentUserId);
-  const [draft, setDraft] = useState<CollectionDraftFields>(() => collectionDraftFromItem(item, defaultCategory, defaultState));
+  const [draft, setDraft] = useState<CollectionDraftFields>(() => collectionDraftFromItem(item, defaultCategory, defaultState, defaultOwner));
+  const owners = useMemo(() => collectionOwnerChoices(users ?? []), [users]);
   const [photoSets, setPhotoSets] = useState<PhotoSet[]>(item?.photoSets ?? []);
   const [problem, setProblem] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setDraft(collectionDraftFromItem(item, defaultCategory, defaultState));
+    setDraft(collectionDraftFromItem(item, defaultCategory, defaultState, defaultOwner));
     setPhotoSets(item?.photoSets ?? []);
     setProblem("");
     setConfirmDelete(false);
@@ -111,6 +117,10 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
             <input type="checkbox" checked={draft.forSale} onChange={(e) => set("forSale", e.target.checked)} className="w-4 h-4" style={{ accentColor: ACCENT }} />
             Also for sale
           </label>
+        )}
+        {owners.length > 0 && (
+          <div><Label>Whose is it?</Label>
+            <Chips label="Whose is it?" clearable={false} value={draft.owner} onChange={(v) => v && set("owner", v)} options={owners} /></div>
         )}
         <MoreDetails draft={draft} set={set} fields={fields} startOpen={!!item} />
       </div>

@@ -19,11 +19,19 @@ interface Props {
   icon: string;
   summary: string;
   date: string;
+  /** Whose it is, shown as a dot while the collection has several owners (@shared/collection-owners); no colour for Shared. */
+  owner?: CollectionTileOwner;
   onOpen?: () => void;
 }
 
-function label(item: CollectionItem, summary: string, date: string): string {
+export interface CollectionTileOwner {
+  name: string;
+  color?: string;
+}
+
+function label(item: CollectionItem, summary: string, date: string, owner?: CollectionTileOwner): string {
   const parts = [item.name || "Unnamed item"];
+  if (owner) parts.push(owner.color ? `${owner.name}'s` : "shared");
   if (item.state === "want" && item.priority) parts.push(ticketTitle(item.priority));
   if (item.state === "trade" && item.forSale) parts.push("for sale");
   if ((item.quantity ?? 1) > 1) parts.push(`${item.quantity} of them`);
@@ -71,14 +79,29 @@ function Badges({ item }: { item: CollectionItem }) {
   );
 }
 
-export default function CollectionTile({ item, layout, icon, summary, date, onOpen }: Props) {
-  const a11y = label(item, summary, date);
+/** An owner's dot: their colour, or a ring for Shared. Placed by the caller (`className`). */
+export function CollectionOwnerDot({ owner, className = "" }: { owner?: CollectionTileOwner; className?: string }) {
+  if (!owner) return null;
+  return (
+    <span aria-hidden="true" title={owner.name} data-testid="collection-owner-dot"
+      className={`block w-3 h-3 rounded-full ${className}`}
+      style={owner.color
+        ? { backgroundColor: owner.color, border: "1.5px solid var(--color-bg-card)" }
+        : { backgroundColor: "var(--color-bg-card)", border: "1.5px solid var(--color-text-secondary)" }} />
+  );
+}
+
+export default function CollectionTile({ item, layout, icon, summary, date, owner, onOpen }: Props) {
+  const a11y = label(item, summary, date, owner);
   if (layout === "list") {
     return (
       <button type="button" onClick={onOpen} aria-label={a11y} data-testid="collection-item"
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left cursor-pointer transition-colors hover:brightness-110"
         style={{ backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border-subtle)" }}>
-        <div className="relative shrink-0"><CollectionPhoto item={item} icon={icon} className="w-12 h-12 rounded-lg" /><Badges item={item} /></div>
+        <div className="relative shrink-0">
+          <CollectionPhoto item={item} icon={icon} className="w-12 h-12 rounded-lg" /><Badges item={item} />
+          <CollectionOwnerDot owner={owner} className="absolute bottom-0.5 right-0.5" />
+        </div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold truncate" style={{ color: "var(--color-text-primary)" }}>{item.name || "Unnamed"}</div>
           {summary && <div className="text-xs truncate" style={{ color: "var(--color-text-secondary)" }}>{summary}</div>}
@@ -92,7 +115,10 @@ export default function CollectionTile({ item, layout, icon, summary, date, onOp
     <button type="button" onClick={onOpen} aria-label={a11y} data-testid="collection-item"
       className={`text-left cursor-pointer transition-colors hover:brightness-110 ${shelf ? "p-2 rounded-xl" : ""}`}
       style={shelf ? { backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border-subtle)" } : undefined}>
-      <div className="relative"><CollectionPhoto item={item} icon={icon} className="w-full aspect-square rounded-lg" /><Badges item={item} /></div>
+      <div className="relative">
+        <CollectionPhoto item={item} icon={icon} className="w-full aspect-square rounded-lg" /><Badges item={item} />
+        <CollectionOwnerDot owner={owner} className="absolute bottom-1.5 right-1.5" />
+      </div>
       <div className={`mt-1.5 font-semibold truncate ${shelf ? "text-sm" : "text-xs text-center"}`} style={{ color: "var(--color-text-primary)" }}>
         {item.name || "Unnamed"}
       </div>

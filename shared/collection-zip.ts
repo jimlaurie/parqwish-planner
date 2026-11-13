@@ -11,6 +11,7 @@
 
 import type { CollectionFieldDef, CollectionItem, CollectionSettings, CollectionState, UserCollectionCategory } from "./types/collection";
 import { getBuiltInCollectionCategory } from "./constants/collections";
+import { importedCollectionOwner } from "./collection-owners";
 import {
   addUserCollectionCategory, mergeImportedCollectionFields, newUserCollectionCategoryId, remapCollectionDetails,
   setCollectionCategoryEnabled,
@@ -164,15 +165,21 @@ function translated(item: CollectionZipItem, categories: Record<string, string>,
   return { ...copy, category, ...(details ? { details } : {}) };
 }
 
+/** The item with an owner this account has (shared/collection-owners.ts): another account's Trip User becomes Shared. Unchanged without the list. */
+function withImportedOwner(item: CollectionItem, tripUserIds: string[] | undefined): CollectionItem {
+  return tripUserIds ? { ...item, userId: importedCollectionOwner(item.userId, tripUserIds) } : item;
+}
+
 /**
  * What importing a file does: the settings with its categories and fields
  * folded in, and the items to save. A duplicate (same id, or same name in the
  * same category) is skipped, or with "update" takes the file's details and
  * photos (keeping its own id, and its own photos if the file has none). Saved
- * items are stamped now, so Cloud Sync sends them on.
+ * items are stamped now, so Cloud Sync sends them on. With `tripUserIds`, an
+ * owner who isn't one of them becomes Shared.
  */
 export function planCollectionImport(
-  local: { settings: CollectionSettings; items: CollectionItem[] }, manifest: CollectionZipManifest,
+  local: { settings: CollectionSettings; items: CollectionItem[]; tripUserIds?: string[] }, manifest: CollectionZipManifest,
   mode: CollectionDuplicateMode, now: number,
 ): CollectionImportPlan {
   const folded = importCategories(local.settings, manifest, now);
@@ -182,7 +189,7 @@ export function planCollectionImport(
   const plan: CollectionImportPlan = { settings, save: [], photos: {}, added: 0, updated: 0, skipped: 0 };
   const used = new Set<string>();
   for (const zipItem of manifest.items) {
-    const item = translated(zipItem, categories, fields);
+    const item = withImportedOwner(translated(zipItem, categories, fields), local.tripUserIds);
     const dup = findDuplicate(local.items, item, used);
     if (dup && mode === "skip") { plan.skipped++; used.add(dup.id); continue; }
     const photos = zipItem.photos ?? [];

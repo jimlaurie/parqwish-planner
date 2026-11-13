@@ -24,6 +24,7 @@ import type {
   CollectionState,
 } from "./types/collection";
 import type { PhotoSet } from "./types/wish";
+import { collectionOwnerOf } from "./collection-owners";
 
 /** The form as typed, photos aside: text stays text until it's saved. */
 export interface CollectionDraftFields {
@@ -44,6 +45,8 @@ export interface CollectionDraftFields {
   goneDate?: string;
   goneHow?: CollectionGoneHow;
   goneNotes: string;
+  /** Who owns it: a Trip User id or "shared" (shared/collection-owners.ts); unset keeps the item's owner, or a new item takes the creator. */
+  owner?: string;
 }
 
 export const COLLECTION_ACQUIRED_HOW: { value: CollectionAcquiredHow; label: string }[] = [
@@ -63,8 +66,10 @@ function detailsDraft(details: CollectionItem["details"]): Record<string, string
   return out;
 }
 
-/** The form for an item, or a new one in `category` and `state` (never Gone). */
-export function collectionDraftFromItem(item: CollectionItem | undefined, category: string, state: CollectionState): CollectionDraftFields {
+/** The form for an item, or a new one in `category` and `state` (never Gone), owned by `owner` when given. */
+export function collectionDraftFromItem(
+  item: CollectionItem | undefined, category: string, state: CollectionState, owner?: string,
+): CollectionDraftFields {
   return {
     name: item?.name ?? "",
     category: item?.category ?? category,
@@ -82,6 +87,7 @@ export function collectionDraftFromItem(item: CollectionItem | undefined, catego
     goneDate: item?.gone?.date,
     goneHow: item?.gone?.how,
     goneNotes: item?.gone?.notes ?? "",
+    owner: item ? collectionOwnerOf(item) : owner,
   };
 }
 
@@ -173,7 +179,7 @@ export function collectionItemFromDraft(
   return compact<CollectionItem>({
     ...base,
     id: base?.id ?? id,
-    userId: base?.userId ?? userId,
+    userId: draft.owner ?? base?.userId ?? userId,
     createdAt: base?.createdAt ?? now,
     updatedAt: now,
     name: draft.name.trim(),

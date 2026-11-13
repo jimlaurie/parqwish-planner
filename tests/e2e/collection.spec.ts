@@ -198,3 +198,65 @@ test("At 1024 px the top bar shows Collection beside Catalog, with room for ever
   await expect(page.getByRole("link", { name: /Pins, buckets/ })).toHaveCount(0);
   await page.screenshot({ path: "test-results/topbar-1024.png", clip: { x: 0, y: 0, width: 1024, height: 60 } });
 });
+
+test("A family's collection shows everyone's items, filters by person, and an item can be made Shared", async ({ page }) => {
+  const SAM = { id: "user_guest_1", name: "Sam", color: "#87CEEB", role: "guest", createdAt: T, updatedAt: T };
+  const FAMILY = [
+    pin("col_1", "Figment 50th", { userId: "user_primary" }),
+    pin("col_2", "Hatbox Ghost", { userId: "user_guest_1" }),
+    pin("col_3", "Castle 70th", { userId: "shared" }),
+  ];
+  await seedTrip(page, { ...SEED, users: [...SEED.users, SAM], collectionItems: FAMILY, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  const filter = page.getByRole("group", { name: "Whose items" });
+  const tiles = page.getByTestId("collection-item");
+  // Everyone by default, with a dot for each owner
+  await expect(filter.getByRole("button", { name: /Everyone/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(tiles).toHaveCount(3);
+  await expect(page.getByTestId("collection-owner-dot")).toHaveCount(3);
+  // A person: theirs and the shared ones
+  await filter.getByRole("button", { name: /Sam/ }).click();
+  await expect(tiles).toHaveCount(2);
+  await expect(tiles.filter({ hasText: "Hatbox Ghost" })).toBeVisible();
+  await expect(tiles.filter({ hasText: "Castle 70th" })).toBeVisible();
+  await filter.getByRole("button", { name: /Shared/ }).click();
+  await expect(tiles).toHaveCount(1);
+
+  // The editor asks whose it is; making Sam's pin Shared saves it so
+  await filter.getByRole("button", { name: /Everyone/ }).click();
+  await tiles.filter({ hasText: "Hatbox Ghost" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  const whose = editor.getByRole("radiogroup", { name: "Whose is it?" });
+  await expect(whose.getByRole("radio", { name: "Sam" })).toBeChecked();
+  await whose.getByRole("radio", { name: "Shared" }).click();
+  await editor.getByRole("button", { name: "Save" }).click();
+  await expect(editor).toBeHidden();
+  await expect.poll(async () => (await rows<Item & { userId?: string }>(page, "collectionItems")).find((i) => i.id === "col_2")?.userId).toBe("shared");
+  // Sam now owns nothing, so there's no chip for them
+  await expect(filter.getByRole("button", { name: /Sam/ })).toHaveCount(0);
+});
+
+test("One person's collection has no person filter, and a new item is theirs", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await expect(page.getByTestId("collection-item")).toHaveCount(4);
+  await expect(page.getByRole("group", { name: "Whose items" })).toHaveCount(0);
+  await expect(page.getByTestId("collection-owner-dot")).toHaveCount(0);
+  await page.getByRole("button", { name: "+ Add" }).click();
+  const add = page.getByRole("dialog", { name: "Add to collection" });
+  await expect(add.getByRole("radiogroup", { name: "Whose is it?" })).toHaveCount(0);
+  await add.getByLabel("Name").fill("Dole Whip pin");
+  await add.getByRole("button", { name: "Save" }).click();
+  await expect.poll(async () => (await rows<Item & { userId?: string }>(page, "collectionItems")).find((i) => i.name === "Dole Whip pin")?.userId).toBe("user_primary");
+});
+
+test("Removing a Trip User hands their collection items to the primary user", async ({ page }) => {
+  const SAM = { id: "user_guest_1", name: "Sam", color: "#87CEEB", role: "guest", createdAt: T, updatedAt: T };
+  await seedTrip(page, { ...SEED, users: [...SEED.users, SAM], collectionItems: [pin("col_2", "Hatbox Ghost", { userId: "user_guest_1" })], collectionSettings: [SETTINGS] });
+  await page.goto("/plan");
+  const group = page.getByRole("button", { name: "Group section" });
+  if ((await group.getAttribute("aria-expanded")) !== "true") await group.click();
+  await page.getByRole("button", { name: "Remove Sam" }).click({ force: true });
+  await page.getByRole("button", { name: "Remove", exact: true }).click();
+  await expect.poll(async () => (await rows<Item & { userId?: string }>(page, "collectionItems"))[0]?.userId).toBe("user_primary");
+});

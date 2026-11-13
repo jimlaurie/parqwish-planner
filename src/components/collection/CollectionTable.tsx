@@ -10,7 +10,7 @@
 // filter rules are shared with Pal (@shared/collection-table).
 
 import { useMemo, useState } from "react";
-import { CollectionPhoto } from "./CollectionTile";
+import { CollectionOwnerDot, CollectionPhoto, type CollectionTileOwner } from "./CollectionTile";
 import { ACCENT } from "./CollectionFormParts";
 import { TICKET_COLORS } from "@/lib/constants";
 import type { CollectionItem } from "@/lib/db";
@@ -28,6 +28,8 @@ interface Props {
   icon: string;
   tab: CollectionState;
   onOpen: (item: CollectionItem) => void;
+  /** Each item's owner for its dot, while the collection has several owners. */
+  ownerOf?: (item: CollectionItem) => CollectionTileOwner | undefined;
 }
 
 type Filters = Record<string, CollectionFieldFilter>;
@@ -35,7 +37,7 @@ type Filters = Record<string, CollectionFieldFilter>;
 const CONTROL_CLASS = "rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-[var(--color-gold)]";
 const CONTROL_STYLE = { backgroundColor: "var(--color-bg-card)", color: "var(--color-text-primary)", border: "1px solid var(--color-border-subtle)" };
 
-export default function CollectionTable({ items, fields, icon, tab, onOpen }: Props) {
+export default function CollectionTable({ items, fields, icon, tab, onOpen, ownerOf }: Props) {
   const [sort, setSort] = useState<CollectionSort | null>(null);
   const [filters, setFilters] = useState<Filters>({});
   const [query, setQuery] = useState("");
@@ -60,7 +62,7 @@ export default function CollectionTable({ items, fields, icon, tab, onOpen }: Pr
           <table className="w-full text-sm" style={{ fontVariantNumeric: "tabular-nums" }}>
             <TableHead fields={fields} sort={sort} dateLabel={tab === "gone" ? "Went" : "Date"} onSort={(key) => setSort((s) => nextCollectionSort(s, key))} />
             <tbody>
-              {rows.map((item) => <Row key={item.id} item={item} fields={fields} icon={icon} onOpen={() => onOpen(item)} />)}
+              {rows.map((item) => <Row key={item.id} item={item} fields={fields} icon={icon} owner={ownerOf?.(item)} onOpen={() => onOpen(item)} />)}
             </tbody>
           </table>
         </div>
@@ -169,7 +171,9 @@ function TableHead({ fields, sort, dateLabel, onSort }: {
   );
 }
 
-function Row({ item, fields, icon, onOpen }: { item: CollectionItem; fields: CollectionFieldDef[]; icon: string; onOpen: () => void }) {
+function Row({ item, fields, icon, owner, onOpen }: {
+  item: CollectionItem; fields: CollectionFieldDef[]; icon: string; owner?: CollectionTileOwner; onOpen: () => void;
+}) {
   const ticket = item.state === "want" && item.priority ? TICKET_COLORS[item.priority] : undefined;
   return (
     <tr onClick={onOpen} data-testid="collection-row" className="cursor-pointer hover:brightness-110"
@@ -177,7 +181,9 @@ function Row({ item, fields, icon, onOpen }: { item: CollectionItem; fields: Col
       <td className="px-3 py-1.5">
         <button type="button" onClick={(e) => { e.stopPropagation(); onOpen(); }} className="flex items-center gap-2.5 text-left cursor-pointer min-w-40">
           <CollectionPhoto item={item} icon={icon} className="w-9 h-9 rounded-md shrink-0 text-lg" />
+          <CollectionOwnerDot owner={owner} className="shrink-0" />
           <span className="font-semibold" style={{ color: "var(--color-text-primary)" }}>{item.name || "Unnamed"}</span>
+          {owner && <span className="sr-only">{owner.color ? `${owner.name}'s` : "shared"}</span>}
           {ticket && (
             <span className="px-1 rounded text-[11px] font-extrabold" style={{ backgroundColor: ticket.bg, border: `1px solid ${ticket.border}`, color: ticket.border }}>
               {item.priority}

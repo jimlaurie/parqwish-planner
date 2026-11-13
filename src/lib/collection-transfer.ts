@@ -108,7 +108,8 @@ export async function importCollectionZip(
 ): Promise<{ added: number; updated: number; skipped: number; photosMissing: number }> {
   const now = Date.now();
   const record = await db.collectionSettings.get(COLLECTION_SETTINGS_ID);
-  const local = { settings: settingsFromRecord(record, now), items: await db.collectionItems.toArray() };
+  const tripUserIds = (await db.users.toArray()).map((u) => u.id);
+  const local = { settings: settingsFromRecord(record, now), items: await db.collectionItems.toArray(), tripUserIds };
   const plan = planCollectionImport(local, file.manifest, mode, now);
   let photosMissing = 0;
   const items = [];

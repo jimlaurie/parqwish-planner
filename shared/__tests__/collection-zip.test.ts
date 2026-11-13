@@ -109,3 +109,12 @@ describe("importing", () => {
     expect(plan.settings.customFields?.pins?.[0].choices).toEqual(["Small", "Medium", "Large"]);
   });
 });
+
+describe("owners in an imported file", () => {
+  it("become Shared when they aren't one of this account's Trip Users, given the list", () => {
+    const m = manifest(settings(), [item("a", { userId: "user_guest_1" }), item("b", { userId: "user_guest_4" }), item("c", { userId: "shared" })]);
+    const owners = (ids?: string[]) => planCollectionImport({ settings: settings(), items: [], tripUserIds: ids }, m, "skip", NOW).save.map((i) => i.userId);
+    expect(owners(["user_primary", "user_guest_1"])).toEqual(["user_guest_1", "shared", "shared"]);
+    expect(owners(undefined)).toEqual(["user_guest_1", "user_guest_4", "shared"]);
+  });
+});

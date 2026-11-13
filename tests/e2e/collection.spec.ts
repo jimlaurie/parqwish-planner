@@ -254,9 +254,12 @@ test("Removing a Trip User hands their collection items to the primary user", as
   const SAM = { id: "user_guest_1", name: "Sam", color: "#87CEEB", role: "guest", createdAt: T, updatedAt: T };
   await seedTrip(page, { ...SEED, users: [...SEED.users, SAM], collectionItems: [pin("col_2", "Hatbox Ghost", { userId: "user_guest_1" })], collectionSettings: [SETTINGS] });
   await page.goto("/plan");
-  const group = page.getByRole("button", { name: "Group section" });
-  if ((await group.getAttribute("aria-expanded")) !== "true") await group.click();
-  await page.getByRole("button", { name: "Remove Sam" }).click({ force: true });
+  // as group.spec.ts does: click Remove once the page is ready, and wait for the question
+  const group = page.getByRole("button", { name: "Group section" }).locator("..");
+  await expect(async () => {
+    await group.getByRole("button", { name: "Remove Sam" }).click();
+    await expect(page.getByRole("heading", { name: "Remove Sam?" })).toBeVisible({ timeout: 2000 });
+  }).toPass();
   await page.getByRole("button", { name: "Remove", exact: true }).click();
   await expect.poll(async () => (await rows<Item & { userId?: string }>(page, "collectionItems"))[0]?.userId).toBe("user_primary");
 });

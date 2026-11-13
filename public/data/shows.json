@@ -57,12 +57,12 @@
     },
     "operation-playtime": {
       "times": [
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:30",
-        "14:30",
-        "15:30"
+        "10:45",
+        "11:45",
+        "12:45",
+        "14:15",
+        "15:15",
+        "16:15"
       ],
       "types": [
         "street show"
@@ -138,7 +138,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "22:00"
         }
       ]
     },
@@ -155,7 +155,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "22:00"
         }
       ],
       "apiEntityId": "3ee735b5-68dc-470a-a4a2-6ddd415b9cbd",
@@ -210,7 +210,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "20:30"
+          "end": "21:30"
         }
       ],
       "duration": 15,
@@ -241,12 +241,12 @@
       "status": "operating",
       "duration": 25,
       "times": [
-        "11:15",
-        "12:15",
-        "13:15",
-        "14:45",
-        "15:45",
-        "16:45"
+        "14:00",
+        "15:00",
+        "16:00",
+        "17:30",
+        "18:30",
+        "19:30"
       ],
       "longitude": -117.9232652,
       "land": "Paradise Gardens Park",
@@ -274,7 +274,7 @@
         "12:00",
         "13:45",
         "14:45",
-        "15:40"
+        "15:55"
       ],
       "duration": 20,
       "status": "operating"
@@ -324,12 +324,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "15:30",
-        "16:30",
-        "17:30",
-        "18:45",
-        "19:35",
-        "20:25"
+        "16:00",
+        "16:55",
+        "17:50",
+        "19:10",
+        "20:05",
+        "21:00"
       ],
       "types": [
         "street show"
@@ -347,12 +347,12 @@
       "name": "Warriors of Wakanda: The Disciplines of the Dora Milaje",
       "latitude": 33.806476,
       "times": [
-        "11:30",
-        "12:30",
-        "13:30",
-        "15:00",
-        "16:00",
-        "17:00"
+        "10:45",
+        "11:45",
+        "12:40",
+        "14:15",
+        "15:15",
+        "16:15"
       ],
       "longitude": -117.917839,
       "land": "Avengers Campus",
@@ -393,12 +393,12 @@
       "status": "operating",
       "duration": 20,
       "times": [
+        "09:00",
+        "10:00",
+        "11:00",
         "12:30",
-        "13:30",
-        "14:35",
-        "16:05",
-        "17:05",
-        "18:05"
+        "13:45",
+        "14:45"
       ],
       "longitude": -117.919083,
       "types": [
@@ -444,7 +444,7 @@
       "name": "Paradise Garden Bandstand Presents Fortunes"
     }
   },
-  "lastUpdated": "2026-11-12T14:00:05.733Z",
+  "lastUpdated": "2026-11-13T14:00:47.352Z",
   "disneyland": {
     "pearly-band-small-world": {
       "latitude": 33.814016,
@@ -455,8 +455,7 @@
       "duration": 20,
       "times": [
         "11:50",
-        "13:05",
-        "14:05"
+        "12:55"
       ],
       "land": "Fantasyland",
       "types": [
@@ -473,8 +472,8 @@
         "11:00",
         "12:20",
         "13:40",
-        "15:25",
-        "16:45"
+        "15:40",
+        "16:35"
       ],
       "longitude": -117.91855,
       "land": "Fantasyland",
@@ -493,8 +492,7 @@
       ],
       "longitude": -117.9203231,
       "times": [
-        "10:30",
-        "14:15"
+        "13:15"
       ],
       "latitude": 33.8120796,
       "name": "Disneyland Band at Frontierland",
@@ -516,14 +514,21 @@
       "latitude": 33.812041
     },
     "dapper-dans": {
-      "times": [],
+      "times": [
+        "10:15",
+        "11:15",
+        "12:20",
+        "13:45",
+        "14:40",
+        "16:15"
+      ],
       "types": [
         "street show",
         "character experience"
       ],
       "land": "Main Street U.S.A.",
       "longitude": -117.918962,
-      "status": "closed",
+      "status": "operating",
       "duration": 20,
       "apiEntityId": "fdf0e3b1-2eeb-42b4-9516-5d43463d021e",
       "timeRanges": [
@@ -553,9 +558,8 @@
       "status": "operating",
       "duration": 20,
       "times": [
-        "11:25",
-        "12:15",
-        "15:15",
+        "10:30",
+        "12:20",
         "16:15"
       ],
       "longitude": -117.9189609,
@@ -669,9 +673,12 @@
         "nighttime spectacular"
       ],
       "land": "Frontierland",
-      "times": [],
+      "times": [
+        "21:00",
+        "22:30"
+      ],
       "duration": 25,
-      "status": "closed",
+      "status": "operating",
       "name": "Fantasmic!",
       "timeRanges": [],
       "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db",
@@ -688,7 +695,8 @@
         "street show"
       ],
       "times": [
-        "13:05"
+        "11:20",
+        "14:25"
       ],
       "duration": 20,
       "status": "operating"
@@ -708,9 +716,17 @@
       ]
     },
     "jambalaya-jazz": {
-      "status": "closed",
+      "status": "operating",
       "duration": 25,
-      "times": [],
+      "times": [
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:05",
+        "16:00",
+        "17:00"
+      ],
       "types": [
         "street show"
       ],
@@ -725,9 +741,9 @@
       "status": "operating",
       "duration": 15,
       "times": [
-        "20:55",
-        "21:55",
-        "22:55"
+        "18:30",
+        "21:00",
+        "22:30"
       ],
       "land": "Main Street U.S.A.",
       "types": [
@@ -826,7 +842,7 @@
       "apiEntityId": "5a107a57-9174-4f3f-9be7-625a5d5bb899",
       "timeRanges": [
         {
-          "start": "08:30",
+          "start": "08:00",
           "end": "22:30"
         }
       ],
@@ -853,9 +869,16 @@
       "timeRanges": []
     },
     "storytelling-royal-theatre": {
-      "status": "closed",
+      "status": "operating",
       "duration": 25,
-      "times": [],
+      "times": [
+        "10:45",
+        "11:55",
+        "13:10",
+        "14:45",
+        "15:55",
+        "17:05"
+      ],
       "longitude": -117.919443,
       "land": "Fantasyland",
       "types": [
@@ -877,8 +900,7 @@
       ],
       "longitude": -117.921242,
       "times": [
-        "20:30",
-        "21:25",
+        "20:25",
         "22:15"
       ],
       "duration": 12,
@@ -911,8 +933,8 @@
         "08:30",
         "09:30",
         "10:30",
-        "11:30",
         "12:35",
+        "13:30",
         "14:30"
       ],
       "latitude": 33.811384,
@@ -927,7 +949,8 @@
         "09:15",
         "10:05",
         "11:00",
-        "15:05"
+        "13:40",
+        "14:45"
       ],
       "types": [
         "street show"
@@ -946,13 +969,13 @@
       "land": "Main Street U.S.A.",
       "longitude": -117.9192024,
       "times": [
-        "11:00",
-        "11:55",
-        "12:50",
-        "14:00",
-        "15:20",
-        "16:15",
-        "17:05"
+        "10:45",
+        "11:40",
+        "12:40",
+        "13:35",
+        "14:45",
+        "15:50",
+        "16:55"
       ],
       "duration": 25,
       "status": "operating",
@@ -972,10 +995,12 @@
         "nighttime spectacular"
       ],
       "longitude": -117.9213958,
-      "times": [],
+      "times": [
+        "21:30"
+      ],
       "duration": 15,
-      "status": "closed"
+      "status": "operating"
     }
   },
-  "lastShowtimeSync": "2026-11-12T14:00:05.733Z"
+  "lastShowtimeSync": "2026-11-13T14:00:47.352Z"
 }

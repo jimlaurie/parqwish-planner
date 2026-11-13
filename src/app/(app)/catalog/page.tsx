@@ -36,7 +36,7 @@ import PackingFormModal from "@/components/PackingFormModal";
 import EnsembleBuilderModal from "@/components/EnsembleBuilderModal";
 import BulkAddToDayModal from "@/components/play/BulkAddToDayModal";
 import type { WishFormData } from "@/components/WishFormModal";
-import type { PackingFormData } from "@/hooks/use-packing-items";
+import { syncCatalogPackingItem, type PackingFormData } from "@/hooks/use-packing-items";
 import type { PackingType } from "@/lib/db";
 import type { Wish } from "@shared/types/wish";
 import type { WishWithStatus } from "@/hooks/use-trip-wishes";
@@ -45,6 +45,7 @@ import { addDayItemsBatch, type AddDayItemParams } from "@/hooks/use-day-items";
 import type { DayItemType } from "@shared/types/day-item";
 import { PACKING_TABS, PRIORITY_SORT_ORDER, WISH_TAGS } from "@/lib/constants";
 import db from "@/lib/db";
+import { takeShareOpen } from "@/lib/pending-share";
 import PhotoGalleryTab from "@/components/catalog/PhotoGalleryTab";
 
 // ==================== TYPES ====================
@@ -67,6 +68,9 @@ const CATALOG_TABS: TabConfig[] = [
   { id: "wishes", label: "Wishes", icon: "\u2B50", accent: "var(--color-gold)" },
   { id: "photos", label: "Photos", icon: "\uD83D\uDCF7", accent: "var(--color-accent-publish)" },
 ];
+
+/** The /share choices whose editor is on this page. */
+const CATALOG_SHARE_DESTS = ["wish", "shopping", "dining", "outfit", "equipment", "sundry"] as const;
 
 // Tabs that use visual grid layout instead of list
 const GRID_TABS = new Set<string>(["outfit", "equipment", "sundry", "shopping"]);
@@ -267,6 +271,23 @@ export default function CatalogPage() {
     };
   }, [isWishesTab, isEnsemblesTab, isPhotosTab, activeTab, wishes, wishTagFilter, getPackingByType, subcategories]);
 
+  // ==================== SHARED PAGE ====================
+
+  // A page shared to the Planner (/share) is saved first, then opens here in its editor
+  useEffect(() => {
+    const request = takeShareOpen(CATALOG_SHARE_DESTS);
+    if (!request) return;
+    if (request.dest === "wish") {
+      setActiveTab("wishes");
+      setEditingWishId(request.itemId);
+      setShowWishForm(true);
+    } else {
+      setActiveTab(request.dest as PackingType);
+      setEditingPackingId(request.itemId);
+      setShowPackingForm(true);
+    }
+  }, []);
+
   // ==================== SELECT MODE / BULK ADD TO DAY ====================
 
   // Selection is scoped to the active tab — clear it on tab switch so a
@@ -423,15 +444,16 @@ export default function CatalogPage() {
       const packingType = activeTab as PackingType;
       const tabDef = PACKING_TABS.find((t) => t.id === packingType);
 
+      let savedId = editingPackingId;
       if (editingPackingId) {
         await db.packingItems.update(editingPackingId, {
           ...data,
           updatedAt: Date.now(),
         });
       } else {
-        const id = `${tabDef?.idPrefix ?? "item_"}${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        savedId = `${tabDef?.idPrefix ?? "item_"}${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
         await db.packingItems.add({
-          id,
+          id: savedId,
           type: packingType,
           ...data,
           createdAt: Date.now(),
@@ -439,6 +461,9 @@ export default function CatalogPage() {
           userId: currentUserId,
         });
       }
+      // Sent now, so Pal and other devices see it without waiting for the next sync start
+      const saved = savedId ? await db.packingItems.get(savedId) : undefined;
+      if (saved) syncCatalogPackingItem(saved).catch((err) => console.error("[catalog] packing sync failed:", err));
       setShowPackingForm(false);
       setEditingPackingId(null);
     },

@@ -107,6 +107,25 @@ function syncDeletePackingItemMirror(tripId: string, itemId: string) {
   );
 }
 
+/**
+ * Send a catalog item made or edited outside a trip (the Catalog page, the
+ * share page): its account copy, and its copy on each trip it's on.
+ */
+export async function syncCatalogPackingItem(item: PackingItem): Promise<void> {
+  syncPackingItem(item);
+  const selections = await db.tripPackingSelections.where("itemId").equals(item.id).toArray();
+  new Set(selections.map((s) => s.tripId)).forEach((tripId) => syncPackingItemMirror(tripId, item));
+}
+
+/** The cloud side of deleting a catalog item forever: its account copy, and its selections and copies on trips (read before the local delete). */
+export function syncCatalogPackingDelete(itemId: string, selections: TripPackingSelection[]): void {
+  syncDeletePackingItem(itemId);
+  selections.forEach((s) => {
+    syncDeletePackingSelection(s.id, s.tripId);
+    syncDeletePackingItemMirror(s.tripId, itemId);
+  });
+}
+
 // ==================== TYPES ====================
 
 export interface PackingFormData {

@@ -3,6 +3,7 @@
 import { useMemo, useCallback } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
+import { syncCatalogPackingDelete } from "@/hooks/use-packing-items";
 import type { Wish, PackingItem, PackingType } from "@/lib/db";
 
 // ==================== TYPES ====================
@@ -122,6 +123,7 @@ export function useCatalog() {
 
   // Delete packing item forever (removes from catalog + all trip selections)
   const deletePackingItemForever = useCallback(async (itemId: string) => {
+    const affected = await db.tripPackingSelections.where("itemId").equals(itemId).toArray();
     await db.transaction(
       "rw",
       [db.packingItems, db.tripPackingSelections],
@@ -134,6 +136,8 @@ export function useCatalog() {
         await db.tripPackingSelections.bulkDelete(selections.map((s) => s.id));
       }
     );
+    // Without this the next pull brings it back from Cloud Sync
+    syncCatalogPackingDelete(itemId, affected);
   }, []);
 
   return {

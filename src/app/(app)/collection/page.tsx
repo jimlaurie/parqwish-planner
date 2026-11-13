@@ -11,7 +11,8 @@
 // opens its item (CollectionItemModal, CollectionBulkAddModal). Grid shows the
 // category's own layout, List a sortable, filterable table of every field
 // (CollectionTable); the choice is remembered. The rules are shared with Pal
-// (@shared/collection-view). Hidden until Collections ship (lib/feature-flags.ts).
+// (@shared/collection-view). A page shared to the Planner opens here in its
+// editor (src/lib/pending-share.ts). Hidden until Collections ship (lib/feature-flags.ts).
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
@@ -26,6 +27,7 @@ import { useUsers } from "@/hooks/use-users";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
 import { useCollectionRestore } from "@/lib/collection-cloud";
+import { takeShareOpen } from "@/lib/pending-share";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
 import { collectionFormFields, type ResolvedCollectionCategory } from "@shared/collections";
 import {
@@ -104,6 +106,23 @@ function Collection() {
   const counts = useMemo(() => collectionStateCounts(items, categoryId ?? ""), [items, categoryId]);
   const tabs = category ? collectionTabs(category.trades, counts) : [];
   const tab = pickCollectionTab(tabs, shownTab);
+
+  // A page shared to the Planner (/share) is saved first, then opens here in
+  // its editor, once the item has loaded and the first visit's picker is done
+  const [sharedItemId, setSharedItemId] = useState<string | null>(null);
+  useEffect(() => {
+    const request = takeShareOpen(["collection"]);
+    if (request) setSharedItemId(request.itemId);
+  }, []);
+  useEffect(() => {
+    if (!sharedItemId || !settings || firstVisit || pickerOpen) return;
+    const item = storedItems.find((i) => i.id === sharedItemId);
+    if (!item) return;
+    setSharedItemId(null);
+    setShownCategory(item.category);
+    setShownTab(item.state);
+    setEditor({ open: true, item });
+  }, [sharedItemId, settings, firstVisit, pickerOpen, storedItems]);
 
   if (!settings) return null;
 

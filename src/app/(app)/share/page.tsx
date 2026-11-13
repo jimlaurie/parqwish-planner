@@ -1,235 +1,128 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+// ==================== SHARE PAGE ====================
+// Where a page shared to the Planner lands: the installed app's share target
+// (public/manifest.json), or a /share?title=…&text=…&url=… link from a
+// bookmarklet or Shortcut. The choices match Pal's share sheet (Wishes,
+// Collection, Shopping, Outfits, Gear, Sundries, @shared/share-targets) plus
+// Dining; the site suggests one. "Add" saves the item (src/lib/share-save.ts)
+// and opens its editor on the Catalog or Collection page (src/lib/pending-share.ts).
+
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { storePendingShare, type ShareDestination } from "@/lib/pending-share";
+import { requestShareOpen } from "@/lib/pending-share";
+import { plannerShareChoices, plannerSuggestedDestination, saveSharedPage, type PlannerShareDestination } from "@/lib/share-save";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
+import { useAppStore } from "@/lib/store";
+import { sharedTitle } from "@shared/share-targets";
 
-// ==================== DESTINATION CONFIG ====================
+const CHOICES = plannerShareChoices(COLLECTIONS_AVAILABLE);
 
-interface Destination {
-  id: ShareDestination;
-  icon: string;
-  label: string;
-  description: string;
-  route: string;
+/** Where each choice's editor is. */
+function routeFor(dest: PlannerShareDestination): string {
+  return dest === "collection" ? "/collection" : "/catalog";
 }
 
-const DESTINATIONS: Destination[] = [
-  {
-    id: "flight",
-    icon: "✈️",
-    label: "Flight",
-    description: "Add to trip's flight details",
-    route: "/",
-  },
-  {
-    id: "hotel",
-    icon: "🏨",
-    label: "Hotel",
-    description: "Add to trip's hotel details",
-    route: "/",
-  },
-  {
-    id: "dining",
-    icon: "🍽️",
-    label: "Dining reservation",
-    description: "Add to wish list as a dining item",
-    route: "/plan",
-  },
-  {
-    id: "wish",
-    icon: "⭐",
-    label: "Wish list",
-    description: "Add as a ride, show, or experience",
-    route: "/plan",
-  },
-  {
-    id: "shopping",
-    icon: "🛍️",
-    label: "Shopping",
-    description: "Add to shopping catalog",
-    route: "/catalog",
-  },
-  {
-    id: "note",
-    icon: "📋",
-    label: "Trip note",
-    description: "Save as a note on current trip",
-    route: "/",
-  },
-];
-
-// ==================== INNER COMPONENT (needs useSearchParams) ====================
+/** A share target sometimes puts the address in `text` (Android); take it from there when `url` is empty. */
+function sharedPage(params: URLSearchParams) {
+  const title = params.get("title") ?? "";
+  let text = params.get("text") ?? "";
+  let url = params.get("url") ?? "";
+  if (!url) {
+    const found = /https?:\/\/\S+/.exec(text)?.[0];
+    if (found) { url = found; text = text.replace(found, "").trim(); }
+  }
+  return { title, text, url };
+}
 
 function ShareSelector() {
-  const searchParams = useSearchParams();
+  const params = useSearchParams();
   const router = useRouter();
+  const currentUserId = useAppStore((s) => s.currentUserId);
+  const page = useMemo(() => sharedPage(new URLSearchParams(params.toString())), [params]);
+  const [name, setName] = useState(() => sharedTitle(page.title, page));
+  const [selected, setSelected] = useState<PlannerShareDestination>(() => plannerSuggestedDestination(page.url, CHOICES));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const nothingShared = !page.title && !page.text && !page.url;
 
-  const title = searchParams.get("title") ?? "";
-  const text  = searchParams.get("text")  ?? "";
-  const url   = searchParams.get("url")   ?? "";
-
-  const [selected, setSelected] = useState<ShareDestination | null>(null);
-  const [done, setDone] = useState(false);
-
-  // Auto-detect a likely destination from content
-  useEffect(() => {
-    const combined = `${title} ${text} ${url}`.toLowerCase();
-    if (combined.includes("flight") || combined.includes("airline") || combined.includes("confirmation") && combined.includes("depart")) {
-      setSelected("flight");
-    } else if (combined.includes("hotel") || combined.includes("reservation") && (combined.includes("check-in") || combined.includes("check in"))) {
-      setSelected("hotel");
-    } else if (combined.includes("dining") || combined.includes("restaurant") || combined.includes("opentable") || combined.includes("resy")) {
-      setSelected("dining");
+  async function handleAdd() {
+    setSaving(true);
+    setError(null);
+    try {
+      const itemId = await saveSharedPage(selected, page, name.trim(), currentUserId);
+      requestShareOpen({ dest: selected, itemId });
+      router.push(routeFor(selected));
+    } catch (err) {
+      console.error("[share] save failed:", err);
+      setError(err instanceof Error && err.message.includes("needs a name") ? "Give it a name first." : "Couldn't save it. Try again.");
+      setSaving(false);
     }
-  }, [title, text, url]);
-
-  const displayContent = title || url || text;
-  const preview = displayContent.length > 80 ? displayContent.slice(0, 80) + "…" : displayContent;
-
-  function handleSend() {
-    if (!selected) return;
-    const dest = DESTINATIONS.find(d => d.id === selected)!;
-    storePendingShare({
-      title, text, url, destination: selected, sharedAt: Date.now(),
-    });
-    setDone(true);
-    router.push(dest.route);
   }
 
-  if (done) {
+  if (nothingShared) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
-        <div className="text-4xl">✅</div>
-        <p style={{ color: "var(--color-text-primary)" }}>Opening ParQwish…</p>
+      <div className="max-w-md mx-auto px-4 py-12 text-center">
+        <h1 className="text-xl font-bold mb-2" style={{ color: "var(--color-heading)" }}>Nothing was shared</h1>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Share a page to ParQwish from your browser&apos;s Share menu and it opens here.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="max-w-md mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-6 text-center">
-        <div className="text-3xl mb-2">📥</div>
-        <h1
-          className="text-xl font-bold mb-1"
-          style={{ color: "var(--color-heading)" }}
-        >
-          Add to ParQwish
-        </h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Where would you like to save this?
+      <h1 className="text-xl font-bold mb-1 text-center" style={{ color: "var(--color-heading)" }}>Add to ParQwish</h1>
+      {page.url && (
+        <p className="text-sm text-center mb-5 truncate" style={{ color: "var(--color-text-muted)" }}>
+          {page.url.replace(/^https?:\/\//i, "").split(/[/?#]/)[0]}
         </p>
-      </div>
-
-      {/* Shared content preview */}
-      {preview && (
-        <div
-          className="mb-6 px-4 py-3 rounded-xl text-sm"
-          style={{
-            backgroundColor: "var(--color-surface-raised)",
-            color: "var(--color-text-secondary)",
-            borderLeft: "3px solid var(--color-gold)",
-          }}
-        >
-          {preview}
-        </div>
       )}
 
-      {/* Destination selector */}
-      <div className="flex flex-col gap-2 mb-6">
-        {DESTINATIONS.map((dest) => {
-          const isActive = selected === dest.id;
-          return (
-            <button
-              key={dest.id}
-              onClick={() => setSelected(dest.id)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-left
-                         transition-all duration-150 cursor-pointer"
-              style={{
-                backgroundColor: isActive
-                  ? "color-mix(in srgb, var(--color-gold) 12%, transparent)"
-                  : "var(--color-bg-card)",
-                border: isActive
-                  ? "2px solid var(--color-gold)"
-                  : "2px solid transparent",
-                outline: "none",
-              }}
-            >
-              {/* Radio indicator */}
-              <div
-                className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-                style={{
-                  borderColor: isActive ? "var(--color-gold)" : "var(--color-border-default)",
-                  backgroundColor: isActive ? "var(--color-gold)" : "transparent",
-                }}
-              >
-                {isActive && (
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: "var(--color-bg-deep)" }}
-                  />
-                )}
-              </div>
-              <span className="text-xl">{dest.icon}</span>
-              <div className="min-w-0">
-                <p
-                  className="text-sm font-semibold"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  {dest.label}
-                </p>
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  {dest.description}
-                </p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      <label className="block text-xs font-semibold uppercase tracking-wide mb-1" htmlFor="share-name"
+        style={{ color: "var(--color-text-muted)" }}>Name</label>
+      <input id="share-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={200}
+        className="w-full mb-5 px-3 py-2 rounded-xl text-sm"
+        style={{ backgroundColor: "var(--color-bg-card)", color: "var(--color-text-primary)", border: "1px solid var(--color-border-default)" }} />
 
-      {/* Action buttons */}
+      <fieldset className="mb-6">
+        <legend className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--color-text-muted)" }}>Save to</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {CHOICES.map((c) => {
+            const active = selected === c.id;
+            return (
+              <button key={c.id} type="button" onClick={() => setSelected(c.id)} aria-pressed={active}
+                className="flex items-center gap-2 px-3 py-3 rounded-xl text-sm font-semibold text-left cursor-pointer transition-colors duration-150"
+                style={{
+                  backgroundColor: active ? "color-mix(in srgb, var(--color-gold) 12%, transparent)" : "var(--color-bg-card)",
+                  border: `2px solid ${active ? "var(--color-gold)" : "transparent"}`,
+                  color: "var(--color-text-primary)",
+                }}>
+                <span className="text-xl" aria-hidden="true">{c.icon}</span>{c.label}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {error && <p role="alert" className="text-sm mb-3 text-center" style={{ color: "var(--color-error)" }}>{error}</p>}
+
       <div className="flex gap-3">
-        <button
-          onClick={() => router.push("/")}
-          className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer
-                     transition-colors duration-150"
-          style={{
-            backgroundColor: "var(--color-surface-raised)",
-            color: "var(--color-text-muted)",
-          }}
-        >
+        <button type="button" onClick={() => router.push("/")}
+          className="flex-1 py-3 rounded-xl text-sm font-medium cursor-pointer"
+          style={{ backgroundColor: "var(--color-surface-raised)", color: "var(--color-text-muted)" }}>
           Cancel
         </button>
-        <button
-          onClick={handleSend}
-          disabled={!selected}
-          className="flex-1 py-3 rounded-xl text-sm font-semibold cursor-pointer
-                     transition-all duration-150 disabled:opacity-40"
-          style={{
-            backgroundColor: selected ? "var(--color-gold)" : "var(--color-surface-raised)",
-            color: selected ? "var(--color-bg-deep)" : "var(--color-text-muted)",
-          }}
-        >
-          Add to ParQwish →
+        <button type="button" onClick={handleAdd} disabled={saving || !name.trim()}
+          className="flex-1 py-3 rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-40"
+          style={{ backgroundColor: "var(--color-gold)", color: "var(--color-bg-deep)" }}>
+          {saving ? "Adding…" : "Add"}
         </button>
       </div>
-
-      {/* Install nudge — only shown in browser, not when installed */}
-      <p
-        className="text-center text-xs mt-5"
-        style={{ color: "var(--color-text-dim)" }}
-      >
-        For the best experience, install ParQwish to your home screen.
-      </p>
     </div>
   );
 }
-
-// ==================== PAGE (Suspense wrapper for useSearchParams) ====================
 
 export default function SharePage() {
   return (

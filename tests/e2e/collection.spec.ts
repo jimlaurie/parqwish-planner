@@ -1,7 +1,8 @@
 // The Collection page (dland-wishes docs/collections-design.md §7): the
 // first visit's category picker, adding an item, the list view's sorting and
-// filters, a field added in Categories becoming a column and a filter, and
-// Play's collection zip export and import (§8b).
+// filters, the Gallery view, a field added in Categories becoming a column
+// and a filter, Play's collection zip export and import (§8b), and items got
+// on a trip in Catalog › Photos.
 // Collections are hidden unless the dev server has NEXT_PUBLIC_COLLECTIONS=1
 // (Playwright's own server sets it, playwright.config.ts); against a server
 // started without it these checks are skipped, and say why.
@@ -105,6 +106,59 @@ test("The list view sorts by a column, filters by choice and range, and a row op
   await page.reload();
   await expect(page.getByRole("button", { name: "List", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("collection-row")).toHaveCount(4);
+});
+
+// A 1×1 PNG: the photos are data URLs on the Planner
+const PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+const photo = () => ({ thumbnail: PNG, display: PNG, full: PNG });
+
+test("The gallery view shows only photos, filters as the list does, and opens a photo or its item", async ({ page }) => {
+  const WITH_PHOTOS = PINS.map((p) =>
+    p.id === "col_1" ? { ...p, photoSets: [photo(), photo()] } : p.id === "col_3" ? { ...p, photoSets: [photo()] } : p);
+  await seedTrip(page, { ...SEED, collectionItems: WITH_PHOTOS, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
+  const gallery = page.getByTestId("collection-gallery");
+  await expect(gallery.getByRole("button", { name: /^View photo of/ })).toHaveCount(3);
+  await expect(page.getByText("3 photos", { exact: true })).toBeVisible();
+  await expect(page.getByText("2 items have no photo, so they aren't shown. List shows every item.")).toBeVisible();
+
+  await page.getByLabel("Filter by Edition").selectOption("Limited Release");
+  await expect(gallery.getByRole("button", { name: /^View photo of/ })).toHaveCount(1);
+  await expect(page.getByText("1 of 3 photos")).toBeVisible();
+
+  await gallery.getByRole("button", { name: "View photo of Castle 70th" }).click();
+  await expect(page.getByRole("dialog", { name: "Photo viewer, 1 of 1" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: /Photo viewer/ })).toBeHidden();
+  await gallery.getByRole("button", { name: "Open Castle 70th" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await expect(editor.getByLabel("Name")).toHaveValue("Castle 70th");
+  await editor.getByRole("button", { name: "Cancel" }).click();
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Gallery", exact: true })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("Catalog › Photos shows the photos of items got on the trip, and one opens its item", async ({ page }) => {
+  const ON_TRIP = [
+    pin("col_1", "Figment 50th", { photoSets: [photo()], acquired: { date: "2026-10-15", tripId: "trip_test" } }),
+    pin("col_2", "Hatbox Ghost", { photoSets: [photo()], acquired: { date: "2026-09-01", tripId: "trip_other" } }),
+    pin("col_3", "Castle 70th", { photoSets: [photo()] }),
+  ];
+  await seedTrip(page, { ...SEED, collectionItems: ON_TRIP, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.goto("/catalog");
+  await page.getByRole("button", { name: /Photos/ }).first().click();
+  const card = page.getByTitle("Go to this item").filter({ hasText: "Figment 50th" });
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("Collection");
+  await expect(page.getByTitle("Go to this item").filter({ hasText: /Hatbox Ghost|Castle 70th/ })).toHaveCount(0);
+
+  await card.click();
+  await expect(page).toHaveURL(/\/collection/);
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await expect(editor.getByLabel("Name")).toHaveValue("Figment 50th");
 });
 
 test("A choice field added in Categories becomes a list column and a filter", async ({ page }) => {

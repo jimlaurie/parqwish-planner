@@ -10,7 +10,8 @@
 // fields (CollectionCategoriesModal); "+ Add" and "Add several" add items, and a tile
 // opens its item (CollectionItemModal, CollectionBulkAddModal). Grid shows the
 // category's own layout, List a sortable, filterable table of every field
-// (CollectionTable); the choice is remembered. The rules are shared with Pal
+// (CollectionTable), Gallery just the photos with the same filters
+// (CollectionGallery); the choice is remembered. The rules are shared with Pal
 // (@shared/collection-view). A page shared to the Planner opens here in its
 // editor (src/lib/pending-share.ts). Hidden until Collections ship (lib/feature-flags.ts).
 
@@ -22,10 +23,11 @@ import CollectionItemModal from "@/components/collection/CollectionItemModal";
 import CollectionBulkAddModal from "@/components/collection/CollectionBulkAddModal";
 import CollectionCategoriesModal from "@/components/collection/CollectionCategoriesModal";
 import CollectionTable from "@/components/collection/CollectionTable";
+import CollectionGallery from "@/components/collection/CollectionGallery";
 import { useCollection } from "@/hooks/use-collection";
 import { useUsers } from "@/hooks/use-users";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
-import { useAppStore } from "@/lib/store";
+import { useAppStore, type CollectionViewMode } from "@/lib/store";
 import { useCollectionRestore } from "@/lib/collection-cloud";
 import { takeShareOpen } from "@/lib/pending-share";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
@@ -249,17 +251,23 @@ function StateTabs({ tabs, counts, selected, onSelect }: {
   );
 }
 
-function ViewSwitch({ view, onChange }: { view: "tiles" | "table"; onChange: (v: "tiles" | "table") => void }) {
+const VIEWS: Array<{ id: CollectionViewMode; label: string; icon: string }> = [
+  { id: "tiles", label: "Grid", icon: "▦" },
+  { id: "table", label: "List", icon: "☰" },
+  { id: "gallery", label: "Gallery", icon: "▣" },
+];
+
+function ViewSwitch({ view, onChange }: { view: CollectionViewMode; onChange: (v: CollectionViewMode) => void }) {
   return (
     <div className="flex rounded-lg overflow-hidden" role="group" aria-label="View" style={{ border: "1px solid var(--color-border-subtle)" }}>
-      {(["tiles", "table"] as const).map((v) => (
-        <button key={v} onClick={() => onChange(v)} aria-pressed={view === v} title={v === "tiles" ? "Grid view" : "List view"}
+      {VIEWS.map((v) => (
+        <button key={v.id} onClick={() => onChange(v.id)} aria-pressed={view === v.id} title={`${v.label} view`}
           className="px-2.5 py-1.5 text-xs font-medium cursor-pointer transition-colors duration-150"
           style={{
-            backgroundColor: view === v ? `color-mix(in srgb, ${ACCENT} 14%, transparent)` : "transparent",
-            color: view === v ? ACCENT : "var(--color-text-dim)",
+            backgroundColor: view === v.id ? `color-mix(in srgb, ${ACCENT} 14%, transparent)` : "transparent",
+            color: view === v.id ? ACCENT : "var(--color-text-dim)",
           }}>
-          <span aria-hidden="true">{v === "tiles" ? "▦" : "☰"}</span> {v === "tiles" ? "Grid" : "List"}
+          <span aria-hidden="true">{v.icon}</span> {v.label}
         </button>
       ))}
     </div>
@@ -268,12 +276,15 @@ function ViewSwitch({ view, onChange }: { view: "tiles" | "table"; onChange: (v:
 
 function ItemGrid({ settings, items, category, tab, view, ownerOf, onOpen }: {
   settings: CollectionSettings; items: CollectionItem[]; category: ResolvedCollectionCategory; tab: CollectionState;
-  view: "tiles" | "table"; ownerOf: OwnerOf; onOpen: (item: CollectionItem) => void;
+  view: CollectionViewMode; ownerOf: OwnerOf; onOpen: (item: CollectionItem) => void;
 }) {
   const shown = useMemo(() => visibleCollectionItems(items, category.id, tab), [items, category.id, tab]);
   const fields = useMemo(() => collectionFormFields(settings, category.id), [settings, category.id]);
   if (shown.length === 0) {
     return <p className="mt-8 text-sm text-center" style={{ color: "var(--color-text-secondary)" }}>{emptyCollectionTabText(tab, category.name)}</p>;
+  }
+  if (view === "gallery") {
+    return <CollectionGallery key={category.id} items={shown} fields={fields} onOpen={onOpen} />;
   }
   if (view === "table") {
     return <CollectionTable key={category.id} items={shown} fields={fields} icon={category.icon} tab={tab} onOpen={onOpen} ownerOf={ownerOf} />;

@@ -7,6 +7,9 @@ import type { DayItemType } from "@shared/types/day-item";
 
 // ==================== TYPES ====================
 
+
+/** The Collection page's view: the category's own layout, the list, or photos only. */
+export type CollectionViewMode = "tiles" | "table" | "gallery";
 interface WishFilters {
   selectedTags: string[];
   showCompleted: boolean;
@@ -92,8 +95,8 @@ interface AppState {
 
   // Collection page: each category's own layout ("tiles") or the sortable
   // table of every field ("table"); persisted like catalogView
-  collectionView: "tiles" | "table";
-  setCollectionView: (view: "tiles" | "table") => void;
+  collectionView: CollectionViewMode;
+  setCollectionView: (view: CollectionViewMode) => void;
 
   // Statuses ("closed", "seasonal") unticked in the park catalog lists
   // (CatalogStatusFilter.tsx: Plan's catalog panel and Preview's Add to

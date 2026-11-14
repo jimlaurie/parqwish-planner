@@ -5,12 +5,15 @@
 // date and linked item type, control what shows up on Publish (shares
 // excludedPhotoIds with the Publish page and AI Export, so a toggle here is
 // instantly reflected there), link standalone imported photos to one or more
-// catalog items, and delete standalone photos. Photos already embedded in a
-// ride/outfit/etc. item are read-only here beyond the Publish toggle — see
+// catalog items, and delete standalone photos. Collection items got on this
+// trip show too, and open on the Collection page. Photos already embedded in a
+// ride/outfit/collection item are read-only here beyond the Publish toggle — see
 // the plan's delete-safety rationale (Wish/PackingItem photos can reach Pal
 // on the next Cloud Sync push; TripPhoto never syncs to Pal at all).
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { requestShareOpen } from "@/lib/pending-share";
 import { useAllTripPhotos, PHOTO_CATEGORY_CHIPS, type TripPhotoEntry } from "@/hooks/use-all-trip-photos";
 import { useAppStore } from "@/lib/store";
 import { removeTripPhoto, updateTripPhotoLinks } from "@/hooks/use-trip-photos";
@@ -38,6 +41,7 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
   const [dateFilter, setDateFilter] = useState<string | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const [linkingPhoto, setLinkingPhoto] = useState<TripPhotoEntry | null>(null);
+  const router = useRouter();
 
   const dates = useMemo(
     () => (tripStartDate && tripEndDate ? getDatesBetween(tripStartDate, tripEndDate) : []),
@@ -63,6 +67,12 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
   }, [photos, dateFilter, categoryFilter]);
 
   const handleJumpToItem = (photo: TripPhotoEntry) => {
+    // A collection item opens in its editor on the Collection page (as a shared page does)
+    if (photo.sourceType === "collection") {
+      requestShareOpen({ dest: "collection", itemId: photo.itemId });
+      router.push("/collection");
+      return;
+    }
     if (!onNavigateToItemTab) return;
     if (photo.sourceType === "wish") onNavigateToItemTab("wishes");
     else if (photo.sourceType === "packing") onNavigateToItemTab(photo.categoryId);
@@ -167,7 +177,7 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
             excluded={excludedSet.has(photo.id)}
             onToggleExclude={() => tripId && togglePhotoExclusion(tripId, photo.id)}
             onJumpToItem={
-              photo.sourceType === "wish" || photo.sourceType === "packing"
+              photo.sourceType === "wish" || photo.sourceType === "packing" || photo.sourceType === "collection"
                 ? () => handleJumpToItem(photo)
                 : undefined
             }

@@ -1,7 +1,8 @@
 "use client";
 
 // ==================== ALL TRIP PHOTOS ====================
-// Every photo attached to a trip, from all four sources, with the richer
+// Every photo attached to a trip, from all five sources (the fifth: collection
+// items got on this trip, by their "How I got it" trip, where Collections are on), with the richer
 // metadata (date, category, linked item) the Catalog Photo Gallery needs for
 // filtering — usePublishData's allPhotos is a thin projection of this same
 // data for its simpler {id, url, full, caption} needs. Keep both in sync by
@@ -9,18 +10,19 @@
 
 import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import db, { type Wish, type PackingItem, type TripPhoto } from "@/lib/db";
+import db, { type Wish, type PackingItem, type TripPhoto, type CollectionItem } from "@/lib/db";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
 import { WISH_TAGS, getTagById } from "@shared/constants/tags";
 import { PACKING_TABS, getPackingTab } from "@shared/constants/packing";
 
 export interface TripPhotoEntry {
-  id: string; // composite: wish_<id>_<n> | packing_<id>_<n> | dayitem_<id>_<n> | tphoto_<id>_<n>
+  id: string; // composite: wish_<id>_<n> | packing_<id>_<n> | dayitem_<id>_<n> | tphoto_<id>_<n> | coll_<id>_<n>
   url: string;
   full: string;
   caption: string;
   date: string | null; // YYYY-MM-DD — null when the source item isn't scheduled to a specific day
-  sourceType: "wish" | "packing" | "dayitem" | "tripPhoto";
+  sourceType: "wish" | "packing" | "dayitem" | "tripPhoto" | "collection";
   itemId: string; // the underlying wish/packingItem/dayItem/tripPhoto's own id
   categoryId: string;
   categoryLabel: string;
@@ -34,10 +36,19 @@ export interface TripPhotoEntry {
 // One category chip set spanning both wish tags and packing types, since a
 // photo can come from either side (e.g. "Dining" and "Shopping" exist as
 // both a wish tag and a packing type — see WISH_TAGS/PACKING_TABS).
+const COLLECTION_CHIP = { id: "collection", label: "Collection", icon: "📌" };
+
 export const PHOTO_CATEGORY_CHIPS = [
   ...WISH_TAGS.map((t) => ({ id: t.id, label: t.label, icon: t.icon })),
   ...PACKING_TABS.filter((t) => t.id !== "dining" && t.id !== "shopping").map((t) => ({ id: t.id, label: t.label, icon: t.icon })),
+  ...(COLLECTIONS_AVAILABLE ? [COLLECTION_CHIP] : []),
 ];
+
+/** Collection items got on this trip ("How I got it" names it); none where Collections are off. */
+async function tripCollectionItems(tripId: string): Promise<CollectionItem[]> {
+  if (!COLLECTIONS_AVAILABLE) return [];
+  return db.collectionItems.filter((i) => i.acquired?.tripId === tripId && !!i.photoSets?.length).toArray();
+}
 
 function wishCategory(wish: Wish) {
   const tagId = wish.tags?.find((t) => getTagById(t)) ?? "other";
@@ -86,8 +97,9 @@ export function useAllTripPhotos(tripId: string | null) {
         : [];
 
       const tripPhotos = await db.tripPhotos.where("tripId").equals(tripId).toArray();
+      const collectionItems = await tripCollectionItems(tripId);
 
-      return { wishSelections, wishes, packingSelections, packingItems, itineraryItems, scheduledOnlyWishes, tripPhotos };
+      return { wishSelections, wishes, packingSelections, packingItems, itineraryItems, scheduledOnlyWishes, tripPhotos, collectionItems };
     },
     [tripId]
   );
@@ -181,6 +193,19 @@ export function useAllTripPhotos(tripId: string | null) {
           categoryId: "unlinked", categoryLabel: "Unlinked", categoryIcon: "📷",
           linkedParkDataIds: photo.linkedParkDataIds ?? (photo.linkedParkDataId ? [photo.linkedParkDataId] : []),
           linkedWishIds: photo.linkedWishIds ?? (photo.linkedWishId ? [photo.linkedWishId] : []),
+        });
+      });
+    }
+
+    // Collection items got on this trip, dated by when they were got; read-only here
+    for (const item of rawData.collectionItems) {
+      if (!matchesFilter(item.userId)) continue;
+      const date = item.acquired?.date && /^\d{4}-\d{2}-\d{2}$/.test(item.acquired.date) ? item.acquired.date : null;
+      (item.photoSets ?? []).forEach((ps, idx) => {
+        out.push({
+          id: `coll_${item.id}_${idx}`, url: ps.display || ps.thumbnail, full: ps.full || ps.display, caption: item.name,
+          date, sourceType: "collection", itemId: item.id, linkedItemTitle: item.name || "Collection item",
+          categoryId: COLLECTION_CHIP.id, categoryLabel: COLLECTION_CHIP.label, categoryIcon: COLLECTION_CHIP.icon,
         });
       });
     }

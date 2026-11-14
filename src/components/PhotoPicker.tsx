@@ -1,7 +1,14 @@
 "use client";
 
+// Photos for an item editor (wishes, packing, collection items): add from a
+// file, or paste a copied image with ⌘V / Ctrl+V or the Paste button
+// (src/lib/photo-paste.ts).
+
 import { useRef, useState } from "react";
+import { useIsPresent } from "framer-motion";
 import { compressImageMultiRes, type PhotoResolutions } from "@/lib/image-utils";
+import { canReadClipboardImages, pasteNote, readClipboardImages } from "@/lib/photo-paste";
+import { usePhotoPaste } from "@/hooks/use-photo-paste";
 import PhotoViewer from "@/components/PhotoViewer";
 
 interface PhotoPickerProps {
@@ -36,46 +43,58 @@ export default function PhotoPicker({
     : photos;
   const totalPhotos = hasMultiRes ? photoSets.length : photos.length;
 
-  const handleAddPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  const [note, setNote] = useState<string | null>(null);
+  // A dialog fading out stays mounted; it mustn't take a paste meant for the next one
+  const present = useIsPresent();
+  const [canPasteButton] = useState(canReadClipboardImages);
 
-    const remaining = maxPhotos - totalPhotos;
-    const toProcess = Math.min(files.length, remaining);
-
+  const addFiles = async (files: File[]) => {
+    const toProcess = files.slice(0, Math.max(0, maxPhotos - totalPhotos));
+    if (toProcess.length < files.length) setNote(`Up to ${maxPhotos} photos per item.`);
     if (onChangeMultiRes) {
-      // Multi-res path
       const newSets: PhotoResolutions[] = [];
-      for (let i = 0; i < toProcess; i++) {
+      for (const file of toProcess) {
         try {
-          const set = await compressImageMultiRes(files[i]);
-          newSets.push(set);
-        } catch {
-          // Skip failed images
+          newSets.push(await compressImageMultiRes(file));
+        } catch (error) {
+          console.error("[PhotoPicker] Couldn't read a photo:", error);
         }
       }
-      if (newSets.length > 0) {
-        onChangeMultiRes([...photoSets, ...newSets]);
-      }
+      if (newSets.length > 0) onChangeMultiRes([...photoSets, ...newSets]);
     } else if (onChange) {
       // Legacy single-res path
       const { compressImage } = await import("@/lib/image-utils");
       const newPhotos: string[] = [];
-      for (let i = 0; i < toProcess; i++) {
+      for (const file of toProcess) {
         try {
-          const compressed = await compressImage(files[i]);
-          newPhotos.push(compressed);
-        } catch {
-          // Skip failed images
+          newPhotos.push(await compressImage(file));
+        } catch (error) {
+          console.error("[PhotoPicker] Couldn't read a photo:", error);
         }
       }
-      if (newPhotos.length > 0) {
-        onChange([...photos, ...newPhotos]);
-      }
+      if (newPhotos.length > 0) onChange([...photos, ...newPhotos]);
     }
+  };
 
+  const handleAddPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    setNote(null);
+    await addFiles(Array.from(files));
     // Reset input so same file can be re-selected
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  usePhotoPaste((files) => {
+    setNote(null);
+    void addFiles(files);
+  }, present);
+
+  const handlePasteButton = async () => {
+    setNote(null);
+    const read = await readClipboardImages();
+    if (read.ok && read.files.length > 0) await addFiles(read.files);
+    else setNote(pasteNote(read));
   };
 
   const handleRemove = (index: number) => {
@@ -126,11 +145,30 @@ export default function PhotoPicker({
                        border-2 border-dashed border-white/20 hover:border-white/40
                        transition-colors text-white/40 hover:text-white/60"
             aria-label="Add photo"
+            title="Add photo (or paste one with ⌘V / Ctrl+V)"
           >
             <span className="text-lg">+</span>
           </button>
         )}
+        {totalPhotos < maxPhotos && canPasteButton && (
+          <button
+            type="button"
+            onClick={() => void handlePasteButton()}
+            className="w-12 h-12 rounded-lg flex items-center justify-center cursor-pointer
+                       border-2 border-dashed border-white/20 hover:border-white/40
+                       transition-colors text-white/40 hover:text-white/60 text-[10px] font-semibold"
+            aria-label="Paste photo"
+            title="Paste a copied photo"
+          >
+            Paste
+          </button>
+        )}
       </div>
+      {note && (
+        <p className="mt-1 text-xs" role="status" style={{ color: "var(--color-text-secondary)" }}>
+          {note}
+        </p>
+      )}
 
       <input
         ref={fileInputRef}

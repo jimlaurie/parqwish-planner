@@ -98,14 +98,16 @@ function Collection() {
   const allItems = useMemo(() => (settings ? itemsForView(settings, storedItems) : []), [settings, storedItems]);
   // The person filter (Everyone by default) shows once the items have two or more owners
   const users = useMemo(() => orderCollectionTripUsers(tripUsers.map((u) => ({ id: u.id, name: u.name, color: u.color }))), [tripUsers]);
-  const ownerChips = useMemo(() => collectionOwnerChips(allItems, users), [allItems, users]);
-  const owner = pickCollectionOwnerFilter(ownerChips, shownOwner);
+  // Which chips show is the account's; their counts are the category on screen's (ownerChips below)
+  const allOwnerChips = useMemo(() => collectionOwnerChips(allItems, users), [allItems, users]);
+  const owner = pickCollectionOwnerFilter(allOwnerChips, shownOwner);
   const items = useMemo(() => filterCollectionByOwner(allItems, owner), [allItems, owner]);
-  const ownerOf = useMemo(() => ownerLookup(ownerChips, users), [ownerChips, users]);
+  const ownerOf = useMemo(() => ownerLookup(allOwnerChips, users), [allOwnerChips, users]);
   const categories = useMemo(() => (settings ? viewCategories(settings, storedItems) : []), [settings, storedItems]);
   const categoryId = pickCollectionCategory(categories.map((c) => c.id), shownCategory);
   const category = categories.find((c) => c.id === categoryId);
   const counts = useMemo(() => collectionStateCounts(items, categoryId ?? ""), [items, categoryId]);
+  const ownerChips = useMemo(() => collectionOwnerChips(allItems, users, categoryId ?? ""), [allItems, users, categoryId]);
   const tabs = category ? collectionTabs(category.trades, counts) : [];
   const tab = pickCollectionTab(tabs, shownTab);
 

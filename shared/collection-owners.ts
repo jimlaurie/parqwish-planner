@@ -58,25 +58,37 @@ export function filterCollectionByOwner(items: CollectionItem[], filter: string)
   });
 }
 
-/**
- * The person filter's chips: Everyone, each Trip User who owns items (in the
- * users' order), then Shared when there are shared items. None when the items
- * have fewer than two owners, so one person's collection shows no filter.
- * An owner who isn't a Trip User here gets no chip (their items show under Everyone).
- */
-export function collectionOwnerChips(items: CollectionItem[], users: CollectionTripUser[]): CollectionOwnerChip[] {
+/** Items per owner. */
+function countByOwner(items: CollectionItem[]): Map<string, number> {
   const owned = new Map<string, number>();
   for (const item of items) {
     const owner = collectionOwnerOf(item);
     owned.set(owner, (owned.get(owner) ?? 0) + 1);
   }
+  return owned;
+}
+
+/**
+ * The person filter's chips: Everyone, each Trip User who owns items (in the
+ * users' order), then Shared when there are shared items. None when the items
+ * have fewer than two owners, so one person's collection shows no filter.
+ * An owner who isn't a Trip User here gets no chip (their items show under Everyone).
+ * Which chips show is decided by the whole account, so they don't come and go
+ * between categories; with `categoryId` each chip counts only that category's
+ * items, as the Have / Want / Trade tabs beside it do.
+ */
+export function collectionOwnerChips(items: CollectionItem[], users: CollectionTripUser[], categoryId?: string): CollectionOwnerChip[] {
+  const owners = countByOwner(items);
+  const counted = categoryId === undefined ? items : items.filter((i) => i.category === categoryId);
+  const owned = categoryId === undefined ? owners : countByOwner(counted);
+  const hasShared = owners.has(COLLECTION_SHARED_OWNER);
   const shared = owned.get(COLLECTION_SHARED_OWNER) ?? 0;
-  const people = users.filter((u) => owned.has(u.id));
-  if (people.length + (shared ? 1 : 0) < 2) return [];
+  const people = users.filter((u) => owners.has(u.id));
+  if (people.length + (hasShared ? 1 : 0) < 2) return [];
   return [
-    { id: COLLECTION_EVERYONE, label: "Everyone", count: items.length },
+    { id: COLLECTION_EVERYONE, label: "Everyone", count: counted.length },
     ...people.map((u) => ({ id: u.id, label: u.name, color: u.color, count: (owned.get(u.id) ?? 0) + shared })),
-    ...(shared ? [{ id: COLLECTION_SHARED_OWNER, label: "Shared", count: shared }] : []),
+    ...(hasShared ? [{ id: COLLECTION_SHARED_OWNER, label: "Shared", count: shared }] : []),
   ];
 }
 

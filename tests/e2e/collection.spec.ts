@@ -290,6 +290,26 @@ test("A family's collection shows everyone's items, filters by person, and an it
   await expect(filter.getByRole("button", { name: /Sam/ })).toHaveCount(0);
 });
 
+test("The person chips count the category on screen, as the Have and Want tabs do", async ({ page }) => {
+  const SAM = { id: "user_guest_1", name: "Sam", color: "#87CEEB", role: "guest", createdAt: T, updatedAt: T };
+  const MIXED = [
+    pin("col_1", "Figment 50th", { userId: "user_primary" }),
+    pin("col_2", "Hatbox Ghost", { userId: "user_primary", state: "want" }),
+    pin("col_3", "Castle 70th", { userId: "shared" }),
+    pin("col_4", "Duffy", { userId: "user_guest_1", category: "plush" }),
+  ];
+  await seedTrip(page, { ...SEED, users: [...SEED.users, SAM], collectionItems: MIXED, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  const filter = page.getByRole("group", { name: "Whose items" });
+  const counts = async () => (await filter.getByRole("button").allTextContents()).map((t) => t.replace(/\s+/g, " ").trim());
+  // Pins: 3 items (Have 2, Want 1); Sam owns only the plush, so his chip shows just the shared pin
+  await expect.poll(counts).toEqual(["Everyone 3", "Alex 3", "Sam 1", "Shared 1"]);
+  await expect(page.getByRole("tab", { name: /Have/ })).toContainText("2");
+  await expect(page.getByRole("tab", { name: /Want/ })).toContainText("1");
+  await page.getByRole("navigation", { name: "Collection categories" }).getByRole("button", { name: /Plush/ }).click();
+  await expect.poll(counts).toEqual(["Everyone 1", "Alex 0", "Sam 1", "Shared 0"]);
+});
+
 test("One person's collection has no person filter, and a new item is theirs", async ({ page }) => {
   await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
   await openCollection(page);

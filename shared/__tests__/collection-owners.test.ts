@@ -53,6 +53,23 @@ describe("the person filter", () => {
       .toEqual([COLLECTION_EVERYONE, "user_primary", COLLECTION_SHARED_OWNER]);
   });
 
+  it("counts only the category on screen, but keeps every owner's chip", () => {
+    // Mom: a pin and a plush; Sam: a plush only; one shared pin
+    const mixed = [
+      item("a", "user_primary"), { ...item("p", "user_primary"), category: "plush" },
+      { ...item("q", "user_guest_1"), category: "plush" }, item("d", "shared"),
+    ];
+    expect(collectionOwnerChips(mixed, [MOM, KID], "pins")).toEqual([
+      { id: COLLECTION_EVERYONE, label: "Everyone", count: 2 },
+      { id: "user_primary", label: "Mom", color: "#FFD700", count: 2 },
+      { id: "user_guest_1", label: "Sam", color: "#87CEEB", count: 1 },
+      { id: COLLECTION_SHARED_OWNER, label: "Shared", count: 1 },
+    ]);
+    expect(collectionOwnerChips(mixed, [MOM, KID], "plush").map((c) => c.count)).toEqual([2, 1, 1, 0]);
+    // The whole account decides whether there's a filter at all
+    expect(collectionOwnerChips(mixed, [MOM, KID], "ears").map((c) => c.count)).toEqual([0, 0, 0, 0]);
+  });
+
   it("keeps the chosen filter while it's a chip, else goes back to Everyone", () => {
     const chips = collectionOwnerChips(ITEMS, [MOM, KID]);
     expect(pickCollectionOwnerFilter(chips, "user_guest_1")).toBe("user_guest_1");

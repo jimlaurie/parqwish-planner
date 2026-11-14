@@ -17,12 +17,18 @@ describe("built-in collection categories", () => {
     expect(ids).not.toContain(UNCATEGORISED_COLLECTION.id);
   });
 
-  it("includes Pressed Pennies and Autographs as dated lists without trading (design §10)", () => {
+  it("includes Coins & Medallions (pressed coins) and Autographs as dated lists without trading (design §10)", () => {
     for (const id of ["pressed-pennies", "autographs"]) {
       const c = getBuiltInCollectionCategory(id)!;
       expect(c.layout).toBe("list");
       expect(c.trades).toBe(false);
     }
+  });
+
+  it("names Bags and Coins & Medallions by their old ids, so stored items keep their category", () => {
+    expect(getBuiltInCollectionCategory("loungefly")?.name).toBe("Bags");
+    expect(getBuiltInCollectionCategory("pressed-pennies")?.name).toBe("Coins & Medallions");
+    expect(getBuiltInCollectionCategory("pressed-pennies")?.fields.find((f) => f.id === "coin")?.choices).toContain("Medallion");
   });
 
   it("trades only pins by default", () => {

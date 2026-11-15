@@ -354,8 +354,10 @@ export default function WishFormModal({
                 */}
               </div>
 
-              {/* Max Wait Time — shown when tagged as a ride or linked to a ride */}
-              {(tags.includes("ride") || linkedParkDataItem?.type === "ride") && (
+              {/* Max Wait Time — shown when tagged Rides or linked to a ride. The tag
+                  id is "rides" (shared/constants/tags.ts); until 15 Nov 2026 this
+                  checked "ride", so a custom ride wish never showed the field */}
+              {(tags.includes("rides") || tags.includes("ride") || linkedParkDataItem?.type === "ride") && (
                 <div>
                   <label
                     className="block text-sm font-medium mb-1.5"

@@ -71,3 +71,19 @@ test("Delete everywhere asks first, then the wish is gone from every trip", asyn
   await expect(wishCard(page, "Space Mountain")).toBeVisible();
   await expect(wishCard(page, "The Dapper Dans")).toHaveCount(0);
 });
+
+test("A custom wish tagged Rides gets a Max Wait, and it saves", async ({ page }) => {
+  // The tag id is "rides"; until 15 Nov 2026 the editor checked "ride", so only
+  // catalog-linked rides showed Max Wait (found filming the Guide's how-to videos)
+  await page.getByRole("button", { name: "+ Custom wish" }).click();
+  const add = page.getByRole("dialog", { name: "Add Wish" });
+  await add.getByPlaceholder(/Ride Space Mountain/).fill("Mine Train");
+  await expect(add.getByPlaceholder("e.g., 45")).toHaveCount(0);
+  await add.getByRole("button", { name: /Rides$/ }).click();
+  await add.getByPlaceholder("e.g., 45").fill("30");
+  await add.getByRole("button", { name: "Save" }).click();
+  await expect(add).toBeHidden();
+  const saved = (await liveWishes(page)).find((w) => w.title === "Mine Train") as (Wish & { maxWaitTime?: number; tags?: string[] }) | undefined;
+  expect(saved?.tags).toContain("rides");
+  expect(saved?.maxWaitTime).toBe(30);
+});

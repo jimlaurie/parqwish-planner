@@ -81,6 +81,9 @@ export default function WishCatalogPickerModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Add from Catalog"
           >
             {/* Header */}
             <div className="px-6 pt-6 pb-4">
@@ -222,6 +225,8 @@ export default function WishCatalogPickerModal({
                           <button
                             onClick={() => handleAdd(item.id)}
                             disabled={isAdding}
+                            aria-label={`Add ${item.title} to this trip`}
+                            title={`Add ${item.title} to this trip`}
                             className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
                                        cursor-pointer transition-all duration-150 hover:brightness-110
                                        disabled:opacity-40"

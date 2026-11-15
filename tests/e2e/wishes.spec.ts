@@ -1,7 +1,7 @@
 // Wishes on the Plan page: add a custom wish, edit it, remove it from the
 // trip (with Undo), and delete it everywhere.
 import { test, expect, type Page } from "@playwright/test";
-import { seedTrip, fakeParkData, atParkTime, rows } from "./helpers";
+import { seedTrip, fakeParkData, atParkTime, rows, SEED } from "./helpers";
 
 type Wish = { id: string; title: string; userId?: string; deletedAt?: number };
 type Selection = { wishId: string; tripId: string; deletedAt?: number };
@@ -86,4 +86,17 @@ test("A custom wish tagged Rides gets a Max Wait, and it saves", async ({ page }
   const saved = (await liveWishes(page)).find((w) => w.title === "Mine Train") as (Wish & { maxWaitTime?: number; tags?: string[] }) | undefined;
   expect(saved?.tags).toContain("rides");
   expect(saved?.maxWaitTime).toBe(30);
+});
+
+test("My saved wishes is a dialog whose + buttons say which wish they add", async ({ page }) => {
+  // Until 15 Nov 2026 the picker had no dialog role and each add button was a bare "+",
+  // so a screen reader said only "plus" (found filming the Guide's how-to videos)
+  await seedTrip(page, { ...SEED, wishes: [...SEED.wishes, { id: "w_dole", title: "Dole Whip", tags: ["eats"], priority: "C", createdAt: 1, updatedAt: 1, userId: "user_primary" }] });
+  await page.goto("/plan");
+  await page.getByRole("button", { name: "My saved wishes" }).click();
+  const picker = page.getByRole("dialog", { name: "Add from Catalog" });
+  await picker.getByRole("button", { name: "Add Dole Whip to this trip" }).click();
+  await picker.getByRole("button", { name: "Done" }).click();
+  await expect(wishCard(page, "Dole Whip")).toBeVisible();
+  expect((await rows<Selection>(page, "tripWishSelections")).some((s) => s.wishId === "w_dole" && !s.deletedAt)).toBe(true);
 });

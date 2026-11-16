@@ -337,3 +337,54 @@ test("Removing a Trip User hands their collection items to the primary user", as
   await page.getByRole("button", { name: "Remove", exact: true }).click();
   await expect.poll(async () => (await rows<Item & { userId?: string }>(page, "collectionItems"))[0]?.userId).toBe("user_primary");
 });
+
+test("Preview lists the day's Wants and Trades; ticking asks how, and unticking undoes it", async ({ page }) => {
+  const DAY = "2026-10-14"; // the test trip's first day, which Preview opens on
+  const items = [
+    pin("col_w", "Figment 50th", { state: "want", priority: "E", days: [DAY] }),
+    pin("col_t", "Hatbox Ghost", { state: "trade", quantity: 2, days: [DAY] }),
+    pin("col_x", "Castle 70th", { state: "want", days: ["2026-10-15"] }),
+  ];
+  await seedTrip(page, { ...SEED, collectionItems: items, collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.goto("/preview");
+  const panel = page.getByTestId("collection-day-panel");
+  await expect(panel.getByTestId("collection-day-row")).toHaveCount(2);
+  await expect(panel.getByTestId("collection-day-row").nth(0)).toContainText("Look for · Pins");
+  await expect(panel.getByTestId("collection-day-row").nth(1)).toContainText("Bring to trade · ×2 · Pins");
+
+  await panel.getByRole("checkbox", { name: "Tick Figment 50th" }).click();
+  await panel.getByRole("group", { name: /How did you get it/ }).getByRole("button", { name: "Traded" }).click();
+  await expect(panel.getByTestId("collection-day-row").nth(0)).toContainText("Got it · Traded");
+  await panel.getByRole("checkbox", { name: "Tick Hatbox Ghost" }).click();
+  await panel.getByRole("group", { name: /Traded one of 2/ }).getByRole("button", { name: "Traded" }).click();
+  await expect(panel.getByTestId("collection-day-row").nth(1)).toContainText("Traded one · 1 left");
+  type Ticked = Item & { quantity?: number; acquired?: { date?: string; how?: string; tripId?: string } };
+  const byId = async () => Object.fromEntries((await rows<Ticked>(page, "collectionItems")).map((i) => [i.id, i]));
+  let saved = await byId();
+  expect([saved.col_w.state, saved.col_w.acquired]).toEqual(["have", { date: DAY, how: "traded", tripId: "trip_test" }]);
+  expect([saved.col_t.state, saved.col_t.quantity]).toEqual(["trade", 1]);
+
+  await panel.getByRole("checkbox", { name: "Untick Figment 50th" }).click();
+  await expect(panel.getByTestId("collection-day-row").nth(0)).toContainText("Look for · Pins");
+  saved = await byId();
+  expect([saved.col_w.state, saved.col_w.acquired]).toEqual(["want", undefined]);
+});
+
+test("A Want's Days row puts it on the trip's days, and Preview shows it there", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: [pin("col_w", "Figment 50th", { state: "want", priority: "C" })], collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.getByRole("tab", { name: /Want/ }).click();
+  await page.getByTestId("collection-item").filter({ hasText: "Figment 50th" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  const days = editor.getByRole("group", { name: "On these days" });
+  await expect(days.getByRole("button")).toHaveCount(4); // Oct 14 to 17
+  await days.getByRole("button", { name: "Wed, Oct 14" }).click();
+  await expect(days.getByRole("button", { name: "✓ Wed, Oct 14" })).toHaveAttribute("aria-pressed", "true");
+  await editor.getByRole("button", { name: "Save" }).click();
+  await expect(editor).toBeHidden();
+  const [saved] = await rows<Item & { days?: string[] }>(page, "collectionItems");
+  expect(saved.days).toEqual(["2026-10-14"]);
+  await page.goto("/preview");
+  await expect(page.getByTestId("collection-day-panel")).toContainText("Figment 50th");
+});

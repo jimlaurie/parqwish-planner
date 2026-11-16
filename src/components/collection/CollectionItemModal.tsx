@@ -8,6 +8,8 @@
 // for Gone, how many, tags, a link and notes. Delete asks first. The rules are
 // shared with Pal (@shared/collection-editor); saving keeps what the form
 // doesn't show (hidden fields' values, the trip and shops it came from).
+// A Want or Trade has a Days row (§14): the selected trip's dates, to put it
+// on those days' lists (Preview's Collection, Pal's Home).
 
 import { useEffect, useMemo, useState } from "react";
 import PhotoPicker from "@/components/PhotoPicker";
@@ -25,6 +27,9 @@ import { COLLECTION_TAB_LABELS } from "@shared/collection-view";
 import type { Priority } from "@shared/types/common";
 import type { CollectionFieldDef, CollectionState } from "@shared/types/collection";
 import { collectionOwnerChoices, type CollectionTripUser } from "@shared/collection-owners";
+import { canPlanCollectionDay, collectionDayChoices, collectionDayLabel, setCollectionDays } from "@shared/collection-days";
+import { useTrips } from "@/hooks/use-trips";
+import { datesBetween } from "@/lib/dates";
 
 interface Props {
   visible: boolean;
@@ -56,6 +61,8 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
   const [photoSets, setPhotoSets] = useState<PhotoSet[]>(item?.photoSets ?? []);
   const [problem, setProblem] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [days, setDays] = useState<string[]>(item?.days ?? []);
+  const dayChoices = useDayChoices(item?.days);
 
   useEffect(() => {
     if (!visible) return;
@@ -63,6 +70,7 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
     setPhotoSets(item?.photoSets ?? []);
     setProblem("");
     setConfirmDelete(false);
+    setDays(item?.days ?? []);
   }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const set: SetField = (key, value) => setDraft((d) => ({ ...d, [key]: value }));
@@ -76,7 +84,9 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
     if (why) { setProblem(why); return; }
     try {
       const now = Date.now();
-      await saveCollectionItem(collectionItemFromDraft(draft, fields, photoSets, item, newCollectionItemId(now), currentUserId, now));
+      const drafted = collectionItemFromDraft(draft, fields, photoSets, item, newCollectionItemId(now), currentUserId, now);
+      // Days stay as they were on a Have or Gone (history); the row shows only for a Want or Trade
+      await saveCollectionItem(canPlanCollectionDay(drafted) ? setCollectionDays(drafted, days, now) : drafted);
       onClose();
     } catch (e) {
       console.error("[CollectionItemModal] saving failed:", e);
@@ -122,6 +132,7 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
           <div><Label>Whose is it?</Label>
             <Chips label="Whose is it?" clearable={false} value={draft.owner} onChange={(v) => v && set("owner", v)} options={owners} /></div>
         )}
+        {canPlanCollectionDay(draft) && <DaysRow choices={dayChoices} days={days} onChange={setDays} />}
         <MoreDetails draft={draft} set={set} fields={fields} startOpen={!!item} />
       </div>
       {problem && <p role="alert" className="mt-4 text-sm" style={{ color: "var(--color-error)" }}>{problem}</p>}
@@ -132,6 +143,41 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
 }
 
 // ==================== SECTIONS ====================
+
+/** The selected trip's dates (else the day picked in Play), plus any the item is already on. */
+function useDayChoices(current: string[] | undefined): string[] {
+  const { currentTrip } = useTrips();
+  const picked = useAppStore((s) => s.selectedPlayDate);
+  const tripDates = currentTrip?.startDate && currentTrip.endDate ? datesBetween(currentTrip.startDate, currentTrip.endDate) : [];
+  return collectionDayChoices(tripDates, picked, current);
+}
+
+/** Which days' lists the Want or Trade is on. */
+function DaysRow({ choices, days, onChange }: { choices: string[]; days: string[]; onChange: (days: string[]) => void }) {
+  if (!choices.length) return null;
+  const toggle = (d: string) => onChange(days.includes(d) ? days.filter((x) => x !== d) : [...days, d]);
+  return (
+    <div>
+      <Label>On these days</Label>
+      <div className="flex flex-wrap gap-2" role="group" aria-label="On these days">
+        {choices.map((d) => {
+          const on = days.includes(d);
+          return (
+            <button key={d} type="button" aria-pressed={on} onClick={() => toggle(d)} data-testid={`collection-day-${d}`}
+              className="px-3 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-colors"
+              style={{
+                backgroundColor: on ? ACCENT : "var(--color-surface-raised)",
+                color: on ? "var(--color-bg-deep)" : "var(--color-text-primary)",
+                border: `1px solid ${on ? ACCENT : "var(--color-border-default)"}`,
+              }}>
+              {on ? "✓ " : ""}{collectionDayLabel(d)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function MoreDetails({ draft, set, fields, startOpen }: {
   draft: CollectionDraftFields; set: SetField; fields: CollectionFieldDef[]; startOpen: boolean;

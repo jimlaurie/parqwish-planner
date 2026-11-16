@@ -69,10 +69,36 @@ export interface CollectionItem extends Timestamped {
   externalUrl?: string;
   /** Made from a bought shopping item. */
   sourceShoppingItemId?: string;
-  /** Shopping items made to hunt for this Want (phase 2). */
+  /** Unused: "Hunt for this" became + Day (16 Nov 2026). Nothing writes it. */
   huntShoppingItemIds?: string[];
+  /** Park days (YYYY-MM-DD) a Want is looked for or a Trade brought on (+ Day; shared/collection-days.ts). */
+  days?: string[];
+  /** Day → the Got it / Traded it tick made on Home for that day, so unticking can undo it. */
+  dayTicks?: Record<string, CollectionDayTick>;
   /** Owner (Trip User), as catalog items. */
   userId?: string;
+}
+
+/** The parts of an item a day's tick changes. */
+export interface CollectionDayTickParts {
+  state: CollectionState;
+  quantity?: number;
+  acquired?: CollectionItem["acquired"];
+  gone?: CollectionItem["gone"];
+}
+
+/** A Got it (Want) or Traded it (Trade) tick on a day: what it changed, so unticking can put it back. */
+export interface CollectionDayTick {
+  /** What the item was on the day's list for. */
+  from: "want" | "trade";
+  /** How it arrived (a Want) or left (a Trade). */
+  how: CollectionAcquiredHow | CollectionGoneHow;
+  /** When it was ticked (epoch ms). */
+  at: number;
+  /** The parts as they were before the tick. */
+  before: CollectionDayTickParts;
+  /** The parts as the tick wrote them. Unticking restores a part only while it still reads this. */
+  after: CollectionDayTickParts;
 }
 
 /** A field a category's items can fill in. Built-in fields (shared/constants) use this shape too. */

@@ -35,6 +35,8 @@ import PlayDesktopLayout from "@/components/play/PlayDesktopLayout";
 import PlayMobileLayout from "@/components/play/PlayMobileLayout";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
 import AddDayItemModal from "@/components/play/AddDayItemModal";
+import CollectionDayPanel from "@/components/collection/CollectionDayPanel";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
 type MobileTab = "pool" | "timeline";
 
@@ -352,6 +354,9 @@ export default function PreviewPage() {
           dayTabs={<DatePickerBar startDate={currentTrip.startDate} endDate={currentTrip.endDate} inline />}
           hours={<><ParkHoursLine date={selectedPlayDate} inline /><DayWeatherLine date={selectedPlayDate} /></>}
         />
+
+        {/* The day's collection Wants and Trades (+ Day); hidden when there are none */}
+        {COLLECTIONS_AVAILABLE && selectedPlayDate && <CollectionDayPanel date={selectedPlayDate} tripId={currentTrip.id} />}
 
         {/* Layout: Desktop vs Mobile */}
         {isDesktop ? (

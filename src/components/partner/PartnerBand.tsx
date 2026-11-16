@@ -25,6 +25,7 @@ export default function PartnerBand() {
       role="region"
       aria-label={`Planning with ${partner.name}`}
       data-testid="partner-band"
+      data-partner-band
     >
       <div className="max-w-7xl mx-auto px-3 md:px-4 h-8 flex items-center gap-2 text-xs">
         <span className="opacity-80 hidden sm:inline">Planning with</span>

@@ -622,3 +622,9 @@ body {
    the current theme (night is the default, day is [data-theme="light"]). */
 .partner-scope { --partner-accent: var(--partner-accent-dark); }
 [data-theme="light"] .partner-scope { --partner-accent: var(--partner-accent-light); }
+
+/* Height of the partner band above the top bar (PartnerBand, h-8), 0 when
+   there's none: Home's trip sidebar (TripSidebar) fits under both, so its
+   + New Trip never drops below the bottom of the window. */
+:root { --partner-band-h: 0px; }
+:root:has([data-partner-band]) { --partner-band-h: 2rem; }

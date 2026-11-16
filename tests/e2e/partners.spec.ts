@@ -4,7 +4,7 @@
 // an unreachable one falls back to the copy cached here, still date-checked.
 // The clock is Thu 15 Oct 2026 (helpers.ts PARK_MORNING).
 import { test, expect, type Page } from "@playwright/test";
-import { seedTrip, atParkTime, rows } from "./helpers";
+import { seedTrip, atParkTime, rows, SEED } from "./helpers";
 
 const BRANDING = {
   id: "sample-hotel",
@@ -127,4 +127,21 @@ test("× hides the partner on this device", async ({ page }) => {
   await expect(band(page)).toHaveCount(0);
   await page.reload();
   await expect(card(page)).toHaveCount(0);
+});
+
+test("With a partner's card, the Home sidebar still fits the window and Recent Trips starts closed", async ({ page }) => {
+  await servePartnerFile(page, { status: 200, body: BRANDING });
+  const past = { ...SEED.trips[0], id: "trip_past", name: "Past Trip", startDate: "2026-08-01", endDate: "2026-08-03" };
+  // Enough future trips that the list has to scroll inside the sidebar
+  const future = Array.from({ length: 10 }, (_, i) => ({ ...SEED.trips[0], id: `trip_f${i}`, name: `Future ${i}`, startDate: `2027-0${(i % 9) + 1}-01`, endDate: `2027-0${(i % 9) + 1}-02` }));
+  await seedTrip(page, { ...SEED, trips: [...SEED.trips, past, ...future] });
+  await page.goto("/with?id=sample-hotel");
+  await expect(card(page)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Recent Trips section" })).toHaveAttribute("aria-expanded", "false");
+  // The band sits above the top bar: + New Trip, at the sidebar's foot, must still be in view without scrolling
+  const newTrip = (await page.getByRole("button", { name: "+ New Trip" }).boundingBox())!;
+  expect(newTrip.y + newTrip.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  // Without a partner, Recent Trips is open as before
+  await band(page).getByRole("button", { name: "Stop showing Sample Hotel" }).click();
+  await expect(page.getByRole("button", { name: "Recent Trips section" })).toHaveAttribute("aria-expanded", "true");
 });

@@ -6,6 +6,7 @@ import UserPanel from "@/components/UserPanel";
 import NewTripMenu, { type NewTripActions } from "@/components/NewTripMenu";
 import PartnerSidebarCard from "@/components/partner/PartnerSidebarCard";
 import type { Trip } from "@/lib/db";
+import { usePartner } from "@/lib/partners";
 import { formatTripDates } from "@/lib/trip-dates";
 
 // ==================== TYPES ====================
@@ -186,8 +187,13 @@ export default function TripSidebar({
   onNewTemplate,
   onSetDefaultTemplate,
 }: TripSidebarProps) {
+  // A partner's card takes room at the top, so Recent Trips starts closed
+  // under it (keyed, so it closes when the card arrives after loading)
+  const partnerShowing = !!usePartner();
   return (
-    <div className="flex flex-col h-full py-4">
+    // At most the window's height under the top bar (and a partner's band):
+    // the trip list scrolls inside it, so + New Trip never drops below the window
+    <div className="flex flex-col h-full py-4" style={{ maxHeight: "calc(100dvh - 3.5rem - var(--partner-band-h))" }}>
       {/* A partner link's card, where the star compass used to be */}
       <PartnerSidebarCard />
 
@@ -201,12 +207,14 @@ export default function TripSidebar({
           onEditTrip={onEditTrip}
         />
         <TripSection
+          key={partnerShowing ? "recent-partner" : "recent"}
           title="Recent Trips"
           trips={recentTrips}
           currentTripId={currentTripId}
           onSelectTrip={onSelectTrip}
           onEditTrip={onEditTrip}
           previewCount={2}
+          defaultOpen={!partnerShowing}
         />
         <TripSection
           title="Archived Trips"

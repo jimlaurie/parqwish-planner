@@ -307,11 +307,37 @@ function pushWrites(uid: string): (write: CollectionWrite) => void {
 }
 
 let _retryTimer: ReturnType<typeof setTimeout> | null = null;
+let _stopWaking: (() => void) | null = null;
+
+/**
+ * While a failed start waits for its retry (up to 5 minutes), start again at
+ * once when the browser comes back online, the tab is shown again, or the
+ * collection is edited: nothing pushes or listens until a start works. Pal's
+ * twin is utils/collectionWake.ts (found 17 Nov 2026: an edit made offline
+ * waited for the retry).
+ */
+function retrySoonerWhenBack(uid: string): void {
+  if (typeof window === "undefined") return;
+  const retryNow = () => {
+    if (!_retryTimer) return;
+    console.log("[collection-cloud] back: starting again now");
+    startCollectionSync(uid).catch((e) => console.error("[collection-cloud] restart failed:", e));
+  };
+  const onVisible = () => { if (document.visibilityState === "visible") retryNow(); };
+  window.addEventListener("online", retryNow);
+  document.addEventListener("visibilitychange", onVisible);
+  onCollectionWrite(retryNow);
+  _stopWaking = () => {
+    window.removeEventListener("online", retryNow);
+    document.removeEventListener("visibilitychange", onVisible);
+  };
+}
 
 /**
  * Pull, push this browser's changes, then listen. Call for an Apple account
  * (wish-sync's startSync). A start that fails (offline at load) tries again
- * after `collectionSyncRetryDelay`, until it works or sync stops.
+ * after `collectionSyncRetryDelay`, until it works or sync stops, and at once
+ * when the browser is back online (retrySoonerWhenBack).
  */
 export async function startCollectionSync(uid: string, attempt = 0): Promise<void> {
   stopCollectionSync();
@@ -326,6 +352,7 @@ export async function startCollectionSync(uid: string, attempt = 0): Promise<voi
       _retryTimer = null;
       startCollectionSync(uid, attempt + 1).catch((e) => console.error("[collection-cloud] retry failed:", e));
     }, delay);
+    retrySoonerWhenBack(uid);
   }
 }
 
@@ -345,6 +372,8 @@ async function startOnce(uid: string, run: number): Promise<void> {
 export function stopCollectionSync(): void {
   _run++;
   if (_retryTimer) { clearTimeout(_retryTimer); _retryTimer = null; }
+  _stopWaking?.();
+  _stopWaking = null;
   _failureFloor = undefined;
   _stopping = true;
   onCollectionWrite(null);

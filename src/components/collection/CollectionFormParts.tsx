@@ -32,8 +32,10 @@ export function Dialog({ visible, label, onClose, wide, children }: {
     <AnimatePresence>
       {visible && (
         <DialogOverlay
-          className="fixed inset-0 z-50 flex items-center justify-center px-4"
-          style={{ backgroundColor: "var(--color-overlay)" }}
+          className="fixed inset-0 flex items-center justify-center px-4"
+          // Above Leaflet's panes and controls (up to 1000): Preview opens it beside the map,
+          // as Preview's own DayItemEditModal does (found 18 Nov 2026)
+          style={{ backgroundColor: "var(--color-overlay)", zIndex: 10000 }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >

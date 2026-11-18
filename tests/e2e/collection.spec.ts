@@ -388,3 +388,24 @@ test("A Want's Days row puts it on the trip's days, and Preview shows it there",
   await page.goto("/preview");
   await expect(page.getByTestId("collection-day-panel")).toContainText("Figment 50th");
 });
+
+test("An item opened from Preview's panel shows above the map", async ({ page }) => {
+  const DAY = "2026-10-14";
+  await page.setViewportSize({ width: 1440, height: 900 }); // wide enough for the map's column beside the day
+  await seedTrip(page, { ...SEED, collectionItems: [pin("col_w", "Figment 50th", { state: "want", days: [DAY] })], collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.goto("/preview");
+  await expect(page.locator(".leaflet-container").first()).toBeVisible();
+  await page.getByTestId("collection-day-panel").getByRole("button", { name: /Figment 50th/ }).first().click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await expect(editor).toBeVisible();
+  // The map drew over the window's right half (found 18 Nov 2026). Its layers take no clicks there, so
+  // hit-testing can't see it: check the backdrop is layered above Leaflet's highest (controls, 1000)
+  const layer = await editor.evaluate((el) => Number(getComputedStyle(el.parentElement!).zIndex) || 0);
+  const mapTop = await page.locator(".leaflet-container").first().evaluate((map) =>
+    Math.max(0, ...Array.from(map.querySelectorAll<HTMLElement>("*")).map((e) => Number(getComputedStyle(e).zIndex) || 0)));
+  expect(mapTop).toBeGreaterThanOrEqual(400);
+  expect(layer).toBeGreaterThan(mapTop);
+  await editor.getByRole("button", { name: "Cancel" }).click();
+  await expect(editor).toBeHidden();
+});

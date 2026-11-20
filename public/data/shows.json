@@ -73,11 +73,14 @@
       "timeRanges": [],
       "duration": 25,
       "name": "Fantasmic!",
-      "status": "closed",
+      "status": "operating",
       "types": [
         "nighttime spectacular"
       ],
-      "times": [],
+      "times": [
+        "21:00",
+        "22:30"
+      ],
       "land": "Frontierland",
       "apiEntityId": "8c36ff0b-3a32-4d7b-9388-0516c19277db"
     },
@@ -103,7 +106,7 @@
         "street show"
       ],
       "times": [
-        "18:30",
+        "18:45",
         "21:00",
         "22:30"
       ],
@@ -231,11 +234,18 @@
       "status": "operating"
     },
     "bootstrappers": {
-      "status": "closed",
+      "status": "operating",
       "types": [
         "street show"
       ],
-      "times": [],
+      "times": [
+        "08:30",
+        "09:30",
+        "10:30",
+        "12:35",
+        "13:30",
+        "14:30"
+      ],
       "latitude": 33.811384,
       "duration": 20,
       "land": "New Orleans Square",
@@ -345,10 +355,17 @@
     },
     "dapper-dans": {
       "name": "The Dapper Dans",
-      "status": "closed",
+      "status": "operating",
       "latitude": 33.810308,
       "duration": 20,
-      "times": [],
+      "times": [
+        "10:15",
+        "11:15",
+        "12:20",
+        "13:45",
+        "14:40",
+        "16:15"
+      ],
       "types": [
         "street show",
         "character experience"
@@ -666,7 +683,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "22:00"
         }
       ],
       "types": [
@@ -834,12 +851,12 @@
       "timeRanges": [],
       "status": "operating",
       "times": [
-        "15:00",
         "16:00",
         "16:55",
-        "18:15",
-        "19:15",
-        "20:10"
+        "17:50",
+        "19:10",
+        "20:05",
+        "21:00"
       ],
       "types": [
         "street show"
@@ -868,7 +885,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "20:30"
+          "end": "21:30"
         }
       ],
       "name": "Meet the Residents of Radiator Springs in Cars Land",
@@ -943,7 +960,7 @@
           "end": "17:15"
         }
       ],
-      "status": "operating",
+      "status": "closed",
       "land": "Buena Vista Street",
       "times": [],
       "duration": 20,
@@ -960,7 +977,7 @@
       "timeRanges": [
         {
           "start": "08:00",
-          "end": "21:00"
+          "end": "22:00"
         }
       ],
       "status": "operating",
@@ -989,6 +1006,6 @@
       "timeRanges": []
     }
   },
-  "lastUpdated": "2026-11-16T14:00:45.101Z",
-  "lastShowtimeSync": "2026-11-16T14:00:45.101Z"
+  "lastUpdated": "2026-11-20T14:00:29.187Z",
+  "lastShowtimeSync": "2026-11-20T14:00:29.187Z"
 }

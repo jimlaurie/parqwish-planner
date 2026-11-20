@@ -1734,7 +1734,7 @@
       "menuUrl": "https://disneyland.disney.go.com/dining/downtown-disney-district/din-tai-fung/menus/"
     }
   },
-  "lastUpdated": "2026-11-16T10:00:08.812Z",
+  "lastUpdated": "2026-11-20T10:00:29.707Z",
   "hotels": {
     "napa-rose": {
       "name": "Napa Rose",
@@ -1808,8 +1808,7 @@
       "latitude": 33.8083829526297,
       "longitude": -117.926608471244,
       "url": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams-mixology-seminar/",
-      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams-mixology-seminar/menus/",
-      "reservationUrl": "/dine-res/dining-event/trader-sams-mixology-seminar/"
+      "menuUrl": "https://disneyland.disney.go.com/dining/disneyland-hotel/trader-sams-mixology-seminar/menus/"
     },
     "Trader-sams-enchanted-tiki-bar": {
       "name": "Trader Sam's Enchanted Tiki Bar",

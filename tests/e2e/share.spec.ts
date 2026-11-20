@@ -63,8 +63,6 @@ test("A reservation site suggests Dining", async ({ page }) => {
 test("A pin site suggests Collection; on the first visit the editor opens once the categories are picked", async ({ page }) => {
   await seedTrip(page, { ...SEED, collectionItems: [], collectionSettings: [] });
   await page.goto(share({ title: "Figment 50th pin", url: "https://pinpics.com/pin/12345" }));
-  const collection = page.getByRole("button", { name: /Collection/ });
-  if (!(await collection.count())) test.skip(true, "Collections are hidden: the dev server on :3000 was started without NEXT_PUBLIC_COLLECTIONS=1.");
   await expect(pressed(page)).toHaveText(/Collection/);
   await page.getByRole("button", { name: "Add", exact: true }).click();
 

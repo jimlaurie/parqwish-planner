@@ -3,7 +3,8 @@
 /**
  * Ships a beta of the Planner to the Firebase Hosting preview channel "beta"
  * (https://parqwish-app--beta-<hash>.web.app), beside production: built with
- * the hidden features on (Collections), never touching app.parqwish.com.
+ * the hidden features on (BETA_FLAGS; none since Collections shipped), never
+ * touching app.parqwish.com.
  *
  *   npm run ship:beta              checks, build with the beta flags, deploy to the channel
  *   npm run ship:beta -- --check   only the checks
@@ -30,7 +31,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHANNEL = "beta";
 const EXPIRES = "30d";
 /** What the beta turns on (src/lib/feature-flags.ts). */
-const BETA_FLAGS = { NEXT_PUBLIC_COLLECTIONS: "1" };
+const BETA_FLAGS = {};
 const FIREBASE_KEYS = ["NEXT_PUBLIC_FIREBASE_API_KEY", "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "NEXT_PUBLIC_FIREBASE_PROJECT_ID"];
 const CHECK_ONLY = process.argv.includes("--check");
 
@@ -86,7 +87,7 @@ function checkLintAndHeadless() {
 // ==================== DEPLOY ====================
 
 function buildAndDeploy() {
-  console.log(`\n▸ Build with ${Object.keys(BETA_FLAGS).join(", ")}`);
+  console.log(`\n▸ Build with ${Object.keys(BETA_FLAGS).join(", ") || "no beta flags"}`);
   if (!run("npm", ["run", "build", "--silent"], BETA_FLAGS)) fail("Build failed.");
   console.log(`\n▸ Deploy to the "${CHANNEL}" preview channel (expires in ${EXPIRES})`);
   const r = spawnSync("firebase", ["hosting:channel:deploy", CHANNEL, "--only", "pwa", "--expires", EXPIRES, "--json"], { cwd: ROOT, encoding: "utf8" });

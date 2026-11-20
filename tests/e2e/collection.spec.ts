@@ -3,9 +3,6 @@
 // filters, the Gallery view, a field added in Categories becoming a column
 // and a filter, Play's collection zip export and import (§8b), and items got
 // on a trip in Catalog › Photos.
-// Collections are hidden unless the dev server has NEXT_PUBLIC_COLLECTIONS=1
-// (Playwright's own server sets it, playwright.config.ts); against a server
-// started without it these checks are skipped, and say why.
 import { test, expect, type Page } from "@playwright/test";
 import { seedTrip, rows, SEED } from "./helpers";
 
@@ -23,20 +20,11 @@ const PINS = [
   pin("col_4", "Dumbo", {}),
 ];
 
-let warned = false;
-
-/** Opens /collection, or skips the check when the server was started without the flag. */
+/** Opens /collection and waits for its heading or the first visit's category picker. */
 async function openCollection(page: Page) {
   await page.goto("/collection");
-  const off = page.getByText("Collections aren't available yet.");
   const on = page.getByRole("heading", { level: 1 }).or(page.getByRole("dialog", { name: "What do you collect?" }));
-  await expect(off.or(on).first()).toBeVisible();
-  if (await off.isVisible()) {
-    const why = "Skipped: the dev server on :3000 was started without NEXT_PUBLIC_COLLECTIONS=1, so Collections are hidden. Stop it (or start it with the flag) to run these checks.";
-    if (!warned) console.warn(why);
-    warned = true;
-    test.skip(true, why);
-  }
+  await expect(on.first()).toBeVisible();
 }
 
 const rowNames = (page: Page) => page.getByTestId("collection-row").locator("td:first-child span.font-semibold").allTextContents();

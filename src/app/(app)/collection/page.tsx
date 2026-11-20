@@ -26,7 +26,6 @@ import CollectionTable from "@/components/collection/CollectionTable";
 import CollectionGallery from "@/components/collection/CollectionGallery";
 import { useCollection } from "@/hooks/use-collection";
 import { useUsers } from "@/hooks/use-users";
-import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore, type CollectionViewMode } from "@/lib/store";
 import { useCollectionRestore } from "@/lib/collection-cloud";
 import { takeShareOpen } from "@/lib/pending-share";
@@ -67,9 +66,6 @@ function ownerLookup(chips: CollectionOwnerChip[], users: CollectionTripUser[]):
 }
 
 export default function CollectionPage() {
-  if (!COLLECTIONS_AVAILABLE) {
-    return <p className="px-6 py-8 text-sm" style={{ color: "var(--color-text-secondary)" }}>Collections aren&apos;t available yet.</p>;
-  }
   return <Collection />;
 }
 

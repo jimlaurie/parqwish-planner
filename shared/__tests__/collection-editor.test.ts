@@ -33,4 +33,17 @@ describe("collection editor rules with photo sets", () => {
     expect(out).toMatchObject({ id: "col_9", name: "New", sourceShoppingItemId: "shop_1", acquired: { tripId: "trip_1" }, updatedAt: T + 1 });
     expect(out.photoSets).toBeUndefined();
   });
+
+  it("saves a Want's shops to look in, keeping a park and land the form doesn't edit", () => {
+    const base: CollectionItem = { id: "col_5", name: "Figment", category: "pins", state: "want", createdAt: T, updatedAt: T,
+      lookIn: { shopIds: ["emporium"], park: "disneyland", land: "Main Street, U.S.A." } };
+    const draft = collectionDraftFromItem(base, "pins", "want");
+    expect(draft.lookInShops).toEqual(["emporium"]);
+    const out = collectionItemFromDraft({ ...draft, lookInShops: ["emporium", "star-trader", "emporium", ""] }, FIELDS, undefined, base, "x", undefined, T);
+    expect(out.lookIn).toEqual({ shopIds: ["emporium", "star-trader"], park: "disneyland", land: "Main Street, U.S.A." });
+    expect(collectionItemFromDraft({ ...draft, lookInShops: [] }, FIELDS, undefined, base, "x", undefined, T).lookIn)
+      .toEqual({ park: "disneyland", land: "Main Street, U.S.A." });
+    const plain = collectionItemFromDraft({ ...collectionDraftFromItem(undefined, "pins", "want"), name: "A" }, FIELDS, undefined, undefined, "c", undefined, T);
+    expect("lookIn" in plain).toBe(false);
+  });
 });

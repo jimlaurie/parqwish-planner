@@ -9,8 +9,8 @@
 // Saving keeps what the form doesn't show: values of hidden or deleted
 // fields and of fields from the item's previous category stay in `details`,
 // and parts of `acquired` the editor doesn't edit (trip, shops, park) stay as
-// they were. A number that doesn't read as one stops the save rather than
-// being dropped.
+// they were (as do a Want's park and land in `lookIn`, beside its shops).
+// A number that doesn't read as one stops the save rather than being dropped.
 
 import { coerceCollectionValue } from "./collections";
 import { normalizeCollectionCategory } from "./constants/collections";
@@ -47,6 +47,8 @@ export interface CollectionDraftFields {
   goneNotes: string;
   /** Who owns it: a Trip User id or "shared" (shared/collection-owners.ts); unset keeps the item's owner, or a new item takes the creator. */
   owner?: string;
+  /** For a Want: the shops (shops.json ids) to look for it in. */
+  lookInShops: string[];
 }
 
 export const COLLECTION_ACQUIRED_HOW: { value: CollectionAcquiredHow; label: string }[] = [
@@ -88,6 +90,7 @@ export function collectionDraftFromItem(
     goneHow: item?.gone?.how,
     goneNotes: item?.gone?.notes ?? "",
     owner: item ? collectionOwnerOf(item) : owner,
+    lookInShops: item?.lookIn?.shopIds ?? [],
   };
 }
 
@@ -151,6 +154,15 @@ function acquiredFromDraft(draft: CollectionDraftFields, previous: CollectionIte
   return Object.keys(out).length ? out : undefined;
 }
 
+/** Where to look, with the form's shops; a park or land the form doesn't edit is kept. */
+function lookInFromDraft(draft: CollectionDraftFields, previous: CollectionItem["lookIn"]): CollectionItem["lookIn"] {
+  const out = { ...previous };
+  delete out.shopIds;
+  const shops = [...new Set(draft.lookInShops.filter(Boolean))];
+  if (shops.length) out.shopIds = shops;
+  return Object.keys(out).length ? out : undefined;
+}
+
 function goneFromDraft(draft: CollectionDraftFields): CollectionItem["gone"] {
   if (draft.state !== "gone") return undefined;
   const gone: NonNullable<CollectionItem["gone"]> = {};
@@ -196,5 +208,6 @@ export function collectionItemFromDraft(
     externalUrl: draft.externalUrl.trim() || undefined,
     acquired: acquiredFromDraft(draft, base?.acquired),
     gone: goneFromDraft(draft),
+    lookIn: lookInFromDraft(draft, base?.lookIn),
   });
 }

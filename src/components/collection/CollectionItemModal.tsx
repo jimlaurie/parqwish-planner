@@ -9,7 +9,9 @@
 // shared with Pal (@shared/collection-editor); saving keeps what the form
 // doesn't show (hidden fields' values, the trip and shops it came from).
 // A Want or Trade has a Days row (§14): the selected trip's dates, to put it
-// on those days' lists (Preview's Collection, Pal's Home).
+// on those days' lists (Preview's Collection, Pal's Home). A Want also has
+// "Look for it in": shops from the park data, so Pal can show it on the
+// day's map (lookIn.shopIds holds shops.json ids, as Pal's shopping items).
 
 import { useEffect, useMemo, useState } from "react";
 import PhotoPicker from "@/components/PhotoPicker";
@@ -29,6 +31,9 @@ import type { CollectionFieldDef, CollectionState } from "@shared/types/collecti
 import { collectionOwnerChoices, type CollectionTripUser } from "@shared/collection-owners";
 import { canPlanCollectionDay, collectionDayChoices, collectionDayLabel, setCollectionDays } from "@shared/collection-days";
 import { useTrips } from "@/hooks/use-trips";
+import { useParkData } from "@/hooks/use-park-data";
+import ParkDataAutocomplete from "@/components/ParkDataAutocomplete";
+import type { ParkDataItem } from "@/lib/park-data";
 import { datesBetween } from "@/lib/dates";
 
 interface Props {
@@ -133,6 +138,7 @@ export default function CollectionItemModal({ visible, settings, item, defaultCa
             <Chips label="Whose is it?" clearable={false} value={draft.owner} onChange={(v) => v && set("owner", v)} options={owners} /></div>
         )}
         {canPlanCollectionDay(draft) && <DaysRow choices={dayChoices} days={days} onChange={setDays} />}
+        {draft.state === "want" && <LookInRow shopIds={draft.lookInShops} onChange={(ids) => set("lookInShops", ids)} />}
         <MoreDetails draft={draft} set={set} fields={fields} startOpen={!!item} />
       </div>
       {problem && <p role="alert" className="mt-4 text-sm" style={{ color: "var(--color-error)" }}>{problem}</p>}
@@ -175,6 +181,45 @@ function DaysRow({ choices, days, onChange }: { choices: string[]; days: string[
           );
         })}
       </div>
+    </div>
+  );
+}
+
+const SHOPS_ONLY: ParkDataItem["type"][] = ["shop"];
+
+/** A shops.json id from a park data id ("disneyland__emporium" → "emporium"). */
+function shopIdOf(parkDataId: string): string {
+  const at = parkDataId.indexOf("__");
+  return at < 0 ? parkDataId : parkDataId.slice(at + 2);
+}
+
+/** Where to look for a Want: shops searched from the park data, each removable. */
+function LookInRow({ shopIds, onChange }: { shopIds: string[]; onChange: (ids: string[]) => void }) {
+  const { items } = useParkData();
+  const [query, setQuery] = useState("");
+  const nameOf = (id: string) => items.find((i) => i.type === "shop" && shopIdOf(i.id) === id)?.name ?? id;
+  const add = (picked: ParkDataItem) => {
+    const id = shopIdOf(picked.id);
+    if (!shopIds.includes(id)) onChange([...shopIds, id]);
+    setQuery("");
+  };
+  return (
+    <div>
+      <Label>Look for it in</Label>
+      {shopIds.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-2" data-testid="collection-look-in">
+          {shopIds.map((id) => (
+            <span key={id} className="inline-flex items-center gap-1 pl-3 pr-1 py-1 rounded-full text-sm"
+              style={{ backgroundColor: "var(--color-surface-raised)", border: "1px solid var(--color-border-default)", color: "var(--color-text-primary)" }}>
+              🛍️ {nameOf(id)}
+              <button type="button" onClick={() => onChange(shopIds.filter((x) => x !== id))} aria-label={`Remove ${nameOf(id)}`}
+                className="w-6 h-6 rounded-full cursor-pointer" style={{ color: "var(--color-text-secondary)" }}>✕</button>
+            </span>
+          ))}
+        </div>
+      )}
+      <ParkDataAutocomplete value={query} onChange={setQuery} onSelect={add} types={SHOPS_ONLY}
+        placeholder={shopIds.length ? "Add another shop…" : "Search shops, to see it on the day's map in Pal"} />
     </div>
   );
 }

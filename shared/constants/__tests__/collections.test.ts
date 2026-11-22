@@ -6,6 +6,7 @@ import {
   getBuiltInCollectionCategory,
   isUserCollectionCategoryId,
   normalizeCollectionCategory,
+  shoppingCategoryForCollection,
 } from "../collections";
 import { PACKING_CATEGORIES } from "../packing";
 
@@ -71,6 +72,13 @@ describe("collection category lookups", () => {
     expect(normalizeCollectionCategory(" pins ")).toBe("pins");
     expect(normalizeCollectionCategory("user_x1")).toBe("user_x1");
     expect(normalizeCollectionCategory("a-future-built-in")).toBe("a-future-built-in");
+  });
+
+  it("maps a collection category back to the shopping sub-category it's sold under", () => {
+    expect(shoppingCategoryForCollection("pins")).toBe("Pins & Collectibles");
+    expect(shoppingCategoryForCollection("plush")).toBe("Toys & Plush");
+    expect(shoppingCategoryForCollection("pressed-pennies")).toBeUndefined();
+    expect(shoppingCategoryForCollection(undefined)).toBeUndefined();
   });
 
   it("maps shopping sub-categories that exist to built-in collection categories", () => {

@@ -127,6 +127,12 @@ export function collectionCategoryForShopping(shoppingCategory?: string | null):
   return value ? SHOPPING_TO_COLLECTION[value] : undefined;
 }
 
+/** The shopping sub-category a built-in collection category's items are sold under, if any: the shop picker's suggestion for a Want's "Look for it in". */
+export function shoppingCategoryForCollection(categoryId?: string | null): string | undefined {
+  if (!categoryId) return undefined;
+  return Object.entries(SHOPPING_TO_COLLECTION).find(([, id]) => id === categoryId)?.[0];
+}
+
 /** Whether an item counts toward Pal Free's item limit: "gone" history doesn't. */
 export function countsTowardCollectionLimit(state: CollectionState): boolean {
   return state !== "gone";

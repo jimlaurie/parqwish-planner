@@ -29,6 +29,8 @@ interface ParkDataAutocompleteProps {
   onSelect?: (item: ParkDataItem) => void;
   placeholder?: string;
   autoFocus?: boolean;
+  /** Only these kinds (e.g. shops for a collection Want's "Look for it in"); all when unset. */
+  types?: ParkDataItem["type"][];
 }
 
 export default function ParkDataAutocomplete({
@@ -37,6 +39,7 @@ export default function ParkDataAutocomplete({
   onSelect,
   placeholder = "Search rides, shows, dining, places...",
   autoFocus,
+  types,
 }: ParkDataAutocompleteProps) {
   const { items, loading } = useParkData();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -64,6 +67,7 @@ export default function ParkDataAutocomplete({
     const typeMatch = TYPE_KEYWORDS[q];
 
     const filtered = items.filter((item) => {
+      if (types && !types.includes(item.type)) return false;
       // Type keyword match (e.g., "ride" → all rides)
       if (typeMatch && item.type === typeMatch) return true;
       // Name match
@@ -83,7 +87,7 @@ export default function ParkDataAutocomplete({
     });
 
     return filtered;
-  }, [value, items]);
+  }, [value, items, types]);
 
   // Paginated view of matches
   const suggestions = useMemo(
@@ -217,7 +221,8 @@ export default function ParkDataAutocomplete({
               left: dropdownPos.left,
               width: dropdownPos.width,
               backgroundColor: "var(--color-bg-card)",
-              zIndex: 9999,
+              // Above every dialog (they sit at 10000-10001), since it can be used inside one
+              zIndex: 10050,
             }}
           >
             {(

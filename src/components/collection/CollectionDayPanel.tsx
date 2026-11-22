@@ -23,6 +23,7 @@ import {
 import { resolveCollectionCategory } from "@shared/collections";
 import { orderCollectionTripUsers } from "@shared/collection-owners";
 import type { CollectionAcquiredHow, CollectionGoneHow } from "@shared/types/collection";
+import { useParkData } from "@/hooks/use-park-data";
 
 interface Props {
   date: string;
@@ -37,6 +38,8 @@ export default function CollectionDayPanel({ date, tripId }: Props) {
   const [asking, setAsking] = useState<string | null>(null);
   const [editing, setEditing] = useState<CollectionItem | null>(null);
   const [problem, setProblem] = useState("");
+  // A Want's "Look for it in" shops by name (park data ids are "park__shopId")
+  const { items: parkItems } = useParkData();
   if (!settings || !dayItems.length) return null;
 
   const save = async (item: CollectionItem) => {
@@ -55,6 +58,12 @@ export default function CollectionDayPanel({ date, tripId }: Props) {
     save(tickCollectionDay(item, date, how, { now: Date.now(), tripId }));
   };
 
+  const whereFor = (item: CollectionItem): string | undefined => {
+    if (item.state !== "want" || !item.lookIn?.shopIds?.length) return undefined;
+    const names = item.lookIn.shopIds.map((id) => parkItems.find((p) => p.type === "shop" && p.id.endsWith(`__${id}`))?.name ?? id);
+    return `in ${names.join(", ")}`;
+  };
+
   return (
     <section aria-label="Collection" data-testid="collection-day-panel" className="w-full max-w-3xl mb-4 rounded-xl p-3"
       style={{ backgroundColor: "var(--color-bg-card)", border: "1px solid var(--color-border-subtle)" }}>
@@ -62,7 +71,7 @@ export default function CollectionDayPanel({ date, tripId }: Props) {
       <ul className="flex flex-col gap-2">
         {dayItems.map((item) => (
           <DayRow key={item.id} item={item} date={date} icon={resolveCollectionCategory(settings, item.category)?.icon ?? "📌"}
-            category={resolveCollectionCategory(settings, item.category)?.name ?? ""} asking={asking === item.id}
+            category={resolveCollectionCategory(settings, item.category)?.name ?? ""} where={whereFor(item)} asking={asking === item.id}
             onTick={() => onTick(item)} onChoose={(how) => choose(item, how)} onCancel={() => setAsking(null)}
             onOpen={() => setEditing(item)} />
         ))}
@@ -75,13 +84,13 @@ export default function CollectionDayPanel({ date, tripId }: Props) {
   );
 }
 
-function DayRow({ item, date, icon, category, asking, onTick, onChoose, onCancel, onOpen }: {
-  item: CollectionItem; date: string; icon: string; category: string; asking: boolean;
+function DayRow({ item, date, icon, category, where, asking, onTick, onChoose, onCancel, onOpen }: {
+  item: CollectionItem; date: string; icon: string; category: string; where?: string; asking: boolean;
   onTick: () => void; onChoose: (how: CollectionAcquiredHow | CollectionGoneHow) => void; onCancel: () => void; onOpen: () => void;
 }) {
   const done = isCollectionDayDone(item, date);
   const name = item.name || "Unnamed item";
-  const line = [collectionDayLine(item, date), category].filter(Boolean).join(" · ");
+  const line = [collectionDayLine(item, date), where, category].filter(Boolean).join(" · ");
   return (
     <li data-testid="collection-day-row">
       <div className="flex items-center gap-3">

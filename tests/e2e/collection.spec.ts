@@ -397,3 +397,21 @@ test("An item opened from Preview's panel shows above the map", async ({ page })
   await editor.getByRole("button", { name: "Cancel" }).click();
   await expect(editor).toBeHidden();
 });
+
+test("A Want's “Look for it in” saves shops from the park data, and Preview's row names them", async ({ page }) => {
+  const DAY = "2026-10-14";
+  await seedTrip(page, { ...SEED, collectionItems: [pin("col_w", "Figment 50th", { state: "want", days: [DAY] })], collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.getByRole("tab", { name: /Want/ }).click();
+  await page.getByTestId("collection-item").filter({ hasText: "Figment 50th" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await editor.getByPlaceholder(/Search shops/).fill("empor");
+  await page.getByRole("button", { name: /Emporium/ }).first().click();
+  await expect(editor.getByTestId("collection-look-in")).toContainText("Emporium");
+  await editor.getByRole("button", { name: "Save" }).click();
+  await expect(editor).toBeHidden();
+  const [saved] = await rows<Item & { lookIn?: { shopIds?: string[] } }>(page, "collectionItems");
+  expect(saved.lookIn).toEqual({ shopIds: ["emporium"] });
+  await page.goto("/preview");
+  await expect(page.getByTestId("collection-day-row")).toContainText("Look for · in Emporium · Pins");
+});

@@ -69,6 +69,13 @@ export interface CollectionItem extends Timestamped {
   externalUrl?: string;
   /** Made from a bought shopping item. */
   sourceShoppingItemId?: string;
+  /**
+   * For a Want: where to look for it (docs/collections-design.md §14), so a
+   * Want on a day shows on that day's map. shopIds are shops.json ids, as
+   * shopping items; park and land are for a place that isn't a shop.
+   * Kept when the item becomes Have or Gone, as history.
+   */
+  lookIn?: { shopIds?: string[]; park?: string; land?: string };
   /** Unused: "Hunt for this" became + Day (16 Nov 2026). Nothing writes it. */
   huntShoppingItemIds?: string[];
   /** Park days (YYYY-MM-DD) a Want is looked for or a Trade brought on (+ Day; shared/collection-days.ts). */

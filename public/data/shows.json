@@ -108,7 +108,8 @@
       "times": [
         "18:45",
         "21:00",
-        "22:30"
+        "22:30",
+        "23:30"
       ],
       "name": "Tapestry of Happiness",
       "status": "operating",
@@ -234,18 +235,11 @@
       "status": "operating"
     },
     "bootstrappers": {
-      "status": "operating",
+      "status": "closed",
       "types": [
         "street show"
       ],
-      "times": [
-        "08:30",
-        "09:30",
-        "10:30",
-        "12:35",
-        "13:30",
-        "14:30"
-      ],
+      "times": [],
       "latitude": 33.811384,
       "duration": 20,
       "land": "New Orleans Square",
@@ -960,7 +954,7 @@
           "end": "17:15"
         }
       ],
-      "status": "closed",
+      "status": "operating",
       "land": "Buena Vista Street",
       "times": [],
       "duration": 20,
@@ -1006,6 +1000,6 @@
       "timeRanges": []
     }
   },
-  "lastUpdated": "2026-11-20T14:00:29.187Z",
-  "lastShowtimeSync": "2026-11-20T14:00:29.187Z"
+  "lastUpdated": "2026-11-22T14:00:22.420Z",
+  "lastShowtimeSync": "2026-11-22T14:00:22.420Z"
 }

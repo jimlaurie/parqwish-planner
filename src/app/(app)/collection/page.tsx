@@ -14,7 +14,8 @@
 // (CollectionGallery); the choice is remembered. The rules are shared with Pal
 // (@shared/collection-view). A page shared to the Planner opens here in its
 // editor (src/lib/pending-share.ts). A trading category has "Trade list", a PDF
-// of its Traders and Wants (src/lib/trade-list-pdf.ts). Hidden until Collections ship (lib/feature-flags.ts).
+// of its Traders and Wants (src/lib/trade-list-pdf.ts); "Showcase" shows the
+// category's Haves as a full-screen photo wall (CollectionShowcase). Hidden until Collections ship (lib/feature-flags.ts).
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
@@ -25,6 +26,7 @@ import CollectionBulkAddModal from "@/components/collection/CollectionBulkAddMod
 import CollectionCategoriesModal from "@/components/collection/CollectionCategoriesModal";
 import CollectionTable from "@/components/collection/CollectionTable";
 import CollectionGallery from "@/components/collection/CollectionGallery";
+import CollectionShowcase from "@/components/collection/CollectionShowcase";
 import { useCollection } from "@/hooks/use-collection";
 import { useUsers } from "@/hooks/use-users";
 import { useAppStore, type CollectionViewMode } from "@/lib/store";
@@ -82,6 +84,7 @@ function Collection() {
   const [editor, setEditor] = useState<{ open: boolean; item?: CollectionItem }>({ open: false });
   const [bulkOpen, setBulkOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [showcaseOpen, setShowcaseOpen] = useState(false);
   const { collectionView, setCollectionView } = useAppStore();
 
   // The first visit opens the picker by itself, and closes it again if Cloud
@@ -144,6 +147,10 @@ function Collection() {
                 <span aria-hidden="true">{category.icon}</span> {category.name}
               </h1>
               <ViewSwitch view={collectionView} onChange={setCollectionView} />
+              <button onClick={() => setShowcaseOpen(true)} data-testid="collection-showcase-open"
+                title="Your Haves as a full-screen photo wall, to admire, screenshot or print"
+                className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
+                style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>🖼️ Showcase</button>
               {category.trades && (
                 <TradeListButton items={items} category={category} fields={collectionFormFields(settings, category.id)}
                   owner={allOwnerChips.length && owner !== COLLECTION_EVERYONE ? ownerChips.find((c) => c.id === owner)?.label : undefined} />
@@ -160,6 +167,9 @@ function Collection() {
             <CollectionItemModal visible={editor.open} settings={settings} item={editor.item} defaultCategory={category.id}
               defaultState={tab} users={users} defaultOwner={currentUserId ?? undefined}
               onClose={() => setEditor((e) => ({ ...e, open: false }))} />
+            <CollectionShowcase visible={showcaseOpen} category={category} items={items}
+              fields={collectionFormFields(settings, category.id)} onClose={() => setShowcaseOpen(false)}
+              owner={allOwnerChips.length && owner !== COLLECTION_EVERYONE ? ownerChips.find((c) => c.id === owner)?.label : undefined} />
             <CollectionBulkAddModal visible={bulkOpen} settings={settings} defaultCategory={category.id} defaultState={tab}
               onClose={() => setBulkOpen(false)} />
           </>

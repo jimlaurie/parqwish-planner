@@ -450,3 +450,28 @@ test("Publish lists the collection items got on the trip, by category, and leave
   await expect(section).not.toContainText("Old Mickey");
   await expect(section).not.toContainText("Still wanted");
 });
+
+test("Showcase shows a category's Haves as a photo wall, prints it, and Esc closes it", async ({ page }) => {
+  const svg = (fill: string) => `data:image/svg+xml;base64,${Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="260"><rect width="200" height="260" fill="${fill}"/></svg>`).toString("base64")}`;
+  const photo = (fill: string) => [{ thumbnail: svg(fill), display: svg(fill), full: svg(fill) }];
+  await seedTrip(page, { ...SEED, collectionItems: [
+    pin("col_a", "Hatbox Ghost", { state: "have", photoSets: photo("#5b8fcc"), acquired: { date: "2026-10-14" } }),
+    pin("col_b", "Figment 50th", { state: "have", photoSets: photo("#b87bc4"), acquired: { date: "2026-10-16" } }),
+    pin("col_c", "No photo yet", { state: "have" }),
+    pin("col_w", "Still wanted", { state: "want", photoSets: photo("#cc5b5b") }),
+  ], collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  await page.getByTestId("collection-showcase-open").click();
+  const wall = page.getByTestId("collection-showcase");
+  await expect(wall).toContainText("My Pins");
+  await expect(wall).toContainText("3 items");
+  await expect(wall.getByTestId("showcase-item")).toHaveCount(3);
+  await expect(wall.getByTestId("showcase-item").nth(0)).toContainText("Figment 50th"); // newest first
+  await expect(wall.getByTestId("showcase-item").nth(2)).toContainText("No photo yet");
+  await expect(wall).not.toContainText("Still wanted");
+  const download = page.waitForEvent("download");
+  await wall.getByTestId("showcase-print").click();
+  expect((await download).suggestedFilename()).toBe("Pins-showcase.pdf");
+  await page.keyboard.press("Escape");
+  await expect(wall).toBeHidden();
+});

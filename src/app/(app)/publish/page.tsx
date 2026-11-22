@@ -13,6 +13,7 @@ import ParkAnalytics from "@/components/publish/ParkAnalytics";
 import PhotoGallery from "@/components/publish/PhotoGallery";
 import TrailGallery, { type TrailTimeRanges } from "@/components/publish/TrailGallery";
 import AIExportPanel from "@/components/publish/AIExportPanel";
+import CollectionRecap from "@/components/publish/CollectionRecap";
 
 const ACCENT = "var(--color-accent-publish)";
 
@@ -82,7 +83,7 @@ export default function PublishPage() {
 
   const hasItinerary = data.totalItineraryItems > 0;
   const hasAnyData =
-    data.totalWishes > 0 || data.totalPackingItems > 0 || hasItinerary;
+    data.totalWishes > 0 || data.totalPackingItems > 0 || hasItinerary || data.collectionAdded.length > 0;
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4 py-6">
@@ -138,6 +139,8 @@ export default function PublishPage() {
               🗺️ View Trip Map
             </button>
           </div>
+
+          <CollectionRecap items={data.collectionAdded} />
 
           <PhotoGallery
             photos={data.allPhotos}

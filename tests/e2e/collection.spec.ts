@@ -431,3 +431,22 @@ test("A trading category's “Trade list” downloads its Traders and Wants as a
   expect(size).toBeGreaterThan(10_000);
   await expect(page.getByTestId("collection-trade-list")).toHaveText("🔁 Trade list");
 });
+
+test("Publish lists the collection items got on the trip, by category, and leaves out the rest", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: [
+    pin("col_a", "Hatbox Ghost", { state: "have", acquired: { tripId: "trip_test", how: "traded", date: "2026-10-14" } }),
+    pin("col_b", "Figment 50th", { state: "have", acquired: { date: "2026-10-16", how: "bought" } }),
+    pin("col_c", "Old Mickey", { state: "have", acquired: { date: "2025-06-01" } }),
+    pin("col_d", "Still wanted", { state: "want", acquired: { tripId: "trip_test" } }),
+  ], collectionSettings: [SETTINGS] });
+  await page.goto("/publish");
+  const section = page.getByTestId("publish-collection");
+  await expect(section).toContainText("Added to your collection (2)");
+  await expect(section).toContainText("Pins (2)");
+  await expect(section.getByTestId("publish-collection-item")).toHaveCount(2);
+  await expect(section.getByTestId("publish-collection-item").nth(0)).toContainText("Hatbox Ghost");
+  await expect(section.getByTestId("publish-collection-item").nth(0)).toContainText("Traded · Wed, Oct 14");
+  await expect(section.getByTestId("publish-collection-item").nth(1)).toContainText("Bought · Fri, Oct 16");
+  await expect(section).not.toContainText("Old Mickey");
+  await expect(section).not.toContainText("Still wanted");
+});

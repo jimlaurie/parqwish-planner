@@ -10,6 +10,9 @@ import db, {
 import { useAppStore } from "@/lib/store";
 import { useAllTripPhotos } from "@/hooks/use-all-trip-photos";
 import { selectionOwners } from "@shared/selection-owners";
+import { collectionAddedOnTrip } from "@shared/collection-trip";
+import { COLLECTION_SHARED_OWNER, collectionOwnerOf } from "@shared/collection-owners";
+import type { CollectionItem } from "@shared/types/collection";
 import { datesBetween } from "@/lib/dates";
 
 // ==================== TYPES ====================
@@ -38,6 +41,8 @@ export interface PublishData {
   allPhotos: { id: string; url: string; full: string; caption: string }[];
   wishSelections: Array<{ wishId: string; completed: boolean }>;
   wishes: Wish[];
+  /** Collection items got on the trip (@shared/collection-trip), for "Added to your collection". */
+  collectionAdded: CollectionItem[];
 }
 
 // ==================== HELPERS ====================
@@ -90,12 +95,16 @@ export function usePublishData() {
         .equals(currentTripId)
         .toArray();
 
+      // Collection items got on this trip ("How I got it" names it, or its date is in it)
+      const collectionAdded = collectionAddedOnTrip(await db.collectionItems.toArray(), trip);
+
       return {
         trip,
         wishSelections,
         wishes,
         packingSelections,
         itineraryItems,
+        collectionAdded,
       };
     },
     [currentTripId]
@@ -230,6 +239,11 @@ export function usePublishData() {
       allPhotos,
       wishSelections: wishSelections.map((s) => ({ wishId: s.wishId, completed: s.completed })),
       wishes,
+      // A shared item is everyone's, so it shows whoever is picked
+      collectionAdded: rawData.collectionAdded.filter((i) => {
+        const owner = collectionOwnerOf(i);
+        return owner === COLLECTION_SHARED_OWNER || matchesFilter(owner);
+      }),
     };
   }, [rawData, activeUserFilter, allTripPhotos]);
 

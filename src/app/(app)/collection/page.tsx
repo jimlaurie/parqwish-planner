@@ -13,7 +13,8 @@
 // (CollectionTable), Gallery just the photos with the same filters
 // (CollectionGallery); the choice is remembered. The rules are shared with Pal
 // (@shared/collection-view). A page shared to the Planner opens here in its
-// editor (src/lib/pending-share.ts). Hidden until Collections ship (lib/feature-flags.ts).
+// editor (src/lib/pending-share.ts). A trading category has "Trade list", a PDF
+// of its Traders and Wants (src/lib/trade-list-pdf.ts). Hidden until Collections ship (lib/feature-flags.ts).
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import SidebarLayout from "@/components/SidebarLayout";
@@ -28,6 +29,7 @@ import { useCollection } from "@/hooks/use-collection";
 import { useUsers } from "@/hooks/use-users";
 import { useAppStore, type CollectionViewMode } from "@/lib/store";
 import { useCollectionRestore } from "@/lib/collection-cloud";
+import { downloadTradeList } from "@/lib/trade-list-pdf";
 import { takeShareOpen } from "@/lib/pending-share";
 import type { CollectionItem, CollectionSettings } from "@/lib/db";
 import { collectionFormFields, type ResolvedCollectionCategory } from "@shared/collections";
@@ -37,7 +39,7 @@ import {
   viewCategories, visibleCollectionItems,
 } from "@shared/collection-view";
 import {
-  COLLECTION_SHARED_OWNER, collectionOwnerChips, collectionOwnerOf, filterCollectionByOwner, orderCollectionTripUsers,
+  COLLECTION_EVERYONE, COLLECTION_SHARED_OWNER, collectionOwnerChips, collectionOwnerOf, filterCollectionByOwner, orderCollectionTripUsers,
   pickCollectionOwnerFilter, type CollectionOwnerChip, type CollectionTripUser,
 } from "@shared/collection-owners";
 import type { CollectionLayout, CollectionState } from "@shared/types/collection";
@@ -142,6 +144,10 @@ function Collection() {
                 <span aria-hidden="true">{category.icon}</span> {category.name}
               </h1>
               <ViewSwitch view={collectionView} onChange={setCollectionView} />
+              {category.trades && (
+                <TradeListButton items={items} category={category} fields={collectionFormFields(settings, category.id)}
+                  owner={allOwnerChips.length && owner !== COLLECTION_EVERYONE ? ownerChips.find((c) => c.id === owner)?.label : undefined} />
+              )}
               <button onClick={() => setBulkOpen(true)} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
                 style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>Add several</button>
               <button onClick={() => setEditor({ open: true })} className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer"
@@ -321,5 +327,29 @@ function Invitation({ onChoose }: { onChoose: () => void }) {
         Choose what you collect
       </button>
     </div>
+  );
+}
+
+/** "Trade list": the category's Traders and Wants as a PDF; says so if it couldn't be made. */
+function TradeListButton({ items, category, fields, owner }: {
+  items: CollectionItem[]; category: ResolvedCollectionCategory; fields: ReturnType<typeof collectionFormFields>; owner?: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const make = async () => {
+    setBusy(true);
+    setFailed(false);
+    try { await downloadTradeList(items, category, fields, owner); } catch (e) {
+      console.error("[Collection] The trade list PDF failed:", e);
+      setFailed(true);
+    } finally { setBusy(false); }
+  };
+  return (
+    <span className="flex items-center gap-2">
+      {failed && <span role="alert" className="text-xs" style={{ color: "var(--color-error)" }}>Trade list not made. Try again.</span>}
+      <button onClick={make} disabled={busy} data-testid="collection-trade-list" title="Your trades and wants as a PDF, for a forum, a group or a trade night"
+        className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-60"
+        style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}>{busy ? "Making…" : "🔁 Trade list"}</button>
+    </span>
   );
 }

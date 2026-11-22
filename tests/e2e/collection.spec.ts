@@ -415,3 +415,19 @@ test("A Want's “Look for it in” saves shops from the park data, and Preview'
   await page.goto("/preview");
   await expect(page.getByTestId("collection-day-row")).toContainText("Look for · in Emporium · Pins");
 });
+
+test("A trading category's “Trade list” downloads its Traders and Wants as a PDF", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: [
+    pin("col_t", "Hatbox Ghost", { state: "trade", quantity: 2 }),
+    pin("col_w", "Figment 50th", { state: "want", priority: "E" }),
+  ], collectionSettings: [SETTINGS] });
+  await openCollection(page);
+  const download = page.waitForEvent("download");
+  await page.getByTestId("collection-trade-list").click();
+  const file = await download;
+  expect(file.suggestedFilename()).toMatch(/^Pins-trade-list-\d{4}-\d{2}-\d{2}\.pdf$/);
+  const path = await file.path();
+  const { size } = await import("node:fs").then((fs) => fs.promises.stat(path!));
+  expect(size).toBeGreaterThan(10_000);
+  await expect(page.getByTestId("collection-trade-list")).toHaveText("🔁 Trade list");
+});

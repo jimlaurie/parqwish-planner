@@ -52,6 +52,17 @@ test("A partner link shows the band and card within the partner's dates, and is 
   await expect(band(page)).toContainText("Sample Hotel");
 });
 
+test("With a logo, the sidebar card still shows the partner's name beside it", async ({ page }) => {
+  const logoUrl = "https://example.com/logo.png";
+  await page.route(logoUrl, (route) => route.fulfill({ contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#123456"/></svg>' }));
+  await servePartnerFile(page, { status: 200, body: { ...BRANDING, logoUrl } });
+  await seedTrip(page);
+  await page.goto("/with?id=sample-hotel");
+  const name = card(page).getByTestId("partner-card-name");
+  await expect(name.locator("img")).toHaveAttribute("src", logoUrl);
+  await expect(name).toContainText("Sample Hotel");
+});
+
 test("The info popup lists the services and opens the website in a new tab", async ({ page }) => {
   await servePartnerFile(page, { status: 200, body: BRANDING });
   await seedTrip(page);

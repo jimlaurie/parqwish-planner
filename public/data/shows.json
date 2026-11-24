@@ -25,14 +25,8 @@
         "street show"
       ],
       "longitude": -117.918967,
-      "times": [
-        "09:15",
-        "10:05",
-        "11:00",
-        "13:40",
-        "14:45"
-      ],
-      "status": "operating",
+      "times": [],
+      "status": "closed",
       "land": "Fantasyland"
     },
     "wondrous-journeys-fireworks": {
@@ -51,16 +45,13 @@
       "name": "Wondrous Journeys with Fireworks"
     },
     "pearly-band-small-world": {
-      "status": "operating",
+      "status": "closed",
       "timeRanges": [],
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "types": [
         "street show"
       ],
-      "times": [
-        "11:50",
-        "12:55"
-      ],
+      "times": [],
       "name": "Pearly Band near \"it's a small world\"",
       "longitude": -117.917863,
       "latitude": 33.814016,
@@ -147,17 +138,11 @@
       "longitude": -117.9189609
     },
     "blues-best-day-ever": {
-      "status": "operating",
+      "status": "closed",
       "types": [
         "theater show"
       ],
-      "times": [
-        "11:00",
-        "12:20",
-        "13:40",
-        "15:40",
-        "16:35"
-      ],
+      "times": [],
       "latitude": 33.8144,
       "duration": 25,
       "timeRanges": [],
@@ -235,11 +220,18 @@
       "status": "operating"
     },
     "bootstrappers": {
-      "status": "closed",
+      "status": "operating",
       "types": [
         "street show"
       ],
-      "times": [],
+      "times": [
+        "08:30",
+        "09:30",
+        "10:30",
+        "12:35",
+        "13:30",
+        "14:30"
+      ],
       "latitude": 33.811384,
       "duration": 20,
       "land": "New Orleans Square",
@@ -444,7 +436,7 @@
     },
     "jambalaya-jazz": {
       "apiEntityId": "3220fd76-38e4-49a4-afa3-4842c07203fa",
-      "status": "operating",
+      "status": "closed",
       "name": "Jambalaya Jazz",
       "duration": 25,
       "timeRanges": [],
@@ -453,15 +445,7 @@
       "types": [
         "street show"
       ],
-      "times": [
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:05",
-        "16:00",
-        "17:00"
-      ],
+      "times": [],
       "land": "New Orleans Square"
     },
     "jambalaya-jazz-mark-twain": {
@@ -1000,6 +984,6 @@
       "timeRanges": []
     }
   },
-  "lastUpdated": "2026-11-22T14:00:22.420Z",
-  "lastShowtimeSync": "2026-11-22T14:00:22.420Z"
+  "lastUpdated": "2026-11-24T14:00:27.073Z",
+  "lastShowtimeSync": "2026-11-24T14:00:27.073Z"
 }

@@ -220,6 +220,21 @@ test("Straight after an item is deleted, the next one opens and deletes: a closi
   await expect.poll(async () => (await rows<Item>(page, "collectionItems")).map((i) => i.name).sort()).toEqual(["Castle 70th", "Dumbo"]);
 });
 
+test("Home has a Collection button beside Catalog that opens the Collection", async ({ page }) => {
+  await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });
+  await page.goto("/");
+  const home = page.locator("#main-content main"); // the page itself, not the top bar's links
+  const catalog = home.getByRole("link", { name: "Catalog", exact: true });
+  const collection = home.getByRole("link", { name: "Collection", exact: true });
+  await expect(catalog).toBeVisible();
+  await expect(collection).toBeVisible();
+  const [a, b] = [await catalog.boundingBox(), await collection.boundingBox()];
+  expect(b!.x).toBeGreaterThan(a!.x + a!.width - 1);
+  expect(Math.abs(b!.y - a!.y)).toBeLessThan(2); // same row
+  await collection.click();
+  await expect(page).toHaveURL(/\/collection\/?$/);
+});
+
 test("At 1024 px the top bar shows Collection beside Catalog, with room for everything", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 800 });
   await seedTrip(page, { ...SEED, collectionItems: PINS, collectionSettings: [SETTINGS] });

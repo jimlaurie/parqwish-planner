@@ -16,6 +16,7 @@ import PartnerSidebarCard from "@/components/partner/PartnerSidebarCard";
 import HomeBanner from "@/components/home/HomeBanner";
 import { LazyIlloScene, type IlloArtLoader } from "@/components/home/illustrations/illo";
 import Link from "next/link";
+import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 import { useAppStore } from "@/lib/store";
 import { useTrips } from "@/hooks/use-trips";
 import db from "@/lib/db";
@@ -305,8 +306,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-4">
+        {/* Action Buttons: the two libraries every trip shares, as in the top bar */}
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/catalog"
             className="px-6 py-3 rounded-full border-2 font-semibold
@@ -319,6 +320,20 @@ export default function Home() {
           >
             Catalog
           </Link>
+          {COLLECTIONS_AVAILABLE && (
+            <Link
+              href="/collection"
+              className="px-6 py-3 rounded-full border-2 font-semibold
+                         transition-colors duration-200
+                         hover:bg-[var(--color-gold)] hover:text-[var(--color-bg-deep)]"
+              style={{
+                borderColor: "var(--color-gold)",
+                color: "var(--color-gold)",
+              }}
+            >
+              Collection
+            </Link>
+          )}
         </div>
       </div>
 

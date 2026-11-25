@@ -538,33 +538,9 @@ export async function getAttractionCoords(): Promise<CoordMaps> {
 
 const WAIT_STATS_FILE = "waitTimeStats.json";
 
-export interface WaitTimeDayStat {
-  medianWaitMinutes: number;
-  sampleSize: number;
-}
-
-export interface WaitTimeRideEntry {
-  rideName: string;
-  park: string;
-  weekday: WaitTimeDayStat | null;
-  weekend: WaitTimeDayStat | null;
-  byDayOfWeek?: Record<string, WaitTimeDayStat>;
-  byHour?: {
-    weekday: Record<string, WaitTimeDayStat>;
-    weekend: Record<string, WaitTimeDayStat>;
-  };
-  byHourByDayOfWeek?: Record<string, Record<string, WaitTimeDayStat>>;
-}
-
-export interface WaitTimeStats {
-  generatedAt: string;
-  windowDays: number;
-  windowStart: string;
-  windowEnd: string;
-  minSampleSize: number;
-  rides: Record<string, WaitTimeRideEntry>;
-  unmatchedRideNames: string[];
-}
+// The stats file's shape lives with its lookups (shared with Pal)
+export type { WaitTimeDayStat, WaitTimeRideEntry, WaitTimeStats } from "@shared/typical-waits";
+import type { WaitTimeStats } from "@shared/typical-waits";
 
 export function getWaitTimeStats(): Promise<WaitTimeStats | null> {
   return loadNightlyStats<WaitTimeStats>(WAIT_STATS_FILE, waitStatsCacheKey, "waitTimeStats");

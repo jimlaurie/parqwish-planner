@@ -127,3 +127,60 @@ test("Edit Trip › Resorts: choose Knott's too, the header names both, and at l
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect.poll(async () => "resortIds" in ((await rows<Record<string, unknown>>(page, "trips"))[0] ?? {})).toBe(false);
 });
+
+test("Preview: a day picks Knott's, and its Available Items, Add to Day catalog and hours follow", async ({ page }) => {
+  const NOW = 1_792_000_000_000;
+  await atParkTime(page);
+  await fakeParkData(page);
+  await page.route(KNOTTS, (route) => {
+    const name = route.request().url().match(KNOTTS)?.[1] ?? "";
+    return name in files ? route.fulfill({ contentType: "application/json", body: JSON.stringify(files[name]) }) : route.abort("failed");
+  });
+  await page.route(/storage\.googleapis\.com\/.*\/data\/resorts\/knotts\/hours\/2026-10-15\.json/, (route) => route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ date: "2026-10-15", knotts: { openingTime: "2026-10-15T10:00:00-07:00", closingTime: "2026-10-15T22:00:00-07:00", specialHours: [] }, knotts_soak_city: null }),
+  }));
+  const ghost = { id: "w_ghost", title: "GhostRider", tags: ["rides"], priority: "B", parkDataId: "knotts__ghostrider", parkDataName: "GhostRider", park: "Knott's Berry Farm", land: "Ghost Town", createdAt: NOW, updatedAt: NOW, userId: "user_primary" };
+  await seedTrip(page, {
+    ...SEED,
+    trips: [{ ...SEED.trips[0], resortIds: ["disneyland_resort", "knotts"] }],
+    wishes: [...SEED.wishes, ghost],
+    tripWishSelections: [...SEED.tripWishSelections, { id: "trip_test__w_ghost", tripId: "trip_test", wishId: "w_ghost", completed: false, status: "planned", addedAt: NOW, updatedAt: NOW, userId: "user_primary" }],
+  });
+  await page.goto("/preview");
+  await page.getByRole("button", { name: /10\/15/ }).click();
+  const picker = page.getByRole("group", { name: "This day's resort" });
+  await expect(page.getByTestId("pool-item").first()).toBeVisible();
+  test.skip(!(await picker.isVisible()), "dev server started without NEXT_PUBLIC_RESORTS=1");
+
+  // A Disneyland day: Disneyland's items, its hours and weather; Knott's ride waits for a Knott's day
+  await expect(picker.getByRole("button", { name: "Disneyland" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("pool-item").filter({ hasText: "The Dapper Dans" })).toBeVisible();
+  await expect(page.getByTestId("pool-item").filter({ hasText: "GhostRider" })).toHaveCount(0);
+  await expect(page.getByRole("note", { name: "Park hours" })).toContainText("Disneyland");
+
+  await picker.getByRole("button", { name: "Knott's" }).click();
+  await expect.poll(async () => (await rows<{ dayResorts?: Record<string, string> }>(page, "trips"))[0]?.dayResorts).toEqual({ "2026-10-15": "knotts" });
+  await expect(page.getByRole("button", { name: /10\/15/ }).getByTestId("day-resort")).toHaveText("Knott's");
+  await expect(page.getByRole("button", { name: /10\/16/ }).getByTestId("day-resort")).toHaveText("Disneyland");
+  await expect(page.getByTestId("pool-item").filter({ hasText: "GhostRider" })).toBeVisible();
+  await expect(page.getByTestId("pool-item").filter({ hasText: "The Dapper Dans" })).toHaveCount(0);
+  const hours = page.getByRole("note", { name: "Park hours" });
+  await expect(hours).toContainText("Knott's Berry Farm 10 AM – 10 PM");
+  await expect(hours).not.toContainText("California Adventure");
+  await expect(page.getByRole("note", { name: "Weather" })).toHaveCount(0);
+
+  // Add to Day's Park catalog offers Knott's, without Disneyland's pin-a-place map
+  await expect(page.getByText(/A map of Knott's Berry Farm comes in a later version/)).toBeVisible();
+  await page.getByRole("button", { name: "+ Add", exact: true }).first().click();
+  await page.getByRole("group", { name: "Add from" }).getByRole("button", { name: "Park catalog" }).click();
+  await expect(page.getByText("GhostRider").last()).toBeVisible();
+  await expect(page.getByText("Matterhorn Bobsleds")).toHaveCount(0); // a Disneyland ride in the catalog fixture
+  await page.getByRole("tab", { name: /Places/ }).last().click();
+  await expect(page.getByRole("button", { name: /Pin a new place/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+
+  // Back to Disneyland: the trip's first resort is the default, so the pick is no field at all
+  await picker.getByRole("button", { name: "Disneyland" }).click();
+  await expect.poll(async () => "dayResorts" in ((await rows<Record<string, unknown>>(page, "trips"))[0] ?? {})).toBe(false);
+});

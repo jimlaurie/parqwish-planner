@@ -13,6 +13,7 @@ import { useTypicalWaits } from "@/hooks/use-typical-waits";
 import { buildWaitHint, findRide, type WaitHint } from "@/lib/typical-waits";
 import { parkClock } from "@/lib/dates";
 import { useTripWeather } from "@/hooks/use-trip-weather";
+import { DEFAULT_RESORT_ID } from "@shared/constants/resorts";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -153,6 +154,8 @@ interface TimelineProps {
   userMap?: Map<string, User>;
   members?: Record<string, TripMember>;
   myUid?: string;
+  /** The day's resort: the hourly weather is Disneyland Resort's, so it's left off another resort's day */
+  dayResort?: string;
 }
 
 export default function Timeline({
@@ -165,6 +168,7 @@ export default function Timeline({
   userMap,
   members,
   myUid,
+  dayResort,
 }: TimelineProps) {
   const { highlightedLand } = useAppStore();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -174,9 +178,10 @@ export default function Timeline({
   // The hour's weather for :00 slots (not 00:00, which is the next day)
   const weatherFor = useCallback((time: string) => {
     if (!dayWeather || !time.endsWith(":00") || time === "00:00") return undefined;
+    if (dayResort && dayResort !== DEFAULT_RESORT_ID) return undefined;
     const hour = dayWeather.hours.find((h) => h.hour === Number(time.slice(0, 2)));
     return hour ? { hour, typical: dayWeather.kind === "typical" } : undefined;
-  }, [dayWeather]);
+  }, [dayWeather, dayResort]);
 
   // Typical standby wait for ride cards, from the heat map's nightly medians.
   // Anytime items get the day-level figure plus the quietest hour.

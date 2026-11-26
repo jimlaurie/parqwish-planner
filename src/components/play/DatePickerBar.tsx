@@ -5,6 +5,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { datesBetween } from "@/lib/dates";
+import type { Trip } from "@/lib/db";
+import { dayResortFor, resortTabLabel, tripPicksDayResorts } from "@/lib/trip-resorts";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -13,6 +15,8 @@ interface DatePickerBarProps {
   endDate: string;
   /** Inside the page header (PlayHeader's title row) rather than a row of its own. */
   inline?: boolean;
+  /** The trip, to name each day's resort when it visits more than one. */
+  trip?: Trip | null;
 }
 
 const getDaysBetween = datesBetween;
@@ -24,7 +28,8 @@ function formatDateChip(dateStr: string): { dayOfWeek: string; monthDay: string 
   return { dayOfWeek, monthDay };
 }
 
-export default function DatePickerBar({ startDate, endDate, inline }: DatePickerBarProps) {
+export default function DatePickerBar({ startDate, endDate, inline, trip }: DatePickerBarProps) {
+  const showResorts = tripPicksDayResorts(trip);
   const { currentTripId, selectedPlayDate, setSelectedPlayDate } = useAppStore();
   const days = useMemo(() => getDaysBetween(startDate, endDate), [startDate, endDate]);
 
@@ -69,6 +74,11 @@ export default function DatePickerBar({ startDate, endDate, inline }: DatePicker
             >
               <span className="font-semibold">{dayOfWeek}</span>
               <span className="text-[10px] opacity-80">{monthDay}</span>
+              {showResorts && (
+                <span className="text-[9px] font-semibold mt-0.5 opacity-90" data-testid="day-resort">
+                  {resortTabLabel(dayResortFor(trip, day))}
+                </span>
+              )}
               {count > 0 && (
                 <span
                   className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center

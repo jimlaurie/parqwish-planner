@@ -65,6 +65,41 @@ export function resortForPark(parkKey: string): ResortConfig | undefined {
   return RESORTS.find((r) => [...r.parks, ...r.areas].some((p) => p.key === parkKey));
 }
 
+/** The resort of a park item's id (`${parkKey}__${entityId}`), or undefined when it names no known park. */
+export function resortOfParkDataId(parkDataId: string | undefined | null): ResortConfig | undefined {
+  const parkKey = parkDataId?.split("__")[0];
+  return parkKey ? resortForPark(parkKey) : undefined;
+}
+
+// ==================== TRIPS ====================
+
+/** A trip's resort ids, known ones only, Disneyland Resort when it names none. */
+export function tripResortIds(trip?: { resortIds?: string[] } | null): string[] {
+  const known = (trip?.resortIds ?? []).filter((id) => !!getResort(id));
+  return known.length ? known : [DEFAULT_RESORT_ID];
+}
+
+/** The resort a trip date is at: its pick (if the trip still visits it), else the trip's first. */
+export function dayResortId(trip: { resortIds?: string[]; dayResorts?: Record<string, string> } | null | undefined, date: string): string {
+  const ids = tripResortIds(trip);
+  const picked = trip?.dayResorts?.[date];
+  return picked && ids.includes(picked) ? picked : ids[0];
+}
+
+/**
+ * The trip's dayResorts with `date` at `resortId`: a date at the trip's
+ * first resort isn't listed (missing means the first), and an empty map is
+ * undefined, so a trip that never changes a day carries no field.
+ */
+export function withDayResort(
+  trip: { resortIds?: string[]; dayResorts?: Record<string, string> }, date: string, resortId: string,
+): Record<string, string> | undefined {
+  const next = { ...(trip.dayResorts ?? {}) };
+  if (resortId === tripResortIds(trip)[0]) delete next[date];
+  else next[date] = resortId;
+  return Object.keys(next).length ? next : undefined;
+}
+
 /** Resorts shown in the apps; preview ones only when asked for (dev builds). */
 export function visibleResorts(includePreview = false): ResortConfig[] {
   return RESORTS.filter((r) => r.status === "live" || (includePreview && r.status === "preview"));

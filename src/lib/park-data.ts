@@ -3,6 +3,7 @@
 import { syncDay, type ShowtimeHistory } from "@/lib/showtimes";
 import { parkDate } from "@/lib/dates";
 import { reportSource, type DataSource, type SourceKey } from "@/lib/data-sources";
+import { DEFAULT_RESORT_ID, getResort } from "@shared/constants/resorts";
 
 // Served from public/data/ (downloaded from Firebase Storage via scripts/download-park-data.mjs)
 const BASE_URL = "/data";
@@ -693,9 +694,11 @@ export async function getLandConfig(): Promise<Record<string, LandConfigEntry>> 
 }
 
 // ==================== PARK HOURS ====================
-// One file per day, data/hours/YYYY-MM-DD.json, written nightly by the
-// dland-wishes generateParkHours function from ThemeParks.wiki, about a
-// month ahead (later days don't exist yet). Read live from Storage.
+// One file per resort and day, data/{dataPath}hours/YYYY-MM-DD.json
+// (Disneyland Resort's at data/hours/, Knott's at data/resorts/knotts/hours/),
+// written nightly by the dland-wishes generateParkHours function from
+// ThemeParks.wiki, about a month ahead (later days don't exist yet), keyed by
+// the resort's park keys. Read live from Storage.
 
 export interface ParkSpecialHours {
   description: string;
@@ -711,11 +714,8 @@ export interface ParkHoursForPark {
   specialHours: ParkSpecialHours[];
 }
 
-export interface DayParkHours {
-  date: string;
-  disneyland: ParkHoursForPark | null;
-  californiaadventure: ParkHoursForPark | null;
-}
+/** A day's hours by park key ({ disneyland, californiaadventure }, { knotts, knotts_soak_city }); null for a park with none. */
+export type DayParkHours = { date: string } & { [parkKey: string]: ParkHoursForPark | null | string };
 
 const HOURS_CACHE_KEY = cacheKey("park-hours");
 const HOURS_TTL = 6 * 60 * 60 * 1000; // hours rarely change, but they can
@@ -746,21 +746,24 @@ function writeHoursCache(date: string, data: DayParkHours | null): void {
  * past). Rejects when they couldn't be loaded (offline, blocked), which the
  * caller should say differently from "not posted".
  */
-export function getParkHours(date: string): Promise<DayParkHours | null> {
-  const cached = readHoursCache()[date];
+export function getParkHours(date: string, resortId: string = DEFAULT_RESORT_ID): Promise<DayParkHours | null> {
+  const dataPath = getResort(resortId)?.dataPath ?? "";
+  // Disneyland Resort's entries keep their plain date key
+  const key = dataPath ? `${resortId}:${date}` : date;
+  const cached = readHoursCache()[key];
   if (cached && Date.now() - cached.fetchedAt < HOURS_TTL) return Promise.resolve(cached.data);
-  let pending = hoursInFlight.get(date);
+  let pending = hoursInFlight.get(key);
   if (!pending) {
-    pending = fetch(liveUrl(`hours/${date}.json`), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) })
+    pending = fetch(liveUrl(`${dataPath}hours/${date}.json`), { signal: AbortSignal.timeout(LIVE_TIMEOUT_MS) })
       .then(async (res) => {
         // Storage answers 403 (or 404) for a file that doesn't exist yet
         if (!res.ok && res.status !== 403 && res.status !== 404) throw new Error(`park hours ${date}: ${res.status}`);
         const data = res.ok ? ((await res.json()) as DayParkHours) : null;
-        writeHoursCache(date, data);
+        writeHoursCache(key, data);
         return data;
       })
-      .finally(() => hoursInFlight.delete(date));
-    hoursInFlight.set(date, pending);
+      .finally(() => hoursInFlight.delete(key));
+    hoursInFlight.set(key, pending);
   }
   return pending;
 }

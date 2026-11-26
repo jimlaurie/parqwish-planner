@@ -9,6 +9,7 @@
 
 import { useMemo, useState } from "react";
 import { useParkData } from "@/hooks/use-park-data";
+import { DEFAULT_RESORT_ID, getResort } from "@shared/constants/resorts";
 import CatalogStatusFilter, { useCatalogStatusFilter } from "@/components/CatalogStatusFilter";
 import type { ParkDataItem } from "@/lib/park-data";
 import type { PickedPoint } from "./PlacePickerMap";
@@ -37,10 +38,14 @@ interface CatalogPickerProps {
   /** Park-data ids already on the trip's plan, shown as "In plan". */
   plannedParkDataIds: Set<string>;
   onSelectionChange: (selection: CatalogSelection | null) => void;
+  /** The day's resort, whose catalog it offers (Disneyland Resort unless the day is elsewhere). */
+  resortId?: string;
 }
 
-export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }: CatalogPickerProps) {
-  const { items, loading } = useParkData();
+export default function CatalogPicker({ plannedParkDataIds, onSelectionChange, resortId = DEFAULT_RESORT_ID }: CatalogPickerProps) {
+  const { items, loading, error } = useParkData(resortId);
+  // Pinning a place uses Disneyland's map, so it's offered on Disneyland days only
+  const canPin = resortId === DEFAULT_RESORT_ID;
   const [tab, setTab] = useState<CatalogTab>("ride");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -100,7 +105,7 @@ export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }:
       </div>
 
       <div className="px-3 pt-2 shrink-0">
-        {tab === "place" && (
+        {tab === "place" && canPin && (
           <button
             onClick={() => { setSelectedId(null); setPinning((v) => !v); onSelectionChange(null); setPoint(null); setPlaceName(""); }}
             aria-expanded={pinning}
@@ -137,7 +142,12 @@ export default function CatalogPicker({ plannedParkDataIds, onSelectionChange }:
       ) : (
         <div className="flex-1 overflow-y-auto px-3 py-1 min-h-0 space-y-1">
           {loading && <p className="text-xs py-6 text-center" style={{ color: "var(--color-text-dim)" }}>Loading catalog…</p>}
-          {!loading && results.length === 0 && (
+          {!loading && error && (
+            <p role="alert" className="text-xs py-6 text-center" style={{ color: "var(--color-error)" }}>
+              {getResort(resortId)?.name ?? "This resort"}&rsquo;s catalog couldn&rsquo;t be loaded. Check the connection and try again.
+            </p>
+          )}
+          {!loading && !error && results.length === 0 && (
             <p className="text-xs py-6 text-center" style={{ color: "var(--color-text-dim)" }}>No matches</p>
           )}
           {results.slice(0, MAX_RESULTS).map((item) => (

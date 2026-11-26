@@ -36,6 +36,9 @@ import PlayMobileLayout from "@/components/play/PlayMobileLayout";
 import DayItemEditModal from "@/components/play/DayItemEditModal";
 import AddDayItemModal from "@/components/play/AddDayItemModal";
 import CollectionDayPanel from "@/components/collection/CollectionDayPanel";
+import DayResortPicker from "@/components/play/DayResortPicker";
+import { dayResortFor, onDayResort } from "@/lib/trip-resorts";
+import { DEFAULT_RESORT_ID } from "@shared/constants/resorts";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
 type MobileTab = "pool" | "timeline";
@@ -72,7 +75,13 @@ export default function PreviewPage() {
     loading: dayItemsLoading,
   } = useDayItems(selectedPlayDate);
 
-  const { poolItems, loading: poolLoading } = usePlayPool(selectedPlayDate);
+  const { poolItems: tripPoolItems, loading: poolLoading } = usePlayPool(selectedPlayDate);
+  // The day's resort (Preview's resort chip): its park items, plus everything that isn't a park item
+  const dayResort = dayResortFor(currentTrip, selectedPlayDate);
+  const poolItems = useMemo(
+    () => tripPoolItems.filter((p) => onDayResort(p.parkDataId, dayResort)),
+    [tripPoolItems, dayResort]
+  );
 
   const [mobileTab, setMobileTab] = useState<MobileTab>("timeline");
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -351,8 +360,13 @@ export default function PreviewPage() {
         <PlayHeader
           trip={currentTrip}
           stats={stats}
-          dayTabs={<DatePickerBar startDate={currentTrip.startDate} endDate={currentTrip.endDate} inline />}
-          hours={<><ParkHoursLine date={selectedPlayDate} inline /><DayWeatherLine date={selectedPlayDate} /></>}
+          dayTabs={<DatePickerBar startDate={currentTrip.startDate} endDate={currentTrip.endDate} inline trip={currentTrip} />}
+          resort={<DayResortPicker trip={currentTrip} date={selectedPlayDate} />}
+          hours={<>
+            <ParkHoursLine date={selectedPlayDate} inline resortId={dayResort} />
+            {/* The forecast is Disneyland's; another resort's comes with its weather files */}
+            {dayResort === DEFAULT_RESORT_ID && <DayWeatherLine date={selectedPlayDate} />}
+          </>}
         />
 
         {/* The day's collection Wants and Trades (+ Day); hidden when there are none */}
@@ -374,6 +388,7 @@ export default function PreviewPage() {
             onQuickAdd={handleQuickAdd}
             onScheduleReservation={handleScheduleReservation}
             onQuickSchedule={handleQuickSchedule}
+            dayResort={dayResort}
           />
         ) : (
           <PlayMobileLayout
@@ -392,6 +407,7 @@ export default function PreviewPage() {
             onQuickAdd={handleQuickAdd}
             onScheduleReservation={handleScheduleReservation}
             onQuickSchedule={handleQuickSchedule}
+            dayResort={dayResort}
           />
         )}
 
@@ -462,6 +478,7 @@ export default function PreviewPage() {
         onClose={() => setAddModalVisible(false)}
         onAddFromCatalog={handleAddFromCatalog}
         plannedParkDataIds={plannedParkDataIds}
+        resortId={dayResort}
       />
     </DndContext>
   );

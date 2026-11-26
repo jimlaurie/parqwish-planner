@@ -24,6 +24,8 @@ interface AddDayItemModalProps {
   onAddFromCatalog?: (selection: CatalogSelection, scheduledTime?: string) => Promise<void>;
   /** Park-data ids already on the plan, marked "In plan" in the catalog list. */
   plannedParkDataIds?: Set<string>;
+  /** The day's resort: the Park catalog offers its items. */
+  resortId?: string;
 }
 
 type ItemSource = "plan" | "catalog";
@@ -76,6 +78,7 @@ export default function AddDayItemModal({
   onClose,
   onAddFromCatalog,
   plannedParkDataIds,
+  resortId,
 }: AddDayItemModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("wish");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -327,6 +330,7 @@ export default function AddDayItemModal({
 
         {showCatalog ? (
           <CatalogPicker
+            resortId={resortId}
             plannedParkDataIds={plannedParkDataIds ?? new Set()}
             onSelectionChange={setCatalogSelection}
           />

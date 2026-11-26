@@ -99,6 +99,11 @@ export interface Trip extends Timestamped {
    *  ["disneyland_resort"], so trips from before multi-park support keep
    *  their meaning. Additive and optional: older apps ignore it. */
   resortIds?: string[];
+  /** Each trip date's resort when it isn't the trip's first, e.g. { "2026-11-28": "knotts" }
+   *  (picked on the Planner's Preview; dayResortId in shared/constants/resorts.ts). A date
+   *  not listed, or naming a resort the trip no longer visits, is at the trip's first resort.
+   *  Additive and optional: older apps ignore it. */
+  dayResorts?: Record<string, string>;
   // Travel — array-based (v15+)
   flights?: FlightLeg[];
   hotels?: HotelStay[];

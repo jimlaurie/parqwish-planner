@@ -8,6 +8,7 @@ import Timeline from "./Timeline";
 import TimelineTypeFilter from "./TimelineTypeFilter";
 import ParkMapWrapper from "./ParkMapWrapper";
 import UserPanel from "@/components/UserPanel";
+import { DEFAULT_RESORT_ID, getResort } from "@shared/constants/resorts";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -27,6 +28,8 @@ interface PlayDesktopLayoutProps {
   onQuickAdd: (time: string) => void;
   onScheduleReservation: (item: PoolItem) => void;
   onQuickSchedule: (item: PoolItem) => void;
+  /** The day's resort (Preview's resort chip); the map and the timeline's weather are Disneyland Resort's */
+  dayResort?: string;
 }
 
 export default function PlayDesktopLayout({
@@ -43,7 +46,9 @@ export default function PlayDesktopLayout({
   onQuickAdd,
   onScheduleReservation,
   onQuickSchedule,
+  dayResort,
 }: PlayDesktopLayoutProps) {
+  const isDisneylandDay = !dayResort || dayResort === DEFAULT_RESORT_ID;
   return (
     <div className="w-full max-w-7xl flex-1">
       <div className="grid grid-cols-[280px_320px_1fr] gap-4 h-full">
@@ -97,6 +102,7 @@ export default function PlayDesktopLayout({
             members={members}
             myUid={myUid}
             selectedDate={selectedDate}
+            dayResort={dayResort}
           />
         </div>
 
@@ -110,9 +116,21 @@ export default function PlayDesktopLayout({
             maxHeight: "calc(100vh - 220px)",
           }}
         >
-          <ParkMapWrapper items={items} />
+          {isDisneylandDay ? <ParkMapWrapper items={items} /> : <OtherResortMapNote resortId={dayResort!} />}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** In place of Disneyland's map on another resort's day. */
+function OtherResortMapNote({ resortId, compact }: { resortId: string; compact?: boolean }) {
+  return (
+    <div className={`h-full flex items-center justify-center text-center px-6 ${compact ? "py-4 rounded-xl" : ""}`}
+         style={{ backgroundColor: "var(--color-bg-card)", color: "var(--color-text-muted)", ...(compact ? { border: "1px solid var(--color-border-subtle)" } : {}) }}>
+      <p className="text-xs max-w-xs">
+        {"\u{1F5FA}\uFE0F"} The map shows Disneyland Resort. A map of {getResort(resortId)?.name ?? "this resort"} comes in a later version.
+      </p>
     </div>
   );
 }

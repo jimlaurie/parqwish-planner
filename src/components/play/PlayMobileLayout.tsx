@@ -8,6 +8,7 @@ import MobileTabBar from "./MobileTabBar";
 import ItemPool from "./ItemPool";
 import Timeline from "./Timeline";
 import TimelineTypeFilter from "./TimelineTypeFilter";
+import { DEFAULT_RESORT_ID, getResort } from "@shared/constants/resorts";
 
 const ACCENT = "var(--color-accent-preview)";
 
@@ -31,6 +32,8 @@ interface PlayMobileLayoutProps {
   onQuickAdd: (time: string) => void;
   onScheduleReservation: (item: PoolItem) => void;
   onQuickSchedule: (item: PoolItem) => void;
+  /** The day's resort (Preview's resort chip); the map and the timeline's weather are Disneyland Resort's */
+  dayResort?: string;
 }
 
 export default function PlayMobileLayout({
@@ -49,12 +52,14 @@ export default function PlayMobileLayout({
   onQuickAdd,
   onScheduleReservation,
   onQuickSchedule,
+  dayResort,
 }: PlayMobileLayoutProps) {
+  const isDisneylandDay = !dayResort || dayResort === DEFAULT_RESORT_ID;
   return (
     <div className="w-full flex flex-col" style={{ height: "calc(100vh - 200px - var(--mobile-tabbar-h))" }}>
       {/* SVG Park Map — always visible */}
       <div className="flex-shrink-0 mb-3">
-        <MiniParkMap items={items} />
+        {isDisneylandDay ? <MiniParkMap items={items} /> : <OtherResortMapNote resortId={dayResort!} compact />}
       </div>
 
       {/* Tab Bar */}
@@ -100,10 +105,23 @@ export default function PlayMobileLayout({
               members={members}
               myUid={myUid}
               selectedDate={selectedDate}
+              dayResort={dayResort}
             />
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+/** In place of Disneyland's map on another resort's day. */
+function OtherResortMapNote({ resortId, compact }: { resortId: string; compact?: boolean }) {
+  return (
+    <div className={`h-full flex items-center justify-center text-center px-6 ${compact ? "py-4 rounded-xl" : ""}`}
+         style={{ backgroundColor: "var(--color-bg-card)", color: "var(--color-text-muted)", ...(compact ? { border: "1px solid var(--color-border-subtle)" } : {}) }}>
+      <p className="text-xs max-w-xs">
+        {"\u{1F5FA}\uFE0F"} The map shows Disneyland Resort. A map of {getResort(resortId)?.name ?? "this resort"} comes in a later version.
+      </p>
     </div>
   );
 }

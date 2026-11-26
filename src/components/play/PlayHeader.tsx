@@ -18,11 +18,13 @@ interface PlayHeaderProps {
   dayTabs?: ReactNode;
   /** The selected day's park hours, on the counts row. */
   hours?: ReactNode;
+  /** The selected day's resort, picked here (DayResortPicker), first on the counts row. */
+  resort?: ReactNode;
 }
 
 const ACCENT = "var(--color-accent-preview)";
 
-export default function PlayHeader({ trip, stats, dayTabs, hours }: PlayHeaderProps) {
+export default function PlayHeader({ trip, stats, dayTabs, hours, resort }: PlayHeaderProps) {
   const router = useRouter();
 
   return (
@@ -43,6 +45,7 @@ export default function PlayHeader({ trip, stats, dayTabs, hours }: PlayHeaderPr
         className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mt-2"
         style={{ color: "var(--color-text-muted)" }}
       >
+        {resort}
         <span>
           {"\uD83D\uDCC5"} {stats.total} scheduled
         </span>

@@ -14,6 +14,7 @@ import PartnerBand from "@/components/partner/PartnerBand";
 import PartnerInfoPopup from "@/components/partner/PartnerInfoPopup";
 import { marketingUrl } from "@/lib/marketing-links";
 import { formatTripDates } from "@/lib/trip-dates";
+import { tripResortsLabel } from "@/lib/trip-resorts";
 import { editTripHref } from "@/lib/return-path";
 import { COLLECTIONS_AVAILABLE } from "@/lib/feature-flags";
 
@@ -315,6 +316,12 @@ export default function TopNavBar() {
                   {currentTrip.startDate && (
                     <span className="flex items-center gap-1.5 text-[10px] whitespace-nowrap" style={{ color: "var(--color-text-dim)" }}>
                       <span className="hidden lg:inline">{formatTripDates(currentTrip.startDate, currentTrip.endDate)}</span>
+                      {/* A trip visiting more than Disneyland Resort names its resorts (trip-resorts.ts) */}
+                      {tripResortsLabel(currentTrip) && (
+                        <span className="hidden lg:inline truncate max-w-[180px]" title={tripResortsLabel(currentTrip) ?? undefined}>
+                          {tripResortsLabel(currentTrip)}
+                        </span>
+                      )}
                       <TripCountdownPill trip={currentTrip} />
                     </span>
                   )}

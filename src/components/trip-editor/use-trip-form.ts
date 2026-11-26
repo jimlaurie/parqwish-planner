@@ -67,6 +67,12 @@ export function useTripForm(trip: Trip | null | undefined, draft?: Partial<Trip>
     });
   }, []);
 
+  /** The resorts the trip visits (trip-resorts.ts saves Disneyland Resort alone as no field). */
+  const setResorts = useCallback((ids: string[]) => {
+    dirtyFields.current.add("resortIds");
+    setForm((prev) => ({ ...prev, resortIds: ids }));
+  }, []);
+
   const updateItem = useCallback(<T,>(field: TripArrayField, index: number, key: keyof T, value: string) => {
     dirtyFields.current.add(field);
     setForm((prev) => {
@@ -94,7 +100,7 @@ export function useTripForm(trip: Trip | null | undefined, draft?: Partial<Trip>
   const isDirty = useCallback(() => dirtyFields.current.size > 0, []);
   const markSaved = useCallback(() => dirtyFields.current.clear(), []);
 
-  return { form, setField, updateItem, addItem, removeItem, isDirty, markSaved };
+  return { form, setField, setResorts, updateItem, addItem, removeItem, isDirty, markSaved };
 }
 
 export type TripForm = ReturnType<typeof useTripForm>;

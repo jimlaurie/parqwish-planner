@@ -103,6 +103,8 @@ export function useTrips() {
     startDate: string;
     endDate: string;
     isTemplate?: boolean;
+    /** The resorts it visits; left out for Disneyland Resort alone (trip-resorts.ts) */
+    resortIds?: string[];
     /** Travel details and notes filled in before the trip existed (the Edit Trip page's draft). */
     details?: Pick<Trip, "flights" | "hotels" | "transports" | "notes">;
   }) => {
@@ -115,6 +117,7 @@ export function useTrips() {
       startDate: data.isTemplate ? "" : data.startDate,
       endDate: data.isTemplate ? "" : data.endDate,
       isTemplate: data.isTemplate ?? false,
+      ...(data.resortIds?.length ? { resortIds: data.resortIds } : {}),
       phase: "plan",
       createdAt: now,
       updatedAt: now,

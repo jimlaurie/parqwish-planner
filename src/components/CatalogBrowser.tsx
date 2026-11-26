@@ -12,6 +12,7 @@ import { hasOwner, isSameOwner } from "@shared/selection-owners";
 import { PARK_DATA_TYPE_TO_TAG } from "@/lib/park-data";
 import { catalogResorts, getResortRideStats, paidQueueLabel, resortParkNames } from "@/lib/resort-park-data";
 import { DEFAULT_RESORT_ID, getResort, type ResortConfig } from "@shared/constants/resorts";
+import { resortsForTrip, tripResortIds } from "@/lib/trip-resorts";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
 import CatalogNewPlace from "@/components/CatalogNewPlace";
@@ -573,23 +574,27 @@ interface CatalogBrowserProps {
 
 export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserProps) {
   const isPanel = variant === "panel";
-  const resorts = catalogResorts();
+  const { currentTrip } = useTrips();
+  // The trip's resorts (Edit Trip › Resorts), else Disneyland Resort; all of them with no trip
+  // "none" until the trip loads: no trip offers every resort, a Disneyland-only trip just one
+  const tripResortKey = currentTrip ? tripResortIds(currentTrip).join(",") : "none";
+  const resorts = useMemo(() => resortsForTrip(catalogResorts(), currentTrip), [tripResortKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const [resortId, setResortId] = useState(DEFAULT_RESORT_ID);
-  // The last resort browsed, once on the client (localStorage isn't there when the page is built)
+  // The last resort browsed when the trip has it, else the trip's first (on the client: localStorage isn't there when the page is built)
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(CATALOG_RESORT_KEY);
-      if (saved && saved !== DEFAULT_RESORT_ID && catalogResorts().some((r) => r.id === saved)) setResortId(saved);
-    } catch { /* localStorage blocked: start at Disneyland Resort */ }
-  }, []);
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(CATALOG_RESORT_KEY); } catch { /* localStorage blocked */ }
+    setResortId(saved && resorts.some((r) => r.id === saved) ? saved : resorts[0].id);
+  }, [resorts]);
   const resort = getResort(resortId);
   const isOtherResort = resortId !== DEFAULT_RESORT_ID;
+  // Another resort's items go on a trip that visits it; browsing one without a trip adds nothing
+  const browseOnly = isOtherResort && !(currentTrip && tripResortIds(currentTrip).includes(resortId));
   const paidQueue = paidQueueLabel(resortId);
   const parkOrder = useMemo(() => (isOtherResort && resort ? resortParkNames(resort) : PARK_DISPLAY_ORDER), [isOtherResort, resort]);
   const { items, loading, error: loadError } = useParkData(resortId);
   const { allWishes, addOrSelectWish, addWish, unselectWish } = useTripWishes();
   const { currentUserId } = useAppStore();
-  const { currentTrip } = useTrips();
   const { userMap } = useUsers();
   const myUid = auth.currentUser?.uid;
 
@@ -805,8 +810,9 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
       )}
       {isOtherResort && resort && (
         <p className="text-[11px] mb-2 shrink-0" style={{ color: "var(--color-text-muted)" }}>
-          Preview: browse {resort.name}&rsquo;s rides, shows, dining, shops and places.
-          Adding them to a trip comes with choosing a trip&rsquo;s resorts.
+          {browseOnly
+            ? <>Preview: browse {resort.name}&rsquo;s rides, shows, dining, shops and places.</>
+            : <>Preview: {resort.name} is planned here in the Planner. ParQwish Pal shows its items in a later version.</>}
         </p>
       )}
       <div
@@ -1040,7 +1046,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
                         item={item}
                         insight={insights.get(item.id)}
                         paidQueue={paidQueue}
-                        browseOnly={isOtherResort}
+                        browseOnly={browseOnly}
                         alreadyAdded={addedParkDataIds.has(item.id)}
                         wantedBy={wantedByParkDataId.get(item.id)}
                         selected={selectedId === item.id}

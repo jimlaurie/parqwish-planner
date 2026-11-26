@@ -1,10 +1,12 @@
-// Other resorts in the Plan page's Park Catalog (NEXT_PUBLIC_RESORTS, the
-// beta; dland-wishes docs/multi-park-architecture.md §7a): the resort
-// switcher, another resort's items read from its own files with hidden ones
-// left out, its paid line's name, browse-only rows, and a failed load said
-// as such. Skipped against a dev server started without the flag.
+// Other resorts (NEXT_PUBLIC_RESORTS, the beta; dland-wishes
+// docs/multi-park-architecture.md §7a): Edit Trip's Resorts picker, the
+// header naming a trip's resorts, and the Plan page's Park Catalog showing
+// the trip's resorts: another resort's items read from its own files with
+// hidden ones left out, its paid line's name, + Plan for a resort the trip
+// visits, and a failed load said as such. Skipped against a dev server
+// started without the flag.
 import { test, expect, type Page } from "@playwright/test";
-import { seedTrip, fakeParkData, atParkTime } from "./helpers";
+import { seedTrip, fakeParkData, atParkTime, rows, SEED } from "./helpers";
 
 const KNOTTS = /storage\.googleapis\.com\/.*\/data\/resorts\/knotts\/([\w-]+)\.json/;
 
@@ -31,6 +33,10 @@ async function showResults(page: Page) {
   if (await toggle.isVisible()) await toggle.click();
 }
 
+/** The test trip visiting these resorts (none: Disneyland Resort only, as every trip before multi-park). */
+const seedWithResorts = (page: Page, resortIds?: string[]) =>
+  seedTrip(page, { ...SEED, trips: [{ ...SEED.trips[0], ...(resortIds ? { resortIds } : {}) }] });
+
 async function openPlan(page: Page, knotts: "ok" | "down" = "ok") {
   await atParkTime(page);
   await fakeParkData(page);
@@ -40,7 +46,7 @@ async function openPlan(page: Page, knotts: "ok" | "down" = "ok") {
     if (knotts === "down" || !(name in files)) return route.abort("failed");
     return route.fulfill({ contentType: "application/json", body: JSON.stringify(files[name]) });
   });
-  await seedTrip(page);
+  await seedWithResorts(page, ["disneyland_resort", "knotts"]);
   await page.goto("/plan");
   const switcher = page.getByRole("group", { name: "Resort" });
   await expect(page.getByRole("tab", { name: /Rides/ })).toBeVisible();
@@ -53,10 +59,11 @@ test.afterEach(async ({ page }) => {
   await page.evaluate(() => localStorage.removeItem("parqwish_catalog_resort")).catch(() => {});
 });
 
-test("The Park Catalog switches to Knott's: its own items, hidden ones left out, Fast Lane, browse only", async ({ page }) => {
+test("A trip visiting Knott's: the Park Catalog offers its resorts, Knott's items with Fast Lane, + Plan adds one", async ({ page }) => {
   const switcher = await openPlan(page);
+  await expect(switcher.getByRole("button")).toHaveText(["Disneyland Resort", /Knott's Berry Farm/]); // not Universal
   await switcher.getByRole("button", { name: /Knott's Berry Farm/ }).click();
-  await expect(page.getByText(/Preview: browse Knott/)).toBeVisible();
+  await expect(page.getByText(/Knott's Berry Farm is planned here in the Planner/)).toBeVisible();
 
   await showResults(page);
   const ghost = page.getByRole("button", { name: /GhostRider/ });
@@ -68,7 +75,11 @@ test("The Park Catalog switches to Knott's: its own items, hidden ones left out,
   // Only Knott's parks' groups (Space Mountain is in the seeded trip's wishes, so check the groups)
   await expect(page.getByRole("heading", { name: /^Knott's Berry Farm ·/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /^Disneyland ·/ })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "+ Plan" })).toHaveCount(0);
+
+  await ghost.getByRole("button", { name: "+ Plan" }).click();
+  await expect(ghost.getByText("✓ In Plan")).toBeVisible();
+  const added = (await rows<{ title: string; parkDataId?: string; park?: string; land?: string }>(page, "wishes")).find((w) => w.title === "GhostRider");
+  expect(added).toMatchObject({ parkDataId: "knotts__ghostrider", park: "Knott's Berry Farm", land: "Ghost Town" });
 
   // Remembered on the next visit, and Disneyland Resort comes back with + Plan
   await page.reload();
@@ -84,4 +95,35 @@ test("A resort whose files can't be read says so, rather than looking empty", as
   await switcher.getByRole("button", { name: /Knott's Berry Farm/ }).click();
   await showResults(page);
   await expect(page.getByText("Knott's Berry Farm’s catalog couldn’t be loaded", { exact: false })).toBeVisible();
+});
+
+test("Edit Trip › Resorts: choose Knott's too, the header names both, and at least one stays", async ({ page }) => {
+  await atParkTime(page);
+  await fakeParkData(page);
+  await seedWithResorts(page);
+  await page.goto("/plan");
+  await expect(page.getByRole("tab", { name: /Rides/ })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Resort" })).toHaveCount(0); // a Disneyland-only trip: no switcher
+
+  await page.goto("/trip?id=trip_test");
+  const picker = page.getByRole("group", { name: "Resorts" });
+  await expect(page.getByRole("heading", { name: /Edit Trip/ })).toBeVisible();
+  test.skip(!(await picker.isVisible()), "dev server started without NEXT_PUBLIC_RESORTS=1");
+  await expect(picker.getByRole("button", { name: /Disneyland Resort/ })).toBeDisabled(); // the only one chosen
+  await picker.getByRole("button", { name: /Knott's Berry Farm/ }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect.poll(async () => (await rows<{ resortIds?: string[] }>(page, "trips"))[0]?.resortIds).toEqual(["disneyland_resort", "knotts"]);
+  await expect(page.getByText("Disneyland Resort · Knott's Berry Farm").first()).toBeVisible();
+
+  // Knott's alone; Disneyland Resort alone again is saved as no field, as before
+  await page.goto("/trip?id=trip_test");
+  await page.getByRole("group", { name: "Resorts" }).getByRole("button", { name: /Disneyland Resort/ }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect.poll(async () => (await rows<{ resortIds?: string[] }>(page, "trips"))[0]?.resortIds).toEqual(["knotts"]);
+  await page.goto("/trip?id=trip_test");
+  const again = page.getByRole("group", { name: "Resorts" });
+  await again.getByRole("button", { name: /Disneyland Resort/ }).click();
+  await again.getByRole("button", { name: /Knott's Berry Farm/ }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect.poll(async () => "resortIds" in ((await rows<Record<string, unknown>>(page, "trips"))[0] ?? {})).toBe(false);
 });

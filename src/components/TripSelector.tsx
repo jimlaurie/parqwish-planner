@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import { formatTripDates } from "@/lib/trip-dates";
+import { tripResortsLabel } from "@/lib/trip-resorts";
 
 interface TripItem {
   id: string;
@@ -10,6 +11,8 @@ interface TripItem {
   startDate: string;
   endDate: string;
   isTemplate?: boolean;
+  /** The resorts it visits (trip-resorts.ts), named under the dates when not just Disneyland Resort */
+  resortIds?: string[];
   wishCount: number;
 }
 
@@ -124,6 +127,11 @@ export default function TripSelector({
               style={{ color: "var(--color-text-dim)" }}
             >
               {formatTripDates(trip.startDate, trip.endDate, "No dates")}
+            </span>
+          )}
+          {tripResortsLabel(trip) && (
+            <span className="text-[10px] truncate" style={{ color: "var(--color-text-dim)" }}>
+              {tripResortsLabel(trip)}
             </span>
           )}
         </div>

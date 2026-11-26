@@ -8,6 +8,7 @@ import PartnerSidebarCard from "@/components/partner/PartnerSidebarCard";
 import type { Trip } from "@/lib/db";
 import { usePartner } from "@/lib/partners";
 import { formatTripDates } from "@/lib/trip-dates";
+import { tripResortsLabel } from "@/lib/trip-resorts";
 
 // ==================== TYPES ====================
 
@@ -123,6 +124,11 @@ function TripSection({ title, trips, currentTripId, onSelectTrip, onEditTrip, de
                         style={{ color: "var(--color-text-dim)" }}
                       >
                         {formatTripDates(trip.startDate, trip.endDate)}
+                      </div>
+                    )}
+                    {tripResortsLabel(trip) && (
+                      <div className="text-[10px] truncate" style={{ color: "var(--color-text-dim)" }}>
+                        {tripResortsLabel(trip)}
                       </div>
                     )}
                     {trip.archiveFileName && (

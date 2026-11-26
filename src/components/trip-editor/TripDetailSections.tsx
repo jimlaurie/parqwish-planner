@@ -9,6 +9,9 @@
 import type { Ref } from "react";
 import type { FlightLeg, HotelStay, TransportLeg } from "@/lib/db";
 import type { TripForm } from "./use-trip-form";
+import { RESORTS_AVAILABLE } from "@/lib/feature-flags";
+import { catalogResorts } from "@/lib/resort-park-data";
+import { tripResortIds } from "@/lib/trip-resorts";
 import { Section, Field, TextArea, ItemCard, AddButton, Switch, inputClass, inputStyle, labelClass } from "./fields";
 
 const TRANSPORT_TYPES = ["Rental Car", "Uber/Lyft", "Hotel Shuttle", "Personal Vehicle", "Public Transit", "Other"];
@@ -44,6 +47,7 @@ export function GeneralSection({ f, highlightDates, startDateRef, archive }: Gen
             </div>
           </>
         )}
+        {RESORTS_AVAILABLE && <ResortsField f={f} />}
         <Switch on={!!form.isTemplate} onToggle={() => setField("isTemplate", !form.isTemplate)} label="Template (no dates)" />
         {/* Hides the trip from the main list, fully reversible; unrelated to
             the Danger Zone's backup-file download (docs/sync-architecture.md §6.6). */}
@@ -57,6 +61,49 @@ export function GeneralSection({ f, highlightDates, startDateRef, archive }: Gen
         )}
       </div>
     </Section>
+  );
+}
+
+// ==================== RESORTS ====================
+
+/** Which resorts the trip visits: at least one, Disneyland Resort to start with. */
+function ResortsField({ f }: { f: TripForm }) {
+  const chosen = tripResortIds(f.form);
+  const toggle = (id: string) => {
+    const next = chosen.includes(id) ? chosen.filter((r) => r !== id) : [...chosen, id];
+    if (next.length) f.setResorts(next);
+  };
+  return (
+    <div>
+      <span className={labelClass} style={{ color: "var(--color-text-secondary)" }} id="trip-resorts-label">Resorts</span>
+      <div className="flex flex-wrap gap-2" role="group" aria-labelledby="trip-resorts-label">
+        {catalogResorts().map((r) => {
+          const on = chosen.includes(r.id);
+          return (
+            <button
+              key={r.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => toggle(r.id)}
+              disabled={on && chosen.length === 1}
+              title={on && chosen.length === 1 ? "A trip visits at least one resort" : undefined}
+              className="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors duration-200 disabled:cursor-default"
+              style={{
+                backgroundColor: on ? "color-mix(in srgb, var(--color-gold) 18%, transparent)" : "transparent",
+                color: on ? "var(--color-gold)" : "var(--color-text-secondary)",
+                border: `1px solid ${on ? "var(--color-gold)" : "var(--color-border-subtle)"}`,
+              }}
+            >
+              {on ? "✓ " : ""}{r.name}
+              {r.status !== "live" && <span className="ml-1 text-[9px] uppercase tracking-wide opacity-70">preview</span>}
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-[11px] mt-1.5" style={{ color: "var(--color-text-dim)" }}>
+        The Plan&rsquo;s Park Catalog shows these resorts.
+      </p>
+    </div>
   );
 }
 

@@ -21,6 +21,7 @@ import type { Trip } from "@/lib/db";
 import { useTrips } from "@/hooks/use-trips";
 import TripEditor from "@/components/trip-editor/TripEditor";
 import { safeReturnPath, returnLabel } from "@/lib/return-path";
+import { resortIdsToSave } from "@/lib/trip-resorts";
 
 function Spinner() {
   return (
@@ -52,9 +53,11 @@ function filledIn<T extends object>(items: T[] | undefined): T[] | undefined {
 
 /** The fields the page saves; collaboration and archiving act on their own. */
 function editableFields(form: Partial<Trip>): Partial<Trip> {
-  const { name, startDate, endDate, isTemplate, flights, hotels, transports, notes } = form;
+  const { name, startDate, endDate, isTemplate, flights, hotels, transports, notes, resortIds } = form;
   return {
     name: name?.trim(), startDate, endDate, isTemplate, notes,
+    // Kept as it is when this build has no resort picker (RESORTS_AVAILABLE), so the trip keeps its resorts
+    resortIds: resortIds ? resortIdsToSave(resortIds) : undefined,
     flights: filledIn(flights), hotels: filledIn(hotels), transports: filledIn(transports),
   };
 }
@@ -84,6 +87,7 @@ function TripPageInner() {
         startDate: fields.startDate ?? "",
         endDate: fields.endDate ?? "",
         isTemplate: fields.isTemplate,
+        resortIds: fields.resortIds,
         details: { flights: fields.flights, hotels: fields.hotels, transports: fields.transports, notes: fields.notes },
       });
     }

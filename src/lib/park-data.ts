@@ -29,7 +29,7 @@ export function liveUrl(path: string): string {
   return `${LIVE_BASE_URL}/${path}?h=${Math.floor(Date.now() / 3_600_000)}`;
 }
 
-const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
+export const FILES = ["rides.json", "shows.json", "restaurants.json", "shops.json", "places.json"] as const;
 
 // ==================== CACHE KEYS ====================
 // Every localStorage cache here is keyed to the build's version, so each
@@ -134,7 +134,7 @@ export const PARK_LABELS: Record<string, string> = {
 // Normalised to "Hotels" in flattenParkData so the UI shows the correct hierarchy.
 const HOTEL_PARK_KEYS = new Set(["grandcalifornian", "disneyland_hotel", "pixar_place_hotel"]);
 
-function fileToType(file: string): ParkDataItem["type"] {
+export function fileToType(file: string): ParkDataItem["type"] {
   if (file.includes("rides")) return "ride";
   if (file.includes("shows")) return "show";
   if (file.includes("restaurants")) return "dining";
@@ -145,6 +145,8 @@ function fileToType(file: string): ParkDataItem["type"] {
 // Loose entity type that covers all JSON fields across all files
 interface RawParkEntity {
   name?: string;
+  /** Hidden in the Admin (another resort's imported item that isn't real for guests, e.g. a Scary Farm maze) */
+  hidden?: boolean;
   land?: string;
   category?: string;
   latitude?: number;
@@ -180,16 +182,21 @@ interface RawParkEntity {
   acceptsAPDiscount?: boolean;
 }
 
-function flattenParkData(
+/**
+ * One park data file's entities as catalog items. `labels` names the parks
+ * (another resort's, from the registry); Disneyland Resort's are PARK_LABELS.
+ */
+export function flattenParkData(
   data: Record<string, Record<string, RawParkEntity>>,
-  type: ParkDataItem["type"]
+  type: ParkDataItem["type"],
+  labels: Record<string, string> = PARK_LABELS,
 ): ParkDataItem[] {
   const items: ParkDataItem[] = [];
   for (const [parkKey, entities] of Object.entries(data)) {
     if (parkKey === "version" || parkKey === "lastUpdated" || typeof entities !== "object" || !entities) continue;
-    const parkLabel = HOTEL_PARK_KEYS.has(parkKey) ? "Hotels" : (PARK_LABELS[parkKey] ?? parkKey);
+    const parkLabel = HOTEL_PARK_KEYS.has(parkKey) ? "Hotels" : (labels[parkKey] ?? parkKey);
     for (const [entityId, entity] of Object.entries(entities)) {
-      if (!entity.name) continue;
+      if (!entity || typeof entity !== "object" || !entity.name || entity.hidden) continue;
       const item: ParkDataItem = {
         id: `${parkKey}__${entityId}`,
         name: entity.name,
@@ -281,7 +288,7 @@ function isCacheFresh(entry: CacheEntry, now: number): boolean {
   return syncDay(entry.showtimesSyncedAt ?? null) === today || age < STALE_SHOWTIMES_RETRY;
 }
 
-async function fetchJson(url: string, init?: RequestInit): Promise<Record<string, unknown>> {
+export async function fetchJson(url: string, init?: RequestInit): Promise<Record<string, unknown>> {
   const res = await fetch(url, init);
   if (!res.ok) throw new Error(`${url}: ${res.status}`);
   return res.json();

@@ -3,7 +3,7 @@
 /**
  * Ships a beta of the Planner to the Firebase Hosting preview channel "beta"
  * (https://parqwish-app--beta-<hash>.web.app), beside production: built with
- * the hidden features on (BETA_FLAGS; none since Collections shipped), never
+ * the hidden features on (BETA_FLAGS: other resorts in the Park Catalog), never
  * touching app.parqwish.com.
  *
  *   npm run ship:beta              checks, build with the beta flags, deploy to the channel
@@ -31,7 +31,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHANNEL = "beta";
 const EXPIRES = "30d";
 /** What the beta turns on (src/lib/feature-flags.ts). */
-const BETA_FLAGS = {};
+const BETA_FLAGS = { NEXT_PUBLIC_RESORTS: "1" };
 const FIREBASE_KEYS = ["NEXT_PUBLIC_FIREBASE_API_KEY", "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "NEXT_PUBLIC_FIREBASE_PROJECT_ID"];
 const CHECK_ONLY = process.argv.includes("--check");
 

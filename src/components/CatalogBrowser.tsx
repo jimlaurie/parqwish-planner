@@ -9,7 +9,9 @@ import { useAppStore } from "@/lib/store";
 import { auth } from "@/lib/auth";
 import { resolveOwnerBadge } from "@/lib/owner-badge";
 import { hasOwner, isSameOwner } from "@shared/selection-owners";
-import { PARK_DATA_TYPE_TO_TAG, getRideReliabilityStats, getWaitTimeStats } from "@/lib/park-data";
+import { PARK_DATA_TYPE_TO_TAG } from "@/lib/park-data";
+import { catalogResorts, getResortRideStats, paidQueueLabel, resortParkNames } from "@/lib/resort-park-data";
+import { DEFAULT_RESORT_ID, getResort, type ResortConfig } from "@shared/constants/resorts";
 import type { ParkDataItem } from "@/lib/park-data";
 import ScheduleTipModal from "@/components/ScheduleTipModal";
 import CatalogNewPlace from "@/components/CatalogNewPlace";
@@ -19,6 +21,8 @@ import { waitColor } from "@/components/publish/waitTimeColors";
 import DataSourceNote from "@/components/DataSourceNote";
 
 const SCHEDULE_TIP_SEEN_KEY = "parqwish_seen_schedule_tip";
+/** The resort last browsed (the switcher shows only when RESORTS_AVAILABLE). */
+const CATALOG_RESORT_KEY = "parqwish_catalog_resort";
 
 const ACCENT = "var(--color-accent-plan)";
 
@@ -86,7 +90,7 @@ function heightInches(item: ParkDataItem): number | undefined {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
 }
 
-function rideChips(item: ParkDataItem, insight?: RideInsight): RowChip[] {
+function rideChips(item: ParkDataItem, insight: RideInsight | undefined, paidQueue: string): RowChip[] {
   const chips: RowChip[] = [];
   const wait = typicalWait(insight);
   if (wait != null) {
@@ -99,7 +103,7 @@ function rideChips(item: ParkDataItem, insight?: RideInsight): RowChip[] {
   }
   const inches = heightInches(item);
   if (inches != null) chips.push({ key: "height", label: `${inches}\u2033+`, title: `Minimum height ${inches} inches` });
-  if (item.hasLL) chips.push({ key: "ll", label: "\u26A1 Lightning Lane", tone: "info" });
+  if (item.hasLL) chips.push({ key: "ll", label: `\u26A1 ${paidQueue}`, tone: "info" });
   if (insight?.breakdownPct != null && insight.breakdownPct >= OFTEN_DOWN_PCT) {
     chips.push({
       key: "down",
@@ -220,8 +224,10 @@ function formatTime(t: string): string {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }
 
-function ItemDetail({ item }: {
+function ItemDetail({ item, paidQueue }: {
   item: ParkDataItem;
+  /** What the resort's paid line is called ("Lightning Lane", "Fast Lane") */
+  paidQueue: string;
 }) {
   const rows: React.ReactNode[] = [];
 
@@ -238,7 +244,7 @@ function ItemDetail({ item }: {
       rows.push(<DetailRow key="heightReq" label="Height" value={item.heightRequirement} />);
     }
     if (item.hasLL != null) {
-      rows.push(<DetailRow key="ll" label="Lightning Lane" value={item.hasLL ? "Yes" : "No"} />);
+      rows.push(<DetailRow key="ll" label={paidQueue} value={item.hasLL ? "Yes" : "No"} />);
     }
     if (item.warnings?.length) {
       rows.push(
@@ -385,9 +391,12 @@ function ItemDetail({ item }: {
 
 // ==================== LIST ROW ====================
 
-function CatalogRow({ item, insight, alreadyAdded, wantedBy, selected, pending, onSelect, onAdd, onRemove }: {
+function CatalogRow({ item, insight, paidQueue, browseOnly, alreadyAdded, wantedBy, selected, pending, onSelect, onAdd, onRemove }: {
   item: ParkDataItem;
   insight?: RideInsight;
+  paidQueue: string;
+  /** Another resort, browsed before trips can include it: no + Plan */
+  browseOnly: boolean;
   alreadyAdded: boolean;
   /** Other people on the trip who already have this in their plan, e.g. "Dana, Sam". */
   wantedBy?: string;
@@ -442,7 +451,7 @@ function CatalogRow({ item, insight, alreadyAdded, wantedBy, selected, pending, 
               </span>
             )}
           </p>
-          <RowChips chips={item.type === "ride" ? rideChips(item, insight) : otherChips(item)} />
+          <RowChips chips={item.type === "ride" ? rideChips(item, insight, paidQueue) : otherChips(item)} />
           {wantedBy && (
             <p className="text-[10px] mt-1 truncate" style={{ color: "var(--color-text-muted)" }}>
               {alreadyAdded ? `Also wanted by ${wantedBy}` : `${wantedBy} ${wantedBy.includes(",") ? "want" : "wants"} this`}
@@ -452,7 +461,7 @@ function CatalogRow({ item, insight, alreadyAdded, wantedBy, selected, pending, 
 
         {/* Right side: Plan button + expand chevron */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          {alreadyAdded ? (
+          {browseOnly ? null : alreadyAdded ? (
             <div className="flex items-center gap-1">
               <span
                 className="text-[10px] font-bold px-2.5 py-1 rounded-full"
@@ -506,8 +515,45 @@ function CatalogRow({ item, insight, alreadyAdded, wantedBy, selected, pending, 
       </div>
 
       {selected && (
-        <ItemDetail item={item} />
+        <ItemDetail item={item} paidQueue={paidQueue} />
       )}
+    </div>
+  );
+}
+
+// ==================== RESORT SWITCHER ====================
+
+function ResortSwitcher({ resorts, active, onChoose }: {
+  resorts: ResortConfig[];
+  active: string;
+  onChoose: (id: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5 mb-2 shrink-0" role="group" aria-label="Resort">
+      {resorts.map((r) => {
+        const isActive = r.id === active;
+        return (
+          <button
+            key={r.id}
+            type="button"
+            onClick={() => onChoose(r.id)}
+            aria-pressed={isActive}
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full cursor-pointer transition-colors"
+            style={{
+              backgroundColor: isActive ? `color-mix(in srgb, ${ACCENT} 18%, transparent)` : "var(--color-surface-raised)",
+              color: isActive ? ACCENT : "var(--color-text-muted)",
+              border: `1px solid ${isActive ? ACCENT : "var(--color-border-subtle)"}`,
+            }}
+          >
+            {r.name}
+            {r.status !== "live" && (
+              <span className="ml-1 text-[9px] font-normal uppercase tracking-wide" style={{ color: "var(--color-text-dim)" }}>
+                preview
+              </span>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -527,7 +573,20 @@ interface CatalogBrowserProps {
 
 export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserProps) {
   const isPanel = variant === "panel";
-  const { items, loading } = useParkData();
+  const resorts = catalogResorts();
+  const [resortId, setResortId] = useState(DEFAULT_RESORT_ID);
+  // The last resort browsed, once on the client (localStorage isn't there when the page is built)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(CATALOG_RESORT_KEY);
+      if (saved && saved !== DEFAULT_RESORT_ID && catalogResorts().some((r) => r.id === saved)) setResortId(saved);
+    } catch { /* localStorage blocked: start at Disneyland Resort */ }
+  }, []);
+  const resort = getResort(resortId);
+  const isOtherResort = resortId !== DEFAULT_RESORT_ID;
+  const paidQueue = paidQueueLabel(resortId);
+  const parkOrder = useMemo(() => (isOtherResort && resort ? resortParkNames(resort) : PARK_DISPLAY_ORDER), [isOtherResort, resort]);
+  const { items, loading, error: loadError } = useParkData(resortId);
   const { allWishes, addOrSelectWish, addWish, unselectWish } = useTripWishes();
   const { currentUserId } = useAppStore();
   const { currentTrip } = useTrips();
@@ -555,7 +614,8 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
   // file is unavailable.
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getWaitTimeStats(), getRideReliabilityStats()]).then(([waits, reliability]) => {
+    setInsights(new Map());
+    getResortRideStats(resortId).then(({ waits, reliability }) => {
       if (cancelled) return;
       const map = new Map<string, RideInsight>();
       for (const [id, r] of Object.entries(waits?.rides ?? {})) {
@@ -567,7 +627,14 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
       setInsights(map);
     }).catch((err) => console.error("[CatalogBrowser] stats load failed:", err));
     return () => { cancelled = true; };
-  }, []);
+  }, [resortId]);
+
+  const chooseResort = (id: string) => {
+    if (id === resortId) return;
+    setResortId(id);
+    setSelectedId(null); setSearchQuery(""); setSelectedParks(new Set()); setPinning(false); setAddedPlace(null);
+    try { localStorage.setItem(CATALOG_RESORT_KEY, id); } catch { /* not remembered; harmless */ }
+  };
 
   // Map parkDataId → wish.id so we can unselect by wish ID
   const parkDataIdToWishId = useMemo(() => {
@@ -607,11 +674,11 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
   const availableParks = useMemo(() => {
     const set = new Set(tabItems.map((item) => item.park));
     return Array.from(set).sort((a, b) => {
-      const idxA = PARK_DISPLAY_ORDER.indexOf(a);
-      const idxB = PARK_DISPLAY_ORDER.indexOf(b);
+      const idxA = parkOrder.indexOf(a);
+      const idxB = parkOrder.indexOf(b);
       return (idxA === -1 ? Infinity : idxA) - (idxB === -1 ? Infinity : idxB);
     });
-  }, [tabItems]);
+  }, [tabItems, parkOrder]);
 
   const toggleParkFilter = (park: string) => {
     setSelectedParks((prev) => {
@@ -717,7 +784,8 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
 
   const totalCount = useMemo(() => items.length, [items]);
 
-  if (loading) return null;
+  // The first load shows nothing, as before; switching resorts keeps the browser and says it's loading
+  if (loading && !isOtherResort && items.length === 0) return null;
 
   return (
     <div className={isPanel ? "flex flex-col h-full min-h-0" : "mb-6"}>
@@ -732,6 +800,15 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
         </span>
       </div>
 
+      {resorts.length > 1 && (
+        <ResortSwitcher resorts={resorts} active={resortId} onChoose={chooseResort} />
+      )}
+      {isOtherResort && resort && (
+        <p className="text-[11px] mb-2 shrink-0" style={{ color: "var(--color-text-muted)" }}>
+          Preview: browse {resort.name}&rsquo;s rides, shows, dining, shops and places.
+          Adding them to a trip comes with choosing a trip&rsquo;s resorts.
+        </p>
+      )}
       <div
         className={`rounded-xl border ${isPanel ? "flex flex-col flex-1 min-h-0" : ""}`}
         style={{
@@ -779,7 +856,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
         </div>
 
         {/* Places: pin one that isn't in the catalog */}
-        {activeTab === "place" && (
+        {activeTab === "place" && !isOtherResort && (
           <div className="px-3 pt-3">
             <button
               type="button"
@@ -857,7 +934,7 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
         )}
 
         {/* Typical waits from an older deployed copy, or not loaded at all (data-sources.ts) */}
-        {activeTab === "ride" && expanded && <DataSourceNote source="waitTimeStats" className="px-3 pb-2" />}
+        {activeTab === "ride" && expanded && !isOtherResort && <DataSourceNote source="waitTimeStats" className="px-3 pb-2" />}
 
         {/* List toggle — list itself collapses by default (inline only;
             the panel always shows results) */}
@@ -929,15 +1006,23 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
 
         {browsing && expanded && (
           <div className={`px-3 pb-3 overflow-y-auto flex flex-col gap-4 ${isPanel ? "flex-1 min-h-0 pt-1" : "max-h-[480px]"}`}>
-            {Object.entries(groupedByPark).length === 0 ? (
+            {loading ? (
+              <p role="status" className="text-xs text-center py-4" style={{ color: "var(--color-text-dim)" }}>
+                Loading {resort?.name ?? "the park catalog"}&hellip;
+              </p>
+            ) : loadError ? (
+              <p role="alert" className="text-xs text-center py-4" style={{ color: "var(--color-error)" }}>
+                {resort?.name ?? "This resort"}&rsquo;s catalog couldn&rsquo;t be loaded. Check the connection and choose it again.
+              </p>
+            ) : Object.entries(groupedByPark).length === 0 ? (
               <p className="text-xs text-center py-4" style={{ color: "var(--color-text-dim)" }}>
                 {searchQuery.trim() ? <>No results for &ldquo;{searchQuery}&rdquo;</> : "Nothing to show with these filters"}
               </p>
             ) : (
               Object.entries(groupedByPark)
                 .sort(([parkA], [parkB]) => {
-                  const idxA = PARK_DISPLAY_ORDER.indexOf(parkA);
-                  const idxB = PARK_DISPLAY_ORDER.indexOf(parkB);
+                  const idxA = parkOrder.indexOf(parkA);
+                  const idxB = parkOrder.indexOf(parkB);
                   return (idxA === -1 ? Infinity : idxA) - (idxB === -1 ? Infinity : idxB);
                 })
                 .map(([park, parkItems]) => (
@@ -954,6 +1039,8 @@ export default function CatalogBrowser({ variant = "inline" }: CatalogBrowserPro
                         key={item.id}
                         item={item}
                         insight={insights.get(item.id)}
+                        paidQueue={paidQueue}
+                        browseOnly={isOtherResort}
                         alreadyAdded={addedParkDataIds.has(item.id)}
                         wantedBy={wantedByParkDataId.get(item.id)}
                         selected={selectedId === item.id}

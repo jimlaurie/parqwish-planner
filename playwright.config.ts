@@ -23,6 +23,8 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run dev",
+    // The beta's hidden features (src/lib/feature-flags.ts), so their checks run
+    env: { NEXT_PUBLIC_RESORTS: "1" },
     url: "http://localhost:3000",
     reuseExistingServer: true,
     timeout: 180_000,

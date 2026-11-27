@@ -42,6 +42,8 @@ import {
 import { auth } from "./auth";
 import { pushWish, pushPackingItem } from "./wish-sync";
 import { recompressDataURL, compressDataURLMultiRes } from "./image-utils";
+import { addTripPhoto } from "@/hooks/use-trip-photos";
+import { parkToday } from "./dates";
 import { selectionOwners } from "@shared/selection-owners";
 
 // ==================== INTERNAL TYPES ====================
@@ -1158,6 +1160,8 @@ export async function linkPhotoManifest(
   linked: number;
   created: number;
   skipped: number;
+  /** Photos with no matching item, kept on the trip as unlinked photos (Catalog › Photos shows them). */
+  kept: number;
   skippedReasons: { notFound: number };
 }> {
   const WISH_TYPES = new Set(["wish", "ride", "show", "photo"]);
@@ -1221,8 +1225,31 @@ export async function linkPhotoManifest(
 
   let linked = 0;
   let created = 0;
+  let kept = 0;
   let notFound = 0;
   const now = Date.now();
+
+  /**
+   * A photo whose item isn't in this catalog (a collection item, a Pal-only
+   * item, one renamed since) used to be dropped. Kept on the trip as an
+   * unlinked photo instead, captioned with its item, on its day (else the
+   * day it was taken, else today), so it can be linked to items later
+   * (27 Nov 2026). Needs a trip to belong to.
+   */
+  async function keepOnTrip(entry: PhotoManifestEntry, dataUri: string): Promise<boolean> {
+    if (!tripId) return false;
+    const takenDay = entry.capturedAt && /^\d{4}-\d{2}-\d{2}/.test(entry.capturedAt) ? entry.capturedAt.slice(0, 10) : null;
+    await addTripPhoto({
+      tripId,
+      date: entry.date || takenDay || parkToday(),
+      photoSet: await toPhotoResolutions(dataUri),
+      caption: entry.itemName,
+      latitude: entry.latitude,
+      longitude: entry.longitude,
+      capturedAt: entry.capturedAt,
+    });
+    return true;
+  }
 
   for (const { entry, dataUri } of entries) {
     try {
@@ -1305,6 +1332,7 @@ export async function linkPhotoManifest(
             linked++;
             continue;
           }
+          if (await keepOnTrip(entry, dataUri)) { kept++; continue; }
           notFound++;
           continue;
         }
@@ -1363,6 +1391,7 @@ export async function linkPhotoManifest(
             linked++;
             continue;
           }
+          if (await keepOnTrip(entry, dataUri)) { kept++; continue; }
           notFound++;
           continue;
         }
@@ -1391,7 +1420,9 @@ export async function linkPhotoManifest(
         continue;
       }
 
-      notFound++; // unrecognized itemType
+      // Another kind (a collection photo): kept on the trip rather than dropped
+      if (await keepOnTrip(entry, dataUri)) { kept++; continue; }
+      notFound++;
     } catch (err) {
       console.error("[SyncTranslate] Error linking photo", entry.filename, err);
       notFound++;
@@ -1401,6 +1432,7 @@ export async function linkPhotoManifest(
   return {
     linked,
     created,
+    kept,
     skipped: notFound,
     skippedReasons: { notFound },
   };

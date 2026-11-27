@@ -1,7 +1,12 @@
 "use client";
 
 // ==================== ALL TRIP PHOTOS ====================
-// Every photo attached to a trip, from all five sources (the fifth: collection
+// Scope "all" (Catalog › Photos' default since 27 Nov 2026): every photo in
+// the catalog, whatever trip or day: every wish, packing item and collection
+// item with photos, every day item's and every imported trip photo. Photos
+// imported from Pal attach to the catalog item they belong to, which needn't
+// be on the trip shown, so the trip view alone hid them.
+// Scope "trip": every photo attached to a trip, from all five sources (the fifth: collection
 // items got on this trip, by their "How I got it" trip, where Collections are on), with the richer
 // metadata (date, category, linked item) the Catalog Photo Gallery needs for
 // filtering — usePublishData's allPhotos is a thin projection of this same
@@ -44,6 +49,31 @@ export const PHOTO_CATEGORY_CHIPS = [
   ...(COLLECTIONS_AVAILABLE ? [COLLECTION_CHIP] : []),
 ];
 
+export type PhotoScope = "trip" | "all";
+
+const hasPhotos = (r: { photos?: string[]; photoSets?: unknown[] }) => !!(r.photoSets?.length || r.photos?.length);
+
+/** Every photo in the catalog, in the trip view's shape (no selections: the catalog isn't per trip). */
+async function allCatalogPhotoSources() {
+  const [wishes, packingItems, itineraryItems, tripPhotos, collectionItems] = await Promise.all([
+    db.wishes.filter(hasPhotos).toArray(),
+    db.packingItems.filter(hasPhotos).toArray(),
+    db.dayItems.toArray(),
+    db.tripPhotos.toArray(),
+    COLLECTIONS_AVAILABLE ? db.collectionItems.filter((i) => !!i.photoSets?.length).toArray() : Promise.resolve([] as CollectionItem[]),
+  ]);
+  return {
+    wishSelections: wishes.map((w) => ({ wishId: w.id, userId: undefined as string | undefined })),
+    wishes,
+    packingSelections: packingItems.map((p) => ({ itemId: p.id, userId: undefined as string | undefined })),
+    packingItems,
+    itineraryItems,
+    scheduledOnlyWishes: [] as Wish[],
+    tripPhotos,
+    collectionItems,
+  };
+}
+
 /** Collection items got on this trip ("How I got it" names it); none where Collections are off. */
 async function tripCollectionItems(tripId: string): Promise<CollectionItem[]> {
   if (!COLLECTIONS_AVAILABLE) return [];
@@ -65,11 +95,12 @@ function packingCategory(item: PackingItem) {
   };
 }
 
-export function useAllTripPhotos(tripId: string | null) {
+export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "trip") {
   const { activeUserFilter } = useAppStore();
 
   const rawData = useLiveQuery(
     async () => {
+      if (scope === "all") return allCatalogPhotoSources();
       if (!tripId) return null;
 
       const wishSelections = await db.tripWishSelections.where("tripId").equals(tripId).toArray();
@@ -101,7 +132,7 @@ export function useAllTripPhotos(tripId: string | null) {
 
       return { wishSelections, wishes, packingSelections, packingItems, itineraryItems, scheduledOnlyWishes, tripPhotos, collectionItems };
     },
-    [tripId]
+    [tripId, scope]
   );
 
   const photos = useMemo<TripPhotoEntry[]>(() => {
@@ -109,10 +140,12 @@ export function useAllTripPhotos(tripId: string | null) {
 
     const filterSet = activeUserFilter ? new Set(activeUserFilter) : null;
     const matchesFilter = (userId: string | undefined) => !filterSet || filterSet.has(userId ?? "user_primary");
+    // In "all", catalog wishes and packing belong to no one Trip User, so the user filter doesn't hide them
+    const matchesSelection = (userId: string | undefined) => scope === "all" || matchesFilter(userId);
 
-    const wishIds = new Set(rawData.wishSelections.filter((s) => matchesFilter(s.userId)).map((s) => s.wishId));
+    const wishIds = new Set(rawData.wishSelections.filter((s) => matchesSelection(s.userId)).map((s) => s.wishId));
     const wishes = rawData.wishes.filter((w) => wishIds.has(w.id));
-    const itemIds = new Set(rawData.packingSelections.filter((s) => matchesFilter(s.userId)).map((s) => s.itemId));
+    const itemIds = new Set(rawData.packingSelections.filter((s) => matchesSelection(s.userId)).map((s) => s.itemId));
     const packingItems = rawData.packingItems.filter((p) => itemIds.has(p.id));
     const itineraryItems = rawData.itineraryItems.filter((i) => matchesFilter(i.userId));
 
@@ -211,7 +244,7 @@ export function useAllTripPhotos(tripId: string | null) {
     }
 
     return out;
-  }, [rawData, activeUserFilter]);
+  }, [rawData, activeUserFilter, scope]);
 
   return { photos, loading: rawData === undefined };
 }

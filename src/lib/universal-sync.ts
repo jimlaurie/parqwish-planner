@@ -512,6 +512,8 @@ export async function executeImport(
 export interface PhotoImportResult {
   linked: number;
   created: number;
+  /** No matching item: kept on the trip as unlinked photos. */
+  kept: number;
   skipped: number;
   skippedReasons: { notFound: number };
 }

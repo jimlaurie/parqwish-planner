@@ -1314,6 +1314,11 @@ export default function SyncModal({ visible, onClose, inline, onTransferComplete
                       {"🆕"} {photoImportResult.created} new place{photoImportResult.created === 1 ? "" : "s"} created
                     </div>
                   )}
+                  {photoImportResult.kept > 0 && (
+                    <div className="text-xs py-0.5" style={{ color: "var(--color-text-secondary)" }}>
+                      {"📷"} {photoImportResult.kept} with no matching item, kept on this trip (Catalog › Photos)
+                    </div>
+                  )}
                   {photoImportResult.skipped > 0 && (
                     <div className="text-xs py-0.5" style={{ color: "var(--color-text-dim)" }}>
                       {"⚠️"} {photoImportResult.skipped} skipped

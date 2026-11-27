@@ -7,7 +7,8 @@ const ACCENT = "var(--color-accent-publish)";
 interface PhotoGalleryCardProps {
   photo: TripPhotoEntry;
   excluded: boolean;
-  onToggleExclude: () => void;
+  /** Publish's include toggle; absent in the all-photos view (Publish is per trip). */
+  onToggleExclude?: () => void;
   onJumpToItem?: () => void;
   onLink?: () => void; // TripPhoto only
   onDelete?: () => void; // TripPhoto only
@@ -78,14 +79,16 @@ export default function PhotoGalleryCard({
         )}
 
         <div className="flex items-center justify-between gap-2 pt-1" style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
-          <button
-            type="button"
-            onClick={onToggleExclude}
-            className="text-[10px] font-medium cursor-pointer"
-            style={{ color: excluded ? "var(--color-text-dim)" : ACCENT }}
-          >
-            {excluded ? "Include in Publish" : "✓ In Publish"}
-          </button>
+          {onToggleExclude ? (
+            <button
+              type="button"
+              onClick={onToggleExclude}
+              className="text-[10px] font-medium cursor-pointer"
+              style={{ color: excluded ? "var(--color-text-dim)" : ACCENT }}
+            >
+              {excluded ? "Include in Publish" : "✓ In Publish"}
+            </button>
+          ) : <span />}
           {isTripPhoto && onDelete && (
             <button
               type="button"

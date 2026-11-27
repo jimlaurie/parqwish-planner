@@ -128,7 +128,7 @@ test("The gallery view shows only photos, filters as the list does, and opens a 
   await expect(page.getByRole("button", { name: "Gallery", exact: true })).toHaveAttribute("aria-pressed", "true");
 });
 
-test("Catalog › Photos shows the photos of items got on the trip, and one opens its item", async ({ page }) => {
+test("Catalog › Photos shows every collection photo, This trip the ones got on it, and one opens its item", async ({ page }) => {
   const ON_TRIP = [
     pin("col_1", "Figment 50th", { photoSets: [photo()], acquired: { date: "2026-10-15", tripId: "trip_test" } }),
     pin("col_2", "Hatbox Ghost", { photoSets: [photo()], acquired: { date: "2026-09-01", tripId: "trip_other" } }),
@@ -138,6 +138,9 @@ test("Catalog › Photos shows the photos of items got on the trip, and one open
   await openCollection(page);
   await page.goto("/catalog");
   await page.getByRole("button", { name: /Photos/ }).first().click();
+  // All photos (the default since 27 Nov 2026) has every collection photo; This trip only the ones got on it
+  await expect(page.getByTitle("Go to this item").filter({ hasText: /Figment 50th|Hatbox Ghost|Castle 70th/ })).toHaveCount(3);
+  await page.getByRole("group", { name: "Which photos" }).getByRole("button", { name: "This trip" }).click();
   const card = page.getByTitle("Go to this item").filter({ hasText: "Figment 50th" });
   await expect(card).toBeVisible();
   await expect(card).toContainText("Collection");

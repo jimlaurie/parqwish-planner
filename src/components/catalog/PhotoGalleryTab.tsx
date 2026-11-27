@@ -1,6 +1,10 @@
 "use client";
 
 // ==================== CATALOG PHOTO GALLERY ====================
+// Opens on every photo in the catalog ("All photos", 27 Nov 2026: photos
+// imported from Pal attach to their catalog item, which needn't be on the
+// trip shown, so they didn't appear); "This trip" narrows to the trip, with
+// its dates and Publish's include toggle.
 // The management surface for every photo attached to this trip — filter by
 // date and linked item type, control what shows up on Publish (shares
 // excludedPhotoIds with the Publish page and AI Export, so a toggle here is
@@ -14,7 +18,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { requestShareOpen } from "@/lib/pending-share";
-import { useAllTripPhotos, PHOTO_CATEGORY_CHIPS, type TripPhotoEntry } from "@/hooks/use-all-trip-photos";
+import { useAllTripPhotos, PHOTO_CATEGORY_CHIPS, type PhotoScope, type TripPhotoEntry } from "@/hooks/use-all-trip-photos";
 import { useAppStore } from "@/lib/store";
 import { removeTripPhoto, updateTripPhotoLinks } from "@/hooks/use-trip-photos";
 import PhotoGalleryCard from "@/components/catalog/PhotoGalleryCard";
@@ -36,16 +40,19 @@ interface PhotoGalleryTabProps {
 }
 
 export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, onNavigateToItemTab }: PhotoGalleryTabProps) {
-  const { photos, loading } = useAllTripPhotos(tripId);
+  const [scope, setScope] = useState<PhotoScope>("all");
+  const tripScope = scope === "trip" && !!tripId;
+  const { photos, loading } = useAllTripPhotos(tripId, tripScope ? "trip" : "all");
   const { excludedPhotoIds, togglePhotoExclusion } = useAppStore();
   const [dateFilter, setDateFilter] = useState<string | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const [linkingPhoto, setLinkingPhoto] = useState<TripPhotoEntry | null>(null);
   const router = useRouter();
 
+  // Day chips belong to the trip view; the catalog spans every trip
   const dates = useMemo(
-    () => (tripStartDate && tripEndDate ? getDatesBetween(tripStartDate, tripEndDate) : []),
-    [tripStartDate, tripEndDate]
+    () => (tripScope && tripStartDate && tripEndDate ? getDatesBetween(tripStartDate, tripEndDate) : []),
+    [tripScope, tripStartDate, tripEndDate]
   );
 
   const excludedSet = useMemo(
@@ -60,11 +67,27 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
 
   const filtered = useMemo(() => {
     return photos.filter((p) => {
-      if (dateFilter !== "all" && p.date !== dateFilter) return false;
+      if (tripScope && dateFilter !== "all" && p.date !== dateFilter) return false;
       if (categoryFilter !== "all" && p.categoryId !== categoryFilter) return false;
       return true;
     });
-  }, [photos, dateFilter, categoryFilter]);
+  }, [photos, dateFilter, categoryFilter, tripScope]);
+
+  const scopeChip = (value: PhotoScope, label: string) => (
+    <button
+      key={value}
+      type="button"
+      onClick={() => { setScope(value); setDateFilter("all"); }}
+      aria-pressed={scope === value}
+      className="text-xs px-3 py-1.5 rounded-full cursor-pointer"
+      style={{
+        backgroundColor: scope === value ? "var(--color-accent-publish)" : "var(--color-surface-raised)",
+        color: scope === value ? "#000" : "var(--color-text-muted)",
+      }}
+    >
+      {label}
+    </button>
+  );
 
   const handleJumpToItem = (photo: TripPhotoEntry) => {
     // A collection item opens in its editor on the Collection page (as a shared page does)
@@ -89,10 +112,14 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
     setLinkingPhoto(null);
   };
 
-  if (!tripId) return null;
-
   return (
     <div className="flex flex-col gap-4">
+      {/* Which photos: the whole catalog, or this trip's (with its days and Publish) */}
+      <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="Which photos">
+        {scopeChip("all", "All photos")}
+        {tripId && scopeChip("trip", "This trip")}
+      </div>
+
       {/* Date filter */}
       {dates.length > 1 && (
         <div className="flex items-center gap-2 flex-wrap">
@@ -164,7 +191,9 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
       {!loading && filtered.length === 0 && (
         <p className="text-sm py-8 text-center" style={{ color: "var(--color-text-dim)" }}>
           {photos.length === 0
-            ? "No photos on this trip yet — add some from any item, or import from your device on the Play page."
+            ? (tripScope
+              ? "No photos on this trip yet — add some from any item, or import from your device on the Play page."
+              : "No photos yet — add some from any item, or import Pal's photos from Play.")
             : "No photos match this filter."}
         </p>
       )}
@@ -174,8 +203,8 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
           <PhotoGalleryCard
             key={photo.id}
             photo={photo}
-            excluded={excludedSet.has(photo.id)}
-            onToggleExclude={() => tripId && togglePhotoExclusion(tripId, photo.id)}
+            excluded={tripScope && excludedSet.has(photo.id)}
+            onToggleExclude={tripScope && tripId ? () => togglePhotoExclusion(tripId, photo.id) : undefined}
             onJumpToItem={
               photo.sourceType === "wish" || photo.sourceType === "packing" || photo.sourceType === "collection"
                 ? () => handleJumpToItem(photo)

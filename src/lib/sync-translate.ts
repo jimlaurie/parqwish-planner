@@ -41,7 +41,7 @@ import {
 } from "@shared/sync-mappers";
 import { auth } from "./auth";
 import { pushWish, pushPackingItem } from "./wish-sync";
-import { recompressDataURL, compressDataURLMultiRes } from "./image-utils";
+import { recompressDataURL, compressDataURLMultiRes, type PhotoResolutions } from "./image-utils";
 import { addTripPhoto } from "@/hooks/use-trip-photos";
 import { parkToday } from "./dates";
 import { selectionOwners } from "@shared/selection-owners";
@@ -1181,6 +1181,17 @@ export async function linkPhotoManifest(
   const toPhotoResolutions = compressDataURLMultiRes;
 
   /**
+   * Whether `added` (a zip photo after toPhotoResolutions) is already among
+   * `sets`. Compared resized, as saved: the zip's original never equals a
+   * saved copy, so every re-import added the photos again (27 Nov 2026).
+   * The browser resizes the same photo to the same bytes, and sync keeps
+   * this device's display and full copies (it carries only thumbnails).
+   */
+  const alreadyHas = (sets: PhotoResolutions[], flat: string[], added: PhotoResolutions, original: string): boolean =>
+    flat.includes(original)
+    || sets.some((ps) => ps.full === added.full || ps.display === added.display || ps.full === original || ps.display === original);
+
+  /**
    * Fallback for an item that has no catalog Wish/PackingItem at all — true
    * for anything that only ever arrived via live cloud sync (Phase 3A Day
    * Items), which writes straight into db.dayItems and never creates a
@@ -1212,12 +1223,13 @@ export async function linkPhotoManifest(
     }
     if (!dayItem) return false;
     const existing = dayItem.photos || [];
-    if (!existing.includes(dataUri)) {
-      // DayItem.photos has no photoSets equivalent (a self-contained
-      // snapshot type, string[] only) — store a single reasonably-sized
-      // "display" resolution rather than the raw multi-MB camera photo,
-      // consistent with why the Wish/PackingItem branches compress too.
-      const resized = await recompressDataURL(dataUri, 800, 0.75);
+    // DayItem.photos has no photoSets equivalent (a self-contained
+    // snapshot type, string[] only) — store a single reasonably-sized
+    // "display" resolution rather than the raw multi-MB camera photo,
+    // consistent with why the Wish/PackingItem branches compress too.
+    // Compared resized, as saved, so a re-import doesn't add it again.
+    const resized = await recompressDataURL(dataUri, 800, 0.75);
+    if (!existing.includes(dataUri) && !existing.includes(resized)) {
       await db.dayItems.update(dayItem.id, { photos: [...existing, resized] });
     }
     return true;
@@ -1339,8 +1351,8 @@ export async function linkPhotoManifest(
         {
           const existingSets = wish.photoSets || [];
           const existingPhotos = wish.photos || [];
-          const alreadyLinked = existingPhotos.includes(dataUri)
-            || existingSets.some((ps) => ps.full === dataUri || ps.display === dataUri || ps.thumbnail === dataUri);
+          const newSet = await toPhotoResolutions(dataUri);
+          const alreadyLinked = alreadyHas(existingSets, existingPhotos, newSet, dataUri);
           if (!alreadyLinked) {
             // Compress to the app's normal multi-resolution photoSets
             // shape (see toPhotoResolutions doc comment) instead of the
@@ -1349,7 +1361,6 @@ export async function linkPhotoManifest(
             // any pre-existing flat photos into photoSets now so they
             // don't silently disappear once this wish gains its first
             // photoSet entry.
-            const newSet = await toPhotoResolutions(dataUri);
             const migratedSets = existingSets.length === 0 && existingPhotos.length > 0
               ? await Promise.all(existingPhotos.map((p) => toPhotoResolutions(p)))
               : existingSets;
@@ -1398,12 +1409,10 @@ export async function linkPhotoManifest(
         {
           const existingSets = item.photoSets || [];
           const existingPhotos = item.photos || [];
-          const alreadyLinked = existingPhotos.includes(dataUri)
-            || existingSets.some((ps) => ps.full === dataUri || ps.display === dataUri || ps.thumbnail === dataUri);
-          if (alreadyLinked) { linked++; continue; }
           // Same photoSets-compression + migration + last-write-wins
           // reasoning as the Wish branch above.
           const newSet = await toPhotoResolutions(dataUri);
+          if (alreadyHas(existingSets, existingPhotos, newSet, dataUri)) { linked++; continue; }
           const migratedSets = existingSets.length === 0 && existingPhotos.length > 0
             ? await Promise.all(existingPhotos.map((p) => toPhotoResolutions(p)))
             : existingSets;

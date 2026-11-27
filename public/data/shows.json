@@ -25,8 +25,14 @@
         "street show"
       ],
       "longitude": -117.918967,
-      "times": [],
-      "status": "closed",
+      "times": [
+        "09:15",
+        "10:05",
+        "11:00",
+        "13:40",
+        "14:45"
+      ],
+      "status": "operating",
       "land": "Fantasyland"
     },
     "wondrous-journeys-fireworks": {
@@ -45,13 +51,16 @@
       "name": "Wondrous Journeys with Fireworks"
     },
     "pearly-band-small-world": {
-      "status": "closed",
+      "status": "operating",
       "timeRanges": [],
       "apiEntityId": "4119dd28-6da8-46a0-9246-bea86e07ac61",
       "types": [
         "street show"
       ],
-      "times": [],
+      "times": [
+        "11:50",
+        "12:55"
+      ],
       "name": "Pearly Band near \"it's a small world\"",
       "longitude": -117.917863,
       "latitude": 33.814016,
@@ -138,11 +147,17 @@
       "longitude": -117.9189609
     },
     "blues-best-day-ever": {
-      "status": "closed",
+      "status": "operating",
       "types": [
         "theater show"
       ],
-      "times": [],
+      "times": [
+        "11:00",
+        "12:20",
+        "13:40",
+        "15:40",
+        "16:35"
+      ],
       "latitude": 33.8144,
       "duration": 25,
       "timeRanges": [],
@@ -436,7 +451,7 @@
     },
     "jambalaya-jazz": {
       "apiEntityId": "3220fd76-38e4-49a4-afa3-4842c07203fa",
-      "status": "closed",
+      "status": "operating",
       "name": "Jambalaya Jazz",
       "duration": 25,
       "timeRanges": [],
@@ -445,7 +460,15 @@
       "types": [
         "street show"
       ],
-      "times": [],
+      "times": [
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:05",
+        "16:00",
+        "17:00"
+      ],
       "land": "New Orleans Square"
     },
     "jambalaya-jazz-mark-twain": {
@@ -938,7 +961,7 @@
           "end": "17:15"
         }
       ],
-      "status": "operating",
+      "status": "closed",
       "land": "Buena Vista Street",
       "times": [],
       "duration": 20,
@@ -984,6 +1007,6 @@
       "timeRanges": []
     }
   },
-  "lastUpdated": "2026-11-24T14:00:27.073Z",
-  "lastShowtimeSync": "2026-11-24T14:00:27.073Z"
+  "lastUpdated": "2026-11-27T14:00:24.360Z",
+  "lastShowtimeSync": "2026-11-27T14:00:24.360Z"
 }

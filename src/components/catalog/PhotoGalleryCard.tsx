@@ -12,6 +12,8 @@ interface PhotoGalleryCardProps {
   onJumpToItem?: () => void;
   onLink?: () => void; // TripPhoto only
   onDelete?: () => void; // TripPhoto only
+  /** Opens the photo large (with Share, Download and Copy). */
+  onView?: () => void;
 }
 
 export default function PhotoGalleryCard({
@@ -21,6 +23,7 @@ export default function PhotoGalleryCard({
   onJumpToItem,
   onLink,
   onDelete,
+  onView,
 }: PhotoGalleryCardProps) {
   const isTripPhoto = photo.sourceType === "tripPhoto";
   const linkCount = (photo.linkedParkDataIds?.length ?? 0) + (photo.linkedWishIds?.length ?? 0);
@@ -35,8 +38,16 @@ export default function PhotoGalleryCard({
       }}
     >
       <div className="relative aspect-square">
-        {/* eslint-disable-next-line @next/next/no-img-element -- data URI, next/image gains nothing here */}
-        <img src={photo.url} alt={photo.caption || photo.linkedItemTitle} className="w-full h-full object-cover" />
+        <button
+          type="button"
+          onClick={onView}
+          disabled={!onView}
+          className="block w-full h-full cursor-zoom-in"
+          aria-label={`View ${photo.caption || photo.linkedItemTitle} larger`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- data URI, next/image gains nothing here */}
+          <img src={photo.url} alt={photo.caption || photo.linkedItemTitle} className="w-full h-full object-cover" />
+        </button>
         {excluded && (
           <div
             className="absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full"

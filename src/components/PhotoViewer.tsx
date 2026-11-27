@@ -1,21 +1,50 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { canSharePhotos, copyPhoto, downloadPhoto, sharePhoto, type PhotoActionResult } from "@/lib/photo-share";
 
 interface PhotoViewerProps {
   photos: string[];
   currentIndex: number;
   onClose: () => void;
   onChangeIndex: (index: number) => void;
+  /** A line under each photo (its item), by index. */
+  captions?: string[];
+  /** Show Share…, Download and Copy image under the photo (Catalog › Photos). */
+  shareable?: boolean;
 }
+
+const RESULT_NOTES: Record<string, string> = {
+  "download:done": "Downloaded",
+  "copy:done": "Copied — paste it into a message or document",
+  "copy:unsupported": "This browser can't copy images",
+  "share:unsupported": "This browser can't share photos",
+  failed: "That didn't work. Please try again.",
+};
 
 export default function PhotoViewer({
   photos,
   currentIndex,
   onClose,
   onChangeIndex,
+  captions,
+  shareable = false,
 }: PhotoViewerProps) {
+  const [note, setNote] = useState<string | null>(null);
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => { setCanShare(shareable && canSharePhotos()); }, [shareable]);
+  useEffect(() => { setNote(null); }, [currentIndex]);
+  const caption = captions?.[currentIndex];
+
+  const act = async (kind: "share" | "download" | "copy"): Promise<void> => {
+    const src = photos[currentIndex];
+    const result: PhotoActionResult = kind === "share" ? await sharePhoto(src, caption)
+      : kind === "download" ? await downloadPhoto(src, caption)
+      : await copyPhoto(src);
+    if (result === "cancelled") return;
+    setNote(RESULT_NOTES[`${kind}:${result}`] ?? (result === "failed" ? RESULT_NOTES.failed : null));
+  };
   const total = photos.length;
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < total - 1;
@@ -72,17 +101,43 @@ export default function PhotoViewer({
           </div>
         )}
 
-        {/* Image */}
-        <motion.img
-          key={currentIndex}
-          src={photos[currentIndex]}
-          alt={`Photo ${currentIndex + 1} of ${total}`}
-          className="max-w-[90vw] max-h-[80vh] rounded-lg object-contain"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          onClick={(e) => e.stopPropagation()}
-        />
+        {/* Image, with its caption and actions when asked for */}
+        <div className="flex flex-col items-center gap-3" onClick={(e) => e.stopPropagation()}>
+          <motion.img
+            key={currentIndex}
+            src={photos[currentIndex]}
+            alt={caption || `Photo ${currentIndex + 1} of ${total}`}
+            className={`max-w-[90vw] ${caption || shareable ? "max-h-[68vh]" : "max-h-[80vh]"} rounded-lg object-contain`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+          />
+          {caption && (
+            <p className="text-sm font-medium text-center max-w-[80vw]" style={{ color: "rgba(255,255,255,0.9)" }}>{caption}</p>
+          )}
+          {shareable && (
+            <div className="flex items-center gap-2 flex-wrap justify-center" role="group" aria-label="Photo actions">
+              {canShare && (
+                <button type="button" onClick={() => { void act("share"); }}
+                  className="px-4 py-2 rounded-full text-sm font-semibold cursor-pointer"
+                  style={{ backgroundColor: "var(--color-accent-publish)", color: "#000" }}>
+                  Share…
+                </button>
+              )}
+              <button type="button" onClick={() => { void act("download"); }}
+                className="px-4 py-2 rounded-full text-sm font-medium cursor-pointer text-white"
+                style={{ backgroundColor: "rgba(255,255,255,0.14)" }}>
+                Download
+              </button>
+              <button type="button" onClick={() => { void act("copy"); }}
+                className="px-4 py-2 rounded-full text-sm font-medium cursor-pointer text-white"
+                style={{ backgroundColor: "rgba(255,255,255,0.14)" }}>
+                Copy image
+              </button>
+            </div>
+          )}
+          {note && <p role="status" className="text-xs" style={{ color: "rgba(255,255,255,0.75)" }}>{note}</p>}
+        </div>
 
         {/* Prev arrow */}
         {hasPrev && (

@@ -22,6 +22,7 @@ import { useAllTripPhotos, PHOTO_CATEGORY_CHIPS, type PhotoScope, type TripPhoto
 import { useAppStore } from "@/lib/store";
 import { removeTripPhoto, updateTripPhotoLinks } from "@/hooks/use-trip-photos";
 import PhotoGalleryCard from "@/components/catalog/PhotoGalleryCard";
+import PhotoViewer from "@/components/PhotoViewer";
 import PhotoItemLinkerModal from "@/components/catalog/PhotoItemLinkerModal";
 import { datesBetween } from "@/lib/dates";
 
@@ -47,6 +48,8 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
   const [dateFilter, setDateFilter] = useState<string | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const [linkingPhoto, setLinkingPhoto] = useState<TripPhotoEntry | null>(null);
+  // The photo open large, by its place among the photos shown
+  const [viewing, setViewing] = useState<number | null>(null);
   const router = useRouter();
 
   // Day chips belong to the trip view; the catalog spans every trip
@@ -199,10 +202,11 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
       )}
 
       <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))" }}>
-        {filtered.map((photo) => (
+        {filtered.map((photo, index) => (
           <PhotoGalleryCard
             key={photo.id}
             photo={photo}
+            onView={() => setViewing(index)}
             excluded={tripScope && excludedSet.has(photo.id)}
             onToggleExclude={tripScope && tripId ? () => togglePhotoExclusion(tripId, photo.id) : undefined}
             onJumpToItem={
@@ -215,6 +219,17 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
           />
         ))}
       </div>
+
+      {viewing !== null && filtered[viewing] && (
+        <PhotoViewer
+          photos={filtered.map((p) => p.full || p.url)}
+          captions={filtered.map((p) => p.caption || p.linkedItemTitle)}
+          currentIndex={viewing}
+          onClose={() => setViewing(null)}
+          onChangeIndex={setViewing}
+          shareable
+        />
+      )}
 
       {linkingPhoto && tripId && (
         <PhotoItemLinkerModal

@@ -353,8 +353,11 @@ export default function ParkMap({ items }: ParkMapProps) {
     return null;
   }, [hoveredTimelineItemId, attractionMarkers]);
 
-  // Debug: log matching stats
+  // Debug: log matching stats. Development only: it runs on every change to
+  // the day's items, about 400 times while a production page's sync loads,
+  // which pushed the sync's own messages out of the console (28 Nov 2026)
   useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
     if (items.length > 0) {
       const idCount = Object.keys(coordMaps.byId).length;
       const nameCount = Object.keys(coordMaps.byName).length;

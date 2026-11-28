@@ -51,6 +51,7 @@ import { isValidCompletion } from "@shared/completions";
 import type { TripCompletion } from "@shared/types/completion";
 import { startCollectionSync, stopCollectionSync } from "./collection-cloud";
 import { COLLECTIONS_AVAILABLE } from "./feature-flags";
+import { keepListening } from "./listener-retry";
 
 const firestore = getFirestore(app);
 
@@ -455,15 +456,19 @@ function subscribeToSharedTrips(uid: string): Unsubscribe {
           }
 
           if (!_tripContentUnsubs.has(remote.id)) {
-            _tripContentUnsubs.set(remote.id, [
-              subscribeToWishSelectionsForTrip(remote.id, uid),
-              subscribeToPackingSelectionsForTrip(remote.id, uid),
-              subscribeToDayItemsForTrip(remote.id, uid),
-              subscribeToWishMirrorForTrip(remote.id, uid),
-              subscribeToPackingItemMirrorForTrip(remote.id, uid),
-              subscribeToTrailsForTrip(remote.id, uid),
-              subscribeToPhotoMetadataForTrip(remote.id, uid),
-              subscribeToCompletionsForTrip(remote.id, uid),
+            // Each starts again if it's refused or loses a snapshot (lib/listener-retry.ts):
+            // a trip made in this browser is seen before the server has it, and the
+            // server refuses its content until then
+            const id = remote.id;
+            _tripContentUnsubs.set(id, [
+              keepListening("selections", (lost) => subscribeToWishSelectionsForTrip(id, uid, lost)),
+              keepListening("packingSelections", (lost) => subscribeToPackingSelectionsForTrip(id, uid, lost)),
+              keepListening("dayItems", (lost) => subscribeToDayItemsForTrip(id, uid, lost)),
+              keepListening("wish mirror", (lost) => subscribeToWishMirrorForTrip(id, uid, lost)),
+              keepListening("packingItem mirror", (lost) => subscribeToPackingItemMirrorForTrip(id, uid, lost)),
+              keepListening("trails", (lost) => subscribeToTrailsForTrip(id, uid, lost)),
+              keepListening("photo metadata", (lost) => subscribeToPhotoMetadataForTrip(id, uid, lost)),
+              keepListening("completions", (lost) => subscribeToCompletionsForTrip(id, uid, lost)),
             ]);
           }
         }
@@ -753,14 +758,14 @@ async function pullWishSelectionsForTrip(tripId: string, uid: string): Promise<v
   }
 }
 
-function subscribeToWishSelectionsForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToWishSelectionsForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     wishSelectionsCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -779,9 +784,10 @@ function subscribeToWishSelectionsForTrip(tripId: string, uid: string): Unsubscr
       } catch (err) {
         console.error("[wish-sync] selections snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] selections listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] selections listener error:", err); lost(err); } }
   );
 }
 
@@ -846,14 +852,14 @@ async function pullWishMirrorForTrip(tripId: string, uid: string): Promise<void>
   }
 }
 
-function subscribeToWishMirrorForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToWishMirrorForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     wishMirrorCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -869,9 +875,10 @@ function subscribeToWishMirrorForTrip(tripId: string, uid: string): Unsubscribe 
       } catch (err) {
         console.error("[wish-sync] wish mirror snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] wish mirror listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] wish mirror listener error:", err); lost(err); } }
   );
 }
 
@@ -1094,14 +1101,14 @@ async function pullDayItemsForTrip(tripId: string, uid: string): Promise<void> {
   }
 }
 
-function subscribeToDayItemsForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToDayItemsForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     dayItemsCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -1122,9 +1129,10 @@ function subscribeToDayItemsForTrip(tripId: string, uid: string): Unsubscribe {
       } catch (err) {
         console.error("[wish-sync] dayItems snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] dayItems listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] dayItems listener error:", err); lost(err); } }
   );
 }
 
@@ -1233,14 +1241,14 @@ async function pullTrailsForTrip(tripId: string, uid: string): Promise<void> {
   }
 }
 
-function subscribeToTrailsForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToTrailsForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     trailsCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           if (change.type === "removed") continue;
@@ -1250,9 +1258,10 @@ function subscribeToTrailsForTrip(tripId: string, uid: string): Unsubscribe {
       } catch (err) {
         console.error("[wish-sync] trails snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] trails listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] trails listener error:", err); lost(err); } }
   );
 }
 
@@ -1312,14 +1321,14 @@ async function pullCompletionsForTrip(tripId: string, uid: string): Promise<void
   }
 }
 
-function subscribeToCompletionsForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToCompletionsForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     completionsCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -1329,9 +1338,10 @@ function subscribeToCompletionsForTrip(tripId: string, uid: string): Unsubscribe
       } catch (err) {
         console.error("[wish-sync] completions snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] completions listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] completions listener error:", err); lost(err); } }
   );
 }
 
@@ -1390,14 +1400,14 @@ async function pullPhotoMetadataForTrip(tripId: string, uid: string): Promise<vo
   }
 }
 
-function subscribeToPhotoMetadataForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToPhotoMetadataForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     photosCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           if (change.type === "removed") continue;
@@ -1407,9 +1417,10 @@ function subscribeToPhotoMetadataForTrip(tripId: string, uid: string): Unsubscri
       } catch (err) {
         console.error("[wish-sync] photo metadata snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] photo metadata listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] photo metadata listener error:", err); lost(err); } }
   );
 }
 
@@ -1606,14 +1617,14 @@ async function pullPackingSelectionsForTrip(tripId: string, uid: string): Promis
   }
 }
 
-function subscribeToPackingSelectionsForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToPackingSelectionsForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     packingSelectionsCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -1632,9 +1643,10 @@ function subscribeToPackingSelectionsForTrip(tripId: string, uid: string): Unsub
       } catch (err) {
         console.error("[wish-sync] packingSelections snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] packingSelections listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] packingSelections listener error:", err); lost(err); } }
   );
 }
 
@@ -1699,14 +1711,14 @@ async function pullPackingItemMirrorForTrip(tripId: string, uid: string): Promis
   }
 }
 
-function subscribeToPackingItemMirrorForTrip(tripId: string, uid: string): Unsubscribe {
+function subscribeToPackingItemMirrorForTrip(tripId: string, uid: string, lost: (why: unknown) => void): Unsubscribe {
   let _key: Uint8Array | null = null;
   return onSnapshot(
     packingItemMirrorCol(tripId),
     async (snapshot) => {
       try {
         if (!_key) _key = await getTripKey(tripId, uid);
-        if (!_key) return;
+        if (!_key) { lost(new Error("no trip key yet")); return; }
         const key = _key;
         for (const change of snapshot.docChanges()) {
           const remote = change.doc.data() as SyncedWishDoc;
@@ -1731,9 +1743,10 @@ function subscribeToPackingItemMirrorForTrip(tripId: string, uid: string): Unsub
       } catch (err) {
         console.error("[wish-sync] packingItem mirror snapshot error:", err);
         _key = null;
+        lost(err);
       }
     },
-    (err) => { if (!_stopping) console.error("[wish-sync] packingItem mirror listener error:", err); }
+    (err) => { if (!_stopping) { console.error("[wish-sync] packingItem mirror listener error:", err); lost(err); } }
   );
 }
 

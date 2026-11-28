@@ -195,3 +195,48 @@ test("An imported photo keeps its original as the full copy, and a re-import upg
   expect(after[0].full).toBe(`data:image/png;base64,${original}`);
 });
 
+// A collection, and a photo imported unmatched (kept on the trip, unlinked)
+const T = 1_790_000_000_000;
+const COLLECTION = {
+  collectionSettings: [{ id: "settings", enabled: ["pins"], userCategories: [], firstRunDone: true, createdAt: T, updatedAt: T }],
+  collectionItems: [{ id: "col_fig", name: "Figment 50th", category: "pins", state: "have", userId: "user_primary", createdAt: T, updatedAt: T }],
+};
+const UNLINKED = {
+  tripPhotos: [{ id: "tphoto_1", tripId: "trip_test", date: "2026-10-15", photoSets: [set], caption: "Figment pin", createdAt: NOW }],
+};
+
+test("An unlinked photo is added to a collection item, and moves there", async ({ page }) => {
+  await seedTrip(page, { ...SEED, ...COLLECTION, ...UNLINKED });
+  await openCatalogPhotos(page);
+  await page.getByRole("button", { name: "Add to items or tag a place…" }).click();
+  const linker = page.getByRole("dialog", { name: "Link photo" });
+  await expect(linker.getByRole("tab", { name: "Add to items" })).toHaveAttribute("aria-selected", "true");
+  await linker.getByRole("textbox", { name: "Search" }).fill("figment");
+  await linker.getByRole("button", { name: /Figment 50th/ }).click();
+  await linker.getByRole("button", { name: "Add to item" }).click();
+
+  await expect(page.getByRole("status").filter({ hasText: "Moved to" })).toHaveText(/Moved to Figment 50th/);
+  const item = (await rows<{ id: string; photoSets?: unknown[] }>(page, "collectionItems")).find((i) => i.id === "col_fig");
+  expect(item?.photoSets).toHaveLength(1);
+  expect(await rows(page, "tripPhotos")).toHaveLength(0);
+});
+
+test("An editor adds a photo from the Photo Gallery", async ({ page }) => {
+  await seedTrip(page, { ...WITH_PHOTOS, ...COLLECTION });
+  await page.goto("/collection");
+  await page.getByTestId("collection-item").filter({ hasText: "Figment 50th" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit collection item" });
+  await editor.getByRole("button", { name: "Add from Photo Gallery" }).click();
+  const picker = page.getByRole("dialog", { name: "Add from Photo Gallery" });
+  await picker.getByRole("button", { name: /^.*Churros/ }).click();
+  await picker.getByRole("button", { name: "Add photo" }).click();
+  await expect(picker).toBeHidden();
+  await expect(editor.getByRole("img", { name: "Photo 1" })).toBeVisible();
+  await editor.getByRole("button", { name: "Save" }).click();
+  await expect(editor).toBeHidden();
+  await expect.poll(async () => (await rows<{ id: string; photoSets?: unknown[] }>(page, "collectionItems"))
+    .find((i) => i.id === "col_fig")?.photoSets?.length).toBe(1);
+  // A copy: the wish keeps its photo
+  expect((await rows<{ id: string; photoSets?: unknown[] }>(page, "wishes")).find((w) => w.id === "w_churros")?.photoSets).toHaveLength(1);
+});
+

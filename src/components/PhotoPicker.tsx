@@ -1,8 +1,8 @@
 "use client";
 
 // Photos for an item editor (wishes, packing, collection items): add from a
-// file, or paste a copied image with ⌘V / Ctrl+V or the Paste button
-// (src/lib/photo-paste.ts).
+// file, from the Photo Gallery (the Gallery button, 27 Nov 2026), or paste a
+// copied image with ⌘V / Ctrl+V or the Paste button (src/lib/photo-paste.ts).
 
 import { useRef, useState } from "react";
 import { useIsPresent } from "framer-motion";
@@ -10,6 +10,7 @@ import { compressImageMultiRes, type PhotoResolutions } from "@/lib/image-utils"
 import { canReadClipboardImages, pasteNote, readClipboardImages } from "@/lib/photo-paste";
 import { usePhotoPaste } from "@/hooks/use-photo-paste";
 import PhotoViewer from "@/components/PhotoViewer";
+import GalleryPhotoPickerModal from "@/components/GalleryPhotoPickerModal";
 
 interface PhotoPickerProps {
   /** Multi-res photo sets (preferred) */
@@ -32,6 +33,7 @@ export default function PhotoPicker({
 }: PhotoPickerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   // Derive display data: prefer photoSets, fall back to legacy photos
   const hasMultiRes = photoSets.length > 0;
@@ -150,6 +152,20 @@ export default function PhotoPicker({
             <span className="text-lg">+</span>
           </button>
         )}
+        {/* From the Photo Gallery (needs photo sets: every editor now passes them) */}
+        {totalPhotos < maxPhotos && onChangeMultiRes && (
+          <button
+            type="button"
+            onClick={() => setGalleryOpen(true)}
+            className="w-12 h-12 rounded-lg flex items-center justify-center cursor-pointer
+                       border-2 border-dashed border-white/20 hover:border-white/40
+                       transition-colors text-white/40 hover:text-white/60 text-[10px] font-semibold"
+            aria-label="Add from Photo Gallery"
+            title="Add a photo from the Photo Gallery"
+          >
+            Gallery
+          </button>
+        )}
         {totalPhotos < maxPhotos && canPasteButton && (
           <button
             type="button"
@@ -179,6 +195,20 @@ export default function PhotoPicker({
         onChange={handleAddPhoto}
         aria-label="Upload photos"
       />
+
+      {galleryOpen && onChangeMultiRes && (
+        <GalleryPhotoPickerModal
+          current={photoSets}
+          room={Math.max(0, maxPhotos - totalPhotos)}
+          onPick={(sets) => {
+            // An older item's flat photos become sets first, so they aren't dropped
+            const base = hasMultiRes ? photoSets : photos.map((p) => ({ thumbnail: p, display: p, full: p }));
+            onChangeMultiRes([...base, ...sets].slice(0, maxPhotos));
+            setGalleryOpen(false);
+          }}
+          onClose={() => setGalleryOpen(false)}
+        />
+      )}
 
       {/* Full-size viewer — uses display resolution for lightbox */}
       {viewerIndex !== null && (

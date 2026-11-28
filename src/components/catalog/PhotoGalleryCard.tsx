@@ -85,7 +85,7 @@ export default function PhotoGalleryCard({
               border: `1px solid ${linkCount > 0 ? ACCENT : "var(--color-border-input)"}`,
             }}
           >
-            {linkCount > 0 ? `Linked to ${linkCount} item${linkCount === 1 ? "" : "s"}` : "Link to items…"}
+            {linkCount > 0 ? `Tagged ${linkCount} place${linkCount === 1 ? "" : "s"} · Link…` : "Add to items or tag a place…"}
           </button>
         )}
 

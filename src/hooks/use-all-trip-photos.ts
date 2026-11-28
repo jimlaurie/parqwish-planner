@@ -25,6 +25,8 @@ export interface TripPhotoEntry {
   id: string; // composite: wish_<id>_<n> | packing_<id>_<n> | dayitem_<id>_<n> | tphoto_<id>_<n> | coll_<id>_<n>
   url: string;
   full: string;
+  /** The 300 px copy (the display copy where an item kept no smaller one). */
+  thumbnail: string;
   caption: string;
   date: string | null; // YYYY-MM-DD — null when the source item isn't scheduled to a specific day
   sourceType: "wish" | "packing" | "dayitem" | "tripPhoto" | "collection";
@@ -169,7 +171,7 @@ export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "tri
       const sets = wish.photoSets?.length ? wish.photoSets : (wish.photos ?? []).map((p) => ({ thumbnail: p, display: p, full: p }));
       sets.forEach((ps, idx) => {
         out.push({
-          id: `wish_${wish.id}_${idx}`, url: ps.display, full: ps.full, caption: wish.title,
+          id: `wish_${wish.id}_${idx}`, url: ps.display, full: ps.full, thumbnail: ps.thumbnail || ps.display, caption: wish.title,
           date, sourceType: "wish", itemId: wish.id, linkedItemTitle: wish.title, ...cat,
         });
       });
@@ -193,7 +195,7 @@ export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "tri
       const sets = item.photoSets?.length ? item.photoSets : (item.photos ?? []).map((p) => ({ thumbnail: p, display: p, full: p }));
       sets.forEach((ps, idx) => {
         out.push({
-          id: `packing_${item.id}_${idx}`, url: ps.display, full: ps.full, caption: item.name,
+          id: `packing_${item.id}_${idx}`, url: ps.display, full: ps.full, thumbnail: ps.thumbnail || ps.display, caption: item.name,
           date, sourceType: "packing", itemId: item.id, linkedItemTitle: item.name, ...cat,
         });
       });
@@ -207,7 +209,7 @@ export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "tri
       const wishTag = getTagById(item.itemType);
       item.photos.forEach((photo, idx) => {
         out.push({
-          id: `dayitem_${item.id}_${idx}`, url: photo, full: photo, caption: item.title,
+          id: `dayitem_${item.id}_${idx}`, url: photo, full: photo, thumbnail: photo, caption: item.title,
           date: item.date, sourceType: "dayitem", itemId: item.id, linkedItemTitle: item.title,
           categoryId: item.itemType,
           categoryLabel: tab?.label ?? wishTag?.label ?? item.itemType,
@@ -220,7 +222,7 @@ export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "tri
     for (const photo of rawData.tripPhotos) {
       photo.photoSets.forEach((ps, idx) => {
         out.push({
-          id: `tphoto_${photo.id}_${idx}`, url: ps.display, full: ps.full, caption: photo.caption ?? "",
+          id: `tphoto_${photo.id}_${idx}`, url: ps.display, full: ps.full, thumbnail: ps.thumbnail || ps.display, caption: photo.caption ?? "",
           date: photo.date, sourceType: "tripPhoto", itemId: photo.id,
           linkedItemTitle: photo.caption ?? "Unlinked photo",
           categoryId: "unlinked", categoryLabel: "Unlinked", categoryIcon: "📷",
@@ -236,7 +238,7 @@ export function useAllTripPhotos(tripId: string | null, scope: PhotoScope = "tri
       const date = item.acquired?.date && /^\d{4}-\d{2}-\d{2}$/.test(item.acquired.date) ? item.acquired.date : null;
       (item.photoSets ?? []).forEach((ps, idx) => {
         out.push({
-          id: `coll_${item.id}_${idx}`, url: ps.display || ps.thumbnail, full: ps.full || ps.display, caption: item.name,
+          id: `coll_${item.id}_${idx}`, url: ps.display || ps.thumbnail, full: ps.full || ps.display, thumbnail: ps.thumbnail || ps.display, caption: item.name,
           date, sourceType: "collection", itemId: item.id, linkedItemTitle: item.name || "Collection item",
           categoryId: COLLECTION_CHIP.id, categoryLabel: COLLECTION_CHIP.label, categoryIcon: COLLECTION_CHIP.icon,
         });

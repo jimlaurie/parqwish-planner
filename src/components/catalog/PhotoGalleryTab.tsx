@@ -23,6 +23,7 @@ import { useAppStore } from "@/lib/store";
 import { removeTripPhoto, updateTripPhotoLinks } from "@/hooks/use-trip-photos";
 import PhotoGalleryCard from "@/components/catalog/PhotoGalleryCard";
 import PhotoViewer from "@/components/PhotoViewer";
+import { moveTripPhotoToItems, type AttachTarget } from "@/lib/photo-attach";
 import PhotoItemLinkerModal from "@/components/catalog/PhotoItemLinkerModal";
 import { datesBetween } from "@/lib/dates";
 
@@ -109,6 +110,19 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
     await removeTripPhoto(photo.itemId);
   };
 
+  // Add to items: the photo moves onto them (src/lib/photo-attach.ts); a line says where it went
+  const [moveNote, setMoveNote] = useState<string | null>(null);
+  const handleAddToItems = async (targets: AttachTarget[]) => {
+    if (!linkingPhoto) return;
+    const photo = { thumbnail: linkingPhoto.thumbnail, display: linkingPhoto.url, full: linkingPhoto.full };
+    const result = await moveTripPhotoToItems(linkingPhoto.itemId, photo, targets);
+    setLinkingPhoto(null);
+    const names = (ts: AttachTarget[]) => ts.map((t) => t.name).join(", ");
+    setMoveNote(result.moved
+      ? `Moved to ${names(result.placed)}.${result.full.length ? ` ${names(result.full)} already had the most photos.` : ""}`
+      : `Not moved: ${names(result.full) || "those items"} already had the most photos.`);
+  };
+
   const handleConfirmLink = async (parkDataIds: string[], wishIds: string[]) => {
     if (!linkingPhoto) return;
     await updateTripPhotoLinks(linkingPhoto.itemId, { parkDataIds, wishIds });
@@ -187,6 +201,12 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
         </div>
       )}
 
+      {moveNote && (
+        <p role="status" className="text-xs px-3 py-2 rounded-lg" style={{ backgroundColor: "var(--color-surface-raised)", color: "var(--color-text-secondary)" }}>
+          {moveNote}
+        </p>
+      )}
+
       {loading && (
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading photos…</p>
       )}
@@ -237,6 +257,7 @@ export default function PhotoGalleryTab({ tripId, tripStartDate, tripEndDate, on
           initialParkDataIds={linkingPhoto.linkedParkDataIds ?? []}
           initialWishIds={linkingPhoto.linkedWishIds ?? []}
           onConfirm={handleConfirmLink}
+          onAddToItems={(targets) => { void handleAddToItems(targets); }}
           onClose={() => setLinkingPhoto(null)}
         />
       )}

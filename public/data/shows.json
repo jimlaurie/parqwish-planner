@@ -961,7 +961,7 @@
           "end": "17:15"
         }
       ],
-      "status": "closed",
+      "status": "operating",
       "land": "Buena Vista Street",
       "times": [],
       "duration": 20,
@@ -1007,6 +1007,6 @@
       "timeRanges": []
     }
   },
-  "lastUpdated": "2026-11-27T14:00:24.360Z",
-  "lastShowtimeSync": "2026-11-27T14:00:24.360Z"
+  "lastUpdated": "2026-11-28T14:00:24.891Z",
+  "lastShowtimeSync": "2026-11-28T14:00:24.891Z"
 }

@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { type TripPhoto } from "@/lib/db";
 import type { PhotoResolutions } from "@/lib/image-utils";
+import { keepsOriginal } from "@/lib/image-utils";
 
 export interface AddTripPhotoParams {
   tripId: string;
@@ -54,7 +55,14 @@ export async function addTripPhoto(params: AddTripPhotoParams): Promise<string> 
         ? p.capturedAt === params.capturedAt && p.photoSets[0]?.thumbnail === params.photoSet.thumbnail
         : !p.capturedAt && p.date === params.date && p.photoSets[0]?.thumbnail === params.photoSet.thumbnail
     );
-    if (dupe) return dupe.id;
+    if (dupe) {
+      // The same photo imported again with a larger full copy (before 27 Nov 2026 it was 1600 px): keep the larger
+      const kept = dupe.photoSets[0];
+      if (kept && params.photoSet.full !== kept.full && keepsOriginal(params.photoSet.full)) {
+        await db.tripPhotos.update(dupe.id, { photoSets: [{ ...kept, full: params.photoSet.full }, ...dupe.photoSets.slice(1)] });
+      }
+      return dupe.id;
+    }
   }
 
   const id = `tphoto_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;

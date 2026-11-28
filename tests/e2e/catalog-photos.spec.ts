@@ -160,3 +160,38 @@ test("A photo opens large, steps to the next, and can be downloaded and copied",
   await expect(viewer).toBeHidden();
 });
 
+test("An imported photo keeps its original as the full copy, and a re-import upgrades an older smaller one", async ({ page }) => {
+  await seedTrip(page);
+  const original = await photoBase64(page, "#963");
+  const zip = new JSZip();
+  zip.file("ride.png", original, { base64: true });
+  zip.file("manifest.json", JSON.stringify({
+    version: "1.0", exportDate: "2026-10-15T17:00:00Z", source: "mobile",
+    photos: [{ filename: "ride.png", itemType: "ride", itemId: "disneyland__space-mountain", itemName: "Space Mountain", date: "2026-10-15" }],
+  }));
+  const file = path.join(os.tmpdir(), `pal-photos-full-${Date.now()}.zip`);
+  fs.writeFileSync(file, await zip.generateAsync({ type: "nodebuffer" }));
+  const sets = async () => (await rows<{ id: string; photoSets?: Array<{ full: string; display: string }> }>(page, "wishes"))
+    .find((w) => w.id === "w_space")?.photoSets ?? [];
+
+  await importZip(page, file);
+  expect((await sets())[0].full).toBe(`data:image/png;base64,${original}`);
+
+  // As a photo imported before 27 Nov 2026 was saved: the same display copy, a smaller full one
+  await page.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>((res, rej) => { const r = indexedDB.open("ParQwishPWA"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    const store = db.transaction("wishes", "readwrite").objectStore("wishes");
+    await new Promise<void>((res) => {
+      const q = store.get("w_space");
+      q.onsuccess = () => { const w = q.result; w.photoSets[0].full = w.photoSets[0].display; store.put(w).onsuccess = () => res(); };
+    });
+    db.close();
+  });
+  expect((await sets())[0].full).not.toBe(`data:image/png;base64,${original}`);
+
+  await importZip(page, file);
+  const after = await sets();
+  expect(after).toHaveLength(1);
+  expect(after[0].full).toBe(`data:image/png;base64,${original}`);
+});
+

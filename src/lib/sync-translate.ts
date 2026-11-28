@@ -41,7 +41,7 @@ import {
 } from "@shared/sync-mappers";
 import { auth } from "./auth";
 import { pushWish, pushPackingItem } from "./wish-sync";
-import { recompressDataURL, compressDataURLMultiRes, type PhotoResolutions } from "./image-utils";
+import { recompressDataURL, compressDataURLMultiRes, keepsOriginal, type PhotoResolutions } from "./image-utils";
 import { addTripPhoto } from "@/hooks/use-trip-photos";
 import { parkToday } from "./dates";
 import { selectionOwners } from "@shared/selection-owners";
@@ -1192,6 +1192,22 @@ export async function linkPhotoManifest(
     || sets.some((ps) => ps.full === added.full || ps.display === added.display || ps.full === original || ps.display === original);
 
   /**
+   * `sets` with a photo already there given the larger full copy, when
+   * `added` has one (a photo imported before 27 Nov 2026 kept only 1600 px;
+   * re-importing the zip upgrades it); null when nothing changes.
+   */
+  const upgradedFull = (sets: PhotoResolutions[], added: PhotoResolutions): PhotoResolutions[] | null => {
+    let changed = false;
+    const next = sets.map((ps) => {
+      // The incoming photo is the original and the saved full copy isn't (a resized one)
+      if (ps.display !== added.display || ps.full === added.full || !keepsOriginal(added.full)) return ps;
+      changed = true;
+      return { ...ps, full: added.full };
+    });
+    return changed ? next : null;
+  };
+
+  /**
    * Fallback for an item that has no catalog Wish/PackingItem at all — true
    * for anything that only ever arrived via live cloud sync (Phase 3A Day
    * Items), which writes straight into db.dayItems and never creates a
@@ -1353,6 +1369,13 @@ export async function linkPhotoManifest(
           const existingPhotos = wish.photos || [];
           const newSet = await toPhotoResolutions(dataUri);
           const alreadyLinked = alreadyHas(existingSets, existingPhotos, newSet, dataUri);
+          const upgraded = alreadyLinked ? upgradedFull(existingSets, newSet) : null;
+          if (upgraded) {
+            // updatedAt bumped for the same last-write-wins reason as below (sync carries thumbnails only)
+            const updated: Wish = { ...wish, photoSets: upgraded, updatedAt: now };
+            await db.wishes.put(updated);
+            if (auth.currentUser) pushWish(updated, auth.currentUser.uid).catch(() => {});
+          }
           if (!alreadyLinked) {
             // Compress to the app's normal multi-resolution photoSets
             // shape (see toPhotoResolutions doc comment) instead of the
@@ -1412,7 +1435,16 @@ export async function linkPhotoManifest(
           // Same photoSets-compression + migration + last-write-wins
           // reasoning as the Wish branch above.
           const newSet = await toPhotoResolutions(dataUri);
-          if (alreadyHas(existingSets, existingPhotos, newSet, dataUri)) { linked++; continue; }
+          if (alreadyHas(existingSets, existingPhotos, newSet, dataUri)) {
+            const upgraded = upgradedFull(existingSets, newSet);
+            if (upgraded) {
+              const updated: PackingItem = { ...item, photoSets: upgraded, updatedAt: now };
+              await db.packingItems.put(updated);
+              if (auth.currentUser) pushPackingItem(updated, auth.currentUser.uid).catch(() => {});
+            }
+            linked++;
+            continue;
+          }
           const migratedSets = existingSets.length === 0 && existingPhotos.length > 0
             ? await Promise.all(existingPhotos.map((p) => toPhotoResolutions(p)))
             : existingSets;
